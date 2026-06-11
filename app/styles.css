@@ -20,7 +20,7 @@
 
 body {
   margin: 0;
-  min-width: 1440px;
+  min-width: 1680px;
   background:
     radial-gradient(circle at 58% 0%, rgba(34, 211, 238, 0.09), transparent 30%),
     linear-gradient(180deg, #08172a 0%, #060c18 100%);
@@ -49,7 +49,7 @@ button:hover {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 320px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -318,16 +318,16 @@ button:hover {
 
 .dashboard-layout {
   display: grid;
-  grid-template-columns: minmax(340px, 0.85fr) minmax(430px, 1.18fr) minmax(520px, 1.62fr);
-  gap: 12px;
-  padding: 0 36px 14px;
+  grid-template-columns: minmax(380px, 0.9fr) minmax(500px, 1.2fr) minmax(620px, 1.65fr);
+  gap: 16px;
+  padding: 0 36px 18px;
   align-items: stretch;
 }
 
 .bottom-layout {
   display: grid;
-  grid-template-columns: minmax(620px, 1.08fr) minmax(520px, 0.92fr);
-  gap: 12px;
+  grid-template-columns: minmax(760px, 1.05fr) minmax(720px, 0.95fr);
+  gap: 16px;
   padding: 0 36px;
 }
 
@@ -370,7 +370,7 @@ button:hover {
 .todo-panel,
 .focus-panel,
 .calendar-panel {
-  height: 380px;
+  height: 520px;
 }
 
 .todo-quick-add {
@@ -391,7 +391,7 @@ input {
 }
 
 .todo-list {
-  height: 286px;
+  height: 426px;
   overflow: auto;
   display: grid;
   align-content: start;
@@ -535,7 +535,7 @@ input {
 }
 
 .calendar-panel {
-  overflow: hidden;
+  overflow: visible;
 }
 
 .calendar-title {
@@ -566,6 +566,7 @@ input {
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-right: 0;
   border-bottom: 0;
+  min-width: 0;
 }
 
 .weekday,
@@ -575,7 +576,7 @@ input {
 }
 
 .weekday {
-  height: 38px;
+  height: 40px;
   display: grid;
   place-items: center;
   background: rgba(65, 108, 107, 0.58);
@@ -590,18 +591,19 @@ input {
 }
 
 .day-cell {
-  height: 50px;
+  height: 58px;
   padding: 7px 8px;
   position: relative;
   color: #d1d8e5;
   font-weight: 800;
+  overflow: hidden;
 }
 
 .today-dot {
   display: inline-grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--amber);
   color: white;
@@ -610,12 +612,13 @@ input {
 
 .day-cell em {
   display: block;
-  margin-top: 4px;
+  margin-top: 3px;
   border-radius: 6px;
-  padding: 3px 8px;
+  padding: 2px 7px;
   background: rgba(8, 145, 178, 0.38);
   color: #d2f4ff;
-  font-size: 12px;
+  font-size: 11px;
+  line-height: 1.25;
   font-style: normal;
   white-space: nowrap;
   overflow: hidden;
@@ -624,7 +627,7 @@ input {
 
 .recent-panel,
 .trend-panel {
-  height: 330px;
+  height: 430px;
   overflow: hidden;
 }
 
@@ -670,8 +673,9 @@ input {
 
 .line-chart {
   width: 100%;
-  height: 220px;
+  height: 285px;
   margin-top: 8px;
+  overflow: visible;
 }
 
 .line-chart line {
@@ -701,6 +705,7 @@ input {
   grid-template-columns: repeat(7, 1fr);
   color: #a7b8d1;
   text-align: center;
+  margin-top: 8px;
 }
 
 .trend-labels span {
