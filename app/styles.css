@@ -20,7 +20,7 @@
 
 body {
   margin: 0;
-  min-width: 1280px;
+  min-width: 1440px;
   background:
     radial-gradient(circle at 58% 0%, rgba(34, 211, 238, 0.09), transparent 30%),
     linear-gradient(180deg, #08172a 0%, #060c18 100%);
@@ -49,7 +49,7 @@ button:hover {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 258px 1fr;
+  grid-template-columns: 300px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -59,12 +59,13 @@ button:hover {
   height: 100vh;
   border-right: 1px solid rgba(96, 165, 250, 0.16);
   background: linear-gradient(180deg, #08172b 0%, #061020 100%);
-  padding: 24px 16px 14px;
+  padding: 24px 22px 14px;
+  overflow: hidden;
 }
 
 .brand-row {
   display: grid;
-  grid-template-columns: 52px 1fr 34px;
+  grid-template-columns: 48px minmax(0, 1fr) 36px;
   gap: 12px;
   align-items: center;
   padding-bottom: 24px;
@@ -72,8 +73,8 @@ button:hover {
 }
 
 .brand-mark {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 15px;
   display: grid;
   place-items: center;
@@ -84,9 +85,10 @@ button:hover {
 
 .brand-copy h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: 21px;
   line-height: 1.2;
   letter-spacing: 0;
+  word-break: keep-all;
 }
 
 .brand-copy p {
@@ -125,6 +127,7 @@ button:hover {
   color: #dce8fa;
   text-decoration: none;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .nav-item.active {
@@ -161,6 +164,8 @@ button:hover {
 .main-area {
   min-width: 0;
   padding-bottom: 34px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .app-header {
@@ -168,7 +173,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 34px;
+  padding: 0 36px;
   border-bottom: 1px solid rgba(96, 165, 250, 0.13);
   background: rgba(5, 13, 26, 0.74);
 }
@@ -208,7 +213,7 @@ button:hover {
 }
 
 .page-head {
-  padding: 28px 34px 18px;
+  padding: 28px 36px 18px;
 }
 
 .page-head h1 {
@@ -223,7 +228,7 @@ button:hover {
 }
 
 .error-box {
-  margin: 0 34px 14px;
+  margin: 0 36px 14px;
   border: 1px solid rgba(248, 113, 113, 0.28);
   background: rgba(127, 29, 29, 0.2);
   color: #fecaca;
@@ -235,7 +240,7 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  padding: 0 34px 14px;
+  padding: 0 36px 14px;
 }
 
 .metric-card,
@@ -313,17 +318,17 @@ button:hover {
 
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 1fr 1.35fr 1.65fr;
+  grid-template-columns: minmax(340px, 0.85fr) minmax(430px, 1.18fr) minmax(520px, 1.62fr);
   gap: 12px;
-  padding: 0 34px 14px;
+  padding: 0 36px 14px;
   align-items: stretch;
 }
 
 .bottom-layout {
   display: grid;
-  grid-template-columns: 1.12fr 1fr;
+  grid-template-columns: minmax(620px, 1.08fr) minmax(520px, 0.92fr);
   gap: 12px;
-  padding: 0 34px;
+  padding: 0 36px;
 }
 
 .panel {
@@ -365,7 +370,7 @@ button:hover {
 .todo-panel,
 .focus-panel,
 .calendar-panel {
-  height: 354px;
+  height: 380px;
 }
 
 .todo-quick-add {
@@ -386,7 +391,7 @@ input {
 }
 
 .todo-list {
-  height: 260px;
+  height: 286px;
   overflow: auto;
   display: grid;
   align-content: start;
@@ -570,7 +575,7 @@ input {
 }
 
 .weekday {
-  height: 42px;
+  height: 38px;
   display: grid;
   place-items: center;
   background: rgba(65, 108, 107, 0.58);
@@ -585,7 +590,7 @@ input {
 }
 
 .day-cell {
-  height: 56px;
+  height: 50px;
   padding: 7px 8px;
   position: relative;
   color: #d1d8e5;
@@ -619,7 +624,8 @@ input {
 
 .recent-panel,
 .trend-panel {
-  min-height: 300px;
+  height: 330px;
+  overflow: hidden;
 }
 
 .work-table {
@@ -664,7 +670,7 @@ input {
 
 .line-chart {
   width: 100%;
-  height: 210px;
+  height: 220px;
   margin-top: 8px;
 }
 
