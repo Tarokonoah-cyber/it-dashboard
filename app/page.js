@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const OLD_APP_URL = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL || "";
+const OLD_APP_URL =
+  process.env.NEXT_PUBLIC_APPS_SCRIPT_URL ||
+  "https://script.google.com/macros/s/AKfycbzJsb7rvaHg5PATAYjabulepQsFoY3BmeZPiH4fSsew4xchfX7gDkSF4Wj3kqvWwwoU/exec";
 
 async function api(path, options) {
   const response = await fetch(path, {
