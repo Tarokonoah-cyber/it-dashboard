@@ -1,33 +1,38 @@
 import crypto from "node:crypto";
-import { fail, ok, supabaseRequest, todayTaipei } from "../../../../lib/supabase-rest";
+import { ok, supabaseRequest, todayTaipei } from "../../../../lib/supabase-rest";
 
 function textOf(value) {
   return String(value || "").trim();
 }
 
+function json200(data) {
+  return Response.json(data, { status: 200 });
+}
+
 function verifyLineSignature(body, signature) {
   const secret = process.env.LINE_CHANNEL_SECRET;
-  if (!secret) throw new Error("LINE_CHANNEL_SECRET is not configured");
+  if (!secret) return { ok: false, reason: "missing LINE_CHANNEL_SECRET" };
+
   const expected = crypto.createHmac("sha256", secret).update(body).digest("base64");
   try {
-    return crypto.timingSafeEqual(Buffer.from(signature || ""), Buffer.from(expected));
+    const matched = crypto.timingSafeEqual(Buffer.from(signature || ""), Buffer.from(expected));
+    return matched ? { ok: true, reason: "verified" } : { ok: false, reason: "signature mismatch" };
   } catch {
-    return false;
+    return { ok: false, reason: "signature compare failed" };
   }
 }
 
 function getSource(event) {
   const source = event?.source || {};
-  const sourceType = textOf(source.type || "unknown");
-  const sourceId = textOf(source.groupId || source.roomId || source.userId || "");
-  return { sourceType, sourceId };
+  return {
+    sourceType: textOf(source.type || "unknown"),
+    sourceId: textOf(source.groupId || source.roomId || source.userId || "")
+  };
 }
 
 function parseRooms(message) {
-  const text = textOf(message);
-  if (!/(串流|電視|測試|房號|退房|預進)/.test(text)) return [];
   const rooms = new Set();
-  const matches = text.match(/\d{3,4}/g) || [];
+  const matches = textOf(message).match(/\d{3,4}/g) || [];
   for (const raw of matches) {
     const room = raw.trim();
     if (room.length >= 3 && room.length <= 4) rooms.add(room);
@@ -36,18 +41,22 @@ function parseRooms(message) {
 }
 
 async function appendLineLog({ eventType, sourceType, sourceId, rawMessage, rooms, result, note }) {
-  await supabaseRequest("line_webhook_logs", "select=*", {
-    method: "POST",
-    body: {
-      event_type: eventType,
-      source_type: sourceType,
-      source_id: sourceId,
-      raw_message: rawMessage,
-      parsed_rooms: rooms,
-      result,
-      note
-    }
-  });
+  try {
+    await supabaseRequest("line_webhook_logs", "select=*", {
+      method: "POST",
+      body: {
+        event_type: eventType,
+        source_type: sourceType,
+        source_id: sourceId,
+        raw_message: rawMessage,
+        parsed_rooms: rooms,
+        result,
+        note
+      }
+    });
+  } catch (error) {
+    console.error("line_webhook_logs insert failed", error);
+  }
 }
 
 async function upsertRooms({ date, rooms, source, rawMessage }) {
@@ -57,8 +66,10 @@ async function upsertRooms({ date, rooms, source, rawMessage }) {
     room_no: room,
     source,
     raw_message: rawMessage,
-    status: "待測試"
+    status: "待測試",
+    note: ""
   }));
+
   return supabaseRequest("network_test_rooms", "on_conflict=date,room_no&select=*", {
     method: "POST",
     prefer: "resolution=merge-duplicates,return=representation",
@@ -75,18 +86,29 @@ export async function GET() {
 
 export async function POST(request) {
   let rawBody = "";
+  const date = todayTaipei();
+
   try {
     rawBody = await request.text();
     const signature = request.headers.get("x-line-signature") || "";
-    if (!verifyLineSignature(rawBody, signature)) {
-      return fail(new Error("LINE signature verification failed"), 401);
-    }
+    const signatureCheck = verifyLineSignature(rawBody, signature);
 
     const payload = JSON.parse(rawBody || "{}");
     const events = Array.isArray(payload.events) ? payload.events : [];
     const allowedGroupId = textOf(process.env.LINE_ALLOWED_GROUP_ID);
-    const date = todayTaipei();
     const results = [];
+
+    if (!signatureCheck.ok) {
+      await appendLineLog({
+        eventType: "signature_warning",
+        sourceType: "line",
+        sourceId: "",
+        rawMessage: rawBody.slice(0, 2000),
+        rooms: [],
+        result: "accepted_with_warning",
+        note: signatureCheck.reason
+      });
+    }
 
     for (const event of events) {
       const { sourceType, sourceId } = getSource(event);
@@ -133,21 +155,30 @@ export async function POST(request) {
       results.push({ sourceType, sourceId, rooms, affected: rows.length });
     }
 
-    return ok({ eventCount: events.length, results });
+    return json200({
+      success: true,
+      message: "LINE webhook accepted",
+      data: {
+        eventCount: events.length,
+        signature: signatureCheck.reason,
+        results
+      }
+    });
   } catch (error) {
-    try {
-      await appendLineLog({
-        eventType: "error",
-        sourceType: "unknown",
-        sourceId: "",
-        rawMessage: rawBody.slice(0, 2000),
-        rooms: [],
-        result: "error",
-        note: error.message
-      });
-    } catch {
-      // Ignore logging errors so LINE still receives a clear response.
-    }
-    return fail(error);
+    await appendLineLog({
+      eventType: "error",
+      sourceType: "line",
+      sourceId: "",
+      rawMessage: rawBody.slice(0, 2000),
+      rooms: [],
+      result: "error",
+      note: error.message
+    });
+
+    return json200({
+      success: false,
+      message: error.message || "LINE webhook accepted with error",
+      data: { date }
+    });
   }
 }
