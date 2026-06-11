@@ -10,9 +10,13 @@ function toDateKey(value) {
 export async function GET() {
   try {
     const today = todayTaipei();
-    const [todos, works, notes] = await Promise.all([
+    const [todos, works, networkRooms, notes] = await Promise.all([
       supabaseRequest("todo_logs", "select=*&order=created_at.desc&limit=300"),
       supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc&limit=300"),
+      supabaseRequest(
+        "network_test_rooms",
+        `select=*&date=eq.${encodeURIComponent(today)}&order=room_no.asc`
+      ).catch(() => []),
       supabaseRequest("quick_notes", "select=id&limit=1").catch(() => [])
     ]);
 
@@ -37,6 +41,9 @@ export async function GET() {
     }));
     const denominator = completedTodos.length + openTodos.length;
     const completionRate = denominator ? Math.round((completedTodos.length / denominator) * 100) : 0;
+    const pendingNetworkRooms = networkRooms.filter((row) => row.status !== "完成" && row.status !== "異常");
+    const doneNetworkRooms = networkRooms.filter((row) => row.status === "完成");
+    const abnormalNetworkRooms = networkRooms.filter((row) => row.status === "異常");
 
     return ok({
       today,
@@ -45,6 +52,13 @@ export async function GET() {
       pendingCount: openTodos.length,
       completionRate,
       openTodos,
+      networkRooms,
+      networkSummary: {
+        total: networkRooms.length,
+        pending: pendingNetworkRooms.length,
+        done: doneNetworkRooms.length,
+        abnormal: abnormalNetworkRooms.length
+      },
       recentWorks: works.slice(0, 10),
       workTrend,
       notesReady: Array.isArray(notes)

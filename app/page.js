@@ -191,6 +191,8 @@ function TodoPanel({ todos, onReload }) {
 
 function FocusPanel({ dashboard, onReload }) {
   const [syncing, setSyncing] = useState(false);
+  const networkRooms = dashboard?.networkRooms || [];
+  const networkSummary = dashboard?.networkSummary || { pending: 0, done: 0, abnormal: 0 };
   const today = new Date();
   const weekday = today.getDay();
   const phoneMap = {
@@ -226,6 +228,24 @@ function FocusPanel({ dashboard, onReload }) {
           <span>待測試 0 筆 · 已完成 0 筆</span>
         </div>
         <div className="network-empty">今天尚未收到房務 LINE 指派的網路測試房間。</div>
+      </div>
+      <div className="network-live-card">
+        <div className="network-live-head">
+          <b>今日串流</b>
+          <span>待測試 {networkSummary.pending || 0} 筆 · 已完成 {networkSummary.done || 0} 筆</span>
+        </div>
+        {networkRooms.length ? (
+          <div className="network-room-strip">
+            {networkRooms.map((room) => (
+              <article key={room.id || room.room_no} className={`network-room-card ${room.status === "異常" ? "abnormal" : ""}`}>
+                <strong>{room.room_no}</strong>
+                <span>{room.status || "待測試"}</span>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="network-empty">今天尚未收到房務 LINE 指派的網路測試房間。</div>
+        )}
       </div>
       <div className="focus-bottom">
         <div className="mini-card phone-card">
