@@ -918,6 +918,80 @@ function getRecordField(data, column) {
   return "";
 }
 
+function parseMoneyValue(value) {
+  if (value === null || value === undefined || value === "") return 0;
+  if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+  const cleaned = String(value).replace(/[^\d.-]/g, "");
+  const parsed = Number(cleaned);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function formatNtAmount(value) {
+  return `NT$${Math.round(value).toLocaleString("en-US")}`;
+}
+
+function parseRecordDate(value) {
+  if (!value) return null;
+  const text = String(value).trim();
+  const match = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+  if (!match) return null;
+  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function isActiveContractStatus(value) {
+  const status = String(value || "").trim().toLowerCase();
+  return ["有效", "active", "valid"].includes(status);
+}
+
+function getSoftwareContractSummary(rows) {
+  const vendorSet = new Set();
+  let annualTotal = 0;
+  let expiringSoon = 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const ninetyDaysLater = new Date(today);
+  ninetyDaysLater.setDate(today.getDate() + 90);
+
+  rows.forEach((row) => {
+    const data = row.data || {};
+    const vendor = String(getRecordField(data, { keys: ["vendor", "廠商"] }) || "").trim();
+    if (vendor && vendor !== "-") vendorSet.add(vendor);
+
+    annualTotal += parseMoneyValue(getRecordField(data, { keys: ["amount", "金額"] }));
+
+    const endDate = parseRecordDate(getRecordField(data, { keys: ["end_date", "到期日"] }));
+    const status = getRecordField(data, { keys: ["status", "狀態"] });
+    if (endDate && endDate >= today && endDate <= ninetyDaysLater && isActiveContractStatus(status)) {
+      expiringSoon += 1;
+    }
+  });
+
+  return [
+    { title: "廠商數", value: vendorSet.size.toLocaleString("en-US"), helper: "合作廠商" },
+    { title: "合約總數", value: rows.length.toLocaleString("en-US"), helper: "軟體合約" },
+    { title: "年度費用", value: formatNtAmount(annualTotal), helper: "年度合約金額" },
+    { title: "90 天內到期", value: expiringSoon.toLocaleString("en-US"), helper: "需要追蹤", tone: "warning" }
+  ];
+}
+
+function SoftwareContractSummary({ rows, loading }) {
+  const cards = useMemo(() => getSoftwareContractSummary(rows), [rows]);
+  return (
+    <div className="contract-summary-grid" aria-label="軟體合約統計摘要">
+      {cards.map((card) => (
+        <article className={`contract-summary-card ${card.tone === "warning" ? "is-warning" : ""}`} key={card.title}>
+          <div>
+            <span>{card.title}</span>
+            <strong>{loading ? "..." : card.value}</strong>
+          </div>
+          <p>{card.tone === "warning" ? "!" : ""}{card.helper}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+
 const SOP_LABELS = {
   category: "\u5206\u985e",
   status: "\u72c0\u614b",
@@ -1092,6 +1166,7 @@ function DataSection({ config }) {
         </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
+      {config.source === "contracts_software" ? <SoftwareContractSummary rows={rows} loading={loading} /> : null}
       <div className="records-toolbar">
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋這個分頁..." />
         <span>{loading ? "讀取中..." : `${filteredRows.length} 筆`}</span>
