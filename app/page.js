@@ -363,13 +363,20 @@ function WorkTable({ works }) {
 function TrendPanel({ trend }) {
   const safeTrend = trend?.length ? trend : [];
   const max = Math.max(1, ...safeTrend.map((item) => item.count));
+  const chartWidth = 700;
+  const chartHeight = 180;
+  const padX = 18;
+  const padTop = 18;
+  const padBottom = 26;
+  const plotHeight = chartHeight - padTop - padBottom;
   const points = safeTrend.map((item, index) => {
-    const x = safeTrend.length <= 1 ? 0 : (index / (safeTrend.length - 1)) * 100;
-    const y = 90 - (item.count / max) * 74;
+    const x = safeTrend.length <= 1 ? padX : padX + (index / (safeTrend.length - 1)) * (chartWidth - padX * 2);
+    const y = padTop + plotHeight - (item.count / max) * plotHeight;
     return { ...item, x, y };
   });
   const polyline = points.map((point) => `${point.x},${point.y}`).join(" ");
-  const area = points.length ? `0,94 ${polyline} 100,94` : "";
+  const baseline = chartHeight - padBottom;
+  const area = points.length ? `${padX},${baseline} ${polyline} ${chartWidth - padX},${baseline}` : "";
 
   return (
     <section className="panel trend-panel">
@@ -377,11 +384,14 @@ function TrendPanel({ trend }) {
         <h2>近 7 日新增工作</h2>
         <span>工作量趨勢</span>
       </header>
-      <svg className="line-chart" viewBox="0 0 100 100" preserveAspectRatio="none">
-        {[20, 40, 60, 80].map((y) => <line key={y} x1="0" x2="100" y1={y} y2={y} />)}
+      <svg className="line-chart" viewBox={`0 0 ${chartWidth} ${chartHeight}`} preserveAspectRatio="xMidYMid meet">
+        {[0.25, 0.5, 0.75].map((ratio) => {
+          const y = padTop + plotHeight * ratio;
+          return <line key={ratio} x1={padX} x2={chartWidth - padX} y1={y} y2={y} />;
+        })}
         <polygon points={area} />
         <polyline points={polyline} />
-        {points.map((point) => <circle key={point.date} cx={point.x} cy={point.y} r="1.3" />)}
+        {points.map((point) => <circle key={point.date} cx={point.x} cy={point.y} r="3.2" />)}
       </svg>
       <div className="trend-labels">
         {safeTrend.map((item) => (
