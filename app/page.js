@@ -916,6 +916,74 @@ function getRecordField(data, column) {
   return "";
 }
 
+const SOP_LABELS = {
+  category: "\u5206\u985e",
+  status: "\u72c0\u614b",
+  enabled: "\u555f\u7528",
+  open: "\u958b\u555f\u6587\u4ef6",
+  noLink: "\u7121\u6587\u4ef6\u9023\u7d50",
+  loading: "\u8b80\u53d6 SOP \u6e05\u55ae\u4e2d...",
+  empty: "\u76ee\u524d\u6c92\u6709\u7b26\u5408\u689d\u4ef6\u7684 SOP \u6587\u4ef6",
+  untitled: "\u672a\u547d\u540d SOP",
+  uncategorized: "\u672a\u5206\u985e",
+  unknownStatus: "\u672a\u8a2d\u5b9a"
+};
+
+function getSopUrl(data) {
+  return getRecordField(data, {
+    keys: ["drive_url", "document_url", "file_url", "url", "link", "\u9023\u7d50", "\u6587\u4ef6"]
+  });
+}
+
+function isEnabledSopStatus(status) {
+  const value = String(status || "").toLowerCase();
+  return value.includes("active") || value.includes("\u555f\u7528") || value.includes("\u751f\u6548");
+}
+
+function SopCardList({ rows, loading }) {
+  if (loading) return <div className="sop-card-empty">{SOP_LABELS.loading}</div>;
+  if (!rows.length) return <div className="sop-card-empty">{SOP_LABELS.empty}</div>;
+
+  return (
+    <div className="sop-card-list">
+      {rows.map((row) => {
+        const data = row.data || {};
+        const id = getRecordField(data, { keys: ["sop_id", "SOP \u7de8\u865f", "\u7de8\u865f"] }) || row.record_key || "";
+        const name = getRecordField(data, { keys: ["sop_name", "\u540d\u7a31", "title"] }) || SOP_LABELS.untitled;
+        const category = getRecordField(data, { keys: ["category", "\u5206\u985e"] }) || SOP_LABELS.uncategorized;
+        const status = getRecordField(data, { keys: ["status", "\u72c0\u614b"] }) || SOP_LABELS.unknownStatus;
+        const url = getSopUrl(data);
+
+        return (
+          <article className="sop-card" key={row.id || row.record_key || id}>
+            <div className="sop-card-main">
+              <div className="sop-card-title-row">
+                <h2>{name}</h2>
+                <span className={`sop-status-badge ${isEnabledSopStatus(status) ? "is-enabled" : ""}`}>
+                  {isEnabledSopStatus(status) ? SOP_LABELS.enabled : status}
+                </span>
+              </div>
+              <div className="sop-card-meta">
+                <span>{id || "-"}</span>
+                <span className="sop-category-badge">{category}</span>
+              </div>
+            </div>
+            {url ? (
+              <a className="sop-open-button" href={String(url)} target="_blank" rel="noreferrer">
+                {SOP_LABELS.open}
+              </a>
+            ) : (
+              <button className="sop-open-button is-disabled" type="button" disabled>
+                {SOP_LABELS.noLink}
+              </button>
+            )}
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
 function DataSection({ config }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1040,26 +1108,30 @@ function DataSection({ config }) {
           ))}
         </div>
       ) : null}
-      <div className="records-table">
-        {loading ? (
-          <div className="empty">讀取資料中...</div>
-        ) : filteredRows.length === 0 ? (
-          <div className="empty">目前沒有資料。請先建立 sheet_records 並執行匯入。</div>
-        ) : (
-          <>
-            <div className="record-row record-head">
-              {columns.map((column) => <span key={column.label}>{column.label}</span>)}
-            </div>
-            {filteredRows.map((row) => (
-              <div className="record-row" key={row.id || row.record_key}>
-                {columns.map((column) => (
-                  <RecordValue key={column.label} value={getRecordField(row.data, column)} />
-                ))}
+      {config.source === "sop" ? (
+        <SopCardList rows={filteredRows} loading={loading} />
+      ) : (
+        <div className="records-table">
+          {loading ? (
+            <div className="empty">{"\u8b80\u53d6\u8cc7\u6599\u4e2d..."}</div>
+          ) : filteredRows.length === 0 ? (
+            <div className="empty">{"\u76ee\u524d\u6c92\u6709\u8cc7\u6599\u3002\u8acb\u5148\u5efa\u7acb sheet_records \u4e26\u57f7\u884c\u532f\u5165\u3002"}</div>
+          ) : (
+            <>
+              <div className="record-row record-head">
+                {columns.map((column) => <span key={column.label}>{column.label}</span>)}
               </div>
-            ))}
-          </>
-        )}
-      </div>
+              {filteredRows.map((row) => (
+                <div className="record-row" key={row.id || row.record_key}>
+                  {columns.map((column) => (
+                    <RecordValue key={column.label} value={getRecordField(row.data, column)} />
+                  ))}
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
       {showDocumentForm ? (
         <div className="modal-backdrop" onMouseDown={() => setShowDocumentForm(false)}>
           <form className="document-modal" onSubmit={submitDocument} onMouseDown={(event) => event.stopPropagation()}>
