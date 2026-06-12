@@ -113,12 +113,14 @@ const RECORD_COLUMN_CONFIGS = {
   ],
   contracts_mobile: [
     { label: "編號", keys: ["id"] },
-    { label: "門號", keys: ["phone_no", "phone", "mobile_no", "門號"] },
-    { label: "使用者", keys: ["user", "owner", "使用者"] },
-    { label: "部門", keys: ["department", "部門"] },
-    { label: "電信商", keys: ["carrier", "vendor", "電信商"] },
-    { label: "到期日", keys: ["end_date", "expire_date", "到期日"] },
+    { label: "電話號碼", keys: ["phone_no", "phone", "mobile_no", "門號"] },
+    { label: "簡碼", keys: ["short_code", "user", "user_name", "簡碼"] },
+    { label: "月租費", keys: ["amount", "月租費"] },
+    { label: "合約起日", keys: ["start_date", "合約起日"] },
+    { label: "合約迄日", keys: ["end_date", "expire_date", "到期日", "合約迄日"] },
     { label: "方案", keys: ["plan", "方案"] },
+    { label: "狀態", keys: ["status", "狀態"] },
+    { label: "負責人", keys: ["owner", "負責人"] },
     { label: "備註", keys: ["note", "備註"] }
   ],
   sop: [
@@ -1118,11 +1120,11 @@ function DataSection({ config }) {
             <div className="empty">{"\u76ee\u524d\u6c92\u6709\u8cc7\u6599\u3002\u8acb\u5148\u5efa\u7acb sheet_records \u4e26\u57f7\u884c\u532f\u5165\u3002"}</div>
           ) : (
             <>
-              <div className="record-row record-head">
+              <div className={`record-row record-head ${config.source === "contracts_mobile" ? "mobile-contract-row" : ""}`}>
                 {columns.map((column) => <span key={column.label}>{column.label}</span>)}
               </div>
               {filteredRows.map((row) => (
-                <div className="record-row" key={row.id || row.record_key}>
+                <div className={`record-row ${config.source === "contracts_mobile" ? "mobile-contract-row" : ""}`} key={row.id || row.record_key}>
                   {columns.map((column) => (
                     <RecordValue key={column.label} value={getRecordField(row.data, column)} />
                   ))}

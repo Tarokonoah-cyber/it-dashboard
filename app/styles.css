@@ -961,6 +961,10 @@ input {
   white-space: nowrap;
 }
 
+.mobile-contract-row {
+  grid-template-columns: 92px 140px 86px 100px 120px 120px minmax(280px, 1.6fr) 90px 90px minmax(150px, 1fr);
+}
+
 .record-head {
   background: rgba(148, 163, 184, 0.1);
   color: #aebed5;

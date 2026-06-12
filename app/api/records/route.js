@@ -84,12 +84,14 @@ const NORMALIZED_SOURCES = {
     toData: (row) => ({
       id: row.id,
       phone_no: row.phone_no,
+      short_code: row.user_name,
       user: row.user_name,
       department: row.department,
       carrier: row.carrier,
       plan: row.plan_name,
+      start_date: row.start_date,
       end_date: row.end_date,
-      amount: row.amount,
+      amount: row.amount === null || row.amount === undefined || row.amount === "" ? "" : `NT$${Number(row.amount).toLocaleString("en-US")}`,
       owner: row.owner,
       status: row.status,
       note: row.note
@@ -122,6 +124,7 @@ function assetSourceQuery(source) {
 function normalizedConfigFor(source) {
   if (source === "contracts") return NORMALIZED_SOURCES.contracts_software;
   if (source === "mobile_contracts") return NORMALIZED_SOURCES.contracts_mobile;
+  if (source === "contracts_mobile") return NORMALIZED_SOURCES.contracts_mobile;
   if (source === "sop_docs" || source === "soc_docs") return NORMALIZED_SOURCES.sop;
   if (source === "assets" || source.startsWith("assets_")) {
     return {
