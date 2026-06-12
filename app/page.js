@@ -149,6 +149,8 @@ const RECORD_COLUMN_CONFIGS = {
 
 const OPEN_STATUSES = new Set(["未完成", "待辦", "待處理", "處理中", "未開始", ""]);
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+const DOCUMENT_TYPES = ["零用金支付憑證", "支票請求單", "用印申請書", "借據", "採購單"];
+const COST_CENTERS = ["MIS", "ACC", "FO", "FB", "EO", "REC", "HK", "SEC", "HR", "ENG", "RV", "SPA"];
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -569,6 +571,7 @@ function QuickNotesPage() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [draggingId, setDraggingId] = useState("");
 
   async function load() {
     setLoading(true);
@@ -607,6 +610,26 @@ function QuickNotesPage() {
     await load();
   }
 
+  async function moveNote(fromId, toId) {
+    if (!fromId || !toId || fromId === toId) return;
+    const fromIndex = notes.findIndex((note) => note.id === fromId);
+    const toIndex = notes.findIndex((note) => note.id === toId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    const next = [...notes];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    setNotes(next);
+    try {
+      await api("/api/quick-notes/reorder", {
+        method: "POST",
+        body: JSON.stringify({ ids: next.map((note) => note.id) })
+      });
+    } catch (err) {
+      setError(err.message);
+      await load();
+    }
+  }
+
   return (
     <section className="section-page">
       <header className="section-head">
@@ -627,9 +650,27 @@ function QuickNotesPage() {
           <div className="empty">目前沒有備忘錄</div>
         ) : (
           notes.map((note) => (
-            <article className="quick-note-card" key={note.id}>
+            <article
+              className={`quick-note-card ${draggingId === note.id ? "dragging" : ""}`}
+              key={note.id}
+              draggable
+              onDragStart={(event) => {
+                setDraggingId(note.id);
+                event.dataTransfer.effectAllowed = "move";
+                event.dataTransfer.setData("text/plain", note.id);
+              }}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault();
+                moveNote(event.dataTransfer.getData("text/plain") || draggingId, note.id);
+                setDraggingId("");
+              }}
+              onDragEnd={() => setDraggingId("")}
+              title="拖拉可調整順序"
+            >
               <p>{note.content}</p>
               <div>
+                <span className="drag-handle">拖拉</span>
                 <button onClick={() => editNote(note)}>修改</button>
                 <button onClick={() => deleteNote(note.id)}>刪除</button>
               </div>
@@ -677,6 +718,18 @@ function DataSection({ config }) {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(config.presetKeyword || "");
   const [error, setError] = useState("");
+  const [department, setDepartment] = useState("全部");
+  const [showDocumentForm, setShowDocumentForm] = useState(false);
+  const [savingDocument, setSavingDocument] = useState(false);
+  const [documentForm, setDocumentForm] = useState({
+    date: "",
+    month: "",
+    document_type: DOCUMENT_TYPES[0],
+    cost_center: COST_CENTERS[0],
+    description: "",
+    total_amount: "",
+    note: ""
+  });
 
   async function load() {
     setLoading(true);
@@ -693,14 +746,26 @@ function DataSection({ config }) {
 
   useEffect(() => {
     setQuery(config.presetKeyword || "");
+    setDepartment("全部");
     load();
   }, [config.source, config.presetKeyword]);
 
+  const departments = useMemo(() => {
+    if (config.source !== "contacts") return [];
+    const values = rows
+      .map((row) => String(getRecordField(row.data, { keys: ["單位"] }) || "").trim())
+      .filter(Boolean);
+    return ["全部", ...Array.from(new Set(values))];
+  }, [config.source, rows]);
+
   const filteredRows = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    if (!keyword) return rows;
-    return rows.filter((row) => JSON.stringify(row.data || {}).toLowerCase().includes(keyword));
-  }, [rows, query]);
+    return rows.filter((row) => {
+      const matchDepartment = config.source !== "contacts" || department === "全部" || getRecordField(row.data, { keys: ["單位"] }) === department;
+      const matchKeyword = !keyword || JSON.stringify(row.data || {}).toLowerCase().includes(keyword);
+      return matchDepartment && matchKeyword;
+    });
+  }, [rows, query, department, config.source]);
 
   const columns = useMemo(() => {
     const configured = RECORD_COLUMN_CONFIGS[config.source];
@@ -714,6 +779,33 @@ function DataSection({ config }) {
     return seen.map((key) => ({ label: key, keys: [key] }));
   }, [config.source, filteredRows]);
 
+  async function submitDocument(event) {
+    event.preventDefault();
+    setSavingDocument(true);
+    setError("");
+    try {
+      await api("/api/records", {
+        method: "POST",
+        body: JSON.stringify({ source: "documents", ...documentForm })
+      });
+      setShowDocumentForm(false);
+      setDocumentForm({
+        date: "",
+        month: "",
+        document_type: DOCUMENT_TYPES[0],
+        cost_center: COST_CENTERS[0],
+        description: "",
+        total_amount: "",
+        note: ""
+      });
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSavingDocument(false);
+    }
+  }
+
   return (
     <section className="section-page">
       <header className="section-head">
@@ -721,13 +813,30 @@ function DataSection({ config }) {
           <h1>{config.title}</h1>
           <p>{config.hint}。若目前是空的，請先執行 Sheet 匯入 Supabase。</p>
         </div>
-        <button onClick={load}>刷新</button>
+        <div className="section-actions">
+          {config.source === "documents" && <button className="primary-action" onClick={() => setShowDocumentForm(true)}>＋新增</button>}
+          <button onClick={load}>刷新</button>
+        </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
       <div className="records-toolbar">
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋這個分頁..." />
         <span>{loading ? "讀取中..." : `${filteredRows.length} 筆`}</span>
       </div>
+      {departments.length ? (
+        <div className="department-filters">
+          {departments.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={department === item ? "active" : ""}
+              onClick={() => setDepartment(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+      ) : null}
       <div className="records-table">
         {loading ? (
           <div className="empty">讀取資料中...</div>
@@ -748,6 +857,80 @@ function DataSection({ config }) {
           </>
         )}
       </div>
+      {showDocumentForm ? (
+        <div className="modal-backdrop" onMouseDown={() => setShowDocumentForm(false)}>
+          <form className="document-modal" onSubmit={submitDocument} onMouseDown={(event) => event.stopPropagation()}>
+            <header>
+              <div>
+                <h2>新增送交單據</h2>
+                <p>新增後會立即寫入 Supabase 並刷新列表。</p>
+              </div>
+              <button type="button" onClick={() => setShowDocumentForm(false)}>×</button>
+            </header>
+            <div className="document-form-grid">
+              <label>
+                日期
+                <input
+                  type="date"
+                  value={documentForm.date}
+                  onChange={(event) => setDocumentForm((form) => ({ ...form, date: event.target.value, month: form.month || event.target.value.slice(0, 7) }))}
+                  required
+                />
+              </label>
+              <label>
+                月份
+                <input
+                  type="month"
+                  value={documentForm.month}
+                  onChange={(event) => setDocumentForm((form) => ({ ...form, month: event.target.value }))}
+                />
+              </label>
+              <label>
+                單據格式
+                <select value={documentForm.document_type} onChange={(event) => setDocumentForm((form) => ({ ...form, document_type: event.target.value }))}>
+                  {DOCUMENT_TYPES.map((item) => <option key={item}>{item}</option>)}
+                </select>
+              </label>
+              <label>
+                成本歸屬
+                <select value={documentForm.cost_center} onChange={(event) => setDocumentForm((form) => ({ ...form, cost_center: event.target.value }))}>
+                  {COST_CENTERS.map((item) => <option key={item}>{item}</option>)}
+                </select>
+              </label>
+              <label className="wide">
+                項目說明
+                <input
+                  value={documentForm.description}
+                  onChange={(event) => setDocumentForm((form) => ({ ...form, description: event.target.value }))}
+                  placeholder="例如：設備採購 / 用印 / 支票請款"
+                  required
+                />
+              </label>
+              <label>
+                總金額
+                <input
+                  inputMode="numeric"
+                  value={documentForm.total_amount}
+                  onChange={(event) => setDocumentForm((form) => ({ ...form, total_amount: event.target.value }))}
+                  placeholder="例如：110000"
+                />
+              </label>
+              <label className="wide">
+                備註
+                <textarea
+                  value={documentForm.note}
+                  onChange={(event) => setDocumentForm((form) => ({ ...form, note: event.target.value }))}
+                  placeholder="補充說明"
+                />
+              </label>
+            </div>
+            <footer>
+              <button type="button" onClick={() => setShowDocumentForm(false)}>取消</button>
+              <button className="primary-action" disabled={savingDocument} type="submit">{savingDocument ? "新增中..." : "新增"}</button>
+            </footer>
+          </form>
+        </div>
+      ) : null}
     </section>
   );
 }

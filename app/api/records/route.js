@@ -190,3 +190,87 @@ export async function GET(request) {
     return fail(error);
   }
 }
+
+function documentPayload(body) {
+  const docDate = String(body.date || "").trim();
+  const docMonth = String(body.month || "").trim() || docDate.slice(0, 7);
+  const documentType = String(body.document_type || "").trim();
+  const costCenter = String(body.cost_center || "").trim();
+  const description = String(body.description || "").trim();
+  const totalAmount = String(body.total_amount || "").trim();
+  const note = String(body.note || "").trim();
+  if (!docDate) throw new Error("請選擇日期");
+  if (!documentType) throw new Error("請選擇單據格式");
+  if (!costCenter) throw new Error("請選擇成本歸屬");
+  if (!description) throw new Error("請輸入項目說明");
+
+  return { docDate, docMonth, documentType, costCenter, description, totalAmount, note };
+}
+
+function documentRecordKey(payload) {
+  const stamp = new Date().toISOString().replace(/[-:.TZ]/g, "").slice(0, 14);
+  return `DOC-${payload.docDate.replace(/-/g, "")}-${stamp}`;
+}
+
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const source = String(body.source || "").trim();
+    if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄新增"), 400);
+
+    const payload = documentPayload(body);
+    const recordKey = documentRecordKey(payload);
+
+    try {
+      const rows = await supabaseRequest("submitted_documents", "select=*", {
+        method: "POST",
+        body: {
+          record_key: recordKey,
+          doc_date: payload.docDate,
+          doc_month: payload.docMonth,
+          document_type: payload.documentType,
+          cost_center: payload.costCenter,
+          description: payload.description,
+          total_amount: payload.totalAmount,
+          note: payload.note
+        }
+      });
+      return ok({ normalized: true, row: rows[0] });
+    } catch (error) {
+      if (!String(error.message || "").includes("Could not find the table")) throw error;
+    }
+
+    const rows = await supabaseRequest("sheet_records", "select=*", {
+      method: "POST",
+      body: {
+        source_key: "documents",
+        source_label: "送交單據紀錄",
+        sheet_name: "送交單據紀錄表",
+        record_key: recordKey,
+        data: {
+          日期: payload.docDate,
+          月份: payload.docMonth,
+          單據格式: payload.documentType,
+          成本歸屬: payload.costCenter,
+          項目說明: payload.description,
+          總金額: payload.totalAmount,
+          備註: payload.note,
+          最後更新時間: new Date().toISOString()
+        },
+        search_text: [
+          recordKey,
+          payload.docDate,
+          payload.docMonth,
+          payload.documentType,
+          payload.costCenter,
+          payload.description,
+          payload.totalAmount,
+          payload.note
+        ].filter(Boolean).join(" ")
+      }
+    });
+    return ok({ normalized: false, row: rows[0] });
+  } catch (error) {
+    return fail(error);
+  }
+}
