@@ -8,21 +8,59 @@ const SECTIONS = [
   { key: "work", icon: "🧾", label: "工作中心" },
   { key: "documents", icon: "🗂️", label: "送交單據紀錄" },
   { key: "contacts", icon: "📒", label: "通訊錄" },
-  { key: "assets", icon: "🖥️", label: "設備清單" },
-  { key: "contracts", icon: "📑", label: "合約總覽" },
+  {
+    key: "assets",
+    icon: "🖥️",
+    label: "設備清單",
+    children: [
+      { key: "assets_mountain_pc", label: "山上電腦" },
+      { key: "assets_downhill_pc", label: "山下電腦" },
+      { key: "assets_printer", label: "印表機" },
+      { key: "assets_north_ya", label: "北YA" },
+      { key: "assets_iptv", label: "IPTV" }
+    ]
+  },
+  {
+    key: "contracts",
+    icon: "📑",
+    label: "合約總覽",
+    children: [
+      { key: "contracts_software", label: "軟體合約" },
+      { key: "contracts_mobile", label: "行動電話約期" }
+    ]
+  },
   { key: "passwords", icon: "🔐", label: "密碼管理" },
   { key: "anydesk", icon: "🛠️", label: "AnyDesk List" },
-  { key: "sop", icon: "📚", label: "SOP 文件" },
+  {
+    key: "sop",
+    icon: "📚",
+    label: "SOP 文件",
+    children: [
+      { key: "sop_docs", label: "SOP" },
+      { key: "soc_docs", label: "SOC" }
+    ]
+  },
   { key: "settings", icon: "⚙️", label: "設定" }
 ];
+
+const FLAT_SECTIONS = SECTIONS.flatMap((item) => [item, ...(item.children || [])]);
 
 const DATA_SECTIONS = {
   documents: { title: "送交單據紀錄", source: "documents", hint: "原 Sheet：送交單據紀錄表" },
   contacts: { title: "通訊錄", source: "contacts", hint: "原 Sheet：通訊錄" },
   assets: { title: "設備清單", source: "assets", hint: "整合山上電腦、山下電腦、印表機、北YA、IPTV" },
+  assets_mountain_pc: { title: "山上電腦", source: "assets_mountain_pc", hint: "設備清單：山上電腦" },
+  assets_downhill_pc: { title: "山下電腦", source: "assets_downhill_pc", hint: "設備清單：山下電腦" },
+  assets_printer: { title: "印表機", source: "assets_printer", hint: "設備清單：印表機" },
+  assets_north_ya: { title: "北YA", source: "assets_north_ya", hint: "設備清單：北YA" },
+  assets_iptv: { title: "IPTV", source: "assets_iptv", hint: "設備清單：IPTV" },
   contracts: { title: "合約總覽", source: "contracts", hint: "原 Sheet：contracts / mobile_contracts" },
+  contracts_software: { title: "軟體合約", source: "contracts_software", hint: "合約總覽：軟體合約" },
+  contracts_mobile: { title: "行動電話約期", source: "contracts_mobile", hint: "合約總覽：行動電話約期" },
   anydesk: { title: "AnyDesk List", source: "anydesk", hint: "原 Sheet：ANYDESK LIST" },
-  sop: { title: "SOP 文件", source: "sop", hint: "原 Sheet：sop_documents" }
+  sop: { title: "SOP 文件", source: "sop", hint: "原 Sheet：sop_documents" },
+  sop_docs: { title: "SOP", source: "sop", hint: "SOP 文件：SOP", presetKeyword: "SOP" },
+  soc_docs: { title: "SOC", source: "sop", hint: "SOP 文件：SOC", presetKeyword: "SOC" }
 };
 
 const OPEN_STATUSES = new Set(["未完成", "待辦", "待處理", "處理中", "未開始", ""]);
@@ -83,6 +121,25 @@ function MetricCard({ label, value, delta, tone = "neutral", bars = [] }) {
 }
 
 function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
+  const [openGroups, setOpenGroups] = useState(() => new Set(["assets", "contracts", "sop"]));
+
+  function isGroupActive(item) {
+    return item.key === activeSection || item.children?.some((child) => child.key === activeSection);
+  }
+
+  function toggleGroup(item) {
+    if (collapsed) {
+      onNavigate(item.children?.[0]?.key || item.key);
+      return;
+    }
+    setOpenGroups((current) => {
+      const next = new Set(current);
+      if (next.has(item.key)) next.delete(item.key);
+      else next.add(item.key);
+      return next;
+    });
+  }
+
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="brand-row">
@@ -99,18 +156,39 @@ function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
       </div>
       {!collapsed && <div className="nav-label">主選單</div>}
       <nav className="side-nav">
-        {SECTIONS.map((item) => (
-          <button
-            key={item.key}
-            type="button"
-            className={`nav-item ${activeSection === item.key ? "active" : ""}`}
-            onClick={() => onNavigate(item.key)}
-            title={item.label}
-          >
-            <span className="nav-icon">{item.icon}</span>
-            {!collapsed && <span>{item.label}</span>}
-          </button>
-        ))}
+        {SECTIONS.map((item) => {
+          const hasChildren = Boolean(item.children?.length);
+          const expanded = openGroups.has(item.key);
+          const groupActive = isGroupActive(item);
+          return (
+            <div className="nav-group" key={item.key}>
+              <button
+                type="button"
+                className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
+                onClick={() => (hasChildren ? toggleGroup(item) : onNavigate(item.key))}
+                title={item.label}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                {!collapsed && <span>{item.label}</span>}
+                {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>›</span>}
+              </button>
+              {!collapsed && hasChildren && expanded && (
+                <div className="nav-children">
+                  {item.children.map((child) => (
+                    <button
+                      key={child.key}
+                      type="button"
+                      className={`nav-child ${activeSection === child.key ? "active" : ""}`}
+                      onClick={() => onNavigate(child.key)}
+                    >
+                      {child.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </nav>
       {!collapsed && (
         <div className="sidebar-foot">
@@ -506,7 +584,7 @@ function RecordValue({ value }) {
 function DataSection({ config }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(config.presetKeyword || "");
   const [error, setError] = useState("");
 
   async function load() {
@@ -523,8 +601,9 @@ function DataSection({ config }) {
   }
 
   useEffect(() => {
+    setQuery(config.presetKeyword || "");
     load();
-  }, [config.source]);
+  }, [config.source, config.presetKeyword]);
 
   const filteredRows = useMemo(() => {
     const keyword = query.trim().toLowerCase();
@@ -686,7 +765,7 @@ export default function Page() {
       <section className="main-area">
         <header className="app-header">
           <div>
-            <h2>{SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板"}</h2>
+            <h2>{FLAT_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板"}</h2>
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <span className="online-dot">System Online</span>

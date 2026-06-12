@@ -4,7 +4,14 @@ const SOURCE_ALIASES = {
   documents: ["documents"],
   contacts: ["contacts"],
   assets: ["assets_mountain_pc", "assets_downhill_pc", "assets_printer", "assets_north_ya", "assets_iptv"],
+  assets_mountain_pc: ["assets_mountain_pc"],
+  assets_downhill_pc: ["assets_downhill_pc"],
+  assets_printer: ["assets_printer"],
+  assets_north_ya: ["assets_north_ya"],
+  assets_iptv: ["assets_iptv"],
   contracts: ["contracts", "mobile_contracts"],
+  contracts_software: ["contracts"],
+  contracts_mobile: ["mobile_contracts"],
   anydesk: ["anydesk"],
   sop: ["sop"]
 };
