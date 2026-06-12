@@ -139,6 +139,7 @@ function normalizedConfigFor(source) {
         IP位置: row.ip_address,
         MAC位置: row.mac_address,
         主機型號: row.model,
+        螢幕型號: "",
         設備型號: row.model,
         型號: row.model,
         WINDOWS版本: row.windows_version,
@@ -148,7 +149,8 @@ function normalizedConfigFor(source) {
         盤點人員: row.inventory_staff,
         盤點時間: row.inventory_time,
         備註: row.note,
-        盤點備註: row.note
+        盤點備註: row.note,
+        最後更新: row.updated_at || row.inventory_time
       })
     };
   }
