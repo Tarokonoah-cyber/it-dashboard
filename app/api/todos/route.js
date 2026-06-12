@@ -1,6 +1,14 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 
-const OPEN_STATUSES = ["未完成", "待處理", "未開始", "處理中"];
+const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+
+function normalizeTodo(row) {
+  return {
+    ...row,
+    title: row.title || row.description || row.subject || "未命名待辦",
+    status: String(row.status || "未完成").trim()
+  };
+}
 
 export async function GET() {
   try {
@@ -8,7 +16,7 @@ export async function GET() {
       "todo_logs",
       "select=*&order=created_at.desc&limit=100"
     );
-    const todos = rows.filter((row) => OPEN_STATUSES.includes(row.status || "未完成"));
+    const todos = rows.map(normalizeTodo).filter((row) => !DONE_STATUSES.has(row.status));
     return ok(todos);
   } catch (error) {
     return fail(error);
@@ -33,7 +41,7 @@ export async function POST(request) {
       method: "POST",
       body: payload
     });
-    return ok(rows[0] || payload);
+    return ok(normalizeTodo(rows[0] || payload));
   } catch (error) {
     return fail(error);
   }
@@ -48,14 +56,14 @@ export async function PATCH(request) {
     const payload = {};
     if (body.title !== undefined) payload.title = String(body.title || "").trim();
     if (body.status !== undefined) payload.status = String(body.status || "").trim();
-    if (body.status === "已完成") payload.completed_at = new Date().toISOString();
+    if (DONE_STATUSES.has(payload.status)) payload.completed_at = new Date().toISOString();
     payload.updated_at = new Date().toISOString();
 
     const rows = await supabaseRequest("todo_logs", `id=eq.${encodeURIComponent(id)}&select=*`, {
       method: "PATCH",
       body: payload
     });
-    return ok(rows[0] || { id, ...payload });
+    return ok(normalizeTodo(rows[0] || { id, ...payload }));
   } catch (error) {
     return fail(error);
   }

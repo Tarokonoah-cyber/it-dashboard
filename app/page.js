@@ -2,32 +2,52 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const OLD_APP_URL =
-  process.env.NEXT_PUBLIC_APPS_SCRIPT_URL ||
-  "https://script.google.com/macros/s/AKfycbzJsb7rvaHg5PATAYjabulepQsFoY3BmeZPiH4fSsew4xchfX7gDkSF4Wj3kqvWwwoU/exec";
+const SECTIONS = [
+  { key: "dashboard", icon: "📊", label: "儀表板" },
+  { key: "quick-notes", icon: "📝", label: "快速備忘錄" },
+  { key: "work", icon: "🧾", label: "工作中心" },
+  { key: "documents", icon: "🗂️", label: "送交單據紀錄" },
+  { key: "contacts", icon: "📒", label: "通訊錄" },
+  { key: "assets", icon: "🖥️", label: "設備清單" },
+  { key: "contracts", icon: "📑", label: "合約總覽" },
+  { key: "passwords", icon: "🔐", label: "密碼管理" },
+  { key: "anydesk", icon: "🛠️", label: "AnyDesk List" },
+  { key: "sop", icon: "📚", label: "SOP 文件" },
+  { key: "settings", icon: "⚙️", label: "設定" }
+];
+
+const DATA_SECTIONS = {
+  documents: { title: "送交單據紀錄", source: "documents", hint: "原 Sheet：送交單據紀錄表" },
+  contacts: { title: "通訊錄", source: "contacts", hint: "原 Sheet：通訊錄" },
+  assets: { title: "設備清單", source: "assets", hint: "整合山上電腦、山下電腦、印表機、北YA、IPTV" },
+  contracts: { title: "合約總覽", source: "contracts", hint: "原 Sheet：contracts / mobile_contracts" },
+  anydesk: { title: "AnyDesk List", source: "anydesk", hint: "原 Sheet：ANYDESK LIST" },
+  sop: { title: "SOP 文件", source: "sop", hint: "原 Sheet：sop_documents" }
+};
+
+const OPEN_STATUSES = new Set(["未完成", "待辦", "待處理", "處理中", "未開始", ""]);
+const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
 async function api(path, options) {
   const response = await fetch(path, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(options && options.headers ? options.headers : {})
+      ...(options?.headers || {})
     },
     cache: "no-store"
   });
-  const data = await response.json();
-  if (!response.ok || !data.success) throw new Error(data.message || "操作失敗");
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
   return data.data;
 }
 
 function dateKey(value) {
-  if (!value) return "";
-  return String(value).slice(0, 10);
+  return value ? String(value).slice(0, 10) : "";
 }
 
 function formatDate(value) {
-  const key = dateKey(value);
-  return key || "-";
+  return dateKey(value) || "-";
 }
 
 function taipeiNowLabel() {
@@ -38,6 +58,10 @@ function taipeiNowLabel() {
     day: "2-digit",
     weekday: "long"
   }).format(new Date());
+}
+
+function isDoneStatus(status) {
+  return DONE_STATUSES.has(String(status || "").trim());
 }
 
 function MetricCard({ label, value, delta, tone = "neutral", bars = [] }) {
@@ -58,55 +82,42 @@ function MetricCard({ label, value, delta, tone = "neutral", bars = [] }) {
   );
 }
 
-function Sidebar() {
-  const links = [
-    ["📊", "儀表板", ""],
-    ["🗒️", "快速備忘錄", ""],
-    ["📝", "工作中心", ""],
-    ["🧾", "送交單據紀錄", "documents"],
-    ["📒", "通訊錄", "contacts"],
-    ["🖥️", "設備清單", "assets"],
-    ["📑", "合約總覽", "contracts"],
-    ["🔐", "密碼管理", "passwords"],
-    ["🛠️", "AnyDesk List", "anydesk"],
-    ["📚", "SOP 文件", "sop"],
-    ["🔔", "系統通知", "notifications"],
-    ["⚙️", "設定", "settings"]
-  ];
-
+function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="brand-row">
         <div className="brand-mark">IT</div>
-        <div className="brand-copy">
-          <h1>資訊室智慧平台</h1>
-          <p>Operations Control Center</p>
-        </div>
-        <button className="collapse-btn" aria-label="收合">‹</button>
+        {!collapsed && (
+          <div className="brand-copy">
+            <h1>資訊室智慧平台</h1>
+            <p>Operations Control Center</p>
+          </div>
+        )}
+        <button className="collapse-btn" aria-label="收合側邊欄" onClick={onToggle}>
+          {collapsed ? "›" : "‹"}
+        </button>
       </div>
-      <div className="nav-label">主選單</div>
+      {!collapsed && <div className="nav-label">主選單</div>}
       <nav className="side-nav">
-        {links.map(([icon, label, section], index) => {
-          const active = index === 0;
-          const href = section ? `${OLD_APP_URL}#${section}` : "#";
-          return (
-            <a
-              key={label}
-              className={`nav-item ${active ? "active" : ""}`}
-              href={href}
-              target={section ? "_blank" : undefined}
-              rel={section ? "noreferrer" : undefined}
-            >
-              <span className="nav-icon">{icon}</span>
-              <span>{label}</span>
-            </a>
-          );
-        })}
+        {SECTIONS.map((item) => (
+          <button
+            key={item.key}
+            type="button"
+            className={`nav-item ${activeSection === item.key ? "active" : ""}`}
+            onClick={() => onNavigate(item.key)}
+            title={item.label}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            {!collapsed && <span>{item.label}</span>}
+          </button>
+        ))}
       </nav>
-      <div className="sidebar-foot">
-        <span>Vercel Web App</span>
-        <span>Supabase Fast Dashboard</span>
-      </div>
+      {!collapsed && (
+        <div className="sidebar-foot">
+          <span>Vercel Web App</span>
+          <span>Supabase Fast Dashboard</span>
+        </div>
+      )}
     </aside>
   );
 }
@@ -192,7 +203,7 @@ function TodoPanel({ todos, onReload }) {
 function FocusPanel({ dashboard, onReload }) {
   const [syncing, setSyncing] = useState(false);
   const networkRooms = dashboard?.networkRooms || [];
-  const networkSummary = dashboard?.networkSummary || { pending: 0, done: 0, abnormal: 0 };
+  const networkSummary = dashboard?.networkSummary || { pending: 0, done: 0 };
   const today = new Date();
   const weekday = today.getDay();
   const phoneMap = {
@@ -222,13 +233,6 @@ function FocusPanel({ dashboard, onReload }) {
           <button onClick={refresh}>{syncing ? "同步中" : "刷新"}</button>
         </div>
       </header>
-      <div className="focus-card">
-        <div className="focus-head">
-          <b>今日串流</b>
-          <span>待測試 0 筆 · 已完成 0 筆</span>
-        </div>
-        <div className="network-empty">今天尚未收到房務 LINE 指派的網路測試房間。</div>
-      </div>
       <div className="network-live-card">
         <div className="network-live-head">
           <b>今日串流</b>
@@ -239,7 +243,6 @@ function FocusPanel({ dashboard, onReload }) {
             {networkRooms.map((room) => (
               <article key={room.id || room.room_no} className={`network-room-card ${room.status === "異常" ? "abnormal" : ""}`}>
                 <strong>{room.room_no}</strong>
-                <span>{room.status || "待測試"}</span>
               </article>
             ))}
           </div>
@@ -265,9 +268,9 @@ function FocusPanel({ dashboard, onReload }) {
             <small>supabase-fast</small>
           </div>
           <div className="change-grid">
-            <b><span>新增</span>{dashboard?.todayWorkCount || 0}</b>
-            <b><span>更新</span>0</b>
-            <b><span>完成</span>0</b>
+            <b><span>新增</span>{dashboard?.todayChangeSummary?.created || dashboard?.todayWorkCount || 0}</b>
+            <b><span>更新</span>{dashboard?.todayChangeSummary?.updated || 0}</b>
+            <b><span>完成</span>{dashboard?.todayChangeSummary?.completed || 0}</b>
           </div>
         </div>
       </div>
@@ -346,10 +349,10 @@ function WorkTable({ works }) {
           <div className="work-row" key={work.id}>
             <span>{work.id || "-"}</span>
             <span>{formatDate(work.date || work.created_at)}</span>
-            <span>{work.staff || "-"}</span>
+            <span>{work.staff || work.owner || "-"}</span>
             <strong>{work.title || work.description || "未命名工作"}</strong>
-            <span>{work.category || "待辦"}</span>
-            <b>{work.status || "未開始"}</b>
+            <span>{work.category || work.type || "待辦"}</span>
+            <b className={isDoneStatus(work.status) ? "status-done" : "status-pending"}>{work.status || "未開始"}</b>
           </div>
         ))}
       </div>
@@ -358,9 +361,10 @@ function WorkTable({ works }) {
 }
 
 function TrendPanel({ trend }) {
-  const max = Math.max(1, ...trend.map((item) => item.count));
-  const points = trend.map((item, index) => {
-    const x = trend.length <= 1 ? 0 : (index / (trend.length - 1)) * 100;
+  const safeTrend = trend?.length ? trend : [];
+  const max = Math.max(1, ...safeTrend.map((item) => item.count));
+  const points = safeTrend.map((item, index) => {
+    const x = safeTrend.length <= 1 ? 0 : (index / (safeTrend.length - 1)) * 100;
     const y = 90 - (item.count / max) * 74;
     return { ...item, x, y };
   });
@@ -380,7 +384,7 @@ function TrendPanel({ trend }) {
         {points.map((point) => <circle key={point.date} cx={point.x} cy={point.y} r="1.3" />)}
       </svg>
       <div className="trend-labels">
-        {trend.map((item) => (
+        {safeTrend.map((item) => (
           <span key={item.date}><b>{item.count}</b>{item.date.slice(5)}</span>
         ))}
       </div>
@@ -388,7 +392,252 @@ function TrendPanel({ trend }) {
   );
 }
 
+function QuickNotesPage() {
+  const [notes, setNotes] = useState([]);
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      setNotes(await api("/api/quick-notes"));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function addNote() {
+    const value = content.trim();
+    if (!value) return;
+    await api("/api/quick-notes", { method: "POST", body: JSON.stringify({ content: value }) });
+    setContent("");
+    await load();
+  }
+
+  async function editNote(note) {
+    const next = window.prompt("修改備忘錄", note.content || "");
+    if (!next || !next.trim()) return;
+    await api("/api/quick-notes", { method: "PATCH", body: JSON.stringify({ id: note.id, content: next.trim() }) });
+    await load();
+  }
+
+  async function deleteNote(id) {
+    if (!window.confirm("確定刪除這張備忘？")) return;
+    await api(`/api/quick-notes?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    await load();
+  }
+
+  return (
+    <section className="section-page">
+      <header className="section-head">
+        <div>
+          <h1>快速備忘錄</h1>
+          <p>輕量便利貼，資料儲存在 Supabase quick_notes。</p>
+        </div>
+      </header>
+      {error ? <div className="error-box">{error}</div> : null}
+      <div className="notes-composer">
+        <textarea value={content} onChange={(event) => setContent(event.target.value)} placeholder="臨時事項、待確認、小提醒..." />
+        <button onClick={addNote}>+ 新增備忘</button>
+      </div>
+      <div className="quick-notes-grid">
+        {loading ? (
+          <div className="empty">讀取備忘錄中...</div>
+        ) : notes.length === 0 ? (
+          <div className="empty">目前沒有備忘錄</div>
+        ) : (
+          notes.map((note) => (
+            <article className="quick-note-card" key={note.id}>
+              <p>{note.content}</p>
+              <div>
+                <button onClick={() => editNote(note)}>修改</button>
+                <button onClick={() => deleteNote(note.id)}>刪除</button>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
+function WorkCenterPage({ dashboard, onReload }) {
+  return (
+    <section className="section-page">
+      <header className="section-head">
+        <div>
+          <h1>工作中心</h1>
+          <p>Todo List 和最近工作紀錄已串接 Supabase。</p>
+        </div>
+        <button onClick={onReload}>刷新</button>
+      </header>
+      <div className="work-center-layout">
+        <TodoPanel todos={dashboard?.openTodos || []} onReload={onReload} />
+        <WorkTable works={dashboard?.recentWorks || []} />
+      </div>
+    </section>
+  );
+}
+
+function RecordValue({ value }) {
+  if (value === null || value === undefined || value === "") return <span className="muted">-</span>;
+  if (typeof value === "object") return <span>{JSON.stringify(value)}</span>;
+  return <span>{String(value)}</span>;
+}
+
+function DataSection({ config }) {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [error, setError] = useState("");
+
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await api(`/api/records?source=${encodeURIComponent(config.source)}`);
+      setRows(data.rows || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+  }, [config.source]);
+
+  const filteredRows = useMemo(() => {
+    const keyword = query.trim().toLowerCase();
+    if (!keyword) return rows;
+    return rows.filter((row) => JSON.stringify(row.data || {}).toLowerCase().includes(keyword));
+  }, [rows, query]);
+
+  const columns = useMemo(() => {
+    const seen = [];
+    for (const row of filteredRows.slice(0, 50)) {
+      Object.keys(row.data || {}).forEach((key) => {
+        if (!seen.includes(key) && seen.length < 8) seen.push(key);
+      });
+    }
+    return seen;
+  }, [filteredRows]);
+
+  return (
+    <section className="section-page">
+      <header className="section-head">
+        <div>
+          <h1>{config.title}</h1>
+          <p>{config.hint}。若目前是空的，請先執行 Sheet 匯入 Supabase。</p>
+        </div>
+        <button onClick={load}>刷新</button>
+      </header>
+      {error ? <div className="error-box">{error}</div> : null}
+      <div className="records-toolbar">
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋這個分頁..." />
+        <span>{loading ? "讀取中..." : `${filteredRows.length} 筆`}</span>
+      </div>
+      <div className="records-table">
+        {loading ? (
+          <div className="empty">讀取資料中...</div>
+        ) : filteredRows.length === 0 ? (
+          <div className="empty">目前沒有資料。請先建立 sheet_records 並執行匯入。</div>
+        ) : (
+          <>
+            <div className="record-row record-head">
+              {columns.map((column) => <span key={column}>{column}</span>)}
+            </div>
+            {filteredRows.map((row) => (
+              <div className="record-row" key={row.id || row.record_key}>
+                {columns.map((column) => (
+                  <RecordValue key={column} value={row.data?.[column]} />
+                ))}
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function PasswordsPage() {
+  return (
+    <section className="section-page">
+      <header className="section-head">
+        <div>
+          <h1>密碼管理</h1>
+          <p>這個頁面先不搬明文密碼。建議下一步做加密欄位與更嚴格權限。</p>
+        </div>
+      </header>
+      <div className="empty">
+        為了避免把公司帳密直接暴露在 Web 前端，密碼資料不會和一般 Sheet 資料一起匯入公開表。
+      </div>
+    </section>
+  );
+}
+
+function SettingsPage() {
+  return (
+    <section className="section-page">
+      <header className="section-head">
+        <div>
+          <h1>設定</h1>
+          <p>目前新平台使用 Vercel + Supabase。LINE webhook endpoint：/api/line/webhook。</p>
+        </div>
+      </header>
+      <div className="settings-grid">
+        <div className="mini-card"><b>前端入口</b><span>Vercel Dashboard</span></div>
+        <div className="mini-card"><b>資料庫</b><span>Supabase</span></div>
+        <div className="mini-card"><b>舊系統</b><span>Apps Script 保留備援與匯入工具</span></div>
+      </div>
+    </section>
+  );
+}
+
+function DashboardPage({ dashboard, onReload, error }) {
+  const trendBars = (dashboard?.workTrend || []).map((item) => item.count);
+  const todos = dashboard?.openTodos || [];
+  const works = dashboard?.recentWorks || [];
+
+  return (
+    <>
+      <section className="page-head">
+        <h1>儀表板</h1>
+        <p>保留今天最需要看的數字、待辦與最新紀錄，其他細節移到對應頁面。</p>
+      </section>
+      {error ? <div className="error-box">{error}</div> : null}
+      <section className="metrics-grid">
+        <MetricCard label="今日工作" value={dashboard?.todayWorkCount ?? 0} delta={dashboard?.deltas?.todayWork || "0"} bars={trendBars} />
+        <MetricCard label="本月工作" value={dashboard?.monthWorkCount ?? 0} delta={dashboard?.deltas?.monthWork || "0"} bars={trendBars} />
+        <MetricCard label="待處理" value={dashboard?.pendingCount ?? 0} delta={dashboard?.deltas?.pending || "0"} tone={(dashboard?.pendingCount || 0) > 0 ? "bad" : "good"} bars={trendBars} />
+        <MetricCard label="完成率" value={`${dashboard?.completionRate ?? 0}%`} delta={dashboard?.deltas?.completionRate || "OK"} tone="good" bars={trendBars} />
+      </section>
+      <section className="dashboard-layout">
+        <TodoPanel todos={todos} onReload={onReload} />
+        <FocusPanel dashboard={dashboard} onReload={onReload} />
+        <CalendarPanel />
+      </section>
+      <section className="bottom-layout">
+        <WorkTable works={works} />
+        <TrendPanel trend={dashboard?.workTrend || []} />
+      </section>
+    </>
+  );
+}
+
 export default function Page() {
+  const [activeSection, setActiveSection] = useState("dashboard");
+  const [collapsed, setCollapsed] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
 
@@ -405,46 +654,34 @@ export default function Page() {
     loadDashboard();
   }, []);
 
-  const trendBars = useMemo(() => (dashboard?.workTrend || []).map((item) => item.count), [dashboard]);
-  const todos = dashboard?.openTodos || [];
-  const works = dashboard?.recentWorks || [];
+  function renderSection() {
+    if (activeSection === "dashboard") return <DashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} />;
+    if (activeSection === "quick-notes") return <QuickNotesPage />;
+    if (activeSection === "work") return <WorkCenterPage dashboard={dashboard} onReload={loadDashboard} />;
+    if (activeSection === "passwords") return <PasswordsPage />;
+    if (activeSection === "settings") return <SettingsPage />;
+    const config = DATA_SECTIONS[activeSection];
+    if (config) return <DataSection config={config} />;
+    return <DashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} />;
+  }
 
   return (
-    <main className="app-shell">
-      <Sidebar />
+    <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
+      <Sidebar
+        activeSection={activeSection}
+        onNavigate={setActiveSection}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((value) => !value)}
+      />
       <section className="main-area">
         <header className="app-header">
           <div>
-            <h2>儀表板</h2>
+            <h2>{SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板"}</h2>
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <span className="online-dot">System Online</span>
         </header>
-
-        <section className="page-head">
-          <h1>儀表板</h1>
-          <p>保留今天最需要看的數字、待辦與最新紀錄，其他細節移到對應頁面。</p>
-        </section>
-
-        {error ? <div className="error-box">{error}</div> : null}
-
-        <section className="metrics-grid">
-          <MetricCard label="今日工作" value={dashboard?.todayWorkCount ?? 0} delta="▼ -3" bars={trendBars} />
-          <MetricCard label="本月工作" value={dashboard?.monthWorkCount ?? 0} delta="▲ +13" bars={trendBars} />
-          <MetricCard label="待處理" value={dashboard?.pendingCount ?? 0} delta="0" tone="bad" bars={trendBars} />
-          <MetricCard label="完成率" value={`${dashboard?.completionRate ?? 0}%`} delta="OK" tone="good" bars={trendBars} />
-        </section>
-
-        <section className="dashboard-layout">
-          <TodoPanel todos={todos} onReload={loadDashboard} />
-          <FocusPanel dashboard={dashboard} onReload={loadDashboard} />
-          <CalendarPanel />
-        </section>
-
-        <section className="bottom-layout">
-          <WorkTable works={works} />
-          <TrendPanel trend={dashboard?.workTrend || []} />
-        </section>
+        {renderSection()}
       </section>
     </main>
   );

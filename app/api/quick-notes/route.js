@@ -16,7 +16,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const content = String(body.content || "").trim();
-    if (!content) return fail(new Error("請輸入備忘內容"), 400);
+    if (!content) return fail(new Error("請輸入備忘錄內容"), 400);
 
     const maxRows = await supabaseRequest(
       "quick_notes",
@@ -39,7 +39,7 @@ export async function PATCH(request) {
     const id = String(body.id || "").trim();
     const content = String(body.content || "").trim();
     if (!id) return fail(new Error("缺少備忘錄 ID"), 400);
-    if (!content) return fail(new Error("備忘內容不可空白"), 400);
+    if (!content) return fail(new Error("備忘錄內容不能空白"), 400);
 
     const rows = await supabaseRequest("quick_notes", `id=eq.${encodeURIComponent(id)}&select=*`, {
       method: "PATCH",
