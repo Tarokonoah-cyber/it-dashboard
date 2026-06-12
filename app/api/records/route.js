@@ -10,10 +10,13 @@ const SOURCE_ALIASES = {
   assets_north_ya: ["assets_north_ya"],
   assets_iptv: ["assets_iptv"],
   contracts: ["contracts", "mobile_contracts"],
+  mobile_contracts: ["mobile_contracts"],
   contracts_software: ["contracts"],
   contracts_mobile: ["mobile_contracts"],
   anydesk: ["anydesk"],
-  sop: ["sop"]
+  sop: ["sop"],
+  sop_docs: ["sop"],
+  soc_docs: ["sop"]
 };
 
 export async function GET(request) {

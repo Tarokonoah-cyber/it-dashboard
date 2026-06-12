@@ -63,6 +63,90 @@ const DATA_SECTIONS = {
   soc_docs: { title: "SOC", source: "sop", hint: "SOP 文件：SOC", presetKeyword: "SOC" }
 };
 
+const RECORD_COLUMN_CONFIGS = {
+  contacts: [
+    { label: "單位", keys: ["單位"] },
+    { label: "職稱", keys: ["職稱", "Position"] },
+    { label: "姓名", keys: ["姓名", "Name"] },
+    { label: "分機", keys: ["分機 Extension"] },
+    { label: "辦公室", keys: ["辦公室專線 Office"] },
+    { label: "中華電信 *55", keys: ["中華電信 *55"] },
+    { label: "行動電話", keys: ["個人行動電話"] },
+    { label: "Email", keys: ["E-mail address", "Email"] }
+  ],
+  documents: [
+    { label: "日期", keys: ["日期"] },
+    { label: "月份", keys: ["月份"] },
+    { label: "單據格式", keys: ["單據格式"] },
+    { label: "成本歸屬", keys: ["成本歸屬"] },
+    { label: "項目說明", keys: ["項目說明"] },
+    { label: "總金額", keys: ["總金額"] },
+    { label: "備註", keys: ["備註"] },
+    { label: "最後更新", keys: ["最後更新時間"] }
+  ],
+  anydesk: [
+    { label: "設備名稱", keys: ["設備名稱"] },
+    { label: "AnyDesk ID", keys: ["AnyDesk ID"] },
+    { label: "密碼", keys: ["密碼"] },
+    { label: "備註", keys: ["備註"] },
+    { label: "最後確認", keys: ["最後確認時間"] }
+  ],
+  contracts: [
+    { label: "編號", keys: ["id"] },
+    { label: "合約名稱", keys: ["contract_name"] },
+    { label: "廠商", keys: ["vendor"] },
+    { label: "開始日", keys: ["start_date"] },
+    { label: "到期日", keys: ["end_date"] },
+    { label: "金額", keys: ["amount"] },
+    { label: "負責人", keys: ["owner"] },
+    { label: "狀態", keys: ["status"] }
+  ],
+  contracts_software: [
+    { label: "編號", keys: ["id"] },
+    { label: "合約名稱", keys: ["contract_name"] },
+    { label: "廠商", keys: ["vendor"] },
+    { label: "開始日", keys: ["start_date"] },
+    { label: "到期日", keys: ["end_date"] },
+    { label: "金額", keys: ["amount"] },
+    { label: "負責人", keys: ["owner"] },
+    { label: "狀態", keys: ["status"] }
+  ],
+  contracts_mobile: [
+    { label: "編號", keys: ["id"] },
+    { label: "門號", keys: ["phone_no", "phone", "mobile_no", "門號"] },
+    { label: "使用者", keys: ["user", "owner", "使用者"] },
+    { label: "部門", keys: ["department", "部門"] },
+    { label: "電信商", keys: ["carrier", "vendor", "電信商"] },
+    { label: "到期日", keys: ["end_date", "expire_date", "到期日"] },
+    { label: "方案", keys: ["plan", "方案"] },
+    { label: "備註", keys: ["note", "備註"] }
+  ],
+  sop: [
+    { label: "SOP 編號", keys: ["sop_id"] },
+    { label: "名稱", keys: ["sop_name"] },
+    { label: "分類", keys: ["category"] },
+    { label: "系統", keys: ["system_name"] },
+    { label: "部門", keys: ["department"] },
+    { label: "版本", keys: ["version"] },
+    { label: "狀態", keys: ["status"] },
+    { label: "負責人", keys: ["owner"] }
+  ],
+  assets_default: [
+    { label: "資產類型", keys: ["資產類型"] },
+    { label: "設備名稱", keys: ["設備名稱", "電腦名稱"] },
+    { label: "部門", keys: ["部門"] },
+    { label: "使用人", keys: ["使用人"] },
+    { label: "IP位置", keys: ["IP位置"] },
+    { label: "型號", keys: ["主機型號", "設備型號", "型號"] },
+    { label: "狀態", keys: ["狀態", "盤點狀態"] },
+    { label: "備註", keys: ["備註", "盤點備註"] }
+  ]
+};
+
+["assets", "assets_mountain_pc", "assets_downhill_pc", "assets_printer", "assets_north_ya", "assets_iptv"].forEach((source) => {
+  RECORD_COLUMN_CONFIGS[source] = RECORD_COLUMN_CONFIGS.assets_default;
+});
+
 const OPEN_STATUSES = new Set(["未完成", "待辦", "待處理", "處理中", "未開始", ""]);
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
@@ -581,6 +665,13 @@ function RecordValue({ value }) {
   return <span>{String(value)}</span>;
 }
 
+function getRecordField(data, column) {
+  for (const key of column.keys || [column.label]) {
+    if (data && data[key] !== undefined && data[key] !== null && data[key] !== "") return data[key];
+  }
+  return "";
+}
+
 function DataSection({ config }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -612,14 +703,16 @@ function DataSection({ config }) {
   }, [rows, query]);
 
   const columns = useMemo(() => {
+    const configured = RECORD_COLUMN_CONFIGS[config.source];
+    if (configured?.length) return configured;
     const seen = [];
     for (const row of filteredRows.slice(0, 50)) {
       Object.keys(row.data || {}).forEach((key) => {
         if (!seen.includes(key) && seen.length < 8) seen.push(key);
       });
     }
-    return seen;
-  }, [filteredRows]);
+    return seen.map((key) => ({ label: key, keys: [key] }));
+  }, [config.source, filteredRows]);
 
   return (
     <section className="section-page">
@@ -643,12 +736,12 @@ function DataSection({ config }) {
         ) : (
           <>
             <div className="record-row record-head">
-              {columns.map((column) => <span key={column}>{column}</span>)}
+              {columns.map((column) => <span key={column.label}>{column.label}</span>)}
             </div>
             {filteredRows.map((row) => (
               <div className="record-row" key={row.id || row.record_key}>
                 {columns.map((column) => (
-                  <RecordValue key={column} value={row.data?.[column]} />
+                  <RecordValue key={column.label} value={getRecordField(row.data, column)} />
                 ))}
               </div>
             ))}
