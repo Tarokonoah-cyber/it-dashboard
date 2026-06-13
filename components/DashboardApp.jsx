@@ -2174,8 +2174,16 @@ export default function Page() {
     loadDashboard();
   }, []);
 
+  function handleNavigate(sectionKey) {
+    if (sectionKey === "documents") {
+      window.location.href = "/documents";
+      return;
+    }
+    setActiveSection(sectionKey);
+  }
+
   function renderSection() {
-    if (activeSection === "dashboard") return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={setActiveSection} />;
+    if (activeSection === "dashboard") return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />;
     if (activeSection === "quick-notes") return <QuickNotesPage />;
     if (activeSection === "work") return <WorkCenterPage dashboard={dashboard} onReload={loadDashboard} />;
     if (activeSection === "passwords") return <PasswordsPage />;
@@ -2190,7 +2198,7 @@ export default function Page() {
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
       <Sidebar
         activeSection={activeSection}
-        onNavigate={setActiveSection}
+        onNavigate={handleNavigate}
         collapsed={collapsed}
         onToggle={() => setCollapsed((value) => !value)}
       />
