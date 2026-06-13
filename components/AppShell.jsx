@@ -7,7 +7,7 @@ export const APP_SECTIONS = [
   { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/?section=quick-notes" },
   { key: "work", icon: "🧾", label: "工作中心", href: "/?section=work" },
   { key: "documents", icon: "🗂️", label: "送交單據紀錄", href: "/documents" },
-  { key: "contacts", icon: "📒", label: "通訊錄", href: "/?section=contacts" },
+  { key: "contacts", icon: "📒", label: "通訊錄", href: "/contacts" },
   {
     key: "assets",
     icon: "🖥️",
@@ -32,7 +32,7 @@ export const APP_SECTIONS = [
     ]
   },
   { key: "passwords", icon: "🔐", label: "密碼索引", href: "/passwords" },
-  { key: "anydesk", icon: "🪪", label: "AnyDesk List", href: "/?section=anydesk" },
+  { key: "anydesk", icon: "🪪", label: "AnyDesk List", href: "/anydesk" },
   {
     key: "sop",
     icon: "📚",
