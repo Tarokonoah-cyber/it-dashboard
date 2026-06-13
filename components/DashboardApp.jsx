@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import PasswordsPage from "./PasswordsPage";
 import QuickNotesPage from "./QuickNotesPage";
+import WorkCenterPage from "./WorkCenterPage";
 
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
@@ -877,228 +878,6 @@ function DashboardTrendPanel({ trend }) {
   );
 }
 
-function WorkCenterPage() {
-  const L = {
-    pageTitle: "\u5de5\u4f5c\u4e2d\u5fc3",
-    pageDesc: "\u65b0\u589e\u3001\u67e5\u8a62\u3001\u7ba1\u7406\u6240\u6709\u5de5\u4f5c\u7d00\u9304\u3002\u9019\u88e1\u4e0d\u653e\u5100\u8868\u677f\u7d71\u8a08\u5361\u3002",
-    refresh: "\u5237\u65b0",
-    addTitle: "\uff0b\u65b0\u589e\u5de5\u4f5c\u7d00\u9304",
-    addDesc: "\u9069\u5408\u8a18\u9304\u81e8\u6642\u5b8c\u6210\u3001\u6c92\u6709\u5728 Todo List \u88e1\u7684\u5de5\u4f5c",
-    saving: "\u65b0\u589e\u4e2d...",
-    date: "\u65e5\u671f",
-    staff: "\u4eba\u54e1",
-    title: "\u5de5\u4f5c\u6a19\u984c",
-    titlePlaceholder: "\u4f8b\u5982\uff1a\u5354\u52a9\u6ac3\u53f0\u8655\u7406\u8b80\u5361\u6a5f",
-    category: "\u985e\u578b",
-    status: "\u72c0\u614b",
-    note: "\u5099\u8a3b",
-    notePlaceholder: "\u88dc\u5145\u8655\u7406\u5167\u5bb9\u3001\u5ee0\u5546\u3001\u623f\u865f\u6216\u5f8c\u7e8c\u4e8b\u9805",
-    recordsTitle: "\u5168\u90e8\u5de5\u4f5c\u7d00\u9304",
-    loading: "\u8b80\u53d6\u4e2d...",
-    loadingRecords: "\u8b80\u53d6\u5de5\u4f5c\u7d00\u9304\u4e2d...",
-    countUnit: "\u7b46",
-    clear: "\u6e05\u9664\u7be9\u9078",
-    all: "\u5168\u90e8",
-    empty: "\u76ee\u524d\u6c92\u6709\u7b26\u5408\u689d\u4ef6\u7684\u5de5\u4f5c\u7d00\u9304",
-    untitled: "\u672a\u547d\u540d\u5de5\u4f5c",
-    general: "\u4e00\u822c",
-    notStarted: "\u672a\u958b\u59cb"
-  };
-  const today = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Taipei",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(new Date());
-  const [works, setWorks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [filters, setFilters] = useState({ date: "", staff: "", status: "", category: "" });
-  const [form, setForm] = useState({
-    date: today,
-    staff: "Noah",
-    title: "",
-    category: WORK_CATEGORIES[0],
-    status: WORK_STATUSES[0],
-    note: ""
-  });
-
-  async function load() {
-    setLoading(true);
-    setError("");
-    try {
-      const params = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.set(key, value);
-      });
-      const suffix = params.toString() ? `?${params.toString()}` : "";
-      const data = await api(`/api/work-logs${suffix}`);
-      setWorks(data.rows || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    load();
-  }, [filters.date, filters.staff, filters.status, filters.category]);
-
-  const options = useMemo(() => {
-    const unique = (key) => Array.from(new Set(works.map((work) => String(work[key] || "").trim()).filter(Boolean)));
-    return {
-      staff: unique("staff"),
-      status: unique("status"),
-      category: unique("category")
-    };
-  }, [works]);
-
-  async function submitWork(event) {
-    event.preventDefault();
-    setSaving(true);
-    setError("");
-    try {
-      await api("/api/work-logs", {
-        method: "POST",
-        body: JSON.stringify(form)
-      });
-      setForm((current) => ({ ...current, title: "", note: "" }));
-      await load();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function clearFilters() {
-    setFilters({ date: "", staff: "", status: "", category: "" });
-  }
-
-  return (
-    <section className="section-page work-management-page">
-      <header className="section-head">
-        <div>
-          <h1>{L.pageTitle}</h1>
-          <p>{L.pageDesc}</p>
-        </div>
-        <div className="work-head-actions">
-          <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>老闆 KPI 月報</button>
-          <button onClick={load}>{L.refresh}</button>
-        </div>
-      </header>
-      {error ? <div className="error-box">{error}</div> : null}
-
-      <form className="work-entry-panel" onSubmit={submitWork}>
-        <header>
-          <div>
-            <h2>{L.addTitle}</h2>
-            <span>{L.addDesc}</span>
-          </div>
-          <button className="primary-action" disabled={saving} type="submit">
-            {saving ? L.saving : L.addTitle}
-          </button>
-        </header>
-        <div className="work-entry-grid">
-          <label>
-            {L.date}
-            <input type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
-          </label>
-          <label>
-            {L.staff}
-            <input value={form.staff} onChange={(event) => setForm((current) => ({ ...current, staff: event.target.value }))} placeholder="Noah / Urza" required />
-          </label>
-          <label className="wide">
-            {L.title}
-            <input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder={L.titlePlaceholder} required />
-          </label>
-          <label>
-            {L.category}
-            <select value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}>
-              {WORK_CATEGORIES.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            {L.status}
-            <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))}>
-              {WORK_STATUSES.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label className="wide">
-            {L.note}
-            <textarea value={form.note} onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))} placeholder={L.notePlaceholder} />
-          </label>
-        </div>
-      </form>
-
-      <section className="work-records-panel">
-        <header className="work-records-head">
-          <div>
-            <h2>{L.recordsTitle}</h2>
-            <span>{loading ? L.loading : `${works.length} ${L.countUnit}`}</span>
-          </div>
-          <button onClick={clearFilters}>{L.clear}</button>
-        </header>
-        <div className="work-filters">
-          <label>
-            {L.date}
-            <input type="date" value={filters.date} onChange={(event) => setFilters((current) => ({ ...current, date: event.target.value }))} />
-          </label>
-          <label>
-            {L.status}
-            <select value={filters.status} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}>
-              <option value="">{L.all}</option>
-              {options.status.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            {L.staff}
-            <select value={filters.staff} onChange={(event) => setFilters((current) => ({ ...current, staff: event.target.value }))}>
-              <option value="">{L.all}</option>
-              {options.staff.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            {L.category}
-            <select value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
-              <option value="">{L.all}</option>
-              {options.category.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-        </div>
-        <div className="full-work-table">
-          <div className="full-work-row head">
-            <span>{L.date}</span>
-            <span>{L.staff}</span>
-            <span>{L.title}</span>
-            <span>{L.category}</span>
-            <span>{L.status}</span>
-            <span>{L.note}</span>
-          </div>
-          {loading ? (
-            <div className="empty">{L.loadingRecords}</div>
-          ) : works.length === 0 ? (
-            <div className="empty">{L.empty}</div>
-          ) : (
-            works.map((work) => (
-              <div className="full-work-row" key={work.id}>
-                <span>{formatDate(work.date || work.created_at)}</span>
-                <span>{work.staff || "-"}</span>
-                <strong>{work.title || L.untitled}</strong>
-                <span>{work.category || L.general}</span>
-                <b className={isDoneStatus(work.status) ? "status-done" : "status-pending"}>{work.status || L.notStarted}</b>
-                <span>{work.note || "-"}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-    </section>
-  );
-}
-
 function RecordValue({ value }) {
   if (value === null || value === undefined || value === "") return <span className="muted">-</span>;
   if (typeof value === "object") return <span>{JSON.stringify(value)}</span>;
@@ -1869,6 +1648,10 @@ export default function Page() {
       window.location.replace("/quick-notes");
       return;
     }
+    if (requestedSection === "work") {
+      window.location.replace("/work");
+      return;
+    }
     if (requestedSection === "documents") {
       window.location.replace("/documents");
       return;
@@ -1901,6 +1684,10 @@ export default function Page() {
   function handleNavigate(sectionKey) {
     if (sectionKey === "quick-notes") {
       window.location.href = "/quick-notes";
+      return;
+    }
+    if (sectionKey === "work") {
+      window.location.href = "/work";
       return;
     }
     if (sectionKey === "documents") {
