@@ -2155,8 +2155,17 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
   );
 }
 
+function getInitialSection() {
+  if (typeof window === "undefined") return "dashboard";
+  const requestedSection = new URLSearchParams(window.location.search).get("section");
+  if (!requestedSection || requestedSection === "documents" || requestedSection === "boss-kpi" || requestedSection === "kpi") {
+    return "dashboard";
+  }
+  return FLAT_SECTIONS.some((item) => item.key === requestedSection) ? requestedSection : "dashboard";
+}
+
 export default function Page() {
-  const [activeSection, setActiveSection] = useState("dashboard");
+  const [activeSection, setActiveSection] = useState(getInitialSection);
   const [collapsed, setCollapsed] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
@@ -2187,10 +2196,6 @@ export default function Page() {
     }
     if (requestedSection === "kpi") {
       window.location.replace("/boss-kpi");
-      return;
-    }
-    if (requestedSection === "work") {
-      window.location.replace("/");
       return;
     }
     if (FLAT_SECTIONS.some((item) => item.key === requestedSection)) {

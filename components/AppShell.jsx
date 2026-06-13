@@ -5,13 +5,14 @@ import { useMemo, useState } from "react";
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
   { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/?section=quick-notes" },
-  { key: "work", icon: "🧾", label: "工作中心", href: "/" },
+  { key: "work", icon: "🧾", label: "工作中心", href: "/?section=work" },
   { key: "documents", icon: "🗂️", label: "送交單據紀錄", href: "/documents" },
   { key: "contacts", icon: "📒", label: "通訊錄", href: "/?section=contacts" },
   {
     key: "assets",
     icon: "🖥️",
     label: "設備清單",
+    href: "/?section=assets",
     children: [
       { key: "assets_mountain_pc", label: "山上電腦", href: "/?section=assets_mountain_pc" },
       { key: "assets_downhill_pc", label: "山下電腦", href: "/?section=assets_downhill_pc" },
@@ -24,6 +25,7 @@ export const APP_SECTIONS = [
     key: "contracts",
     icon: "📑",
     label: "合約總覽",
+    href: "/?section=contracts",
     children: [
       { key: "contracts_software", label: "軟體合約", href: "/?section=contracts_software" },
       { key: "contracts_mobile", label: "行動電話約期", href: "/?section=contracts_mobile" }
@@ -35,6 +37,7 @@ export const APP_SECTIONS = [
     key: "sop",
     icon: "📚",
     label: "SOP 文件",
+    href: "/?section=sop",
     children: [
       { key: "sop_docs", label: "SOP", href: "/?section=sop_docs" },
       { key: "soc_docs", label: "SOC", href: "/?section=soc_docs" }
@@ -72,6 +75,10 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
   }
 
   function toggleGroup(item) {
+    if (item.href) {
+      navigateTo(item, onNavigate);
+      return;
+    }
     if (collapsed) {
       navigateTo(item.children?.[0] || item, onNavigate);
       return;
