@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import AppShell from "../../components/AppShell";
+
 const EMPTY = "未分類";
 const STATUS_FILTERS = ["待補金額", "待補部門", "待補單據內容", "有備註", "異常資料"];
 const DOCUMENT_TYPES = ["零用金支付憑證", "支票請求單", "用印申請書", "借據", "採購單"];
@@ -258,7 +260,8 @@ export default function DocumentsPage() {
   }
 
   return (
-    <main className="documents-page">
+    <AppShell activeSection="documents" title="送交單據紀錄">
+      <div className="documents-page">
       <header className="documents-header">
         <div>
           <h1>送交單據紀錄</h1>
@@ -352,6 +355,7 @@ export default function DocumentsPage() {
           saving={saving}
         />
       ) : null}
-    </main>
+      </div>
+    </AppShell>
   );
 }

@@ -6,6 +6,7 @@ const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
   { key: "quick-notes", icon: "📝", label: "快速備忘錄" },
   { key: "work", icon: "🧾", label: "工作中心" },
+  { key: "boss-kpi", icon: "📈", label: "工作 KPI" },
   { key: "documents", icon: "🗂️", label: "送交單據紀錄" },
   { key: "contacts", icon: "📒", label: "通訊錄" },
   {
@@ -2174,9 +2175,29 @@ export default function Page() {
     loadDashboard();
   }, []);
 
+  useEffect(() => {
+    const requestedSection = new URLSearchParams(window.location.search).get("section");
+    if (!requestedSection) return;
+    if (requestedSection === "documents") {
+      window.location.replace("/documents");
+      return;
+    }
+    if (requestedSection === "boss-kpi") {
+      window.location.replace("/boss-kpi");
+      return;
+    }
+    if (FLAT_SECTIONS.some((item) => item.key === requestedSection)) {
+      setActiveSection(requestedSection);
+    }
+  }, []);
+
   function handleNavigate(sectionKey) {
     if (sectionKey === "documents") {
       window.location.href = "/documents";
+      return;
+    }
+    if (sectionKey === "boss-kpi") {
+      window.location.href = "/boss-kpi";
       return;
     }
     setActiveSection(sectionKey);
@@ -2191,7 +2212,7 @@ export default function Page() {
     if (activeSection === "assets_mountain_pc") return <MountainComputerPage config={DATA_SECTIONS.assets_mountain_pc} />;
     const config = DATA_SECTIONS[activeSection];
     if (config) return <DataSection config={config} />;
-    return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={setActiveSection} />;
+    return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />;
   }
 
   return (
