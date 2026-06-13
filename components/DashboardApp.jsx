@@ -1988,6 +1988,14 @@ export default function Page() {
       window.location.replace("/passwords");
       return;
     }
+    if (requestedSection === "contacts") {
+      window.location.replace("/contacts");
+      return;
+    }
+    if (requestedSection === "anydesk") {
+      window.location.replace("/anydesk");
+      return;
+    }
     if (requestedSection === "boss-kpi") {
       window.location.replace("/boss-kpi");
       return;
@@ -2008,6 +2016,14 @@ export default function Page() {
     }
     if (sectionKey === "passwords") {
       window.location.href = "/passwords";
+      return;
+    }
+    if (sectionKey === "contacts") {
+      window.location.href = "/contacts";
+      return;
+    }
+    if (sectionKey === "anydesk") {
+      window.location.href = "/anydesk";
       return;
     }
     if (sectionKey === "boss-kpi") {
