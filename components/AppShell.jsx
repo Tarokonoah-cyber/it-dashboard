@@ -31,7 +31,7 @@ export const APP_SECTIONS = [
       { key: "contracts_mobile", label: "行動電話約期", href: "/?section=contracts_mobile" }
     ]
   },
-  { key: "passwords", icon: "🔐", label: "密碼索引", href: "/?section=passwords" },
+  { key: "passwords", icon: "🔐", label: "密碼索引", href: "/passwords" },
   { key: "anydesk", icon: "🪪", label: "AnyDesk List", href: "/?section=anydesk" },
   {
     key: "sop",
