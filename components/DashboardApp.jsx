@@ -2155,8 +2155,17 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
   );
 }
 
+function getInitialSection() {
+  if (typeof window === "undefined") return "dashboard";
+  const requestedSection = new URLSearchParams(window.location.search).get("section");
+  if (!requestedSection || requestedSection === "documents" || requestedSection === "boss-kpi" || requestedSection === "kpi") {
+    return "dashboard";
+  }
+  return FLAT_SECTIONS.some((item) => item.key === requestedSection) ? requestedSection : "dashboard";
+}
+
 export default function Page() {
-  const [activeSection, setActiveSection] = useState("dashboard");
+  const [activeSection, setActiveSection] = useState(getInitialSection);
   const [collapsed, setCollapsed] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
@@ -2174,9 +2183,33 @@ export default function Page() {
     loadDashboard();
   }, []);
 
+  useEffect(() => {
+    const requestedSection = new URLSearchParams(window.location.search).get("section");
+    if (!requestedSection) return;
+    if (requestedSection === "documents") {
+      window.location.replace("/documents");
+      return;
+    }
+    if (requestedSection === "boss-kpi") {
+      window.location.replace("/boss-kpi");
+      return;
+    }
+    if (requestedSection === "kpi") {
+      window.location.replace("/boss-kpi");
+      return;
+    }
+    if (FLAT_SECTIONS.some((item) => item.key === requestedSection)) {
+      setActiveSection(requestedSection);
+    }
+  }, []);
+
   function handleNavigate(sectionKey) {
     if (sectionKey === "documents") {
       window.location.href = "/documents";
+      return;
+    }
+    if (sectionKey === "boss-kpi") {
+      window.location.href = "/boss-kpi";
       return;
     }
     setActiveSection(sectionKey);
@@ -2191,7 +2224,7 @@ export default function Page() {
     if (activeSection === "assets_mountain_pc") return <MountainComputerPage config={DATA_SECTIONS.assets_mountain_pc} />;
     const config = DATA_SECTIONS[activeSection];
     if (config) return <DataSection config={config} />;
-    return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={setActiveSection} />;
+    return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />;
   }
 
   return (

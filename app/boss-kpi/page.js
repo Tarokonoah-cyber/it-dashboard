@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import AppShell from "../../components/AppShell";
+
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const OPEN_STATUSES = new Set(["未開始", "處理中", "延後", "未完成", "待處理"]);
 
@@ -339,7 +341,8 @@ export default function BossKpiPage() {
   }
 
   return (
-    <main className="boss-kpi-page kpi-page">
+    <AppShell activeSection="boss-kpi" title="工作 KPI">
+      <div className="boss-kpi-page kpi-page">
       <header className="boss-kpi-hero kpi-hero">
         <div>
           <button className="boss-back no-print" onClick={() => { window.location.href = "/"; }}>返回工作中心</button>
@@ -392,6 +395,7 @@ export default function BossKpiPage() {
 
       <FollowList rows={kpi.followList} />
       <RecordsTable rows={kpi.records} />
-    </main>
+      </div>
+    </AppShell>
   );
 }
