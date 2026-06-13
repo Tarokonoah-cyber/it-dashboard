@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
-  { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/?section=quick-notes" },
+  { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/quick-notes" },
   { key: "work", icon: "🧾", label: "工作中心", href: "/?section=work" },
   { key: "documents", icon: "🗂️", label: "送交單據紀錄", href: "/documents" },
   { key: "contacts", icon: "📒", label: "通訊錄", href: "/contacts" },
