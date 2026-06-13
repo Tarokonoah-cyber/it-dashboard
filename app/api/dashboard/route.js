@@ -1,4 +1,5 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { requireDashboardAuth } from "../../../lib/auth";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
@@ -26,7 +27,10 @@ function normalizeWork(row) {
   };
 }
 
-export async function GET() {
+export async function GET(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const today = todayTaipei();
     const [todoRows, workRows, networkRooms] = await Promise.all([

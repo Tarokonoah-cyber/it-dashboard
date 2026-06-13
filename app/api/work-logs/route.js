@@ -1,12 +1,13 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { requireDashboardAuth } from "../../../lib/auth";
 
 function normalizeWork(row) {
   return {
     ...row,
     title: row.title || row.description || row.subject || row.content || "Untitled work",
     staff: row.staff || row.owner || "",
-    category: row.category || row.type || "General",
-    status: row.status || "Done",
+    category: row.category || row.type || "其他",
+    status: row.status || "未開始",
     note: row.note || row.remark || ""
   };
 }
@@ -19,6 +20,9 @@ function makeWorkId(date) {
 }
 
 export async function GET(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const query = ["select=*&order=date.desc,updated_at.desc,created_at.desc&limit=1000"];
@@ -40,6 +44,9 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const date = String(body.date || todayTaipei()).trim();

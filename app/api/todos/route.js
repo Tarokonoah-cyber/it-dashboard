@@ -1,4 +1,5 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { requireDashboardAuth } from "../../../lib/auth";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
@@ -10,7 +11,10 @@ function normalizeTodo(row) {
   };
 }
 
-export async function GET() {
+export async function GET(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const rows = await supabaseRequest(
       "todo_logs",
@@ -24,6 +28,9 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const title = String(body.title || "").trim();
@@ -48,6 +55,9 @@ export async function POST(request) {
 }
 
 export async function PATCH(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const id = String(body.id || "").trim();
@@ -70,6 +80,9 @@ export async function PATCH(request) {
 }
 
 export async function DELETE(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = String(searchParams.get("id") || "").trim();
