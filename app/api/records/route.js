@@ -1,4 +1,5 @@
 import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
+import { requireDashboardAuth } from "../../../lib/auth";
 
 const SOURCE_ALIASES = {
   documents: ["documents"],
@@ -14,10 +15,94 @@ const SOURCE_ALIASES = {
   contracts_software: ["contracts"],
   contracts_mobile: ["mobile_contracts"],
   anydesk: ["anydesk"],
+  passwords: ["password_index"],
   sop: ["sop"],
   sop_docs: ["sop"],
   soc_docs: ["sop"]
 };
+
+const PASSWORD_INDEX_ITEMS = [
+  {
+    id: "booking-backoffice",
+    name: "Booking.com 後台",
+    category: "SaaS",
+    risk_level: "General",
+    description: "訂房平台後台入口，登入資訊請依 Vault 紀錄為準。",
+    owner: "IT",
+    login_url: "https://admin.booking.com/",
+    vault_provider: "Bitwarden",
+    vault_collection: "IT - General",
+    vault_item_url: "",
+    sop_url: "",
+    notes_public: "僅保留入口索引，不顯示帳密。"
+  },
+  {
+    id: "google-business-profile",
+    name: "Google Business Profile",
+    category: "SaaS",
+    risk_level: "General",
+    description: "Google 商家檔案管理入口，帳務與權限請至 Vault 查看。",
+    owner: "IT",
+    login_url: "https://business.google.com/",
+    vault_provider: "Bitwarden",
+    vault_collection: "IT - General",
+    vault_item_url: "",
+    sop_url: "",
+    notes_public: "僅保留入口索引，不顯示帳密。"
+  },
+  {
+    id: "main-nas",
+    name: "主力 NAS",
+    category: "NAS",
+    risk_level: "Critical",
+    description: "主要檔案服務，詳細連線資訊請至 Bitwarden 查看。",
+    owner: "IT",
+    login_url: "",
+    vault_provider: "Bitwarden",
+    vault_collection: "IT - Critical",
+    vault_item_url: "",
+    sop_url: "",
+    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+  },
+  {
+    id: "opera-db",
+    name: "Opera DB",
+    category: "Database",
+    risk_level: "Critical",
+    description: "飯店系統資料庫索引，詳細連線資訊請至 Bitwarden 查看。",
+    owner: "IT",
+    login_url: "",
+    vault_provider: "Bitwarden",
+    vault_collection: "IT - Critical",
+    vault_item_url: "",
+    sop_url: "",
+    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+  },
+  {
+    id: "fortigate-main-firewall",
+    name: "Fortigate Main Firewall",
+    category: "Network",
+    risk_level: "Critical",
+    description: "主要防火牆，詳細連線資訊請至 Bitwarden 查看。",
+    owner: "IT",
+    login_url: "",
+    vault_provider: "Bitwarden",
+    vault_collection: "IT - Critical",
+    vault_item_url: "",
+    sop_url: "",
+    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+  }
+];
+
+function passwordIndexRows() {
+  return PASSWORD_INDEX_ITEMS.map((item) => ({
+    id: item.id,
+    source_key: "passwords",
+    source_label: "密碼索引",
+    record_key: item.id,
+    data: item
+  }));
+}
 
 const NORMALIZED_SOURCES = {
   contacts: {
@@ -43,22 +128,25 @@ const NORMALIZED_SOURCES = {
     toData: (row) => ({
       日期: row.doc_date,
       月份: row.doc_month,
+      部門: row.department || row.cost_center,
+      單據內容: row.receipt_content || row.document_content || row.category || row.item_category,
       單據格式: row.document_type,
       成本歸屬: row.cost_center,
       供應商: row.vendor,
       項目說明: row.description,
       總金額: row.total_amount,
+      狀態: row.status,
       備註: row.note,
       最後更新時間: row.source_updated_at
     })
   },
   anydesk: {
     table: "anydesk_devices",
-    query: "select=*&order=device_name.asc&limit=1000",
+    query: "select=id,record_key,device_name,anydesk_id,note,last_checked_at&order=device_name.asc&limit=1000",
     toData: (row) => ({
       設備名稱: row.device_name,
       "AnyDesk ID": row.anydesk_id,
-      密碼: row.anydesk_password,
+      密碼: "需授權查看",
       備註: row.note,
       最後確認時間: row.last_checked_at
     })
@@ -168,11 +256,15 @@ function wrapNormalizedRows(source, rows, toData) {
 }
 
 export async function GET(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const source = String(searchParams.get("source") || "").trim();
     const sources = SOURCE_ALIASES[source];
     if (!sources) return fail(new Error("未知資料來源"), 400);
+    if (source === "passwords") return ok({ source, normalized: true, rows: passwordIndexRows() });
 
     const normalized = normalizedConfigFor(source);
     if (normalized) {
@@ -218,6 +310,9 @@ function documentRecordKey(payload) {
 }
 
 export async function POST(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const source = String(body.source || "").trim();

@@ -1,6 +1,10 @@
 import { fail, ok, supabaseRequest } from "../../../../lib/supabase-rest";
+import { requireDashboardAuth } from "../../../../lib/auth";
 
 export async function POST(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const ids = Array.isArray(body.ids) ? body.ids.map(String).filter(Boolean) : [];
