@@ -2186,6 +2186,14 @@ export default function Page() {
       window.location.replace("/boss-kpi");
       return;
     }
+    if (requestedSection === "kpi") {
+      window.location.replace("/boss-kpi");
+      return;
+    }
+    if (requestedSection === "work") {
+      window.location.replace("/");
+      return;
+    }
     if (FLAT_SECTIONS.some((item) => item.key === requestedSection)) {
       setActiveSection(requestedSection);
     }

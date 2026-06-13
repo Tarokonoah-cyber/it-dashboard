@@ -3,15 +3,15 @@
 import { useMemo, useState } from "react";
 
 export const APP_SECTIONS = [
-  { key: "dashboard", icon: "D", label: "儀表板", href: "/" },
-  { key: "quick-notes", icon: "N", label: "快速備忘錄", href: "/?section=quick-notes" },
-  { key: "work", icon: "W", label: "工作中心", href: "/?section=work" },
-  { key: "boss-kpi", icon: "K", label: "工作 KPI", href: "/boss-kpi" },
-  { key: "documents", icon: "R", label: "送交單據紀錄", href: "/documents" },
-  { key: "contacts", icon: "C", label: "通訊錄", href: "/?section=contacts" },
+  { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
+  { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/?section=quick-notes" },
+  { key: "work", icon: "🧾", label: "工作中心", href: "/" },
+  { key: "boss-kpi", icon: "📈", label: "工作 KPI", href: "/boss-kpi" },
+  { key: "documents", icon: "🗂️", label: "送交單據紀錄", href: "/documents" },
+  { key: "contacts", icon: "📒", label: "通訊錄", href: "/?section=contacts" },
   {
     key: "assets",
-    icon: "A",
+    icon: "🖥️",
     label: "設備清單",
     children: [
       { key: "assets_mountain_pc", label: "山上電腦", href: "/?section=assets_mountain_pc" },
@@ -23,25 +23,25 @@ export const APP_SECTIONS = [
   },
   {
     key: "contracts",
-    icon: "T",
+    icon: "📑",
     label: "合約總覽",
     children: [
       { key: "contracts_software", label: "軟體合約", href: "/?section=contracts_software" },
       { key: "contracts_mobile", label: "行動電話約期", href: "/?section=contracts_mobile" }
     ]
   },
-  { key: "passwords", icon: "P", label: "密碼索引", href: "/?section=passwords" },
-  { key: "anydesk", icon: "Y", label: "AnyDesk List", href: "/?section=anydesk" },
+  { key: "passwords", icon: "🔐", label: "密碼索引", href: "/?section=passwords" },
+  { key: "anydesk", icon: "🪪", label: "AnyDesk List", href: "/?section=anydesk" },
   {
     key: "sop",
-    icon: "S",
+    icon: "📚",
     label: "SOP 文件",
     children: [
       { key: "sop_docs", label: "SOP", href: "/?section=sop_docs" },
       { key: "soc_docs", label: "SOC", href: "/?section=soc_docs" }
     ]
   },
-  { key: "settings", icon: "G", label: "設定", href: "/?section=settings" }
+  { key: "settings", icon: "⚙️", label: "設定", href: "/?section=settings" }
 ];
 
 export const FLAT_APP_SECTIONS = APP_SECTIONS.flatMap((item) => [item, ...(item.children || [])]);
@@ -62,7 +62,7 @@ function navigateTo(item, onNavigate) {
     onNavigate(item.key, item);
     return;
   }
-  window.location.href = item.href || `/?section=${encodeURIComponent(item.key)}`;
+  window.location.href = item.href || "/";
 }
 
 function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
@@ -97,7 +97,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
             </div>
           )}
           <button className="collapse-btn" aria-label="切換側邊欄" onClick={onToggle}>
-            {collapsed ? ">" : "<"}
+            {collapsed ? "›" : "‹"}
           </button>
         </div>
         {!collapsed && <div className="nav-label">主選單</div>}
@@ -117,7 +117,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
               >
                 <span className="nav-icon">{item.icon}</span>
                 {!collapsed && <span>{item.label}</span>}
-                {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>v</span>}
+                {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>⌄</span>}
               </button>
               {!collapsed && hasChildren && expanded && (
                 <div className="nav-children">
