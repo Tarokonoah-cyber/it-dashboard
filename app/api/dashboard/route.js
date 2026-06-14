@@ -33,14 +33,32 @@ export async function GET(request) {
 
   try {
     const today = todayTaipei();
-    const [todoRows, workRows, networkRooms] = await Promise.all([
-      supabaseRequest("todo_logs", "select=*&order=created_at.desc&limit=500").catch(() => []),
-      supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=500").catch(() => []),
-      supabaseRequest(
+    let todoRows;
+    let workRows;
+    try {
+      [todoRows, workRows] = await Promise.all([
+        supabaseRequest("todo_logs", "select=*&order=created_at.desc&limit=500"),
+        supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=500")
+      ]);
+    } catch (error) {
+      console.error("[dashboard critical query error]", error);
+      return fail(new Error("Dashboard data failed to load"));
+    }
+
+    const warnings = [];
+    let networkRooms = [];
+    try {
+      networkRooms = await supabaseRequest(
         "network_test_rooms",
         `select=*&date=eq.${encodeURIComponent(today)}&order=room_no.asc`
-      ).catch(() => [])
-    ]);
+      );
+    } catch (error) {
+      console.error("[dashboard optional query error]", { source: "network_test_rooms", error });
+      warnings.push({
+        source: "network_test_rooms",
+        message: "Network rooms data failed to load"
+      });
+    }
 
     const todos = todoRows.map(normalizeTodo);
     const works = workRows.map(normalizeWork);
@@ -96,7 +114,8 @@ export async function GET(request) {
         monthWork: `+${monthWorks.length}`,
         pending: `${openTodos.length}`,
         completionRate: "OK"
-      }
+      },
+      warnings
     });
   } catch (error) {
     return fail(error);

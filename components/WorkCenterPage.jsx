@@ -137,7 +137,6 @@ export default function WorkCenterPage() {
       <header className="section-head">
         <div>
           <h1>{L.pageTitle}</h1>
-          <p>{L.pageDesc}</p>
         </div>
         <div className="work-head-actions">
           <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>老闆 KPI 月報</button>

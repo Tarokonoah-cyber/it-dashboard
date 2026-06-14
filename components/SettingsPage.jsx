@@ -6,7 +6,6 @@ export default function SettingsPage() {
       <header className="section-head">
         <div>
           <h1>設定</h1>
-          <p>目前新平台使用 Vercel + Supabase。LINE webhook endpoint：/api/line/webhook。</p>
         </div>
       </header>
       <div className="settings-grid">

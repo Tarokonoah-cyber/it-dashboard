@@ -110,7 +110,6 @@ export default function PasswordsPage() {
       <header className="section-head">
         <div>
           <h1>密碼索引與 Vault 入口</h1>
-          <p>搜尋系統、分類與負責人，真正密碼請回到 Bitwarden / KeePassXC 管理。</p>
         </div>
       </header>
 

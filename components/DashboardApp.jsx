@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const SECTIONS = [
@@ -68,6 +68,7 @@ const SOP_ROUTE_MAP = {
 };
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+const MAX_TODO_TITLE_LENGTH = 120;
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -216,10 +217,16 @@ function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
 function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
+  const todoInputRef = useRef(null);
 
   async function addTodo() {
+    if (!todoInputRef.current?.reportValidity()) return;
     const value = title.trim();
     if (!value) return;
+    if (value.length > MAX_TODO_TITLE_LENGTH) {
+      window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
+      return;
+    }
     setSaving(true);
     try {
       await api("/api/todos", {
@@ -244,6 +251,10 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   async function editTodo(row) {
     const next = window.prompt("修改待辦內容", row.title || "");
     if (!next || !next.trim()) return;
+    if (next.trim().length > MAX_TODO_TITLE_LENGTH) {
+      window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
+      return;
+    }
     await api("/api/todos", {
       method: "PATCH",
       body: JSON.stringify({ id: row.id, title: next.trim() })
@@ -268,9 +279,12 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       </header>
       <div className="todo-quick-add dashboard-todo-input">
         <input
+          ref={todoInputRef}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           onKeyDown={(event) => event.key === "Enter" && addTodo()}
+          maxLength={MAX_TODO_TITLE_LENGTH}
+          required
           placeholder="快速新增待辦..."
         />
       </div>
@@ -714,15 +728,6 @@ export default function Page() {
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <div className="app-header-actions">
-            <label className="global-search">
-              <span>⌕</span>
-              <input placeholder="搜尋工作、設備、事件..." />
-            </label>
-            <button className="icon-button" aria-label="通知">•</button>
-            <div className="user-chip">
-              <span>IT</span>
-              <b>Noah</b>
-            </div>
             <span className="online-dot">System Online</span>
           </div>
         </header>
