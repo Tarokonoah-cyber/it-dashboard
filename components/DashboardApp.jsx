@@ -1701,6 +1701,10 @@ export default function Page() {
       window.location.replace(SOP_ROUTE_MAP[requestedSection]);
       return;
     }
+    if (requestedSection === "settings") {
+      window.location.replace("/settings");
+      return;
+    }
     if (requestedSection === "boss-kpi") {
       window.location.replace("/boss-kpi");
       return;
@@ -1749,6 +1753,10 @@ export default function Page() {
     }
     if (SOP_ROUTE_MAP[sectionKey]) {
       window.location.href = SOP_ROUTE_MAP[sectionKey];
+      return;
+    }
+    if (sectionKey === "settings") {
+      window.location.href = "/settings";
       return;
     }
     if (sectionKey === "boss-kpi") {
