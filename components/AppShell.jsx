@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
@@ -58,16 +59,16 @@ export function taipeiNowLabel() {
   }).format(new Date());
 }
 
-function navigateTo(item, onNavigate) {
+function navigateTo(item, onNavigate, router) {
   if (!item) return;
   if (onNavigate) {
     onNavigate(item.key, item);
     return;
   }
-  window.location.href = item.href || "/";
+  router.push(item.href || "/");
 }
 
-function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
+function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }) {
   const [openGroups, setOpenGroups] = useState(() => new Set(["assets", "contracts", "sop"]));
 
   function isGroupActive(item) {
@@ -76,11 +77,11 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
 
   function toggleGroup(item) {
     if (item.href) {
-      navigateTo(item, onNavigate);
+      navigateTo(item, onNavigate, router);
       return;
     }
     if (collapsed) {
-      navigateTo(item.children?.[0] || item, onNavigate);
+      navigateTo(item.children?.[0] || item, onNavigate, router);
       return;
     }
     setOpenGroups((current) => {
@@ -118,7 +119,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
               <button
                 type="button"
                 className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
-                onClick={() => (hasChildren ? toggleGroup(item) : navigateTo(item, onNavigate))}
+                onClick={() => (hasChildren ? toggleGroup(item) : navigateTo(item, onNavigate, router))}
                 title={item.label}
               >
                 <span className="nav-icon">{item.icon}</span>
@@ -132,7 +133,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
                       key={child.key}
                       type="button"
                       className={`nav-child ${activeSection === child.key ? "active" : ""}`}
-                      onClick={() => navigateTo(child, onNavigate)}
+                      onClick={() => navigateTo(child, onNavigate, router)}
                     >
                       {child.label}
                     </button>
@@ -155,6 +156,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle }) {
 
 export default function AppShell({ activeSection = "dashboard", title, children, onNavigate }) {
   const [collapsed, setCollapsed] = useState(false);
+  const router = useRouter();
   const currentTitle = useMemo(
     () => title || FLAT_APP_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板",
     [activeSection, title]
@@ -167,6 +169,7 @@ export default function AppShell({ activeSection = "dashboard", title, children,
         onNavigate={onNavigate}
         collapsed={collapsed}
         onToggle={() => setCollapsed((value) => !value)}
+        router={router}
       />
       <section className="main-area">
         <header className="app-header">

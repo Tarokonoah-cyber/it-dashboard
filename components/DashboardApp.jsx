@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
@@ -575,6 +576,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
 }
 
 export default function Page() {
+  const router = useRouter();
   const [activeSection, setActiveSection] = useState("dashboard");
   const [collapsed, setCollapsed] = useState(false);
   const [dashboard, setDashboard] = useState(null);
@@ -651,47 +653,47 @@ export default function Page() {
 
   function handleNavigate(sectionKey) {
     if (sectionKey === "quick-notes") {
-      window.location.href = "/quick-notes";
+      router.push("/quick-notes");
       return;
     }
     if (sectionKey === "work") {
-      window.location.href = "/work";
+      router.push("/work");
       return;
     }
     if (sectionKey === "documents") {
-      window.location.href = "/documents";
+      router.push("/documents");
       return;
     }
     if (sectionKey === "passwords") {
-      window.location.href = "/passwords";
+      router.push("/passwords");
       return;
     }
     if (sectionKey === "contacts") {
-      window.location.href = "/contacts";
+      router.push("/contacts");
       return;
     }
     if (sectionKey === "anydesk") {
-      window.location.href = "/anydesk";
+      router.push("/anydesk");
       return;
     }
     if (ASSET_ROUTE_MAP[sectionKey]) {
-      window.location.href = ASSET_ROUTE_MAP[sectionKey];
+      router.push(ASSET_ROUTE_MAP[sectionKey]);
       return;
     }
     if (CONTRACT_ROUTE_MAP[sectionKey]) {
-      window.location.href = CONTRACT_ROUTE_MAP[sectionKey];
+      router.push(CONTRACT_ROUTE_MAP[sectionKey]);
       return;
     }
     if (SOP_ROUTE_MAP[sectionKey]) {
-      window.location.href = SOP_ROUTE_MAP[sectionKey];
+      router.push(SOP_ROUTE_MAP[sectionKey]);
       return;
     }
     if (sectionKey === "settings") {
-      window.location.href = "/settings";
+      router.push("/settings");
       return;
     }
     if (sectionKey === "boss-kpi" || sectionKey === "kpi") {
-      window.location.href = "/boss-kpi";
+      router.push("/boss-kpi");
       return;
     }
     setActiveSection(sectionKey);
