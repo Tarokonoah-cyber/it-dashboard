@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import AiCommandAssistant from "./AiCommandAssistant";
 
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
@@ -536,6 +537,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
         <p>掌握今日工作重點與最新進度。</p>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
+      <AiCommandAssistant />
 
       <section className="metrics-grid modern-metrics-grid">
         <MetricCard
