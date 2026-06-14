@@ -119,7 +119,7 @@ export default function AiCommandAssistant() {
     if (action.type === "create_todo") {
       return action.status === "created" ? (
         <div className="ai-chat-action-card success">
-          <b>\u5df2\u5efa\u7acb Todo</b>
+          <b>\u5df2\u65b0\u589e\u5f85\u8fa6</b>
           <span>{action.title || "\u672a\u53d6\u5f97\u6a19\u984c"}</span>
         </div>
       ) : null;
@@ -128,24 +128,27 @@ export default function AiCommandAssistant() {
     if (action.type === "calendar_unavailable") {
       return (
         <div className="ai-chat-action-card warn">
-          <b>calendar_unavailable</b>
-          <span>dashboard calendar \u5c1a\u672a\u6709\u5b89\u5168\u65b0\u589e API</span>
-          <span>\u6a19\u984c\uff1a{action.title || "-"}</span>
-          <span>\u65e5\u671f\uff1a{action.dateText || "\u5f85\u78ba\u8a8d"}</span>
-          <span>\u6642\u9593\uff1a{action.timeText || "\u5f85\u78ba\u8a8d"}</span>
-          {action.note ? <span>\u5099\u8a3b\uff1a{action.note}</span> : null}
+          <b>\u884c\u4e8b\u66c6\u5c1a\u672a\u63a5\u4e0a\u65b0\u589e\u529f\u80fd</b>
+          <span>\u76ee\u524d\u5100\u8868\u677f\u884c\u4e8b\u66c6\u5c1a\u672a\u652f\u63f4\u76f4\u63a5\u65b0\u589e\u3002</span>
         </div>
       );
     }
 
     if (action.type === "complete_work_item") {
-      return (
+      if (action.status === "completed") {
+        return (
+          <div className="ai-chat-action-card success">
+            <b>\u5df2\u6a19\u8a18\u5b8c\u6210</b>
+            <span>{action.title || "\u672a\u53d6\u5f97\u6a19\u984c"}</span>
+          </div>
+        );
+      }
+      return action.status === "not_found" || action.status === "ambiguous" || action.status === "failed" ? (
         <div className="ai-chat-action-card warn">
-          <b>unavailable</b>
-          <span>\u5de5\u4f5c\u7d00\u9304\u76ee\u524d\u6c92\u6709\u5b89\u5168 PATCH/update API</span>
-          {action.title ? <span>\u9805\u76ee\uff1a{action.title}</span> : null}
+          <b>\u5c1a\u672a\u6a19\u8a18\u5b8c\u6210</b>
+          <span>\u8acb\u78ba\u8a8d\u5de5\u4f5c\u6a19\u984c\u662f\u552f\u4e00\u5339\u914d\u3002</span>
         </div>
-      );
+      ) : null;
     }
 
     if (action.type === "analysis") return null;

@@ -57,7 +57,7 @@ function buildPrompt(message) {
     "navigate.href \u53ea\u80fd\u662f\u7ad9\u5167 allowlist \u8def\u5f91\uff1b\u4e0d\u53ef\u56de\u50b3\u5916\u90e8 URL\u3002",
     "create_todo \u53ea\u80fd\u7528\u65bc\u5efa\u7acb\u5f85\u8fa6\uff0c\u8f38\u51fa title \u8207\u9078\u586b note\uff0c\u4e0d\u8981\u8072\u7a31\u5df2\u6210\u529f\uff0cserver \u6703\u771f\u6b63\u57f7\u884c\u5f8c\u8986\u5beb\u56de\u8986\u3002",
     "calendar_unavailable \u7528\u65bc dashboard \u5167\u5efa\u884c\u4e8b\u66c6\u8acb\u6c42\uff0c\u56e0\u76ee\u524d\u6c92\u6709\u5b89\u5168\u65b0\u589e API\uff0c\u4e0d\u80fd\u8072\u7a31\u5df2\u52a0\u5165\u65e5\u66c6\u3002",
-    "complete_work_item \u7528\u65bc\u5b8c\u6210\u5de5\u4f5c\u9805\u76ee\u8acb\u6c42\uff0c\u6c92\u6709\u5b89\u5168\u66f4\u65b0 API \u6642\u53ea\u80fd\u56de unavailable\u3002",
+    "complete_work_item \u7528\u65bc\u5b8c\u6210\u5de5\u4f5c\u9805\u76ee\u8acb\u6c42\uff0c\u53ea\u80fd\u8f38\u51fa\u8981\u5339\u914d\u7684 title\uff0cserver \u6703\u78ba\u8a8d\u552f\u4e00\u5339\u914d\u5f8c\u624d\u66f4\u65b0\u3002",
     "analysis \u53ea\u80fd\u8acb server \u7528\u73fe\u6709 dashboard/work/todo \u8cc7\u6599\u7522\u751f\u6458\u8981\uff0c\u4e0d\u8981\u7de8\u9020\u6578\u5b57\u3002",
     "\u522a\u9664\u3001\u4fee\u6539\u3001\u66f4\u65b0\u3001\u6e05\u7a7a\u8cc7\u6599\u7b49 destructive intent \u4e00\u5f8b\u62d2\u7d55\u3002",
     "\u4e0d\u8981\u8981\u6c42\u6216\u63d0\u4f9b\u5bc6\u78bc\u3001API key\u3001env\u3001service role\u3001GEMINI_API_KEY\u3002",
@@ -148,7 +148,7 @@ async function createTodo(action) {
       }
     }
     return {
-      reply: `\u5df2\u65b0\u589e Todo\uff1a${todo.title}`,
+      reply: `\u5df2\u65b0\u589e\u5f85\u8fa6\uff1a${todo.title}`,
       action: {
         type: "create_todo",
         status: "created",
@@ -204,6 +204,36 @@ function formatTopCounts(counts) {
     .join("\u3001");
 }
 
+function normalizeMatchText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "");
+}
+
+function latinTokens(value) {
+  return String(value || "").toLowerCase().match(/[a-z0-9]+/g) || [];
+}
+
+function cjkChars(value) {
+  return Array.from(new Set((String(value || "").match(/[\u4e00-\u9fff]/g) || [])));
+}
+
+function isWorkMatch(query, work) {
+  const queryText = normalizeMatchText(query);
+  const titleText = normalizeMatchText(work?.title);
+  if (!queryText || !titleText) return false;
+  if (titleText.includes(queryText) || queryText.includes(titleText)) return true;
+
+  const titleSource = String(work?.title || "").toLowerCase();
+  const requiredLatinTokens = latinTokens(query);
+  if (requiredLatinTokens.some((token) => !titleSource.includes(token))) return false;
+
+  const requiredChars = cjkChars(query);
+  if (!requiredChars.length) return requiredLatinTokens.length > 0;
+  const matchedChars = requiredChars.filter((char) => titleText.includes(char)).length;
+  return matchedChars / requiredChars.length >= 0.75;
+}
+
 async function createAnalysis(action) {
   try {
     const data = await getAnalysisData();
@@ -253,7 +283,7 @@ async function createAnalysis(action) {
 
 function createCalendarUnavailable(action) {
   return {
-    reply: "calendar_unavailable\uff1adashboard calendar \u5c1a\u672a\u6709\u5b89\u5168\u65b0\u589e API\uff0c\u56e0\u6b64\u6211\u6c92\u6709\u76f4\u63a5\u5beb\u5165\u5167\u5efa\u884c\u4e8b\u66c6\u3002",
+    reply: "\u76ee\u524d\u5100\u8868\u677f\u884c\u4e8b\u66c6\u5c1a\u672a\u63a5\u4e0a\u65b0\u589e\u529f\u80fd\u3002",
     action: {
       type: "calendar_unavailable",
       title: action.title,
@@ -264,15 +294,58 @@ function createCalendarUnavailable(action) {
   };
 }
 
-function createWorkCompletionUnavailable(action) {
-  return {
-    reply: "\u76ee\u524d\u5de5\u4f5c\u7d00\u9304\u6c92\u6709\u5b89\u5168 PATCH/update API\uff0c\u56e0\u6b64\u6211\u6c92\u6709\u5c07\u4efb\u4f55\u5de5\u4f5c\u6a19\u8a18\u5b8c\u6210\u3002",
-    action: {
-      type: "complete_work_item",
-      status: "unavailable",
-      title: action.title || ""
+async function completeWorkItem(action) {
+  const query = String(action?.title || "").trim();
+  if (!query) {
+    return {
+      reply: "\u627e\u4e0d\u5230\u8981\u6a19\u8a18\u5b8c\u6210\u7684\u5de5\u4f5c\u9805\u76ee\uff0c\u8acb\u63d0\u4f9b\u66f4\u660e\u78ba\u7684\u6a19\u984c\u3002",
+      action: { type: "complete_work_item", status: "not_found", title: "" }
+    };
+  }
+
+  try {
+    const rows = await supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=500");
+    const matches = rows.map(normalizeWork).filter((work) => !isDone(work) && isWorkMatch(query, work));
+
+    if (matches.length === 0) {
+      return {
+        reply: `\u627e\u4e0d\u5230\u660e\u78ba\u5339\u914d\u7684\u5de5\u4f5c\uff1a${query}`,
+        action: { type: "complete_work_item", status: "not_found", title: query }
+      };
     }
-  };
+
+    if (matches.length > 1) {
+      return {
+        reply: `\u627e\u5230 ${matches.length} \u7b46\u53ef\u80fd\u5339\u914d\u7684\u5de5\u4f5c\uff0c\u8acb\u8f38\u5165\u66f4\u660e\u78ba\u7684\u6a19\u984c\u6216 ID\u3002`,
+        action: { type: "complete_work_item", status: "ambiguous", title: query }
+      };
+    }
+
+    const target = matches[0];
+    const updatedRows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(target.id)}&select=*`, {
+      method: "PATCH",
+      body: {
+        status: "\u5df2\u5b8c\u6210",
+        updated_at: new Date().toISOString()
+      }
+    });
+    const updated = normalizeWork(updatedRows[0] || { ...target, status: "\u5df2\u5b8c\u6210" });
+    return {
+      reply: `\u5df2\u5c07\u5de5\u4f5c\u6a19\u8a18\u5b8c\u6210\uff1a${updated.title}`,
+      action: {
+        type: "complete_work_item",
+        status: "completed",
+        title: updated.title,
+        id: updated.id || target.id
+      }
+    };
+  } catch (error) {
+    console.error("[ai-assistant complete_work_item error]", { name: error?.name || "Error" });
+    return {
+      reply: "\u76ee\u524d\u5c1a\u672a\u80fd\u5b89\u5168\u6a19\u8a18\u5de5\u4f5c\u5b8c\u6210\u3002",
+      action: { type: "complete_work_item", status: "failed", title: query }
+    };
+  }
 }
 
 async function executeAction(result) {
@@ -286,7 +359,7 @@ async function executeAction(result) {
 
   if (action.type === "create_todo") return createTodo(action);
   if (action.type === "calendar_unavailable") return createCalendarUnavailable(action);
-  if (action.type === "complete_work_item") return createWorkCompletionUnavailable(action);
+  if (action.type === "complete_work_item") return completeWorkItem(action);
   if (action.type === "analysis") return createAnalysis(action);
 
   return {

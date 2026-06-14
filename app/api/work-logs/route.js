@@ -80,3 +80,33 @@ export async function POST(request) {
     return fail(error);
   }
 }
+
+export async function PATCH(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
+  try {
+    const body = await request.json();
+    const id = String(body.id || "").trim();
+    const status = String(body.status || "").trim();
+    const allowedKeys = new Set(["id", "status"]);
+    const unsupportedKeys = Object.keys(body || {}).filter((key) => !allowedKeys.has(key));
+
+    if (!id) return fail(new Error("Work log id is required"), 400);
+    if (unsupportedKeys.length) return fail(new Error("Only id and status can be updated"), 400);
+    if (status !== "\u5df2\u5b8c\u6210") return fail(new Error("Only marking a single work item as completed is allowed"), 400);
+
+    const rows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(id)}&select=*`, {
+      method: "PATCH",
+      body: {
+        status: "\u5df2\u5b8c\u6210",
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    if (!rows.length) return fail(new Error("Work log not found"), 404);
+    return ok(normalizeWork(rows[0]));
+  } catch (error) {
+    return fail(error);
+  }
+}
