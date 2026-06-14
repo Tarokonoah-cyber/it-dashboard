@@ -37,10 +37,10 @@ export const APP_SECTIONS = [
     key: "sop",
     icon: "📚",
     label: "SOP 文件",
-    href: "/?section=sop",
+    href: "/sop",
     children: [
-      { key: "sop_docs", label: "SOP", href: "/?section=sop_docs" },
-      { key: "soc_docs", label: "SOC", href: "/?section=soc_docs" }
+      { key: "sop_docs", label: "SOP", href: "/sop/docs" },
+      { key: "soc_docs", label: "SOC", href: "/sop/soc" }
     ]
   },
   { key: "settings", icon: "⚙️", label: "設定", href: "/?section=settings" }
