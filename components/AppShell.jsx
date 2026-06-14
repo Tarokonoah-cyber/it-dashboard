@@ -25,10 +25,10 @@ export const APP_SECTIONS = [
     key: "contracts",
     icon: "📑",
     label: "合約總覽",
-    href: "/?section=contracts",
+    href: "/contracts",
     children: [
-      { key: "contracts_software", label: "軟體合約", href: "/?section=contracts_software" },
-      { key: "contracts_mobile", label: "行動電話約期", href: "/?section=contracts_mobile" }
+      { key: "contracts_software", label: "軟體合約", href: "/contracts/software" },
+      { key: "contracts_mobile", label: "行動電話約期", href: "/contracts/mobile" }
     ]
   },
   { key: "passwords", icon: "🔐", label: "密碼索引", href: "/passwords" },
