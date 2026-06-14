@@ -8,7 +8,7 @@ function normalizeWork(row) {
     staff: row.staff || row.owner || "",
     category: row.category || row.type || "其他",
     status: row.status || "未開始",
-    note: row.note || row.remark || ""
+    note: row.note || row.remark || row.description || ""
   };
 }
 
@@ -54,7 +54,7 @@ export async function POST(request) {
     const title = String(body.title || "").trim();
     const category = String(body.category || "General").trim();
     const status = String(body.status || "Done").trim();
-    const note = String(body.note || "").trim();
+    const description = String(body.description || body.note || "").trim();
 
     if (!date) return fail(new Error("Date is required"), 400);
     if (!staff) return fail(new Error("Staff is required"), 400);
@@ -69,7 +69,7 @@ export async function POST(request) {
         title,
         category,
         status,
-        note,
+        description,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
