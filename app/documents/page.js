@@ -265,7 +265,6 @@ export default function DocumentsPage() {
       <header className="documents-header">
         <div>
           <h1>送交單據紀錄</h1>
-          <p>原 Sheet：送交單據紀錄表</p>
         </div>
         <div className="documents-header-actions">
           <button className="primary" type="button" onClick={() => setShowForm(true)}>新增單據</button>

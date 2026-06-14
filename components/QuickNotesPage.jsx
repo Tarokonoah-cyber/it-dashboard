@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -23,6 +23,7 @@ export default function QuickNotesPage() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const contentRef = useRef(null);
   const [draggingId, setDraggingId] = useState("");
 
   async function load() {
@@ -42,6 +43,7 @@ export default function QuickNotesPage() {
   }, []);
 
   async function addNote() {
+    if (!contentRef.current?.reportValidity()) return;
     const value = content.trim();
     if (!value) return;
     if (value.length > MAX_QUICK_NOTE_LENGTH) {
@@ -105,12 +107,11 @@ export default function QuickNotesPage() {
       <header className="section-head">
         <div>
           <h1>快速備忘錄</h1>
-          <p>輕量便利貼，資料儲存在 Supabase quick_notes。</p>
         </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
       <div className="notes-composer">
-        <textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={MAX_QUICK_NOTE_LENGTH} placeholder="臨時事項、待確認、小提醒..." />
+        <textarea ref={contentRef} value={content} onChange={(event) => setContent(event.target.value)} maxLength={MAX_QUICK_NOTE_LENGTH} required placeholder="臨時事項、待確認、小提醒..." />
         <button onClick={addNote}>+ 新增備忘</button>
       </div>
       <div className="quick-notes-grid">

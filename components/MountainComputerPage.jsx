@@ -209,7 +209,6 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
             <h1>{config.title}</h1>
             <span className="count-badge">{loading ? "讀取中" : `${rows.length} 筆`}</span>
           </div>
-          <p>包含設備資產與盤點資訊。</p>
         </div>
         <button onClick={load}>刷新</button>
       </header>

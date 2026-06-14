@@ -197,11 +197,6 @@ export default function AppShell({ activeSection = "dashboard", title, children,
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <div className="app-header-actions">
-            <button className="icon-button" aria-label="通知">•</button>
-            <div className="user-chip">
-              <span>IT</span>
-              <b>Noah</b>
-            </div>
             <span className="online-dot">System Online</span>
           </div>
         </header>

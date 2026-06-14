@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const SECTIONS = [
@@ -217,8 +217,10 @@ function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
 function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
+  const todoInputRef = useRef(null);
 
   async function addTodo() {
+    if (!todoInputRef.current?.reportValidity()) return;
     const value = title.trim();
     if (!value) return;
     if (value.length > MAX_TODO_TITLE_LENGTH) {
@@ -277,10 +279,12 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       </header>
       <div className="todo-quick-add dashboard-todo-input">
         <input
+          ref={todoInputRef}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           onKeyDown={(event) => event.key === "Enter" && addTodo()}
           maxLength={MAX_TODO_TITLE_LENGTH}
+          required
           placeholder="快速新增待辦..."
         />
       </div>
@@ -521,7 +525,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
   const trendBars = (dashboard?.workTrend || []).map((item) => item.count);
   const todos = dashboard?.openTodos || [];
   const works = dashboard?.recentWorks || [];
-  const warnings = dashboard?.warnings || [];
   const completionRate = dashboard?.completionRate ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const totalCount = dashboard?.monthWorkCount ?? 0;
@@ -533,7 +536,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
         <p>掌握今日工作重點與最新進度。</p>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
-      {warnings.length ? <div className="error-box">{warnings.map((warning) => warning.message).join(" / ")}</div> : null}
 
       <section className="metrics-grid modern-metrics-grid">
         <MetricCard
@@ -726,15 +728,6 @@ export default function Page() {
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <div className="app-header-actions">
-            <label className="global-search">
-              <span>⌕</span>
-              <input placeholder="搜尋工作、設備、事件..." />
-            </label>
-            <button className="icon-button" aria-label="通知">•</button>
-            <div className="user-chip">
-              <span>IT</span>
-              <b>Noah</b>
-            </div>
             <span className="online-dot">System Online</span>
           </div>
         </header>

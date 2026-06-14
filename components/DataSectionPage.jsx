@@ -324,7 +324,6 @@ export default function DataSectionPage({ sectionKey }) {
       <header className="section-head">
         <div>
           <h1>{config.title}</h1>
-          <p>{config.hint}。若目前是空的，請先執行 Sheet 匯入 Supabase。</p>
         </div>
         <div className="section-actions">
           <button onClick={load}>刷新</button>
