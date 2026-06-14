@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AiCommandAssistant from "./AiCommandAssistant";
+
+const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
@@ -87,7 +89,7 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }
 
   function toggleGroup(item) {
     if (collapsed) {
-      navigateTo(item.children?.[0] || item, onNavigate, router);
+      onToggle();
       return;
     }
     toggleGroupOpen(item);
@@ -175,12 +177,26 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }
 }
 
 export default function AppShell({ activeSection = "dashboard", title, children, onNavigate }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const router = useRouter();
   const currentTitle = useMemo(
     () => title || FLAT_APP_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板",
     [activeSection, title]
   );
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (saved === "expanded") setCollapsed(false);
+    if (saved === "collapsed") setCollapsed(true);
+  }, []);
+
+  function toggleSidebar() {
+    setCollapsed((value) => {
+      const next = !value;
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next ? "collapsed" : "expanded");
+      return next;
+    });
+  }
 
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
@@ -188,7 +204,7 @@ export default function AppShell({ activeSection = "dashboard", title, children,
         activeSection={activeSection}
         onNavigate={onNavigate}
         collapsed={collapsed}
-        onToggle={() => setCollapsed((value) => !value)}
+        onToggle={toggleSidebar}
         router={router}
       />
       <section className="main-area">

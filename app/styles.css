@@ -2845,9 +2845,27 @@ body {
 }
 
 /* Sidebar collapsed repair */
+.app-shell {
+  grid-template-columns: 280px minmax(0, 1fr);
+  transition: grid-template-columns 0.2s ease;
+}
+
+.app-shell.sidebar-is-collapsed {
+  grid-template-columns: 80px minmax(0, 1fr);
+}
+
 .sidebar {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  max-height: 100vh;
+  padding: 18px 16px 16px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, #20364d 0%, #172a40 48%, #102137 100%),
+    radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.12), transparent 36%);
+  box-shadow: inset -1px 0 0 rgba(125, 211, 252, 0.08);
+  transition: width 0.2s ease, padding 0.2s ease;
 }
 
 .sidebar-header {
@@ -2865,12 +2883,12 @@ body {
 }
 
 .sidebar.collapsed {
-  width: 72px;
-  padding: 12px 10px 14px;
+  width: 80px;
+  padding: 14px 12px 16px;
 }
 
 .app-shell.sidebar-is-collapsed {
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 80px minmax(0, 1fr);
 }
 
 .sidebar.collapsed .sidebar-header {
@@ -2898,15 +2916,17 @@ body {
 
 .sidebar.collapsed .collapse-btn {
   position: absolute;
-  top: 18px;
-  right: -9px;
+  top: 16px;
+  right: -10px;
   z-index: 4;
-  width: 24px;
-  height: 28px;
+  width: 28px;
+  height: 30px;
   border-radius: 999px;
   font-size: 18px;
-  background: rgba(15, 31, 55, 0.98);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+  background: #2f88d8;
+  border-color: rgba(219, 234, 254, 0.36);
+  color: #eff6ff;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
 }
 
 .sidebar.collapsed .side-nav {
@@ -2932,9 +2952,9 @@ body {
 }
 
 .sidebar.collapsed .nav-item.active {
-  border: 1px solid rgba(96, 165, 250, 0.58);
-  background: rgba(37, 99, 235, 0.22);
-  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.05);
+  border: 1px solid rgba(96, 165, 250, 0.72);
+  background: rgba(56, 118, 176, 0.36);
+  box-shadow: inset 3px 0 0 #fb923c, 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .sidebar.collapsed .nav-icon {
@@ -2946,12 +2966,66 @@ body {
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
+  padding: 2px 2px 12px;
+  scrollbar-color: rgba(125, 211, 252, 0.36) rgba(15, 31, 55, 0.5);
 }
 
 .sidebar-foot {
   position: static;
   margin-top: auto;
   padding-top: 12px;
+}
+
+.sidebar:not(.collapsed) .brand-row {
+  grid-template-columns: 46px minmax(0, 1fr) 34px;
+  gap: 12px;
+}
+
+.sidebar:not(.collapsed) .collapse-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.22);
+}
+
+.sidebar:not(.collapsed) .nav-item {
+  border-radius: 8px;
+  min-height: 42px;
+  padding: 9px 10px;
+  color: #dce8f7;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.sidebar:not(.collapsed) .nav-item.active {
+  border-color: rgba(96, 165, 250, 0.5);
+  background: rgba(79, 117, 151, 0.36);
+  box-shadow: inset 3px 0 0 #fb923c;
+}
+
+.sidebar:not(.collapsed) .nav-item:hover {
+  background: rgba(80, 124, 163, 0.26);
+}
+
+.sidebar:not(.collapsed) .nav-children {
+  margin: 2px 0 8px 26px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.sidebar:not(.collapsed) .nav-child {
+  min-height: 32px;
+  border-radius: 0;
+  color: #c8d5e6;
+  padding: 7px 9px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sidebar:not(.collapsed) .nav-child.active {
+  color: #ffb45f;
+  background: rgba(73, 111, 146, 0.36);
+  box-shadow: inset 2px 0 0 #fb923c;
 }
 
 /* Boss KPI monthly report */
@@ -4074,6 +4148,82 @@ body {
   .dashboard-day-cell,
   .calendar-day {
     min-height: 68px;
+  }
+
+  .sidebar,
+  .sidebar.collapsed {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 78;
+    height: 100vh;
+    max-height: 100vh;
+    border-right: 1px solid rgba(96, 165, 250, 0.22);
+    border-bottom: 0;
+    overflow: hidden;
+    box-shadow: 18px 0 44px rgba(0, 0, 0, 0.34);
+  }
+
+  .sidebar {
+    width: min(286px, 86vw);
+    padding: 16px 14px;
+  }
+
+  .sidebar.collapsed {
+    width: 78px;
+    padding: 12px 10px;
+  }
+
+  .sidebar .brand-row,
+  .sidebar.collapsed .brand-row {
+    padding-bottom: 0;
+  }
+
+  .sidebar:not(.collapsed) .brand-row {
+    grid-template-columns: 44px minmax(0, 1fr) 34px;
+  }
+
+  .sidebar.collapsed .brand-row {
+    grid-template-columns: 44px;
+  }
+
+  .sidebar.collapsed .collapse-btn {
+    position: absolute;
+    top: 17px;
+    right: -10px;
+  }
+
+  .side-nav,
+  .sidebar.collapsed .side-nav {
+    display: grid;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 12px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .nav-group {
+    flex: initial;
+  }
+
+  .nav-item,
+  .nav-item.has-children,
+  .sidebar.collapsed .nav-item,
+  .sidebar.collapsed .nav-item.has-children {
+    width: 100%;
+  }
+
+  .sidebar.collapsed .nav-item,
+  .sidebar.collapsed .nav-item.has-children {
+    width: 44px;
+    min-width: 44px;
+    grid-template-columns: 44px;
+    justify-items: center;
+    padding: 0;
+  }
+
+  .main-area {
+    padding-left: 0;
   }
 }
 

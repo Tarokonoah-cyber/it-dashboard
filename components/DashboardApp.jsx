@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AiCommandAssistant from "./AiCommandAssistant";
 
+const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
+
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
   { key: "quick-notes", icon: "📝", label: "快速備忘錄" },
@@ -142,7 +144,7 @@ function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
 
   function toggleGroup(item) {
     if (collapsed) {
-      onNavigate(item.children?.[0]?.key || item.key);
+      onToggle();
       return;
     }
     setOpenGroups((current) => {
@@ -593,7 +595,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
 export default function Page() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("dashboard");
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
 
@@ -609,6 +611,20 @@ export default function Page() {
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (saved === "expanded") setCollapsed(false);
+    if (saved === "collapsed") setCollapsed(true);
+  }, []);
+
+  function toggleSidebar() {
+    setCollapsed((value) => {
+      const next = !value;
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next ? "collapsed" : "expanded");
+      return next;
+    });
+  }
 
   useEffect(() => {
     const requestedSection = new URLSearchParams(window.location.search).get("section");
@@ -720,7 +736,7 @@ export default function Page() {
         activeSection={activeSection}
         onNavigate={handleNavigate}
         collapsed={collapsed}
-        onToggle={() => setCollapsed((value) => !value)}
+        onToggle={toggleSidebar}
       />
       <section className="main-area">
         <header className="app-header">
