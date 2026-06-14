@@ -537,7 +537,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
         <p>掌握今日工作重點與最新進度。</p>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
-      <AiCommandAssistant />
 
       <section className="metrics-grid modern-metrics-grid">
         <MetricCard
@@ -597,6 +596,8 @@ export default function Page() {
   const [collapsed, setCollapsed] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
+  const [aiAssistantMinimized, setAiAssistantMinimized] = useState(false);
 
   async function loadDashboard() {
     setError("");
@@ -715,6 +716,11 @@ export default function Page() {
     setActiveSection(sectionKey);
   }
 
+  function openAiAssistant() {
+    setAiAssistantOpen(true);
+    setAiAssistantMinimized(false);
+  }
+
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
       <Sidebar
@@ -730,11 +736,20 @@ export default function Page() {
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <div className="app-header-actions">
+            <button className="ai-assistant-trigger" type="button" onClick={openAiAssistant}>
+              AI 助理
+            </button>
             <span className="online-dot">System Online</span>
           </div>
         </header>
         <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />
       </section>
+      <AiCommandAssistant
+        open={aiAssistantOpen}
+        minimized={aiAssistantMinimized}
+        onClose={() => setAiAssistantOpen(false)}
+        onToggleMinimize={() => setAiAssistantMinimized((value) => !value)}
+      />
     </main>
   );
 }
