@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
@@ -697,11 +697,6 @@ export default function Page() {
     setActiveSection(sectionKey);
   }
 
-  function renderSection() {
-    if (activeSection === "dashboard") return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />;
-    return <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />;
-  }
-
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
       <Sidebar
@@ -729,7 +724,7 @@ export default function Page() {
             <span className="online-dot">System Online</span>
           </div>
         </header>
-        {renderSection()}
+        <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />
       </section>
     </main>
   );
