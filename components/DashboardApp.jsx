@@ -68,6 +68,7 @@ const SOP_ROUTE_MAP = {
 };
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+const MAX_TODO_TITLE_LENGTH = 120;
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -220,6 +221,10 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   async function addTodo() {
     const value = title.trim();
     if (!value) return;
+    if (value.length > MAX_TODO_TITLE_LENGTH) {
+      window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
+      return;
+    }
     setSaving(true);
     try {
       await api("/api/todos", {
@@ -244,6 +249,10 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   async function editTodo(row) {
     const next = window.prompt("修改待辦內容", row.title || "");
     if (!next || !next.trim()) return;
+    if (next.trim().length > MAX_TODO_TITLE_LENGTH) {
+      window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
+      return;
+    }
     await api("/api/todos", {
       method: "PATCH",
       body: JSON.stringify({ id: row.id, title: next.trim() })
@@ -271,6 +280,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           onKeyDown={(event) => event.key === "Enter" && addTodo()}
+          maxLength={MAX_TODO_TITLE_LENGTH}
           placeholder="快速新增待辦..."
         />
       </div>
@@ -511,6 +521,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
   const trendBars = (dashboard?.workTrend || []).map((item) => item.count);
   const todos = dashboard?.openTodos || [];
   const works = dashboard?.recentWorks || [];
+  const warnings = dashboard?.warnings || [];
   const completionRate = dashboard?.completionRate ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const totalCount = dashboard?.monthWorkCount ?? 0;
@@ -522,6 +533,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
         <p>掌握今日工作重點與最新進度。</p>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
+      {warnings.length ? <div className="error-box">{warnings.map((warning) => warning.message).join(" / ")}</div> : null}
 
       <section className="metrics-grid modern-metrics-grid">
         <MetricCard

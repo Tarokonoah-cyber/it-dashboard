@@ -2,7 +2,11 @@ import "./styles.css";
 
 export const metadata = {
   title: "資訊室智慧平台",
-  description: "IT daily operations dashboard"
+  description: "IT daily operations dashboard",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default function RootLayout({ children }) {

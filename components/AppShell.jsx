@@ -75,21 +75,21 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }
     return item.key === activeSection || item.children?.some((child) => child.key === activeSection);
   }
 
-  function toggleGroup(item) {
-    if (item.href) {
-      navigateTo(item, onNavigate, router);
-      return;
-    }
-    if (collapsed) {
-      navigateTo(item.children?.[0] || item, onNavigate, router);
-      return;
-    }
+  function toggleGroupOpen(item) {
     setOpenGroups((current) => {
       const next = new Set(current);
       if (next.has(item.key)) next.delete(item.key);
       else next.add(item.key);
       return next;
     });
+  }
+
+  function toggleGroup(item) {
+    if (collapsed) {
+      navigateTo(item.children?.[0] || item, onNavigate, router);
+      return;
+    }
+    toggleGroupOpen(item);
   }
 
   return (
@@ -122,8 +122,27 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }
                 onClick={() => (hasChildren ? toggleGroup(item) : navigateTo(item, onNavigate, router))}
                 title={item.label}
               >
-                <span className="nav-icon">{item.icon}</span>
-                {!collapsed && <span>{item.label}</span>}
+                <span
+                  className="nav-icon"
+                  onClick={(event) => {
+                    if (!hasChildren) return;
+                    event.stopPropagation();
+                    navigateTo(item, onNavigate, router);
+                  }}
+                >
+                  {item.icon}
+                </span>
+                {!collapsed && (
+                  <span
+                    onClick={(event) => {
+                      if (!hasChildren) return;
+                      event.stopPropagation();
+                      navigateTo(item, onNavigate, router);
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                )}
                 {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>⌄</span>}
               </button>
               {!collapsed && hasChildren && expanded && (

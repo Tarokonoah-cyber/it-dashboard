@@ -3,6 +3,19 @@ import { requireDashboardAuth } from "../../../lib/auth";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
+const MAX_TODO_TITLE_LENGTH = 120;
+const MAX_TODO_TEXT_LENGTH = 1000;
+
+function validateTextLength(value, label, maxLength) {
+  const text = String(value || "").trim();
+  if (text.length > maxLength) {
+    const error = new Error(`${label} must be ${maxLength} characters or less`);
+    error.name = "ValidationError";
+    throw error;
+  }
+  return text;
+}
+
 function normalizeTodo(row) {
   return {
     ...row,
@@ -33,7 +46,9 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const title = String(body.title || "").trim();
+    const title = validateTextLength(body.title, "Todo title", MAX_TODO_TITLE_LENGTH);
+    if (body.description !== undefined) validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
+    if (body.note !== undefined) validateTextLength(body.note, "Todo note", MAX_TODO_TEXT_LENGTH);
     if (!title) return fail(new Error("請輸入待辦內容"), 400);
 
     const payload = {
@@ -50,7 +65,7 @@ export async function POST(request) {
     });
     return ok(normalizeTodo(rows[0] || payload));
   } catch (error) {
-    return fail(error);
+    return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
 
@@ -64,7 +79,12 @@ export async function PATCH(request) {
     if (!id) return fail(new Error("缺少 Todo ID"), 400);
 
     const payload = {};
-    if (body.title !== undefined) payload.title = String(body.title || "").trim();
+    if (body.title !== undefined) {
+      payload.title = validateTextLength(body.title, "Todo title", MAX_TODO_TITLE_LENGTH);
+      if (!payload.title) return fail(new Error("Todo title is required"), 400);
+    }
+    if (body.description !== undefined) payload.description = validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
+    if (body.note !== undefined) payload.note = validateTextLength(body.note, "Todo note", MAX_TODO_TEXT_LENGTH);
     if (body.status !== undefined) payload.status = String(body.status || "").trim();
     if (DONE_STATUSES.has(payload.status)) payload.completed_at = new Date().toISOString();
     payload.updated_at = new Date().toISOString();
@@ -75,7 +95,7 @@ export async function PATCH(request) {
     });
     return ok(normalizeTodo(rows[0] || { id, ...payload }));
   } catch (error) {
-    return fail(error);
+    return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
 

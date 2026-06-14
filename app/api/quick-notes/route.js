@@ -1,6 +1,23 @@
 import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 
+const MAX_QUICK_NOTE_LENGTH = 2000;
+
+function validateContent(value) {
+  const content = String(value || "").trim();
+  if (!content) {
+    const error = new Error("Quick note content is required");
+    error.name = "ValidationError";
+    throw error;
+  }
+  if (content.length > MAX_QUICK_NOTE_LENGTH) {
+    const error = new Error(`Quick note content must be ${MAX_QUICK_NOTE_LENGTH} characters or less`);
+    error.name = "ValidationError";
+    throw error;
+  }
+  return content;
+}
+
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
   if (authError) return authError;
@@ -22,7 +39,7 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const content = String(body.content || "").trim();
+    const content = validateContent(body.content);
     if (!content) return fail(new Error("請輸入備忘錄內容"), 400);
 
     const maxRows = await supabaseRequest(
@@ -36,7 +53,7 @@ export async function POST(request) {
     });
     return ok(rows[0]);
   } catch (error) {
-    return fail(error);
+    return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
 
@@ -47,7 +64,7 @@ export async function PATCH(request) {
   try {
     const body = await request.json();
     const id = String(body.id || "").trim();
-    const content = String(body.content || "").trim();
+    const content = validateContent(body.content);
     if (!id) return fail(new Error("缺少備忘錄 ID"), 400);
     if (!content) return fail(new Error("備忘錄內容不能空白"), 400);
 
@@ -57,7 +74,7 @@ export async function PATCH(request) {
     });
     return ok(rows[0] || { id, content });
   } catch (error) {
-    return fail(error);
+    return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
 

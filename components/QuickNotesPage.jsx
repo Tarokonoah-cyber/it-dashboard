@@ -16,6 +16,8 @@ async function api(path, options) {
   return data.data;
 }
 
+const MAX_QUICK_NOTE_LENGTH = 2000;
+
 export default function QuickNotesPage() {
   const [notes, setNotes] = useState([]);
   const [content, setContent] = useState("");
@@ -42,16 +44,34 @@ export default function QuickNotesPage() {
   async function addNote() {
     const value = content.trim();
     if (!value) return;
-    await api("/api/quick-notes", { method: "POST", body: JSON.stringify({ content: value }) });
-    setContent("");
-    await load();
+    if (value.length > MAX_QUICK_NOTE_LENGTH) {
+      setError(`Quick note content must be ${MAX_QUICK_NOTE_LENGTH} characters or less`);
+      return;
+    }
+    try {
+      setError("");
+      await api("/api/quick-notes", { method: "POST", body: JSON.stringify({ content: value }) });
+      setContent("");
+      await load();
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   async function editNote(note) {
     const next = window.prompt("修改備忘錄", note.content || "");
     if (!next || !next.trim()) return;
-    await api("/api/quick-notes", { method: "PATCH", body: JSON.stringify({ id: note.id, content: next.trim() }) });
-    await load();
+    if (next.trim().length > MAX_QUICK_NOTE_LENGTH) {
+      setError(`Quick note content must be ${MAX_QUICK_NOTE_LENGTH} characters or less`);
+      return;
+    }
+    try {
+      setError("");
+      await api("/api/quick-notes", { method: "PATCH", body: JSON.stringify({ id: note.id, content: next.trim() }) });
+      await load();
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   async function deleteNote(id) {
@@ -90,7 +110,7 @@ export default function QuickNotesPage() {
       </header>
       {error ? <div className="error-box">{error}</div> : null}
       <div className="notes-composer">
-        <textarea value={content} onChange={(event) => setContent(event.target.value)} placeholder="臨時事項、待確認、小提醒..." />
+        <textarea value={content} onChange={(event) => setContent(event.target.value)} maxLength={MAX_QUICK_NOTE_LENGTH} placeholder="臨時事項、待確認、小提醒..." />
         <button onClick={addNote}>+ 新增備忘</button>
       </div>
       <div className="quick-notes-grid">
