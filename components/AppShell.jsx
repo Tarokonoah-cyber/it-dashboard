@@ -12,13 +12,13 @@ export const APP_SECTIONS = [
     key: "assets",
     icon: "🖥️",
     label: "設備清單",
-    href: "/?section=assets",
+    href: "/assets",
     children: [
-      { key: "assets_mountain_pc", label: "山上電腦", href: "/?section=assets_mountain_pc" },
-      { key: "assets_downhill_pc", label: "山下電腦", href: "/?section=assets_downhill_pc" },
-      { key: "assets_printer", label: "印表機", href: "/?section=assets_printer" },
-      { key: "assets_north_ya", label: "北YA", href: "/?section=assets_north_ya" },
-      { key: "assets_iptv", label: "IPTV", href: "/?section=assets_iptv" }
+      { key: "assets_mountain_pc", label: "山上電腦", href: "/assets/mountain-pc" },
+      { key: "assets_downhill_pc", label: "山下電腦", href: "/assets/downhill-pc" },
+      { key: "assets_printer", label: "印表機", href: "/assets/printers" },
+      { key: "assets_north_ya", label: "北YA", href: "/assets/north-ya" },
+      { key: "assets_iptv", label: "IPTV", href: "/assets/iptv" }
     ]
   },
   {

@@ -4,7 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 
 const DATA_SECTION_CONFIGS = {
   contacts: { title: "通訊錄", source: "contacts", hint: "原 Sheet：通訊錄" },
-  anydesk: { title: "AnyDesk List", source: "anydesk", hint: "原 Sheet：ANYDESK LIST" }
+  anydesk: { title: "AnyDesk List", source: "anydesk", hint: "原 Sheet：ANYDESK LIST" },
+  assets: { title: "設備清單", source: "assets", hint: "整合山上電腦、山下電腦、印表機、北YA、IPTV" },
+  assets_downhill_pc: { title: "山下電腦", source: "assets_downhill_pc", hint: "設備清單：山下電腦" },
+  assets_printer: { title: "印表機", source: "assets_printer", hint: "設備清單：印表機" },
+  assets_north_ya: { title: "北YA", source: "assets_north_ya", hint: "設備清單：北YA" },
+  assets_iptv: { title: "IPTV", source: "assets_iptv", hint: "設備清單：IPTV" }
 };
 
 const RECORD_COLUMN_CONFIGS = {
@@ -25,8 +30,22 @@ const RECORD_COLUMN_CONFIGS = {
     { label: "密碼", keys: ["密碼"] },
     { label: "備註", keys: ["備註"] },
     { label: "最後確認", keys: ["最後確認時間"] }
+  ],
+  assets_default: [
+    { label: "資產類型", keys: ["資產類型"] },
+    { label: "設備名稱", keys: ["設備名稱", "電腦名稱"] },
+    { label: "部門", keys: ["部門"] },
+    { label: "使用人", keys: ["使用人"] },
+    { label: "IP位置", keys: ["IP位置"] },
+    { label: "型號", keys: ["主機型號", "設備型號", "型號"] },
+    { label: "狀態", keys: ["狀態", "盤點狀態"] },
+    { label: "備註", keys: ["備註", "盤點備註"] }
   ]
 };
+
+["assets", "assets_downhill_pc", "assets_printer", "assets_north_ya", "assets_iptv"].forEach((source) => {
+  RECORD_COLUMN_CONFIGS[source] = RECORD_COLUMN_CONFIGS.assets_default;
+});
 
 async function api(path, options) {
   const response = await fetch(path, {
