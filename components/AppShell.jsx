@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import AiCommandAssistant from "./AiCommandAssistant";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
@@ -202,6 +203,7 @@ export default function AppShell({ activeSection = "dashboard", title, children,
         </header>
         {children}
       </section>
+      <AiCommandAssistant />
     </main>
   );
 }

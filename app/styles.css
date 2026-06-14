@@ -297,20 +297,29 @@ button:hover {
   box-shadow: 0 0 16px rgba(34, 197, 94, 0.8);
 }
 
-.ai-assistant-trigger {
-  min-height: 34px;
-  border-radius: 10px;
-  border-color: rgba(34, 211, 238, 0.44);
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.32), rgba(8, 145, 178, 0.22));
-  color: #e0f2fe;
-  font-size: 13px;
-  font-weight: 800;
-  box-shadow: 0 10px 22px rgba(14, 165, 233, 0.12);
+.ai-bot-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 82;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(125, 211, 252, 0.54);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(125, 211, 252, 0.42), transparent 36%),
+    linear-gradient(135deg, rgba(37, 99, 235, 0.88), rgba(8, 145, 178, 0.78));
+  color: #f8fbff;
+  font-size: 14px;
+  font-weight: 950;
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.42), 0 0 28px rgba(14, 165, 233, 0.22);
 }
 
-.ai-assistant-trigger:hover {
-  border-color: rgba(125, 211, 252, 0.72);
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.42), rgba(8, 145, 178, 0.3));
+.ai-bot-launcher:hover {
+  transform: translateY(-1px);
+  border-color: rgba(224, 242, 254, 0.84);
 }
 
 .ai-chat-window {
@@ -320,8 +329,8 @@ button:hover {
   z-index: 80;
   width: clamp(380px, 30vw, 460px);
   height: clamp(560px, 72vh, 680px);
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(125, 211, 252, 0.34);
   border-radius: 16px;
@@ -334,8 +343,8 @@ button:hover {
 .ai-chat-window.minimized {
   width: min(360px, calc(100vw - 32px));
   height: 58px;
+  display: grid;
   grid-template-columns: minmax(0, 1fr) 42px;
-  grid-template-rows: 1fr;
   align-items: stretch;
 }
 
@@ -411,6 +420,7 @@ button:hover {
   display: grid;
   align-content: start;
   gap: 10px;
+  flex: 1 1 auto;
   min-height: 0;
   padding: 14px 14px 10px;
   overflow-y: auto;
@@ -445,7 +455,12 @@ button:hover {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+  flex: 0 0 auto;
   padding: 0 14px 12px;
+}
+
+.ai-chat-quick-actions.collapsed {
+  grid-template-columns: 1fr;
 }
 
 .ai-chat-quick-actions button {
@@ -457,7 +472,13 @@ button:hover {
   white-space: normal;
 }
 
+.ai-chat-quick-toggle {
+  justify-self: start;
+  min-width: 92px;
+}
+
 .ai-chat-error {
+  flex: 0 0 auto;
   margin: 0 14px 10px;
   border: 1px solid rgba(248, 113, 113, 0.3);
   border-radius: 11px;
@@ -468,6 +489,7 @@ button:hover {
 }
 
 .ai-chat-action {
+  flex: 0 0 auto;
   padding: 0 14px 12px;
 }
 
@@ -480,6 +502,7 @@ button:hover {
 .ai-chat-action-card {
   display: grid;
   gap: 6px;
+  flex: 0 0 auto;
   margin: 0 14px 12px;
   border: 1px solid rgba(96, 165, 250, 0.24);
   border-radius: 12px;
@@ -514,6 +537,7 @@ button:hover {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 10px;
+  flex: 0 0 auto;
   padding: 12px 14px 14px;
   border-top: 1px solid rgba(124, 160, 220, 0.16);
   background: rgba(5, 12, 24, 0.64);
@@ -544,6 +568,11 @@ button:hover {
 }
 
 @media (max-width: 620px) {
+  .ai-bot-launcher {
+    right: 14px;
+    bottom: 14px;
+  }
+
   .ai-chat-window {
     right: 12px;
     bottom: 12px;
