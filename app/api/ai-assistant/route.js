@@ -41,13 +41,23 @@ function normalizeWork(row) {
   };
 }
 
+async function createNextTodoId(offset = 0) {
+  const rows = await supabaseRequest("todo_logs", "select=id&order=id.desc&limit=500");
+  const maxNumber = rows.reduce((max, row) => {
+    const match = String(row?.id || "").match(/^TD-(\d+)$/i);
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+  return `TD-${String(maxNumber + 1 + offset).padStart(4, "0")}`;
+}
+
 function buildPrompt(message) {
   return [
     "\u4f60\u662f IT dashboard \u7684 AI \u52a9\u7406\uff0c\u53ea\u80fd\u4f7f\u7528\u7cfb\u7d71\u5141\u8a31\u7684 action\u3002",
-    "\u5141\u8a31 action.type\uff1anavigate, create_todo, calendar_draft, analysis\u3002",
+    "\u5141\u8a31 action.type\uff1anavigate, create_todo, calendar_unavailable, complete_work_item, analysis\u3002",
     "navigate.href \u53ea\u80fd\u662f\u7ad9\u5167 allowlist \u8def\u5f91\uff1b\u4e0d\u53ef\u56de\u50b3\u5916\u90e8 URL\u3002",
     "create_todo \u53ea\u80fd\u7528\u65bc\u5efa\u7acb\u5f85\u8fa6\uff0c\u8f38\u51fa title \u8207\u9078\u586b note\uff0c\u4e0d\u8981\u8072\u7a31\u5df2\u6210\u529f\uff0cserver \u6703\u771f\u6b63\u57f7\u884c\u5f8c\u8986\u5beb\u56de\u8986\u3002",
-    "calendar_draft \u53ea\u80fd\u6574\u7406\u8349\u7a3f\uff0c\u4e0d\u80fd\u8072\u7a31\u5df2\u52a0\u5165\u65e5\u66c6\u3002",
+    "calendar_unavailable \u7528\u65bc dashboard \u5167\u5efa\u884c\u4e8b\u66c6\u8acb\u6c42\uff0c\u56e0\u76ee\u524d\u6c92\u6709\u5b89\u5168\u65b0\u589e API\uff0c\u4e0d\u80fd\u8072\u7a31\u5df2\u52a0\u5165\u65e5\u66c6\u3002",
+    "complete_work_item \u7528\u65bc\u5b8c\u6210\u5de5\u4f5c\u9805\u76ee\u8acb\u6c42\uff0c\u6c92\u6709\u5b89\u5168\u66f4\u65b0 API \u6642\u53ea\u80fd\u56de unavailable\u3002",
     "analysis \u53ea\u80fd\u8acb server \u7528\u73fe\u6709 dashboard/work/todo \u8cc7\u6599\u7522\u751f\u6458\u8981\uff0c\u4e0d\u8981\u7de8\u9020\u6578\u5b57\u3002",
     "\u522a\u9664\u3001\u4fee\u6539\u3001\u66f4\u65b0\u3001\u6e05\u7a7a\u8cc7\u6599\u7b49 destructive intent \u4e00\u5f8b\u62d2\u7d55\u3002",
     "\u4e0d\u8981\u8981\u6c42\u6216\u63d0\u4f9b\u5bc6\u78bc\u3001API key\u3001env\u3001service role\u3001GEMINI_API_KEY\u3002",
@@ -108,25 +118,35 @@ async function askGemini(message, apiKey) {
 async function createTodo(action) {
   if (!action?.title) {
     return {
-      reply: "\u7121\u6cd5\u5b89\u5168\u5efa\u7acb Todo\uff1a\u7f3a\u5c11\u660e\u78ba\u6a19\u984c\uff0c\u8acb\u624b\u52d5\u78ba\u8a8d\u5f8c\u518d\u64cd\u4f5c\u3002",
+      reply: "\u7121\u6cd5\u5efa\u7acb Todo\uff1a\u7f3a\u5c11\u660e\u78ba\u6a19\u984c\u3002",
       action: { type: "create_todo", status: "failed", title: "" }
     };
   }
 
   try {
-    const payload = {
-      title: action.title,
-      status: "\u5f85\u8fa6",
-      priority: "\u4e2d",
-      owner: "Noah",
-      due_date: todayTaipei(),
-      source: "vercel-dashboard"
-    };
-    const rows = await supabaseRequest("todo_logs", "select=*", {
-      method: "POST",
-      body: payload
-    });
-    const todo = normalizeTodo(rows[0] || payload);
+    let todo = null;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const payload = {
+        id: await createNextTodoId(attempt),
+        title: action.title,
+        status: "\u672a\u5b8c\u6210",
+        priority: "\u4e2d",
+        owner: "Noah",
+        due_date: todayTaipei(),
+        source: "vercel-dashboard"
+      };
+      try {
+        const rows = await supabaseRequest("todo_logs", "select=*", {
+          method: "POST",
+          body: payload
+        });
+        todo = normalizeTodo(rows[0] || payload);
+        break;
+      } catch (error) {
+        const isDuplicateId = String(error?.message || "").includes("todo_logs_pkey");
+        if (!isDuplicateId || attempt === 2) throw error;
+      }
+    }
     return {
       reply: `\u5df2\u65b0\u589e Todo\uff1a${todo.title}`,
       action: {
@@ -138,8 +158,15 @@ async function createTodo(action) {
     };
   } catch (error) {
     console.error("[ai-assistant create_todo error]", { name: error?.name || "Error" });
+    const rawMessage = error?.message ? String(error.message) : "Unknown error";
+    const safeMessage = rawMessage
+      .replace(/eyJ[\w.-]+/g, "[redacted]")
+      .replace(/Bearer\s+[\w.-]+/gi, "Bearer [redacted]")
+      .replace(/apikey\s*[:=]\s*[\w.-]+/gi, "apikey=[redacted]")
+      .replace(/\b[A-Z0-9_]*(KEY|TOKEN|SECRET|PASSWORD|SERVICE_ROLE)[A-Z0-9_]*\b/g, "[redacted setting]")
+      .slice(0, 180);
     return {
-      reply: "\u76ee\u524d\u7121\u6cd5\u5b89\u5168\u5efa\u7acb Todo\uff0c\u8acb\u6539\u5230 Todo List \u624b\u52d5\u64cd\u4f5c\u3002",
+      reply: `Todo \u5efa\u7acb\u5931\u6557\uff1a${safeMessage}`,
       action: {
         type: "create_todo",
         status: "failed",
@@ -224,15 +251,26 @@ async function createAnalysis(action) {
   }
 }
 
-function createCalendarDraft(action) {
+function createCalendarUnavailable(action) {
   return {
-    reply: "\u5df2\u6574\u7406\u6210\u65e5\u66c6\u8349\u7a3f\uff0c\u76ee\u524d\u5c1a\u672a\u76f4\u63a5\u5beb\u5165\u65e5\u66c6\u3002",
+    reply: "calendar_unavailable\uff1adashboard calendar \u5c1a\u672a\u6709\u5b89\u5168\u65b0\u589e API\uff0c\u56e0\u6b64\u6211\u6c92\u6709\u76f4\u63a5\u5beb\u5165\u5167\u5efa\u884c\u4e8b\u66c6\u3002",
     action: {
-      type: "calendar_draft",
+      type: "calendar_unavailable",
       title: action.title,
       dateText: action.dateText || "",
       timeText: action.timeText || "",
       note: action.note || ""
+    }
+  };
+}
+
+function createWorkCompletionUnavailable(action) {
+  return {
+    reply: "\u76ee\u524d\u5de5\u4f5c\u7d00\u9304\u6c92\u6709\u5b89\u5168 PATCH/update API\uff0c\u56e0\u6b64\u6211\u6c92\u6709\u5c07\u4efb\u4f55\u5de5\u4f5c\u6a19\u8a18\u5b8c\u6210\u3002",
+    action: {
+      type: "complete_work_item",
+      status: "unavailable",
+      title: action.title || ""
     }
   };
 }
@@ -247,7 +285,8 @@ async function executeAction(result) {
   }
 
   if (action.type === "create_todo") return createTodo(action);
-  if (action.type === "calendar_draft") return createCalendarDraft(action);
+  if (action.type === "calendar_unavailable") return createCalendarUnavailable(action);
+  if (action.type === "complete_work_item") return createWorkCompletionUnavailable(action);
   if (action.type === "analysis") return createAnalysis(action);
 
   return {
