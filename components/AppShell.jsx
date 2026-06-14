@@ -43,7 +43,7 @@ export const APP_SECTIONS = [
       { key: "soc_docs", label: "SOC", href: "/sop/soc" }
     ]
   },
-  { key: "settings", icon: "⚙️", label: "設定", href: "/?section=settings" }
+  { key: "settings", icon: "⚙️", label: "設定", href: "/settings" }
 ];
 
 export const FLAT_APP_SECTIONS = APP_SECTIONS.flatMap((item) => [item, ...(item.children || [])]);
