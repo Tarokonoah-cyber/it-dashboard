@@ -64,6 +64,12 @@ const CONTRACT_ROUTE_MAP = {
   contracts_mobile: "/contracts/mobile"
 };
 
+const SOP_ROUTE_MAP = {
+  sop: "/sop",
+  sop_docs: "/sop/docs",
+  soc_docs: "/sop/soc"
+};
+
 const DATA_SECTIONS = {
   documents: { title: "送交單據紀錄", source: "documents", hint: "原 Sheet：送交單據紀錄表" },
   contacts: { title: "通訊錄", source: "contacts", hint: "原 Sheet：通訊錄" },
@@ -1691,6 +1697,10 @@ export default function Page() {
       window.location.replace(CONTRACT_ROUTE_MAP[requestedSection]);
       return;
     }
+    if (SOP_ROUTE_MAP[requestedSection]) {
+      window.location.replace(SOP_ROUTE_MAP[requestedSection]);
+      return;
+    }
     if (requestedSection === "boss-kpi") {
       window.location.replace("/boss-kpi");
       return;
@@ -1735,6 +1745,10 @@ export default function Page() {
     }
     if (CONTRACT_ROUTE_MAP[sectionKey]) {
       window.location.href = CONTRACT_ROUTE_MAP[sectionKey];
+      return;
+    }
+    if (SOP_ROUTE_MAP[sectionKey]) {
+      window.location.href = SOP_ROUTE_MAP[sectionKey];
       return;
     }
     if (sectionKey === "boss-kpi") {
