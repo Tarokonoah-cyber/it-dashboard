@@ -1759,7 +1759,7 @@ export default function Page() {
       window.location.href = "/settings";
       return;
     }
-    if (sectionKey === "boss-kpi") {
+    if (sectionKey === "boss-kpi" || sectionKey === "kpi") {
       window.location.href = "/boss-kpi";
       return;
     }
