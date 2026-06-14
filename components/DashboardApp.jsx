@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import AiCommandAssistant from "./AiCommandAssistant";
 
 const SECTIONS = [
   { key: "dashboard", icon: "📊", label: "儀表板" },
@@ -733,6 +734,7 @@ export default function Page() {
         </header>
         <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />
       </section>
+      <AiCommandAssistant />
     </main>
   );
 }
