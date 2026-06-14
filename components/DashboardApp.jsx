@@ -58,6 +58,12 @@ const ASSET_ROUTE_MAP = {
   assets_iptv: "/assets/iptv"
 };
 
+const CONTRACT_ROUTE_MAP = {
+  contracts: "/contracts",
+  contracts_software: "/contracts/software",
+  contracts_mobile: "/contracts/mobile"
+};
+
 const DATA_SECTIONS = {
   documents: { title: "送交單據紀錄", source: "documents", hint: "原 Sheet：送交單據紀錄表" },
   contacts: { title: "通訊錄", source: "contacts", hint: "原 Sheet：通訊錄" },
@@ -1681,6 +1687,10 @@ export default function Page() {
       window.location.replace(ASSET_ROUTE_MAP[requestedSection]);
       return;
     }
+    if (CONTRACT_ROUTE_MAP[requestedSection]) {
+      window.location.replace(CONTRACT_ROUTE_MAP[requestedSection]);
+      return;
+    }
     if (requestedSection === "boss-kpi") {
       window.location.replace("/boss-kpi");
       return;
@@ -1721,6 +1731,10 @@ export default function Page() {
     }
     if (ASSET_ROUTE_MAP[sectionKey]) {
       window.location.href = ASSET_ROUTE_MAP[sectionKey];
+      return;
+    }
+    if (CONTRACT_ROUTE_MAP[sectionKey]) {
+      window.location.href = CONTRACT_ROUTE_MAP[sectionKey];
       return;
     }
     if (sectionKey === "boss-kpi") {
