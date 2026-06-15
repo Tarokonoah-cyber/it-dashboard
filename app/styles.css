@@ -1938,6 +1938,269 @@ input {
   color: var(--muted);
 }
 
+.inspection-page {
+  display: grid;
+  gap: 18px;
+}
+
+.inspection-filters,
+.inspection-main-panel,
+.inspection-issue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inspection-filters,
+.inspection-main-panel,
+.inspection-items-panel,
+.inspection-detail-summary,
+.inspection-detail-items,
+.inspection-table,
+.inspection-form-actions,
+.inspection-notice {
+  border: 1px solid var(--hotel-line, rgba(148, 163, 184, 0.22));
+  border-radius: 10px;
+  background: var(--hotel-card, #fff);
+  box-shadow: var(--hotel-shadow-soft, 0 4px 14px rgba(18, 34, 56, 0.06));
+  padding: 16px;
+}
+
+.inspection-filters label,
+.inspection-main-panel label,
+.inspection-issue-grid label,
+.inspection-item-card label {
+  display: grid;
+  gap: 6px;
+  color: var(--hotel-muted, #667085);
+  font-size: 0.84rem;
+  font-weight: 760;
+}
+
+.inspection-main-panel .wide,
+.inspection-issue-grid .wide {
+  grid-column: 1 / -1;
+}
+
+.inspection-table {
+  overflow-x: auto;
+}
+
+.inspection-row {
+  display: grid;
+  grid-template-columns: 116px 116px 92px 80px 80px 92px 112px 150px 128px;
+  align-items: center;
+  gap: 10px;
+  min-width: 980px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  padding: 11px 0;
+  color: var(--hotel-text, #162033);
+  font-size: 0.9rem;
+}
+
+.inspection-row:last-child {
+  border-bottom: 0;
+}
+
+.inspection-row.head {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.inspection-row.has-abnormal {
+  background: rgba(254, 242, 242, 0.72);
+}
+
+.inspection-actions,
+.inspection-form-actions,
+.inspection-status-options,
+.inspection-item-head,
+.inspection-items-panel header,
+.inspection-detail-items header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inspection-actions,
+.inspection-form-actions {
+  justify-content: flex-end;
+}
+
+.inspection-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-color: rgba(217, 119, 6, 0.24);
+  background: #fffbeb;
+  color: #92400e;
+  font-weight: 780;
+}
+
+.inspection-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.inspection-status-badge.ok {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.inspection-status-badge.warning {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.inspection-status-badge.danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.inspection-status-badge.neutral {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.inspection-form {
+  display: grid;
+  gap: 16px;
+}
+
+.inspection-items-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.inspection-items-panel header,
+.inspection-detail-items header {
+  justify-content: space-between;
+}
+
+.inspection-items-panel h2,
+.inspection-detail-items h2 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+}
+
+.inspection-item-list {
+  display: grid;
+  gap: 12px;
+}
+
+.inspection-item-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+}
+
+.inspection-item-card.needs-attention {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: #fff7f7;
+}
+
+.inspection-item-head {
+  justify-content: space-between;
+}
+
+.inspection-item-head span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inspection-item-head h3 {
+  margin: 2px 0 0;
+  color: var(--hotel-text, #162033);
+  font-size: 1rem;
+}
+
+.inspection-status-options {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.inspection-status-options button.active {
+  border-color: #2f5f98;
+  background: #edf5ff;
+  color: #2f5f98;
+}
+
+.inspection-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inspection-detail-summary.has-attention {
+  border-color: rgba(217, 119, 6, 0.28);
+}
+
+.inspection-detail-summary div {
+  display: grid;
+  gap: 4px;
+}
+
+.inspection-detail-summary span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inspection-detail-summary p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--hotel-muted, #667085);
+}
+
+.inspection-detail-issue {
+  display: grid;
+  gap: 8px;
+  border-left: 3px solid #dc2626;
+  padding-left: 12px;
+}
+
+.inspection-detail-issue p,
+.inspection-item-note {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+}
+
+@media (max-width: 900px) {
+  .inspection-filters,
+  .inspection-main-panel,
+  .inspection-issue-grid,
+  .inspection-detail-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .inspection-item-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .inspection-status-options {
+    justify-content: flex-start;
+  }
+}
+
 .notes-composer {
   display: grid;
   grid-template-columns: minmax(320px, 720px) auto;
@@ -7487,6 +7750,7 @@ textarea:disabled {
     padding: 22px 16px 28px;
   }
 }
+
 /* Hidden Sports Calendar */
 .sports-calendar-easter-egg {
   width: 34px;
