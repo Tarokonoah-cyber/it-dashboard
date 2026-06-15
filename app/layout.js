@@ -1,8 +1,8 @@
 import "./styles.css";
 
 export const metadata = {
-  title: "資訊室智慧平台",
-  description: "IT daily operations dashboard",
+  title: "資訊管理平台",
+  description: "Taroko Hotel IT operations dashboard",
   robots: {
     index: false,
     follow: false

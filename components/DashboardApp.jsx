@@ -2,73 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import AiCommandAssistant from "./AiCommandAssistant";
-
-const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
-
-const SECTIONS = [
-  { key: "dashboard", icon: "📊", label: "儀表板" },
-  { key: "quick-notes", icon: "📝", label: "快速備忘錄" },
-  { key: "work", icon: "🧾", label: "工作中心" },
-  { key: "documents", icon: "🗂️", label: "送交單據紀錄" },
-  { key: "contacts", icon: "📒", label: "通訊錄" },
-  {
-    key: "assets",
-    icon: "🖥️",
-    label: "設備清單",
-    children: [
-      { key: "assets_mountain_pc", label: "山上電腦" },
-      { key: "assets_downhill_pc", label: "山下電腦" },
-      { key: "assets_printer", label: "印表機" },
-      { key: "assets_north_ya", label: "北YA" },
-      { key: "assets_iptv", label: "IPTV" }
-    ]
-  },
-  {
-    key: "contracts",
-    icon: "📑",
-    label: "合約總覽",
-    children: [
-      { key: "contracts_software", label: "軟體合約" },
-      { key: "contracts_mobile", label: "行動電話約期" }
-    ]
-  },
-  { key: "passwords", icon: "🔐", label: "密碼管理" },
-  { key: "anydesk", icon: "🛠️", label: "AnyDesk List" },
-  {
-    key: "sop",
-    icon: "📚",
-    label: "SOP 文件",
-    children: [
-      { key: "sop_docs", label: "SOP" },
-      { key: "soc_docs", label: "SOC" }
-    ]
-  },
-  { key: "settings", icon: "⚙️", label: "設定" }
-];
-
-const FLAT_SECTIONS = SECTIONS.flatMap((item) => [item, ...(item.children || [])]);
-
-const ASSET_ROUTE_MAP = {
-  assets: "/assets",
-  assets_mountain_pc: "/assets/mountain-pc",
-  assets_downhill_pc: "/assets/downhill-pc",
-  assets_printer: "/assets/printers",
-  assets_north_ya: "/assets/north-ya",
-  assets_iptv: "/assets/iptv"
-};
-
-const CONTRACT_ROUTE_MAP = {
-  contracts: "/contracts",
-  contracts_software: "/contracts/software",
-  contracts_mobile: "/contracts/mobile"
-};
-
-const SOP_ROUTE_MAP = {
-  sop: "/sop",
-  sop_docs: "/sop/docs",
-  soc_docs: "/sop/soc"
-};
+import AppShell from "./AppShell";
+import { getSectionHref } from "./navigation";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
@@ -95,131 +30,109 @@ function formatDate(value) {
   return dateKey(value) || "-";
 }
 
-function taipeiNowLabel() {
-  return new Intl.DateTimeFormat("zh-TW", {
-    timeZone: "Asia/Taipei",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    weekday: "long"
-  }).format(new Date());
-}
-
 function isDoneStatus(status) {
   return DONE_STATUSES.has(String(status || "").trim());
 }
 
-function MetricCard({ label, value, delta, tone = "neutral", bars = [], icon = "•", detail = "", progress = null }) {
-  const max = Math.max(1, ...bars);
-  const normalizedProgress = progress == null ? null : Math.max(0, Math.min(100, Number(progress) || 0));
+function MiniSparkline({ values = [], tone = "neutral" }) {
+  const safeValues = values.length ? values : [0, 0, 0, 0];
+  const max = Math.max(1, ...safeValues);
+  const width = 96;
+  const height = 34;
+  const points = safeValues.map((value, index) => {
+    const x = safeValues.length <= 1 ? 0 : (index / (safeValues.length - 1)) * width;
+    const y = height - Math.max(2, (value / max) * (height - 4));
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
   return (
-    <section className={`metric-card ${tone}`}>
-      <div className="metric-icon" aria-hidden="true">{icon}</div>
-      <div className="metric-head">
+    <svg className={`kpi-sparkline ${tone}`} viewBox={`0 0 ${width} ${height}`} aria-hidden="true" preserveAspectRatio="none">
+      <polyline points={points} />
+    </svg>
+  );
+}
+
+function MetricCard({ label, value, unit = "", delta, deltaLabel = "", tone = "neutral", trendTone = "neutral", weight = "standard", bars = [], icon = "•", detail = "" }) {
+  return (
+    <section className={`metric-card dashboard-kpi-card ${tone} ${weight}`}>
+      <div className="kpi-card-top">
+        <div className="metric-icon" aria-hidden="true">{icon}</div>
         <span>{label}</span>
-        <b className={`delta ${tone}`}>{delta}</b>
       </div>
-      <strong className="metric-value">{value}</strong>
-      {detail ? <small className="metric-detail">{detail}</small> : null}
-      <div className="sparkline" aria-hidden="true">
-        {bars.map((bar, index) => (
-          <i key={index} style={{ height: `${Math.max(4, (bar / max) * 38)}px` }} />
-        ))}
-      </div>
-      {normalizedProgress != null ? (
-        <div className="metric-progress" aria-hidden="true">
-          <span style={{ width: `${normalizedProgress}%` }} />
+      <div className="kpi-card-body">
+        <div>
+          <strong className="metric-value">{value}<small>{unit}</small></strong>
+          {detail ? <small className="metric-detail">{detail}</small> : null}
         </div>
-      ) : null}
+        <MiniSparkline values={bars} tone={trendTone} />
+      </div>
+      <div className="kpi-card-foot">
+        <b className={`delta ${trendTone}`}>{delta}</b>
+        {deltaLabel ? <span>{deltaLabel}</span> : null}
+      </div>
     </section>
   );
 }
 
-function Sidebar({ activeSection, onNavigate, collapsed, onToggle }) {
-  const [openGroups, setOpenGroups] = useState(() => new Set(["assets", "contracts", "sop"]));
-
-  function isGroupActive(item) {
-    return item.key === activeSection || item.children?.some((child) => child.key === activeSection);
-  }
-
-  function toggleGroup(item) {
-    if (collapsed) {
-      onToggle();
-      return;
-    }
-    setOpenGroups((current) => {
-      const next = new Set(current);
-      if (next.has(item.key)) next.delete(item.key);
-      else next.add(item.key);
-      return next;
-    });
-  }
+function CompletionProgressCard({ rate, completed, total, pending }) {
+  const normalized = Math.max(0, Math.min(100, Number(rate) || 0));
+  const status = normalized < 50 ? "進度落後" : normalized < 80 ? "正常追蹤" : "接近完成";
+  const tone = normalized < 50 ? "warn" : normalized < 80 ? "neutral" : "good";
 
   return (
-    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-      <div className="brand-row">
-        <div className="brand-mark">IT</div>
-        {!collapsed && (
-          <div className="brand-copy">
-            <h1>資訊室智慧平台</h1>
-            <p>Operations Control Center</p>
-          </div>
-        )}
-        <button className="collapse-btn" aria-label="收合側邊欄" onClick={onToggle}>
-          {collapsed ? "›" : "‹"}
-        </button>
+    <section className={`metric-card dashboard-kpi-card completion-progress-card ${tone}`}>
+      <div className="kpi-card-top">
+        <div className="metric-icon" aria-hidden="true">%</div>
+        <span>完成率</span>
       </div>
-      {!collapsed && <div className="nav-label">主選單</div>}
+      <div className="completion-progress-main">
+        <strong>{normalized}<small>%</small></strong>
+        <b className={`completion-state ${tone}`}>{status}</b>
       </div>
-      <nav className="side-nav">
-        {SECTIONS.map((item) => {
-          const hasChildren = Boolean(item.children?.length);
-          const expanded = openGroups.has(item.key);
-          const groupActive = isGroupActive(item);
-          return (
-            <div className="nav-group" key={item.key}>
-              <button
-                type="button"
-                className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
-                onClick={() => (hasChildren ? toggleGroup(item) : onNavigate(item.key))}
-                title={item.label}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {!collapsed && <span>{item.label}</span>}
-                {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>›</span>}
-              </button>
-              {!collapsed && hasChildren && expanded && (
-                <div className="nav-children">
-                  {item.children.map((child) => (
-                    <button
-                      key={child.key}
-                      type="button"
-                      className={`nav-child ${activeSection === child.key ? "active" : ""}`}
-                      onClick={() => onNavigate(child.key)}
-                    >
-                      {child.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-      {!collapsed && (
-        <div className="sidebar-foot">
-          <span>Vercel Web App</span>
-          <span>Supabase Fast Dashboard</span>
-        </div>
-      )}
-    </aside>
+      <div className="completion-progress-meta">
+        <span>已完成 <b>{completed}</b> / {total} 件</span>
+        <span>尚餘 <b>{pending}</b> 件</span>
+      </div>
+      <div className="completion-bar" aria-hidden="true">
+        <span style={{ width: `${normalized}%` }} />
+      </div>
+    </section>
   );
+}
+
+function getTodoPriority(todo) {
+  const raw = String(todo.priority || todo.level || todo.importance || "").trim();
+  const title = String(todo.title || "").toLowerCase();
+  if (/高|急|urgent|high|異常|逾期|ups|機房|電池|斷線|故障/.test(`${raw} ${title}`)) return { label: "高", tone: "high" };
+  if (/中|medium|檢查|確認|盤點|維護/.test(`${raw} ${title}`)) return { label: "中", tone: "medium" };
+  return { label: "一般", tone: "normal" };
+}
+
+function formatWorkTitle(work) {
+  const title = String(work.title || "").trim();
+  const description = String(work.description || "").trim();
+  if (/^\d+$/.test(title) && description) return description;
+  return title || description || "未命名工作";
+}
+
+function formatRelativeDate(value) {
+  const key = dateKey(value);
+  if (!key) return "-";
+  const date = new Date(`${key}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return key;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((today.getTime() - date.getTime()) / 86400000);
+  if (diffDays === 0) return "今天";
+  if (diffDays === 1) return "昨天";
+  if (diffDays > 1 && diffDays <= 7) return `${diffDays} 天前`;
+  return key.slice(5).replace("-", "/");
 }
 
 function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
   const todoInputRef = useRef(null);
 
   async function addTodo() {
@@ -238,9 +151,15 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       });
       setTitle("");
       await onReload();
+      setIsAdding(false);
     } finally {
       setSaving(false);
     }
+  }
+
+  function cancelAddTodo() {
+    setTitle("");
+    setIsAdding(false);
   }
 
   async function completeTodo(id) {
@@ -278,40 +197,68 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
           <h2>Todo List</h2>
           <span>待辦事項</span>
         </div>
-        <button onClick={addTodo} disabled={saving}>{saving ? "新增中" : "+ 新增"}</button>
+        <button onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))} disabled={saving}>
+          {isAdding ? "取消" : "+ 新增"}
+        </button>
       </header>
-      <div className="todo-quick-add dashboard-todo-input">
-        <input
-          ref={todoInputRef}
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          onKeyDown={(event) => event.key === "Enter" && addTodo()}
-          maxLength={MAX_TODO_TITLE_LENGTH}
-          required
-          placeholder="快速新增待辦..."
-        />
-      </div>
+      {isAdding ? (
+        <div className="todo-quick-add dashboard-todo-input is-expanded">
+          <input
+            ref={todoInputRef}
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && addTodo()}
+            maxLength={MAX_TODO_TITLE_LENGTH}
+            required
+            placeholder="輸入新的待辦事項..."
+            autoFocus
+          />
+          <button className="todo-save-button" type="button" onClick={addTodo} disabled={saving}>
+            {saving ? "儲存中" : "儲存"}
+          </button>
+          <button className="todo-cancel-button" type="button" onClick={cancelAddTodo} disabled={saving}>
+            取消
+          </button>
+        </div>
+      ) : null}
       <div className="dashboard-todo-list">
         {todos.length === 0 ? (
           <div className="empty">目前沒有待辦項目</div>
         ) : (
           todos.slice(0, 5).map((todo) => (
-            <article key={todo.id} className="dashboard-todo-row">
-              <button className="circle" onClick={() => completeTodo(todo.id)} aria-label="完成待辦" />
-              <strong>{todo.title || "未命名待辦"}</strong>
-              <b className={String(todo.status || "").includes("進") ? "status-active" : "status-todo"}>
-                {todo.status || "待辦"}
-              </b>
-              <div className="row-actions">
-                <button onClick={() => editTodo(todo)}>修改</button>
-                <button onClick={() => deleteTodo(todo.id)}>刪除</button>
-              </div>
-            </article>
+            <TodoRow
+              key={todo.id}
+              todo={todo}
+              onComplete={() => completeTodo(todo.id)}
+              onEdit={() => editTodo(todo)}
+              onDelete={() => deleteTodo(todo.id)}
+            />
           ))
         )}
       </div>
       <button className="panel-link" type="button" onClick={() => onNavigate?.("work")}>查看全部</button>
     </section>
+  );
+}
+
+function TodoRow({ todo, onComplete, onEdit, onDelete }) {
+  const priority = getTodoPriority(todo);
+  const status = todo.status || "未完成";
+  const active = String(status).includes("進");
+
+  return (
+    <article className={`dashboard-todo-row priority-${priority.tone}`}>
+      <button className="circle" onClick={onComplete} aria-label="完成待辦" />
+      <div className="todo-row-main">
+        <strong>{todo.title || "未命名待辦"}</strong>
+        <span>優先級：<b>{priority.label}</b></span>
+      </div>
+      <b className={active ? "status-active" : "status-todo"}>{status}</b>
+      <div className="row-actions">
+        <button onClick={onEdit}>修改</button>
+        <button onClick={onDelete}>刪除</button>
+      </div>
+    </article>
   );
 }
 
@@ -467,9 +414,9 @@ function DashboardWorkTable({ works, onNavigate }) {
         {works.length ? works.slice(0, 4).map((work) => (
           <div className="work-row" key={work.id}>
             <span>{work.id || "-"}</span>
-            <span>{formatDate(work.date || work.created_at)}</span>
+            <span title={formatDate(work.date || work.created_at)}>{formatRelativeDate(work.date || work.created_at)}</span>
             <span>{work.staff || work.owner || "-"}</span>
-            <strong>{work.title || work.description || "未命名工作"}</strong>
+            <strong>{formatWorkTitle(work)}</strong>
             <span>{work.category || work.type || "工作"}</span>
             <b className={isDoneStatus(work.status) ? "status-done" : "status-pending"}>{work.status || "待辦"}</b>
           </div>
@@ -531,57 +478,65 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
   const completionRate = dashboard?.completionRate ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const totalCount = dashboard?.monthWorkCount ?? 0;
+  const abnormalCount = dashboard?.abnormalCount ?? dashboard?.networkSummary?.abnormal ?? 0;
 
   return (
     <>
-      <section className="page-head modern-page-head">
-        <h1>儀表板</h1>
-        <p>掌握今日工作重點與最新進度。</p>
+      <section className="dashboard-kpi-strip">
+        <section className="metrics-grid modern-metrics-grid" aria-label="今日營運指標">
+          <MetricCard
+            icon="✓"
+            label="今日待處理"
+            value={dashboard?.pendingCount ?? 0}
+            unit="件"
+            delta={dashboard?.deltas?.pending || "0"}
+            deltaLabel="較昨日"
+            detail="需追蹤"
+            tone={(dashboard?.pendingCount || 0) > 0 ? "warn" : "good"}
+            trendTone="good"
+            weight="primary"
+            bars={trendBars}
+          />
+          <MetricCard
+            icon="□"
+            label="本月工作"
+            value={dashboard?.monthWorkCount ?? 0}
+            unit="件"
+            delta={dashboard?.deltas?.monthWork || "+0"}
+            deltaLabel="較上月"
+            detail="本月累計"
+            tone="neutral"
+            trendTone="neutral"
+            weight="secondary"
+            bars={trendBars}
+          />
+          <MetricCard
+            icon="!"
+            label="異常單"
+            value={abnormalCount}
+            unit="件"
+            delta={abnormalCount ? `+${abnormalCount}` : "0"}
+            deltaLabel="需處理"
+            detail="異常 / 逾期"
+            tone={abnormalCount > 0 ? "bad" : "good"}
+            trendTone={abnormalCount > 0 ? "bad" : "good"}
+            weight="primary"
+            bars={trendBars}
+          />
+          <CompletionProgressCard
+            rate={completionRate}
+            completed={completedCount}
+            total={totalCount}
+            pending={dashboard?.pendingCount ?? 0}
+          />
+        </section>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
 
-      <section className="metrics-grid modern-metrics-grid">
-        <MetricCard
-          icon="▣"
-          label="今日工作"
-          value={dashboard?.todayWorkCount ?? 0}
-          delta={dashboard?.deltas?.todayWork || "持平"}
-          detail="較昨日"
-          bars={trendBars}
-        />
-        <MetricCard
-          icon="◫"
-          label="本月工作"
-          value={dashboard?.monthWorkCount ?? 0}
-          delta={dashboard?.deltas?.monthWork || "+0"}
-          detail="較上月"
-          bars={trendBars}
-        />
-        <MetricCard
-          icon="!"
-          label="待處理"
-          value={dashboard?.pendingCount ?? 0}
-          delta={dashboard?.deltas?.pending || "0"}
-          detail="需追蹤"
-          tone={(dashboard?.pendingCount || 0) > 0 ? "bad" : "good"}
-          bars={trendBars}
-        />
-        <MetricCard
-          icon="%"
-          label="完成率"
-          value={`${completionRate}%`}
-          delta={`${completedCount}/${totalCount}`}
-          detail={`待完成 ${dashboard?.pendingCount ?? 0}`}
-          tone={completionRate >= 80 ? "good" : "warn"}
-          bars={trendBars}
-          progress={completionRate}
-        />
-      </section>
-
       <section className="dashboard-layout modern-dashboard-layout">
         <DashboardTodoPanel todos={todos} onReload={onReload} onNavigate={onNavigate} />
-        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
         <DashboardCalendarPanel />
+        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
       </section>
 
       <section className="bottom-layout modern-bottom-layout">
@@ -594,8 +549,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate }) {
 
 export default function Page() {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState("dashboard");
-  const [collapsed, setCollapsed] = useState(true);
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
 
@@ -613,145 +566,20 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
-    if (saved === "expanded") setCollapsed(false);
-    if (saved === "collapsed") setCollapsed(true);
-  }, []);
-
-  function toggleSidebar() {
-    setCollapsed((value) => {
-      const next = !value;
-      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next ? "collapsed" : "expanded");
-      return next;
-    });
-  }
-
-  useEffect(() => {
     const requestedSection = new URLSearchParams(window.location.search).get("section");
     if (!requestedSection) return;
-    if (requestedSection === "quick-notes") {
-      window.location.replace("/quick-notes");
-      return;
-    }
-    if (requestedSection === "work") {
-      window.location.replace("/work");
-      return;
-    }
-    if (requestedSection === "documents") {
-      window.location.replace("/documents");
-      return;
-    }
-    if (requestedSection === "passwords") {
-      window.location.replace("/passwords");
-      return;
-    }
-    if (requestedSection === "contacts") {
-      window.location.replace("/contacts");
-      return;
-    }
-    if (requestedSection === "anydesk") {
-      window.location.replace("/anydesk");
-      return;
-    }
-    if (ASSET_ROUTE_MAP[requestedSection]) {
-      window.location.replace(ASSET_ROUTE_MAP[requestedSection]);
-      return;
-    }
-    if (CONTRACT_ROUTE_MAP[requestedSection]) {
-      window.location.replace(CONTRACT_ROUTE_MAP[requestedSection]);
-      return;
-    }
-    if (SOP_ROUTE_MAP[requestedSection]) {
-      window.location.replace(SOP_ROUTE_MAP[requestedSection]);
-      return;
-    }
-    if (requestedSection === "settings") {
-      window.location.replace("/settings");
-      return;
-    }
-    if (requestedSection === "boss-kpi") {
-      window.location.replace("/boss-kpi");
-      return;
-    }
-    if (requestedSection === "kpi") {
-      window.location.replace("/boss-kpi");
-      return;
-    }
-    if (FLAT_SECTIONS.some((item) => item.key === requestedSection)) {
-      setActiveSection(requestedSection);
-    }
+    const href = requestedSection === "kpi" ? "/boss-kpi" : getSectionHref(requestedSection);
+    if (href !== "/") window.location.replace(href);
   }, []);
 
   function handleNavigate(sectionKey) {
-    if (sectionKey === "quick-notes") {
-      router.push("/quick-notes");
-      return;
-    }
-    if (sectionKey === "work") {
-      router.push("/work");
-      return;
-    }
-    if (sectionKey === "documents") {
-      router.push("/documents");
-      return;
-    }
-    if (sectionKey === "passwords") {
-      router.push("/passwords");
-      return;
-    }
-    if (sectionKey === "contacts") {
-      router.push("/contacts");
-      return;
-    }
-    if (sectionKey === "anydesk") {
-      router.push("/anydesk");
-      return;
-    }
-    if (ASSET_ROUTE_MAP[sectionKey]) {
-      router.push(ASSET_ROUTE_MAP[sectionKey]);
-      return;
-    }
-    if (CONTRACT_ROUTE_MAP[sectionKey]) {
-      router.push(CONTRACT_ROUTE_MAP[sectionKey]);
-      return;
-    }
-    if (SOP_ROUTE_MAP[sectionKey]) {
-      router.push(SOP_ROUTE_MAP[sectionKey]);
-      return;
-    }
-    if (sectionKey === "settings") {
-      router.push("/settings");
-      return;
-    }
-    if (sectionKey === "boss-kpi" || sectionKey === "kpi") {
-      router.push("/boss-kpi");
-      return;
-    }
-    setActiveSection(sectionKey);
+    router.push(sectionKey === "kpi" ? "/boss-kpi" : getSectionHref(sectionKey));
   }
 
   return (
-    <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
-      <Sidebar
-        activeSection={activeSection}
-        onNavigate={handleNavigate}
-        collapsed={collapsed}
-        onToggle={toggleSidebar}
-      />
-      <section className="main-area">
-        <header className="app-header">
-          <div className="app-header-title">
-            <h2>{FLAT_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板"}</h2>
-            <p>今日日期：{taipeiNowLabel()}</p>
-          </div>
-          <div className="app-header-actions">
-            <span className="online-dot">System Online</span>
-          </div>
-        </header>
-        <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />
-      </section>
-      <AiCommandAssistant />
-    </main>
+    <AppShell activeSection="dashboard" title="儀表板" onNavigate={handleNavigate}>
+      <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} />
+    </AppShell>
   );
 }
 

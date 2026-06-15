@@ -1,26 +1,27 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { getField } from "./DataSectionPage";
 
 const MOUNTAIN_PC_CONFIG = {
   title: "山上電腦",
   source: "assets_mountain_pc",
-  hint: "設備清單：山上電腦"
+  hint: "設備清單 / 山上電腦"
 };
 
 const MOUNTAIN_PC_COLUMNS = [
-  { label: "資產類型", keys: ["資產類型"] },
-  { label: "電腦名稱", keys: ["電腦名稱", "設備名稱"] },
-  { label: "部門", keys: ["部門"] },
-  { label: "使用人", keys: ["使用人"] },
-  { label: "IP位置", keys: ["IP位置"], sortable: true },
-  { label: "主機型號", keys: ["主機型號", "設備型號", "型號"] },
-  { label: "螢幕型號", keys: ["螢幕型號", "monitor_model"] },
-  { label: "Windows版本", keys: ["WINDOWS版本", "Windows版本", "windows_version"] },
-  { label: "防毒", keys: ["是否裝防毒", "防毒"] },
-  { label: "盤點狀態", keys: ["盤點狀態", "狀態"] },
-  { label: "備註", keys: ["備註", "盤點備註"] },
-  { label: "最後更新", keys: ["最後更新", "盤點時間"] }
+  { label: "資產類型", keys: ["資產類型", "asset_type", "鞈憿?", "è³ç¢é¡å"] },
+  { label: "電腦名稱", keys: ["電腦名稱", "設備名稱", "asset_name", "computer_name", "?餉?迂", "閮剖??迂", "é»è\u0085¦åç¨±", "è¨­ååç¨±"] },
+  { label: "部門", keys: ["部門", "department", "?券?", "é¨é"] },
+  { label: "使用者", keys: ["使用者", "使用人", "user_name", "雿輻鈭?", "ä½¿ç¨äºº"] },
+  { label: "IP 位址", keys: ["IP", "IP 位址", "ip_address", "IP雿蔭", "IPä½ç½®"], sortable: true },
+  { label: "主機型號", keys: ["主機型號", "model", "銝餅???", "閮剖???", "??", "ä¸»æ©åè", "è¨­ååè", "åè"] },
+  { label: "螢幕型號", keys: ["螢幕型號", "monitor_model", "?Ｗ???", "è¢å¹åè"] },
+  { label: "Windows 版本", keys: ["Windows 版本", "windows_version", "WINDOWS?", "Windows?", "WINDOWSçæ¬"] },
+  { label: "防毒狀態", keys: ["防毒", "antivirus_installed", "?臬鋆瘥?", "?脫?", "æ¯å¦è£é²æ¯"] },
+  { label: "盤點狀態", keys: ["盤點狀態", "狀態", "status", "?日????", "???", "ç¤é»çæ\u0085", "çæ\u0085"] },
+  { label: "備註", keys: ["備註", "note", "?酉", "?日??酉", "åè¨»", "ç¤é»åè¨»"] },
+  { label: "最後更新", keys: ["最後更新", "updated_at", "?敺??", "?日???", "æå¾æ´æ°"] }
 ];
 
 async function api(path, options) {
@@ -47,15 +48,8 @@ function formatDate(value) {
 
 function RecordValue({ value }) {
   if (value === null || value === undefined || value === "") return <span className="muted">-</span>;
-  if (typeof value === "object") return <span>{JSON.stringify(value)}</span>;
-  return <span>{String(value)}</span>;
-}
-
-function getRecordField(data, column) {
-  for (const key of column.keys || [column.label]) {
-    if (data && data[key] !== undefined && data[key] !== null && data[key] !== "") return data[key];
-  }
-  return "";
+  if (typeof value === "object") return <span title={JSON.stringify(value)}>{JSON.stringify(value)}</span>;
+  return <span title={String(value)}>{String(value)}</span>;
 }
 
 function normalizeWindowsFilter(value) {
@@ -87,17 +81,17 @@ function compareIpValues(left, right, direction) {
 }
 
 function assetValue(row, column) {
-  return getRecordField(row.data || {}, column);
+  return getField(row, column.keys, "");
 }
 
 function AntivirusValue({ value }) {
   const text = String(value || "").trim();
   if (!text || text === "-") return <span className="muted">-</span>;
-  const installed = /已|是|安裝|yes|true|installed|有/i.test(text) && !/未|no|false|none|無/i.test(text);
+  const installed = /yes|true|installed|有|已|啟用|正常/i.test(text) && !/no|false|none|無|未/i.test(text);
   return (
     <span className={`antivirus-state ${installed ? "installed" : "missing"}`}>
-      <i aria-hidden="true">◆</i>
-      {installed ? "已安裝" : "未安裝"}
+      <i aria-hidden="true">{installed ? "●" : "!"}</i>
+      {installed ? "已安裝" : "需確認"}
     </span>
   );
 }
@@ -106,20 +100,19 @@ function InventoryStatusBadge({ value }) {
   const text = String(value || "").trim();
   if (!text) return <span className="muted">-</span>;
   let tone = "pending";
-  if (text.includes("已")) tone = "done";
-  if (text.includes("未") || text.includes("異常")) tone = "danger";
-  if (text.includes("待")) tone = "pending";
+  if (text.includes("完成") || text.includes("已") || text.toLowerCase().includes("done")) tone = "done";
+  if (text.includes("異常") || text.includes("缺") || text.toLowerCase().includes("error")) tone = "danger";
   return <span className={`inventory-badge ${tone}`}>{text}</span>;
 }
 
 function AssetCell({ column, value }) {
-  if (column.label === "防毒") return <AntivirusValue value={value} />;
+  if (column.label === "防毒狀態") return <AntivirusValue value={value} />;
   if (column.label === "盤點狀態") return <InventoryStatusBadge value={value} />;
   if (column.label === "最後更新") return <RecordValue value={formatDate(value)} />;
   if (column.label === "資產類型") {
     return (
       <span className="asset-type-pill">
-        <i aria-hidden="true">▣</i>
+        <i aria-hidden="true">●</i>
         {value || "-"}
       </span>
     );
@@ -155,7 +148,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
 
   const departments = useMemo(() => {
     const values = rows
-      .map((row) => String(assetValue(row, { keys: ["部門"] }) || "").trim())
+      .map((row) => String(assetValue(row, { keys: ["部門", "department", "?券?", "é¨é"] }) || "").trim())
       .filter(Boolean);
     return ["全部部門", ...Array.from(new Set(values)).sort((a, b) => a.localeCompare(b, "zh-Hant"))];
   }, [rows]);
@@ -166,30 +159,16 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
     return rows
       .filter((row) => {
         const data = row.data || {};
-        const matchDepartment = department === "全部部門" || assetValue(row, { keys: ["部門"] }) === department;
-        const windowsValue = normalizeWindowsFilter(assetValue(row, { keys: ["WINDOWS版本", "Windows版本", "windows_version"] }));
+        const matchDepartment = department === "全部部門" || assetValue(row, { keys: ["部門", "department", "?券?", "é¨é"] }) === department;
+        const windowsValue = normalizeWindowsFilter(assetValue(row, { keys: ["Windows 版本", "WINDOWS?", "Windows?", "windows_version", "WINDOWSçæ¬"] }));
         const matchWindows = windowsFilter === "全部" || windowsValue === windowsFilter;
         const matchKeyword =
           !keyword ||
-          [
-            "資產類型",
-            "電腦名稱",
-            "設備名稱",
-            "部門",
-            "使用人",
-            "IP位置",
-            "主機型號",
-            "設備型號",
-            "型號",
-            "螢幕型號",
-            "WINDOWS版本",
-            "備註",
-            "盤點備註"
-          ].some((key) => String(data[key] || "").toLowerCase().includes(keyword));
+          MOUNTAIN_PC_COLUMNS.some((column) => String(getField({ data }, column.keys, "")).toLowerCase().includes(keyword));
         return matchDepartment && matchWindows && matchKeyword;
       })
       .sort((left, right) =>
-        compareIpValues(assetValue(left, { keys: ["IP位置"] }), assetValue(right, { keys: ["IP位置"] }), direction)
+        compareIpValues(assetValue(left, { keys: ["IP", "IP 位址", "ip_address", "IP雿蔭", "IPä½ç½®"] }), assetValue(right, { keys: ["IP", "IP 位址", "ip_address", "IP雿蔭", "IPä½ç½®"] }), direction)
       );
   }, [rows, query, department, windowsFilter, ipSort]);
 
@@ -204,13 +183,14 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
     <section className="section-page mountain-pc-page">
       <header className="asset-page-head">
         <div>
-          <div className="breadcrumb">資產管理 / 山上電腦</div>
+          <div className="breadcrumb">設備清單 / 山上電腦</div>
           <div className="asset-title-row">
             <h1>{config.title}</h1>
             <span className="count-badge">{loading ? "讀取中" : `${rows.length} 筆`}</span>
           </div>
+          <p>{config.hint}</p>
         </div>
-        <button onClick={load}>刷新</button>
+        <button onClick={load}>重新整理</button>
       </header>
 
       {error ? <div className="error-box">{error}</div> : null}
@@ -219,7 +199,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="搜尋部門、使用人、IP、電腦名稱、主機型號、螢幕型號或備註..."
+          placeholder="搜尋部門、使用者、電腦名稱、IP、型號或備註..."
         />
         <select value={department} onChange={(event) => setDepartment(event.target.value)}>
           {departments.map((item) => (
@@ -228,7 +208,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
             </option>
           ))}
         </select>
-        <div className="segmented-control" aria-label="Windows 快速篩選">
+        <div className="segmented-control" aria-label="Windows 版本篩選">
           {["全部", "Win10", "Win11"].map((item) => (
             <button
               key={item}
@@ -240,7 +220,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
             </button>
           ))}
         </div>
-        <button className="plain-reset" onClick={resetFilters}>重置</button>
+        <button className="plain-reset" onClick={resetFilters}>重設</button>
       </div>
 
       <div className="asset-table-wrap">
@@ -251,7 +231,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
                 <th key={column.label}>
                   {column.sortable ? (
                     <button className="ip-sort-button" type="button" onClick={() => setIpSort((value) => (value === "asc" ? "desc" : "asc"))}>
-                      IP位置 {ipSort === "asc" ? "↑" : "↓"}
+                      IP 位址 {ipSort === "asc" ? "升冪" : "降冪"}
                     </button>
                   ) : (
                     column.label
@@ -267,7 +247,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
               </tr>
             ) : filteredRows.length === 0 ? (
               <tr>
-                <td colSpan={MOUNTAIN_PC_COLUMNS.length}>目前沒有符合條件的設備資料。</td>
+                <td colSpan={MOUNTAIN_PC_COLUMNS.length}>目前沒有符合條件的設備資料</td>
               </tr>
             ) : (
               filteredRows.map((row) => (
