@@ -366,6 +366,7 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
 }
 
 function DashboardCalendarPanel() {
+  const router = useRouter();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
@@ -391,6 +392,15 @@ function DashboardCalendarPanel() {
           <b>{year} / {String(month + 1).padStart(2, "0")}</b>
         </div>
         <div className="calendar-actions">
+          <button
+            type="button"
+            className="sports-calendar-easter-egg"
+            title="Sports Calendar"
+            aria-label="Open Sports Calendar"
+            onClick={() => router.push("/calendar")}
+          >
+            🏆
+          </button>
           <button aria-label="上一月">‹</button>
           <button>今日</button>
           <button aria-label="下一月">›</button>

@@ -1,0 +1,36 @@
+[
+  {
+    "title": "T vs L",
+    "sport_type": "baseball",
+    "league": "CPBL",
+    "away_team": "T",
+    "home_team": "L",
+    "start_time": "2026-06-16T18:00:00+08:00",
+    "end_time": null,
+    "venue": null,
+    "status": "scheduled",
+    "importance": "normal",
+    "notes": null,
+    "source_type": "official_screenshot",
+    "source_name": "CPBL official calendar June 2026",
+    "source_file": "cpbl-2026-06-all-teams.png",
+    "source_month": "2026-06"
+  },
+  {
+    "title": "Barcelona stage",
+    "sport_type": "cycling",
+    "league": "TDF",
+    "away_team": null,
+    "home_team": null,
+    "start_time": "2026-06-27T13:30:00+08:00",
+    "end_time": null,
+    "venue": "Barcelona",
+    "status": "scheduled",
+    "importance": "watch",
+    "notes": "Sample import row",
+    "source_type": "manual_json",
+    "source_name": "Example sports calendar data",
+    "source_file": "example-events.json",
+    "source_month": "2026-06"
+  }
+]

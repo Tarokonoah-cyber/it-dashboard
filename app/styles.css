@@ -7487,3 +7487,538 @@ textarea:disabled {
     padding: 22px 16px 28px;
   }
 }
+/* Hidden Sports Calendar */
+.sports-calendar-easter-egg {
+  width: 34px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0;
+  border-color: #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-blue, #2f5f98);
+  opacity: 0.74;
+  box-shadow: none;
+}
+
+.sports-calendar-easter-egg:hover {
+  border-color: #c99a45;
+  background: #fff8e8;
+  opacity: 1;
+}
+
+.sports-calendar-page {
+  min-height: calc(100vh - 66px);
+  display: grid;
+  grid-template-columns: 300px minmax(760px, 1fr) 330px;
+  gap: 0;
+  background: var(--hotel-bg, #f5f7fa);
+  color: var(--hotel-text, #162033);
+}
+
+.sports-filter-panel,
+.sports-detail-panel {
+  min-height: calc(100vh - 66px);
+  border-color: var(--hotel-line, #dde4ee);
+  background: #fff;
+}
+
+.sports-filter-panel {
+  border-right: 1px solid var(--hotel-line, #dde4ee);
+  padding: 22px 18px;
+}
+
+.sports-detail-panel {
+  border-left: 1px solid var(--hotel-line, #dde4ee);
+  padding: 22px 20px;
+}
+
+.sports-search {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid var(--hotel-line, #dde4ee);
+  border-radius: 8px;
+  background: #fbfcfe;
+  padding: 0 11px;
+}
+
+.sports-search span {
+  color: var(--hotel-muted, #667085);
+  font-size: 18px;
+}
+
+.sports-search input {
+  width: 100%;
+  min-height: 40px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--hotel-text, #162033);
+  padding: 0;
+}
+
+.sports-search input::placeholder {
+  color: #8a98aa;
+}
+
+.sports-filter-section {
+  display: grid;
+  gap: 8px;
+  margin: 22px 0;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-filter-section button,
+.sports-check-row,
+.sports-favorite-actions button,
+.sports-editor button {
+  min-height: 38px;
+  border: 1px solid #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text, #162033);
+  box-shadow: none;
+}
+
+.sports-filter-section button {
+  text-align: left;
+}
+
+.sports-filter-section button.active,
+.sports-favorite-actions button.active {
+  border-color: #c99a45;
+  background: #fff8e8;
+  color: #8a5b09;
+}
+
+.sports-side-block {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-side-block:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.sports-side-block h2 {
+  margin: 0 0 4px;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+}
+
+.sports-side-block p {
+  margin: 0;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sports-check-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 9px;
+  text-align: left;
+}
+
+.sports-check-row span {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d8e3ef;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.sports-check-row span.checked {
+  border-color: #162033;
+  background: radial-gradient(circle at center, #162033 0 42%, #fff 45% 100%);
+}
+
+.sports-check-row b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.sports-check-row small {
+  border-radius: 999px;
+  background: #eef3f8;
+  color: var(--hotel-muted, #667085);
+  padding: 2px 8px;
+  font-weight: 800;
+}
+
+.sports-favorite-list {
+  display: grid;
+  gap: 7px;
+}
+
+.sports-favorite-list span {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 32px;
+  align-items: center;
+  border: 1px solid var(--hotel-line, #dde4ee);
+  border-radius: 8px;
+  background: #fbfcfe;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.sports-favorite-list b {
+  color: var(--hotel-blue, #2f5f98);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.sports-calendar-main {
+  min-width: 0;
+  padding: 22px 20px 28px;
+}
+
+.sports-calendar-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.sports-calendar-header h1 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.sports-calendar-header p {
+  margin: 6px 0 0;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sports-calendar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sports-calendar-controls > button,
+.sports-segmented button {
+  min-width: 36px;
+  height: 34px;
+  border-color: #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-blue, #2f5f98);
+  padding: 0 11px;
+  box-shadow: none;
+}
+
+.sports-segmented {
+  display: flex;
+  gap: 4px;
+  border: 1px solid #d8e3ef;
+  border-radius: 10px;
+  background: #eef3f8;
+  padding: 3px;
+}
+
+.sports-segmented button {
+  min-width: 34px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  color: var(--hotel-muted, #667085);
+}
+
+.sports-segmented button.active {
+  background: #fff;
+  color: var(--hotel-text, #162033);
+}
+
+.sports-alert,
+.sports-empty-state {
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+  color: #9a5b12;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+.sports-alert {
+  margin-bottom: 12px;
+}
+
+.sports-empty-state {
+  margin-top: 14px;
+}
+
+.sports-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--hotel-line, #dde4ee);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--hotel-shadow-soft, 0 4px 14px rgba(18, 34, 56, 0.06));
+}
+
+.sports-weekday,
+.sports-day-cell {
+  border-right: 1px solid var(--hotel-line, #dde4ee);
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-weekday:nth-child(7n),
+.sports-day-cell:nth-child(7n) {
+  border-right: 0;
+}
+
+.sports-weekday {
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: #f4f7fb;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sports-weekday:first-child,
+.sports-weekday:nth-child(7) {
+  color: var(--hotel-red, #be4b4b);
+}
+
+.sports-day-cell {
+  min-height: 118px;
+  padding: 10px;
+  background: #fff;
+}
+
+.sports-day-cell.is-today {
+  background: #fffdf8;
+}
+
+.sports-day-number {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--hotel-text, #162033);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sports-day-cell.is-today .sports-day-number {
+  background: #162033;
+  color: #fff;
+}
+
+.sports-event-pill {
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  border: 1px solid #dce6f1;
+  border-radius: 7px;
+  background: #f8fbff;
+  color: var(--hotel-text, #162033);
+  padding: 5px 7px;
+  text-align: left;
+  box-shadow: none;
+}
+
+.sports-event-pill span {
+  border-radius: 999px;
+  background: #e8f1fb;
+  color: var(--hotel-blue, #2f5f98);
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.sports-event-pill b {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sports-event-pill time {
+  color: var(--hotel-muted, #667085);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.sports-event-pill.is-selected {
+  border-color: #2f5f98;
+  background: #eef6ff;
+}
+
+.sports-event-pill.importance-important,
+.sports-event-pill.importance-must_watch {
+  border-color: #edcf9a;
+  background: #fff8e8;
+}
+
+.sports-more {
+  display: block;
+  margin-top: 6px;
+  color: var(--hotel-muted, #667085);
+  font-weight: 800;
+}
+
+.sports-detail-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sports-detail-kicker span,
+.sports-detail-kicker b {
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.sports-detail-kicker span {
+  background: #e8f1fb;
+  color: var(--hotel-blue, #2f5f98);
+}
+
+.sports-detail-kicker b {
+  background: #eef8f2;
+  color: var(--hotel-green, #2f7d5b);
+}
+
+.sports-detail-panel h2 {
+  margin: 0 0 14px;
+  color: var(--hotel-text, #162033);
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.sports-detail-grid,
+.sports-source-box {
+  display: grid;
+  gap: 9px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-detail-field {
+  display: grid;
+  gap: 4px;
+}
+
+.sports-detail-field span {
+  color: var(--hotel-muted, #667085);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sports-detail-field b {
+  overflow-wrap: anywhere;
+  color: var(--hotel-text, #162033);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.sports-editor {
+  display: grid;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-editor label {
+  display: grid;
+  gap: 6px;
+}
+
+.sports-editor label span {
+  color: var(--hotel-muted, #667085);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sports-editor select,
+.sports-editor textarea {
+  width: 100%;
+  border: 1px solid #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text, #162033);
+  padding: 10px 11px;
+}
+
+.sports-editor textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.sports-editor button {
+  border-color: #244a76;
+  background: #244a76;
+  color: #fff;
+}
+
+.sports-favorite-actions {
+  display: grid;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-source-box {
+  padding-top: 16px;
+  border-bottom: 0;
+}
+
+.sports-detail-empty {
+  min-height: 220px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--hotel-line, #dde4ee);
+  border-radius: 10px;
+  background: #fbfcfe;
+  padding: 18px;
+}
+
+.sports-detail-empty p {
+  margin: 0;
+  color: var(--hotel-muted, #667085);
+  line-height: 1.6;
+}
+
+@media (max-width: 1300px) {
+  .sports-calendar-page {
+    grid-template-columns: 260px minmax(680px, 1fr) 300px;
+  }
+}
