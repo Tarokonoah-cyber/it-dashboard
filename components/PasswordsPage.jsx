@@ -8,70 +8,70 @@ const PASSWORD_INDEX_ITEMS = [
     name: "Booking.com 後台",
     category: "SaaS",
     risk_level: "General",
-    description: "訂房平台後台入口，登入資訊請依 Vault 紀錄為準。",
+    description: "訂房平台管理入口。實際帳密請以 Vault 為準。",
     owner: "IT",
     login_url: "https://admin.booking.com/",
     vault_provider: "Bitwarden",
     vault_collection: "IT - General",
     vault_item_url: "",
     sop_url: "",
-    notes_public: "僅保留入口索引，不顯示帳密。"
+    notes_public: "僅保存入口與索引，不顯示密碼。"
   },
   {
     id: "google-business-profile",
     name: "Google Business Profile",
     category: "SaaS",
     risk_level: "General",
-    description: "Google 商家檔案管理入口，帳務與權限請至 Vault 查看。",
+    description: "Google 商家資訊管理入口。需由 Vault 查找實際登入資訊。",
     owner: "IT",
     login_url: "https://business.google.com/",
     vault_provider: "Bitwarden",
     vault_collection: "IT - General",
     vault_item_url: "",
     sop_url: "",
-    notes_public: "僅保留入口索引，不顯示帳密。"
+    notes_public: "僅保存入口與索引，不顯示密碼。"
   },
   {
     id: "main-nas",
-    name: "主力 NAS",
+    name: "主 NAS",
     category: "NAS",
     risk_level: "Critical",
-    description: "主要檔案服務，詳細連線資訊請至 Bitwarden 查看。",
+    description: "核心儲存設備。敏感資訊請至 Bitwarden / KeePassXC 查詢。",
     owner: "IT",
     login_url: "",
     vault_provider: "Bitwarden",
     vault_collection: "IT - Critical",
     vault_item_url: "",
     sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+    notes_public: "Critical 項目不提供登入網址複製。"
   },
   {
     id: "opera-db",
     name: "Opera DB",
     category: "Database",
     risk_level: "Critical",
-    description: "飯店系統資料庫索引，詳細連線資訊請至 Bitwarden 查看。",
+    description: "營運資料庫索引。敏感資訊請至 Vault 查詢。",
     owner: "IT",
     login_url: "",
     vault_provider: "Bitwarden",
     vault_collection: "IT - Critical",
     vault_item_url: "",
     sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+    notes_public: "Critical 項目不提供登入網址複製。"
   },
   {
     id: "fortigate-main-firewall",
     name: "Fortigate Main Firewall",
     category: "Network",
     risk_level: "Critical",
-    description: "主要防火牆，詳細連線資訊請至 Bitwarden 查看。",
+    description: "主要防火牆管理索引。敏感資訊請至 Vault 查詢。",
     owner: "IT",
     login_url: "",
     vault_provider: "Bitwarden",
     vault_collection: "IT - Critical",
     vault_item_url: "",
     sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
+    notes_public: "Critical 項目不提供登入網址複製。"
   }
 ];
 
@@ -109,20 +109,20 @@ export default function PasswordsPage() {
     <section className="section-page password-index-page">
       <header className="section-head">
         <div>
-          <h1>密碼索引與 Vault 入口</h1>
+          <h1>密碼管理索引</h1>
+          <p>只保存系統入口與 Vault 位置，不在此頁顯示密碼。</p>
         </div>
       </header>
 
       <div className="security-notice">
-        這裡只保留密碼索引與 Vault 入口，不顯示任何真實密碼、金鑰或私密連線資訊。
-        Critical 項目請至 Bitwarden / KeePassXC 查看。
+        安全提醒：此頁僅作為登入入口與 Vault 索引。Critical 項目請至 Bitwarden / KeePassXC 查詢，避免在管理系統中保存或揭露密碼。
       </div>
 
       <div className="records-toolbar password-index-toolbar">
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="搜尋系統名稱、分類、風險、用途、負責人或 Vault 位置..."
+          placeholder="搜尋系統名稱、分類、風險等級、Vault 位置..."
         />
         <span>{filteredItems.length} 筆</span>
       </div>
@@ -130,11 +130,11 @@ export default function PasswordsPage() {
       {PASSWORD_INDEX_ITEMS.length === 0 ? (
         <div className="password-empty-state">
           <h2>尚未建立密碼索引</h2>
-          <p>請先將真實密碼、金鑰、私鑰搬移至 Bitwarden 或 KeePassXC，再於此頁建立索引資料。</p>
-          <button className="primary-action" type="button">新增索引項目</button>
+          <p>請新增系統入口與 Vault 位置。實際密碼仍應保存在 Bitwarden 或 KeePassXC。</p>
+          <button className="primary-action" type="button">新增索引</button>
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="empty">找不到符合條件的索引項目。</div>
+        <div className="empty">找不到符合條件的密碼索引</div>
       ) : (
         <div className="password-index-table-wrap">
           <table className="password-index-table">
@@ -142,10 +142,10 @@ export default function PasswordsPage() {
               <tr>
                 <th>系統名稱</th>
                 <th>分類</th>
-                <th>風險等級</th>
+                <th>風險</th>
                 <th>用途 / 說明</th>
                 <th>負責人</th>
-                <th>密碼位置</th>
+                <th>Vault 位置</th>
                 <th>SOP</th>
                 <th>操作</th>
               </tr>
@@ -156,10 +156,10 @@ export default function PasswordsPage() {
                 const isSensitive = item.risk_level === "Sensitive";
                 const vaultText = `${item.vault_provider} > ${item.vault_collection}`;
                 const loginText = isCritical
-                  ? "Critical：詳細連線資訊請至 Bitwarden 查看"
+                  ? "Critical 項目：請至 Vault 查詢"
                   : isSensitive || item.risk_level === "Internal"
-                    ? "請至 Vault 查看"
-                    : item.login_url || "請至 Vault 查看";
+                    ? "請至 Vault 查詢"
+                    : item.login_url || "請至 Vault 查詢";
 
                 return (
                   <tr key={item.id}>
@@ -177,13 +177,13 @@ export default function PasswordsPage() {
                     </td>
                     <td>{item.owner}</td>
                     <td>{vaultText}</td>
-                    <td>{item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>查看 SOP</button> : <span className="muted">尚未建立</span>}</td>
+                    <td>{item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>開啟 SOP</button> : <span className="muted">尚未設定</span>}</td>
                     <td>
                       <div className="password-actions">
                         <button type="button" onClick={() => openUrl(item.vault_item_url, "https://vault.bitwarden.com/")}>
                           開啟 Bitwarden
                         </button>
-                        {item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>查看 SOP</button> : null}
+                        {item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>開啟 SOP</button> : null}
                         {!isCritical && item.login_url ? (
                           <button type="button" onClick={() => copyLoginUrl(item)}>複製登入網址</button>
                         ) : null}

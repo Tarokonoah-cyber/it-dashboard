@@ -47,7 +47,7 @@ export default function QuickNotesPage() {
     const value = content.trim();
     if (!value) return;
     if (value.length > MAX_QUICK_NOTE_LENGTH) {
-      setError(`Quick note content must be ${MAX_QUICK_NOTE_LENGTH} characters or less`);
+      setError(`備忘錄內容不可超過 ${MAX_QUICK_NOTE_LENGTH} 個字`);
       return;
     }
     try {
@@ -61,10 +61,10 @@ export default function QuickNotesPage() {
   }
 
   async function editNote(note) {
-    const next = window.prompt("修改備忘錄", note.content || "");
+    const next = window.prompt("修改備忘錄內容", note.content || "");
     if (!next || !next.trim()) return;
     if (next.trim().length > MAX_QUICK_NOTE_LENGTH) {
-      setError(`Quick note content must be ${MAX_QUICK_NOTE_LENGTH} characters or less`);
+      setError(`備忘錄內容不可超過 ${MAX_QUICK_NOTE_LENGTH} 個字`);
       return;
     }
     try {
@@ -77,7 +77,7 @@ export default function QuickNotesPage() {
   }
 
   async function deleteNote(id) {
-    if (!window.confirm("確定刪除這張備忘？")) return;
+    if (!window.confirm("確定要刪除這則備忘錄？")) return;
     await api(`/api/quick-notes?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     await load();
   }
@@ -103,16 +103,24 @@ export default function QuickNotesPage() {
   }
 
   return (
-    <section className="section-page">
+    <section className="section-page quick-notes-page">
       <header className="section-head">
         <div>
           <h1>快速備忘錄</h1>
+          <p>記錄臨時事項、交辦提醒與待確認資訊。</p>
         </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
       <div className="notes-composer">
-        <textarea ref={contentRef} value={content} onChange={(event) => setContent(event.target.value)} maxLength={MAX_QUICK_NOTE_LENGTH} required placeholder="臨時事項、待確認、小提醒..." />
-        <button onClick={addNote}>+ 新增備忘</button>
+        <textarea
+          ref={contentRef}
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          maxLength={MAX_QUICK_NOTE_LENGTH}
+          required
+          placeholder="輸入備忘內容，例如交辦事項、需追蹤問題或會議提醒..."
+        />
+        <button onClick={addNote}>新增備忘</button>
       </div>
       <div className="quick-notes-grid">
         {loading ? (
@@ -137,12 +145,12 @@ export default function QuickNotesPage() {
                 setDraggingId("");
               }}
               onDragEnd={() => setDraggingId("")}
-              title="拖拉可調整順序"
+              title="可拖曳調整排序"
             >
               <p>{note.content}</p>
               <div>
-                <span className="drag-handle">拖拉</span>
-                <button onClick={() => editNote(note)}>修改</button>
+                <span className="drag-handle">拖曳排序</span>
+                <button onClick={() => editNote(note)}>編輯</button>
                 <button onClick={() => deleteNote(note.id)}>刪除</button>
               </div>
             </article>

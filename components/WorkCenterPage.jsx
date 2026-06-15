@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const WORK_CATEGORIES = ["一般", "維修", "行政支援", "採購", "SOP", "設備", "網路", "系統", "其他"];
-const WORK_STATUSES = ["已完成", "處理中", "待處理", "未開始", "異常"];
+const WORK_CATEGORIES = ["一般", "設備維護", "系統更新", "網路", "SOP", "設備", "合約", "系統", "其他"];
+const WORK_STATUSES = ["待處理", "進行中", "已完成", "暫緩", "異常"];
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 
 async function api(path, options) {
@@ -28,37 +28,29 @@ function formatDate(value) {
   return dateKey(value) || "-";
 }
 
+function normalizeStatus(status) {
+  const text = String(status || "").trim();
+  if (!text) return "待處理";
+  if (DONE_STATUSES.has(text) || text.includes("完成")) return "已完成";
+  if (text.includes("進") || text.toLowerCase() === "doing") return "進行中";
+  if (text.includes("異常") || text.includes("逾期") || text.toLowerCase() === "error") return "異常";
+  if (text.includes("暫") || text.includes("等")) return "暫緩";
+  return text;
+}
+
+function statusClassName(status) {
+  const normalized = normalizeStatus(status);
+  if (normalized === "已完成") return "status-done";
+  if (normalized === "進行中") return "status-active";
+  if (normalized === "異常") return "status-danger";
+  return "status-pending";
+}
+
 function isDoneStatus(status) {
-  return DONE_STATUSES.has(String(status || "").trim());
+  return normalizeStatus(status) === "已完成";
 }
 
 export default function WorkCenterPage() {
-  const L = {
-    pageTitle: "工作中心",
-    pageDesc: "新增、查詢、管理所有工作紀錄。這裡不放儀表板統計卡。",
-    refresh: "刷新",
-    addTitle: "＋新增工作紀錄",
-    addDesc: "適合記錄臨時完成、沒有在 Todo List 裡的工作",
-    saving: "新增中...",
-    date: "日期",
-    staff: "人員",
-    title: "工作標題",
-    titlePlaceholder: "例如：協助櫃台處理讀卡機",
-    category: "類型",
-    status: "狀態",
-    note: "備註",
-    notePlaceholder: "補充處理內容、廠商、房號或後續事項",
-    recordsTitle: "全部工作紀錄",
-    loading: "讀取中...",
-    loadingRecords: "讀取工作紀錄中...",
-    countUnit: "筆",
-    clear: "清除篩選",
-    all: "全部",
-    empty: "目前沒有符合條件的工作紀錄",
-    untitled: "未命名工作",
-    general: "一般",
-    notStarted: "未開始"
-  };
   const today = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     year: "numeric",
@@ -115,12 +107,13 @@ export default function WorkCenterPage() {
     setSaving(true);
     setError("");
     try {
-      await api("/api/work-logs", {
+      const created = await api("/api/work-logs", {
         method: "POST",
         body: JSON.stringify(form)
       });
       setForm((current) => ({ ...current, title: "", note: "" }));
-      await load();
+      setFilters({ date: "", staff: "", status: "", category: "" });
+      setWorks((current) => [created, ...current.filter((work) => work.id !== created.id)]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -136,11 +129,12 @@ export default function WorkCenterPage() {
     <section className="section-page work-management-page">
       <header className="section-head">
         <div>
-          <h1>{L.pageTitle}</h1>
+          <h1>工作中心</h1>
+          <p>新增、篩選與追蹤日常工作紀錄。</p>
         </div>
         <div className="work-head-actions">
-          <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>老闆 KPI 月報</button>
-          <button onClick={load}>{L.refresh}</button>
+          <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>查看 KPI 報表</button>
+          <button onClick={load}>重新整理</button>
         </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
@@ -148,41 +142,41 @@ export default function WorkCenterPage() {
       <form className="work-entry-panel" onSubmit={submitWork}>
         <header>
           <div>
-            <h2>{L.addTitle}</h2>
-            <span>{L.addDesc}</span>
+            <h2>新增工作</h2>
+            <span>建立一筆可追蹤的工作紀錄，並同步進入工作列表。</span>
           </div>
           <button className="primary-action" disabled={saving} type="submit">
-            {saving ? L.saving : L.addTitle}
+            {saving ? "新增中..." : "新增工作"}
           </button>
         </header>
         <div className="work-entry-grid">
           <label>
-            {L.date}
+            日期
             <input type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
           </label>
           <label>
-            {L.staff}
+            負責人
             <input value={form.staff} onChange={(event) => setForm((current) => ({ ...current, staff: event.target.value }))} placeholder="Noah / Urza" required />
           </label>
           <label className="wide">
-            {L.title}
-            <input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder={L.titlePlaceholder} required />
+            工作內容
+            <input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder="例如：客房樓層設備檢查" required />
           </label>
           <label>
-            {L.category}
+            類型
             <select value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}>
               {WORK_CATEGORIES.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
           <label>
-            {L.status}
+            狀態
             <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))}>
               {WORK_STATUSES.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
           <label className="wide">
-            {L.note}
-            <textarea value={form.note} onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))} placeholder={L.notePlaceholder} />
+            備註
+            <textarea value={form.note} onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))} placeholder="補充處理細節、廠商回覆或後續追蹤事項" />
           </label>
         </div>
       </form>
@@ -190,60 +184,60 @@ export default function WorkCenterPage() {
       <section className="work-records-panel">
         <header className="work-records-head">
           <div>
-            <h2>{L.recordsTitle}</h2>
-            <span>{loading ? L.loading : `${works.length} ${L.countUnit}`}</span>
+            <h2>工作紀錄</h2>
+            <span>{loading ? "讀取中..." : `${works.length} 筆`}</span>
           </div>
-          <button onClick={clearFilters}>{L.clear}</button>
+          <button onClick={clearFilters}>清除篩選</button>
         </header>
         <div className="work-filters">
           <label>
-            {L.date}
+            日期
             <input type="date" value={filters.date} onChange={(event) => setFilters((current) => ({ ...current, date: event.target.value }))} />
           </label>
           <label>
-            {L.status}
+            狀態
             <select value={filters.status} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}>
-              <option value="">{L.all}</option>
-              {options.status.map((item) => <option key={item}>{item}</option>)}
+              <option value="">全部</option>
+              {options.status.map((item) => <option key={item} value={item}>{normalizeStatus(item)}</option>)}
             </select>
           </label>
           <label>
-            {L.staff}
+            負責人
             <select value={filters.staff} onChange={(event) => setFilters((current) => ({ ...current, staff: event.target.value }))}>
-              <option value="">{L.all}</option>
+              <option value="">全部</option>
               {options.staff.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
           <label>
-            {L.category}
+            類型
             <select value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
-              <option value="">{L.all}</option>
+              <option value="">全部</option>
               {options.category.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
         </div>
         <div className="full-work-table">
           <div className="full-work-row head">
-            <span>{L.date}</span>
-            <span>{L.staff}</span>
-            <span>{L.title}</span>
-            <span>{L.category}</span>
-            <span>{L.status}</span>
-            <span>{L.note}</span>
+            <span>日期</span>
+            <span>負責人</span>
+            <span>工作內容</span>
+            <span>類型</span>
+            <span>狀態</span>
+            <span>備註</span>
           </div>
           {loading ? (
-            <div className="empty">{L.loadingRecords}</div>
+            <div className="empty">讀取工作紀錄中...</div>
           ) : works.length === 0 ? (
-            <div className="empty">{L.empty}</div>
+            <div className="empty">目前沒有符合條件的工作紀錄</div>
           ) : (
             works.map((work) => (
               <div className="full-work-row" key={work.id}>
                 <span>{formatDate(work.date || work.created_at)}</span>
                 <span>{work.staff || "-"}</span>
-                <strong>{work.title || L.untitled}</strong>
-                <span>{work.category || L.general}</span>
-                <b className={isDoneStatus(work.status) ? "status-done" : "status-pending"}>{work.status || L.notStarted}</b>
-                <span>{work.note || "-"}</span>
+                <strong title={work.title || ""}>{work.title || "未命名工作"}</strong>
+                <span>{work.category || "一般"}</span>
+                <b className={isDoneStatus(work.status) ? "status-done" : statusClassName(work.status)}>{normalizeStatus(work.status)}</b>
+                <span title={work.note || ""}>{work.note || "-"}</span>
               </div>
             ))
           )}

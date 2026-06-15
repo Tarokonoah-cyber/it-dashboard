@@ -1,28 +1,15 @@
-import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
-
-const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+import {
+  createTodoWithWorkLog,
+  isTodoDone,
+  normalizeTodo,
+  syncTodoToWorkLog,
+  validateTextLength
+} from "../../../lib/dailyOpsSync";
 
 const MAX_TODO_TITLE_LENGTH = 120;
 const MAX_TODO_TEXT_LENGTH = 1000;
-
-function validateTextLength(value, label, maxLength) {
-  const text = String(value || "").trim();
-  if (text.length > maxLength) {
-    const error = new Error(`${label} must be ${maxLength} characters or less`);
-    error.name = "ValidationError";
-    throw error;
-  }
-  return text;
-}
-
-function normalizeTodo(row) {
-  return {
-    ...row,
-    title: row.title || row.description || row.subject || "未命名待辦",
-    status: String(row.status || "未完成").trim()
-  };
-}
 
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
@@ -33,7 +20,7 @@ export async function GET(request) {
       "todo_logs",
       "select=*&order=created_at.desc&limit=100"
     );
-    const todos = rows.map(normalizeTodo).filter((row) => !DONE_STATUSES.has(row.status));
+    const todos = rows.map(normalizeTodo).filter((row) => !isTodoDone(row));
     return ok(todos);
   } catch (error) {
     return fail(error);
@@ -46,24 +33,8 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const title = validateTextLength(body.title, "Todo title", MAX_TODO_TITLE_LENGTH);
-    if (body.description !== undefined) validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
-    if (body.note !== undefined) validateTextLength(body.note, "Todo note", MAX_TODO_TEXT_LENGTH);
-    if (!title) return fail(new Error("請輸入待辦內容"), 400);
-
-    const payload = {
-      title,
-      status: "未完成",
-      priority: body.priority || "中",
-      owner: body.owner || "Noah",
-      due_date: body.due_date || todayTaipei(),
-      source: "vercel-dashboard"
-    };
-    const rows = await supabaseRequest("todo_logs", "select=*", {
-      method: "POST",
-      body: payload
-    });
-    return ok(normalizeTodo(rows[0] || payload));
+    const { todo, workLog } = await createTodoWithWorkLog(body, "vercel-dashboard");
+    return ok({ ...todo, workLogId: workLog?.id || null });
   } catch (error) {
     return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
@@ -83,17 +54,21 @@ export async function PATCH(request) {
       payload.title = validateTextLength(body.title, "Todo title", MAX_TODO_TITLE_LENGTH);
       if (!payload.title) return fail(new Error("Todo title is required"), 400);
     }
-    if (body.description !== undefined) payload.description = validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
+    if (body.description !== undefined) {
+      payload.description = validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
+    }
     if (body.note !== undefined) payload.note = validateTextLength(body.note, "Todo note", MAX_TODO_TEXT_LENGTH);
     if (body.status !== undefined) payload.status = String(body.status || "").trim();
-    if (DONE_STATUSES.has(payload.status)) payload.completed_at = new Date().toISOString();
+    if (payload.status !== undefined && isTodoDone(payload)) payload.completed_at = new Date().toISOString();
     payload.updated_at = new Date().toISOString();
 
     const rows = await supabaseRequest("todo_logs", `id=eq.${encodeURIComponent(id)}&select=*`, {
       method: "PATCH",
       body: payload
     });
-    return ok(normalizeTodo(rows[0] || { id, ...payload }));
+    const todo = normalizeTodo(rows[0] || { id, ...payload });
+    const workLog = await syncTodoToWorkLog(todo);
+    return ok({ ...todo, workLogId: workLog?.id || null });
   } catch (error) {
     return fail(error, error.name === "ValidationError" ? 400 : 500);
   }

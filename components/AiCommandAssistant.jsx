@@ -71,6 +71,9 @@ export default function AiCommandAssistant() {
       if (!response.ok || !data.success) throw new Error(data.message || TEXT.failed);
       setMessages((current) => [...current, { role: "assistant", text: data.reply || "" }]);
       setAction(data.action || null);
+      if (data.action?.type === "create_todo" && data.action.status === "created") {
+        window.dispatchEvent(new Event("dashboard-data-changed"));
+      }
     } catch (err) {
       setError(err.message || TEXT.failed);
     } finally {

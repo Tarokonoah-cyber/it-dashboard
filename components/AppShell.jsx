@@ -1,54 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import AiCommandAssistant from "./AiCommandAssistant";
-
-export const APP_SECTIONS = [
-  { key: "dashboard", icon: "📊", label: "儀表板", href: "/" },
-  { key: "quick-notes", icon: "📝", label: "快速備忘錄", href: "/quick-notes" },
-  { key: "work", icon: "🧾", label: "工作中心", href: "/work" },
-  { key: "documents", icon: "🗂️", label: "送交單據紀錄", href: "/documents" },
-  { key: "contacts", icon: "📒", label: "通訊錄", href: "/contacts" },
-  {
-    key: "assets",
-    icon: "🖥️",
-    label: "設備清單",
-    href: "/assets",
-    children: [
-      { key: "assets_mountain_pc", label: "山上電腦", href: "/assets/mountain-pc" },
-      { key: "assets_downhill_pc", label: "山下電腦", href: "/assets/downhill-pc" },
-      { key: "assets_printer", label: "印表機", href: "/assets/printers" },
-      { key: "assets_north_ya", label: "北YA", href: "/assets/north-ya" },
-      { key: "assets_iptv", label: "IPTV", href: "/assets/iptv" }
-    ]
-  },
-  {
-    key: "contracts",
-    icon: "📑",
-    label: "合約總覽",
-    href: "/contracts",
-    children: [
-      { key: "contracts_software", label: "軟體合約", href: "/contracts/software" },
-      { key: "contracts_mobile", label: "行動電話約期", href: "/contracts/mobile" }
-    ]
-  },
-  { key: "passwords", icon: "🔐", label: "密碼索引", href: "/passwords" },
-  { key: "anydesk", icon: "🪪", label: "AnyDesk List", href: "/anydesk" },
-  {
-    key: "sop",
-    icon: "📚",
-    label: "SOP 文件",
-    href: "/sop",
-    children: [
-      { key: "sop_docs", label: "SOP", href: "/sop/docs" },
-      { key: "soc_docs", label: "SOC", href: "/sop/soc" }
-    ]
-  },
-  { key: "settings", icon: "⚙️", label: "設定", href: "/settings" }
-];
-
-export const FLAT_APP_SECTIONS = APP_SECTIONS.flatMap((item) => [item, ...(item.children || [])]);
+import {
+  APP_SECTIONS,
+  FLAT_APP_SECTIONS,
+  SIDEBAR_STORAGE_KEY,
+  getInitialOpenGroups,
+  getParentSectionKey,
+  getSectionHref
+} from "./navigation";
 
 export function taipeiNowLabel() {
   return new Intl.DateTimeFormat("zh-Hant-TW", {
@@ -66,11 +28,23 @@ function navigateTo(item, onNavigate, router) {
     onNavigate(item.key, item);
     return;
   }
-  router.push(item.href || "/");
+  router.push(item.href || getSectionHref(item.key));
 }
 
-function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }) {
-  const [openGroups, setOpenGroups] = useState(() => new Set(["assets", "contracts", "sop"]));
+function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, mobileOpen, onCloseMobile }) {
+  const [openGroups, setOpenGroups] = useState(() => getInitialOpenGroups(activeSection));
+
+  useEffect(() => {
+    const parentKey = getParentSectionKey(activeSection);
+    setOpenGroups((current) => {
+      const next = new Set(current);
+      APP_SECTIONS.forEach((item) => {
+        if (item.children?.length && item.key !== parentKey) next.delete(item.key);
+      });
+      if (parentKey) next.add(parentKey);
+      return next;
+    });
+  }, [activeSection]);
 
   function isGroupActive(item) {
     return item.key === activeSection || item.children?.some((child) => child.key === activeSection);
@@ -85,102 +59,109 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router }
     });
   }
 
-  function toggleGroup(item) {
+  function handleParentClick(item) {
     if (collapsed) {
-      navigateTo(item.children?.[0] || item, onNavigate, router);
+      onToggle();
       return;
     }
     toggleGroupOpen(item);
   }
 
+  function handleNavigate(item) {
+    navigateTo(item, onNavigate, router);
+    onCloseMobile?.();
+  }
+
   return (
-    <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-        <div className="brand-row">
-          <div className="brand-mark">IT</div>
-          {!collapsed && (
-            <div className="brand-copy">
-              <h1>資訊後台</h1>
-              <p>Operations Control Center</p>
-            </div>
-          )}
-          <button className="collapse-btn" aria-label="切換側邊欄" onClick={onToggle}>
+    <>
+      <button
+        className={`sidebar-backdrop ${mobileOpen ? "show" : ""}`}
+        type="button"
+        aria-label="關閉選單"
+        onClick={onCloseMobile}
+      />
+      <aside className={`sidebar ${collapsed ? "collapsed" : ""} ${mobileOpen ? "mobile-open" : ""}`}>
+        <div className="sidebar-header">
+          <div className="brand-row">
+            <div className="brand-mark" aria-hidden="true">T</div>
+            {!collapsed && (
+              <div className="brand-copy">
+                <h1>資訊管理平台</h1>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <nav className="side-nav" aria-label="主選單">
+          {APP_SECTIONS.map((item) => {
+            const hasChildren = Boolean(item.children?.length);
+            const expanded = !collapsed && openGroups.has(item.key);
+            const groupActive = isGroupActive(item);
+            return (
+              <div className="nav-group" key={item.key}>
+                <button
+                  type="button"
+                  className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
+                  onClick={() => (hasChildren ? handleParentClick(item) : handleNavigate(item))}
+                  title={item.label}
+                  aria-expanded={hasChildren && !collapsed ? expanded : undefined}
+                >
+                  <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+                  {!collapsed && <span className="nav-text">{item.label}</span>}
+                  {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`} aria-hidden="true">›</span>}
+                </button>
+                {hasChildren && expanded && (
+                  <div className="nav-children">
+                    {item.children.map((child) => (
+                      <button
+                        key={child.key}
+                        type="button"
+                        className={`nav-child ${activeSection === child.key ? "active" : ""}`}
+                        onClick={() => handleNavigate(child)}
+                      >
+                        {child.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        <div className="sidebar-control">
+          <button className="collapse-btn" type="button" aria-label={collapsed ? "展開側邊欄" : "收合側邊欄"} onClick={onToggle}>
             {collapsed ? "›" : "‹"}
+            {!collapsed && <span>收合選單</span>}
           </button>
         </div>
-        {!collapsed && <div className="nav-label">主選單</div>}
-      </div>
-      <nav className="side-nav">
-        {APP_SECTIONS.map((item) => {
-          const hasChildren = Boolean(item.children?.length);
-          const expanded = openGroups.has(item.key);
-          const groupActive = isGroupActive(item);
-          return (
-            <div className="nav-group" key={item.key}>
-              <button
-                type="button"
-                className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
-                onClick={() => (hasChildren ? toggleGroup(item) : navigateTo(item, onNavigate, router))}
-                title={item.label}
-              >
-                <span
-                  className="nav-icon"
-                  onClick={(event) => {
-                    if (!hasChildren) return;
-                    event.stopPropagation();
-                    navigateTo(item, onNavigate, router);
-                  }}
-                >
-                  {item.icon}
-                </span>
-                {!collapsed && (
-                  <span
-                    onClick={(event) => {
-                      if (!hasChildren) return;
-                      event.stopPropagation();
-                      navigateTo(item, onNavigate, router);
-                    }}
-                  >
-                    {item.label}
-                  </span>
-                )}
-                {!collapsed && hasChildren && <span className={`nav-caret ${expanded ? "open" : ""}`}>⌄</span>}
-              </button>
-              {!collapsed && hasChildren && expanded && (
-                <div className="nav-children">
-                  {item.children.map((child) => (
-                    <button
-                      key={child.key}
-                      type="button"
-                      className={`nav-child ${activeSection === child.key ? "active" : ""}`}
-                      onClick={() => navigateTo(child, onNavigate, router)}
-                    >
-                      {child.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-      {!collapsed && (
-        <div className="sidebar-foot">
-          <span>Vercel Web App</span>
-          <span>Supabase Fast Dashboard</span>
-        </div>
-      )}
-    </aside>
+      </aside>
+    </>
   );
 }
 
 export default function AppShell({ activeSection = "dashboard", title, children, onNavigate }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const currentTitle = useMemo(
     () => title || FLAT_APP_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板",
     [activeSection, title]
   );
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (saved === "expanded") setCollapsed(false);
+    if (saved === "collapsed") setCollapsed(true);
+  }, []);
+
+  function toggleSidebar() {
+    setCollapsed((value) => {
+      const next = !value;
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next ? "collapsed" : "expanded");
+      return next;
+    });
+  }
 
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
@@ -188,17 +169,31 @@ export default function AppShell({ activeSection = "dashboard", title, children,
         activeSection={activeSection}
         onNavigate={onNavigate}
         collapsed={collapsed}
-        onToggle={() => setCollapsed((value) => !value)}
+        onToggle={toggleSidebar}
         router={router}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
       />
       <section className="main-area">
         <header className="app-header">
+          <button
+            className="mobile-menu-btn"
+            type="button"
+            aria-label="開啟選單"
+            onClick={() => {
+              setCollapsed(false);
+              setMobileOpen(true);
+            }}
+          >
+            ☰
+          </button>
           <div className="app-header-title">
             <h2>{currentTitle}</h2>
             <p>今日日期：{taipeiNowLabel()}</p>
           </div>
           <div className="app-header-actions">
-            <span className="online-dot">System Online</span>
+            <span className="online-dot">系統正常</span>
+            <span className="user-chip"><span>A</span><b>Admin</b></span>
           </div>
         </header>
         {children}

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "upload:soc-sop": "node scripts/upload-soc-sop.ts",
+    "import:sports": "node scripts/importSportsEvents.js",
+    "lint": "eslint ."
   },
   "dependencies": {
     "next": "latest",

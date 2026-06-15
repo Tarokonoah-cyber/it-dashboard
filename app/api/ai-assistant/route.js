@@ -1,5 +1,6 @@
 import { requireDashboardAuth } from "../../../lib/auth";
 import { supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { createTodoWithWorkLog } from "../../../lib/dailyOpsSync";
 import {
   createFallbackReply,
   getUnsafeRequestReply,
@@ -39,15 +40,6 @@ function normalizeWork(row) {
     status: String(row?.status || "\u672a\u5b8c\u6210").trim(),
     category: row?.category || row?.type || "\u5de5\u4f5c"
   };
-}
-
-async function createNextTodoId(offset = 0) {
-  const rows = await supabaseRequest("todo_logs", "select=id&order=id.desc&limit=500");
-  const maxNumber = rows.reduce((max, row) => {
-    const match = String(row?.id || "").match(/^TD-(\d+)$/i);
-    return match ? Math.max(max, Number(match[1])) : max;
-  }, 0);
-  return `TD-${String(maxNumber + 1 + offset).padStart(4, "0")}`;
 }
 
 function buildPrompt(message) {
@@ -124,36 +116,22 @@ async function createTodo(action) {
   }
 
   try {
-    let todo = null;
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      const payload = {
-        id: await createNextTodoId(attempt),
-        title: action.title,
-        status: "\u672a\u5b8c\u6210",
-        priority: "\u4e2d",
-        owner: "Noah",
-        due_date: todayTaipei(),
-        source: "vercel-dashboard"
-      };
-      try {
-        const rows = await supabaseRequest("todo_logs", "select=*", {
-          method: "POST",
-          body: payload
-        });
-        todo = normalizeTodo(rows[0] || payload);
-        break;
-      } catch (error) {
-        const isDuplicateId = String(error?.message || "").includes("todo_logs_pkey");
-        if (!isDuplicateId || attempt === 2) throw error;
-      }
-    }
+    const { todo, workLog } = await createTodoWithWorkLog({
+      title: action.title,
+      note: action.note || "",
+      status: "\u672a\u5b8c\u6210",
+      priority: "\u4e2d",
+      owner: "Noah",
+      due_date: todayTaipei()
+    }, "vercel-dashboard-bot");
     return {
       reply: `\u5df2\u65b0\u589e\u5f85\u8fa6\uff1a${todo.title}`,
       action: {
         type: "create_todo",
         status: "created",
         title: todo.title,
-        id: todo.id || null
+        id: todo.id || null,
+        workLogId: workLog?.id || null
       }
     };
   } catch (error) {
