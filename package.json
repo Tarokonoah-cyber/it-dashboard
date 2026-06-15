@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "upload:soc-sop": "node scripts/upload-soc-sop.ts",
     "lint": "next lint"
   },
   "dependencies": {

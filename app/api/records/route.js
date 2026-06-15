@@ -21,6 +21,15 @@ const SOURCE_ALIASES = {
   soc_docs: ["sop"]
 };
 
+const SOC_SOP_STORAGE_PATH = "soc/soc-mis-checklist-official.xlsx";
+
+function getPublicStorageUrl(bucket, path) {
+  const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/+$/, "");
+  if (!supabaseUrl || !path) return "";
+  const encodedPath = String(path).split("/").map(encodeURIComponent).join("/");
+  return `${supabaseUrl}/storage/v1/object/public/${bucket}/${encodedPath}`;
+}
+
 const PASSWORD_INDEX_ITEMS = [
   {
     id: "booking-backoffice",
@@ -201,6 +210,19 @@ const NORMALIZED_SOURCES = {
       drive_url: row.drive_url,
       note: row.note
     })
+  },
+  soc_docs: {
+    table: "sop_documents",
+    query: `select=id,category,title,version,description,file_path,file_url,updated_at&category=eq.SOC&file_path=eq.${encodeURIComponent(SOC_SOP_STORAGE_PATH)}&order=updated_at.desc&limit=1`,
+    toData: (row) => ({
+      category: row.category,
+      title: row.title,
+      version: row.version,
+      description: row.description,
+      file_path: row.file_path || SOC_SOP_STORAGE_PATH,
+      file_url: row.file_url || getPublicStorageUrl("sop-files", row.file_path || SOC_SOP_STORAGE_PATH),
+      updated_at: row.updated_at
+    })
   }
 };
 
@@ -213,7 +235,8 @@ function normalizedConfigFor(source) {
   if (source === "contracts") return NORMALIZED_SOURCES.contracts_software;
   if (source === "mobile_contracts") return NORMALIZED_SOURCES.contracts_mobile;
   if (source === "contracts_mobile") return NORMALIZED_SOURCES.contracts_mobile;
-  if (source === "sop_docs" || source === "soc_docs") return NORMALIZED_SOURCES.sop;
+  if (source === "sop_docs") return NORMALIZED_SOURCES.sop;
+  if (source === "soc_docs") return NORMALIZED_SOURCES.soc_docs;
   if (source === "assets" || source.startsWith("assets_")) {
     return {
       table: "assets",

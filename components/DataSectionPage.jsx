@@ -311,6 +311,17 @@ function formatSocUpdatedAt(value) {
   }).format(date);
 }
 
+function getSocDocumentUrl(row) {
+  const fileUrl = String(getField(row, ["file_url"], "") || "").trim();
+  if (!fileUrl) return "";
+  try {
+    const url = new URL(fileUrl);
+    return url.protocol === "https:" || url.protocol === "http:" ? fileUrl : "";
+  } catch {
+    return "";
+  }
+}
+
 function SocDocumentCard({ rows, loading }) {
   if (loading) return <div className="sop-card-empty">讀取 SOC 文件中...</div>;
   if (!rows.length) return <div className="sop-card-empty">目前尚未設定 SOC SOP 文件</div>;
@@ -319,7 +330,7 @@ function SocDocumentCard({ rows, loading }) {
   const title = getField(row, ["title", "sop_name"], "SOC MIS 標準作業檢查表");
   const version = getField(row, ["version"], "正式版");
   const description = getField(row, ["description", "note"], "SOC 日常標準作業檢查使用");
-  const fileUrl = getField(row, ["file_url", "drive_url"], "");
+  const fileUrl = getSocDocumentUrl(row);
   const updatedAt = getField(row, ["updated_at"], "");
 
   return (
