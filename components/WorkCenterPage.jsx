@@ -107,12 +107,13 @@ export default function WorkCenterPage() {
     setSaving(true);
     setError("");
     try {
-      await api("/api/work-logs", {
+      const created = await api("/api/work-logs", {
         method: "POST",
         body: JSON.stringify(form)
       });
       setForm((current) => ({ ...current, title: "", note: "" }));
-      await load();
+      setFilters({ date: "", staff: "", status: "", category: "" });
+      setWorks((current) => [created, ...current.filter((work) => work.id !== created.id)]);
     } catch (err) {
       setError(err.message);
     } finally {

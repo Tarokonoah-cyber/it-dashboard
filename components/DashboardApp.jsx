@@ -7,6 +7,7 @@ import { getSectionHref } from "./navigation";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
+const TODO_PREVIEW_LIMIT = 5;
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -133,6 +134,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [error, setError] = useState("");
   const todoInputRef = useRef(null);
 
   async function addTodo() {
@@ -144,6 +146,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       return;
     }
     setSaving(true);
+    setError("");
     try {
       await api("/api/todos", {
         method: "POST",
@@ -152,6 +155,8 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       setTitle("");
       await onReload();
       setIsAdding(false);
+    } catch (err) {
+      setError(err.message || "Todo 新增失敗");
     } finally {
       setSaving(false);
     }
@@ -163,11 +168,16 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
   }
 
   async function completeTodo(id) {
-    await api("/api/todos", {
-      method: "PATCH",
-      body: JSON.stringify({ id, status: "已完成" })
-    });
-    await onReload();
+    setError("");
+    try {
+      await api("/api/todos", {
+        method: "PATCH",
+        body: JSON.stringify({ id, status: "已完成" })
+      });
+      await onReload();
+    } catch (err) {
+      setError(err.message || "Todo 更新失敗");
+    }
   }
 
   async function editTodo(row) {
@@ -177,17 +187,27 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
       window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
       return;
     }
-    await api("/api/todos", {
-      method: "PATCH",
-      body: JSON.stringify({ id: row.id, title: next.trim() })
-    });
-    await onReload();
+    setError("");
+    try {
+      await api("/api/todos", {
+        method: "PATCH",
+        body: JSON.stringify({ id: row.id, title: next.trim() })
+      });
+      await onReload();
+    } catch (err) {
+      setError(err.message || "Todo 更新失敗");
+    }
   }
 
   async function deleteTodo(id) {
     if (!window.confirm("確定要刪除這筆待辦？")) return;
-    await api(`/api/todos?id=${encodeURIComponent(id)}`, { method: "DELETE" });
-    await onReload();
+    setError("");
+    try {
+      await api(`/api/todos?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      await onReload();
+    } catch (err) {
+      setError(err.message || "Todo 刪除失敗");
+    }
   }
 
   return (
@@ -221,11 +241,12 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
           </button>
         </div>
       ) : null}
+      {error ? <div className="error-box">{error}</div> : null}
       <div className="dashboard-todo-list">
         {todos.length === 0 ? (
           <div className="empty">目前沒有待辦項目</div>
         ) : (
-          todos.slice(0, 5).map((todo) => (
+          todos.slice(0, TODO_PREVIEW_LIMIT).map((todo) => (
             <TodoRow
               key={todo.id}
               todo={todo}
@@ -236,7 +257,9 @@ function DashboardTodoPanel({ todos, onReload, onNavigate }) {
           ))
         )}
       </div>
-      <button className="panel-link" type="button" onClick={() => onNavigate?.("work")}>查看全部</button>
+      {todos.length > TODO_PREVIEW_LIMIT ? (
+        <button className="panel-link" type="button" onClick={() => onNavigate?.("work")}>查看全部</button>
+      ) : null}
     </section>
   );
 }
@@ -563,6 +586,11 @@ export default function Page() {
 
   useEffect(() => {
     loadDashboard();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("dashboard-data-changed", loadDashboard);
+    return () => window.removeEventListener("dashboard-data-changed", loadDashboard);
   }, []);
 
   useEffect(() => {
