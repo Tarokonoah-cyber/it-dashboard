@@ -2,6 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+const SOC_SOP_PUBLIC_URL =
+  "https://oidfglrsqrtiimqjfriw.supabase.co/storage/v1/object/public/sop-files/soc/soc-mis-checklist-official.xlsx";
+const SOC_SOP_TITLE = "SOC MIS 標準作業檢查表";
+const SOC_SOP_DESCRIPTION = "SOC 日常標準作業檢查使用";
+
 const DATA_SECTION_CONFIGS = {
   contacts: { title: "通訊錄", source: "contacts", hint: "分機、專線、手機與 Email 查詢" },
   anydesk: { title: "AnyDesk List", source: "anydesk", hint: "遠端連線設備索引" },
@@ -15,7 +20,7 @@ const DATA_SECTION_CONFIGS = {
   contracts_mobile: { title: "行動電話約期", source: "contracts_mobile", hint: "門號、方案與合約期限" },
   sop: { title: "SOP 文件", source: "sop", hint: "標準作業文件清單" },
   sop_docs: { title: "SOP", source: "sop", hint: "SOP 文件", presetKeyword: "SOP" },
-  soc_docs: { title: "SOC", source: "sop", hint: "SOC 文件", presetKeyword: "SOC" }
+  soc_docs: { title: "SOC", source: "soc_docs", hint: "SOC 文件" }
 };
 
 const CONTACT_COLUMNS = [
@@ -298,28 +303,22 @@ function SopCardList({ rows, loading }) {
 }
 
 function formatSocUpdatedAt(value) {
-  if (!value) return "-";
+  if (!value) return "最近更新：未設定";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-  return new Intl.DateTimeFormat("zh-TW", {
+  if (Number.isNaN(date.getTime())) return "最近更新：未設定";
+  return `最近更新：${new Intl.DateTimeFormat("zh-TW", {
     timeZone: "Asia/Taipei",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit"
-  }).format(date);
+  }).format(date)}`;
 }
 
 function getSocDocumentUrl(row) {
   const fileUrl = String(getField(row, ["file_url"], "") || "").trim();
-  if (!fileUrl) return "";
-  try {
-    const url = new URL(fileUrl);
-    return url.protocol === "https:" || url.protocol === "http:" ? fileUrl : "";
-  } catch {
-    return "";
-  }
+  return fileUrl === SOC_SOP_PUBLIC_URL ? fileUrl : SOC_SOP_PUBLIC_URL;
 }
 
 function SocDocumentCard({ rows, loading }) {
@@ -327,9 +326,9 @@ function SocDocumentCard({ rows, loading }) {
   if (!rows.length) return <div className="sop-card-empty">目前尚未設定 SOC SOP 文件</div>;
 
   const row = rows[0];
-  const title = getField(row, ["title", "sop_name"], "SOC MIS 標準作業檢查表");
+  const title = SOC_SOP_TITLE;
   const version = getField(row, ["version"], "正式版");
-  const description = getField(row, ["description", "note"], "SOC 日常標準作業檢查使用");
+  const description = SOC_SOP_DESCRIPTION;
   const fileUrl = getSocDocumentUrl(row);
   const updatedAt = getField(row, ["updated_at"], "");
 
@@ -343,7 +342,7 @@ function SocDocumentCard({ rows, loading }) {
         </div>
         <p>{description}</p>
         <div className="sop-card-meta">
-          <span>最近更新 {formatSocUpdatedAt(updatedAt)}</span>
+          <span>{formatSocUpdatedAt(updatedAt)}</span>
         </div>
       </div>
       <div className="soc-document-actions">
