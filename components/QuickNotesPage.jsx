@@ -149,7 +149,7 @@ export default function QuickNotesPage() {
             >
               <p>{note.content}</p>
               <div className="quick-note-actions">
-                <span className="drag-handle" aria-label="拖曳排序" title="拖曳排序">
+                <span className="drag-handle" aria-label="排序控制" title="排序控制">
                   ⋮⋮
                 </span>
                 <button onClick={() => editNote(note)}>編輯</button>
