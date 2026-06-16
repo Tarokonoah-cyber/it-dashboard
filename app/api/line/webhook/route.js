@@ -173,7 +173,7 @@ export async function POST(request) {
       rawMessage: rawBody.slice(0, 2000),
       rooms: [],
       result: "error",
-      note: error.message
+      note: "webhook_error"
     });
 
     return fail(error);

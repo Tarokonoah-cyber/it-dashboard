@@ -9,9 +9,9 @@ export default function SettingsPage() {
         </div>
       </header>
       <div className="settings-grid">
-        <div className="mini-card"><b>前端入口</b><span>Vercel Dashboard</span></div>
-        <div className="mini-card"><b>資料庫</b><span>Supabase</span></div>
-        <div className="mini-card"><b>舊系統</b><span>Apps Script 保留備援與匯入工具</span></div>
+        <div className="mini-card"><b>正式介面</b><span>Vercel Dashboard</span></div>
+        <div className="mini-card"><b>正式資料來源</b><span>Supabase</span></div>
+        <div className="mini-card"><b>資料流程</b><span>單一 Supabase 寫入流程</span></div>
       </div>
     </section>
   );
