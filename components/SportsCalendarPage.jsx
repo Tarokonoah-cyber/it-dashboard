@@ -86,11 +86,6 @@ function formatSyncTime(value) {
   return value ? taipeiDateTime(value) : "尚未同步";
 }
 
-function valueOrPending(value, pending = "尚未公布") {
-  if (value === undefined || value === null || value === "") return pending;
-  return value;
-}
-
 function formatWeather(weather) {
   if (!weather || typeof weather !== "object") return "尚未同步";
   const parts = [
@@ -108,22 +103,27 @@ function pitcherName(value) {
   return value.name || "尚未公布";
 }
 
-function formatPitchers(details) {
+function formatPitchers(details, event) {
   const pitchers = details?.probable_pitchers;
-  if (!pitchers || typeof pitchers !== "object") return "尚未同步";
+  if (!pitchers || typeof pitchers !== "object") return "尚未公布";
   const away = pitcherName(pitchers.away);
   const home = pitcherName(pitchers.home);
   if (away === "尚未公布" && home === "尚未公布") return pitchers.status || "尚未公布";
-  return `客隊：${away} / 主隊：${home}`;
+  const awayLabel = event?.away_team || "客隊";
+  const homeLabel = event?.home_team || "主隊";
+  return `${awayLabel}：${away} / ${homeLabel}：${home}`;
 }
 
-function formatFinalScore(details) {
+function formatFinalScore(details, event) {
   const score = details?.final_score;
   if (!score || typeof score !== "object") return "賽後更新";
   if (score.away === null || score.away === undefined || score.home === null || score.home === undefined) {
     return score.status || "賽後更新";
   }
-  return `${score.away} : ${score.home}`;
+  if (event?.away_team || event?.home_team) {
+    return `${event?.away_team || "客隊"} ${score.away} - ${score.home} ${event?.home_team || "主隊"}`;
+  }
+  return `${score.away} - ${score.home}`;
 }
 
 function currentTaipeiMonth() {
@@ -168,17 +168,43 @@ function favoriteKey(type, value) {
   return `${type}:${value}`;
 }
 
+function formatMatchup(event) {
+  if (event.away_team && event.home_team) return `${event.away_team} @ ${event.home_team}`;
+  return event.title || event.league || event.sport_type || "未命名賽事";
+}
+
+function formatChipTitle(event) {
+  const parts = [
+    event.league ? `[${event.league}]` : "",
+    event.start_time ? taipeiTime(event.start_time) : "",
+    formatMatchup(event)
+  ].filter(Boolean);
+  return parts.join(" ");
+}
+
+function sortEventsByTime(rows) {
+  return [...rows].sort((a, b) => {
+    const first = new Date(a.start_time || 0).getTime();
+    const second = new Date(b.start_time || 0).getTime();
+    if (first !== second) return first - second;
+    return formatMatchup(a).localeCompare(formatMatchup(b), "zh-Hant-TW");
+  });
+}
+
 function EventBadge({ event, selected, onSelect }) {
   return (
     <button
       type="button"
       className={`sports-event-pill ${selected ? "is-selected" : ""} importance-${event.importance || "normal"}`}
-      onClick={() => onSelect(event)}
-      title={event.title}
+      onClick={(clickEvent) => {
+        clickEvent.stopPropagation();
+        onSelect(event);
+      }}
+      title={formatChipTitle(event)}
     >
-      <span>{event.league || event.sport_type}</span>
-      <b>{event.away_team && event.home_team ? `${event.away_team} vs ${event.home_team}` : event.title}</b>
+      {event.league ? <span>{event.league}</span> : null}
       <time>{taipeiTime(event.start_time)}</time>
+      <b>{formatMatchup(event)}</b>
     </button>
   );
 }
@@ -210,6 +236,7 @@ export default function SportsCalendarPage() {
   const [events, setEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedDateKey, setSelectedDateKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -231,11 +258,17 @@ export default function SportsCalendarPage() {
       if (!map.has(key)) map.set(key, []);
       map.get(key).push(event);
     });
+    map.forEach((dayEvents, dateKey) => {
+      map.set(dateKey, sortEventsByTime(dayEvents));
+    });
     return map;
   }, [events]);
 
   const cells = useMemo(() => getMonthCells(month), [month]);
   const todayKey = taipeiDate(new Date());
+  const selectedDateEvents = useMemo(() => (
+    selectedDateKey ? eventsByDate.get(selectedDateKey) || [] : []
+  ), [eventsByDate, selectedDateKey]);
 
   useEffect(() => {
     loadFavorites();
@@ -264,7 +297,8 @@ export default function SportsCalendarPage() {
       }
       const rows = await api(`/api/sports/events?${params.toString()}`, { signal });
       setEvents(rows);
-      setSelectedEvent((current) => rows.find((row) => row.id === current?.id) || rows[0] || null);
+      setSelectedEvent((current) => rows.find((row) => row.id === current?.id) || null);
+      setSelectedDateKey((current) => (current && rows.some((row) => taipeiDate(row.start_time) === current) ? current : ""));
     } catch (err) {
       if (err.name !== "AbortError") {
         setError(err.message || "賽事資料讀取失敗");
@@ -279,6 +313,7 @@ export default function SportsCalendarPage() {
     if (!selectedSportList.length) {
       setEvents([]);
       setSelectedEvent(null);
+      setSelectedDateKey("");
       setLoading(false);
       return;
     }
@@ -379,6 +414,17 @@ export default function SportsCalendarPage() {
     if (mode === "today") setMonth(todayKey.slice(0, 7));
   }
 
+  function selectDate(dateKey) {
+    if (!dateKey) return;
+    setSelectedDateKey(dateKey);
+    setSelectedEvent(null);
+  }
+
+  function selectEvent(event) {
+    setSelectedDateKey(taipeiDate(event.start_time));
+    setSelectedEvent(event);
+  }
+
   function selectedRangeMessage() {
     if (!selectedSportList.length) return "請從左側選擇賽事分類";
     if (loading) return "賽事讀取中...";
@@ -477,18 +523,35 @@ export default function SportsCalendarPage() {
           ))}
           {cells.map((dateKey, index) => {
             const dayEvents = dateKey ? eventsByDate.get(dateKey) || [] : [];
+            const visibleEvents = dayEvents.slice(0, 3);
+            const hiddenEventCount = Math.max(0, dayEvents.length - visibleEvents.length);
             return (
-              <div key={`${dateKey || "blank"}-${index}`} className={`sports-day-cell ${dateKey === todayKey ? "is-today" : ""}`}>
+              <div
+                key={`${dateKey || "blank"}-${index}`}
+                className={`sports-day-cell ${dateKey === todayKey ? "is-today" : ""} ${dateKey === selectedDateKey && !selectedEvent ? "is-selected-day" : ""}`}
+                onClick={() => selectDate(dateKey)}
+                onKeyDown={(event) => {
+                  if (!dateKey) return;
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    selectDate(dateKey);
+                  }
+                }}
+                role={dateKey ? "button" : undefined}
+                tabIndex={dateKey ? 0 : undefined}
+              >
                 {dateKey ? <span className="sports-day-number">{dateKey.slice(8)}</span> : null}
-                {dayEvents.slice(0, 4).map((event) => (
+                {visibleEvents.map((event) => (
                   <EventBadge
                     key={event.id}
                     event={event}
                     selected={event.id === selectedEvent?.id}
-                    onSelect={setSelectedEvent}
+                    onSelect={selectEvent}
                   />
                 ))}
-                {dayEvents.length > 4 ? <small className="sports-more">+{dayEvents.length - 4}</small> : null}
+                {hiddenEventCount ? (
+                  <span className="sports-more">+ {hiddenEventCount} 場</span>
+                ) : null}
               </div>
             );
           })}
@@ -500,32 +563,40 @@ export default function SportsCalendarPage() {
       <aside className="sports-detail-panel">
         {selectedEvent ? (
           <>
-            <div className="sports-detail-kicker">
-              <span>{selectedEvent.league || selectedEvent.sport_type}</span>
-              <b>{detailStatusLabel}</b>
-            </div>
-            <h2>{selectedEvent.title}</h2>
-            <div className="sports-detail-grid">
-              <Field label="運動分類" value={selectedEvent.sport_type} />
-              <Field label="聯盟" value={selectedEvent.league} />
-              <Field label="主隊" value={selectedEvent.home_team} />
-              <Field label="客隊" value={selectedEvent.away_team} />
-              <Field label="開始時間" value={taipeiDateTime(selectedEvent.start_time)} />
-              <Field label="結束時間" value={taipeiDateTime(selectedEvent.end_time)} />
-              <Field label="地點" value={selectedEvent.venue} />
-              <Field label="狀態" value={STATUS_LABELS[selectedEvent.status] || selectedEvent.status} />
+            <div className="sports-summary-card">
+              <div className="sports-detail-kicker">
+                <span>{selectedEvent.league || selectedEvent.sport_type}</span>
+                <b>{STATUS_LABELS[selectedEvent.status] || selectedEvent.status || "scheduled"}</b>
+              </div>
+              <h2>{formatMatchup(selectedEvent)}</h2>
+              {selectedEvent.title && selectedEvent.title !== formatMatchup(selectedEvent) ? (
+                <p className="sports-summary-subtitle">{selectedEvent.title}</p>
+              ) : null}
+
+              <div className="sports-summary-rows">
+                <Field label="日期時間" value={taipeiDateTime(selectedEvent.start_time)} />
+                <Field label="場地" value={selectedEvent.venue || "尚未公布"} />
+                <Field label="最終比分" value={formatFinalScore(selectedDetailData, selectedEvent)} />
+                <Field
+                  label="先發投手"
+                  value={selectedEvent.sport_type === "baseball" ? formatPitchers(selectedDetailData, selectedEvent) : "此運動暫無此欄位"}
+                />
+                <Field label="天氣" value={formatWeather(selectedDetailData.weather)} />
+                <Field label="最後同步時間" value={formatSyncTime(selectedDetail.last_synced_at)} />
+                <LinkField label="來源連結" href={detailSourceUrl} />
+              </div>
             </div>
 
-            <div className="sports-detail-grid sports-live-detail-grid">
-              <Field label="details 狀態" value={detailStatusLabel} />
-              <Field label="天氣" value={formatWeather(selectedDetailData.weather)} />
-              <Field label="先發投手" value={selectedEvent.sport_type === "baseball" ? formatPitchers(selectedDetailData) : "此運動暫無此欄位"} />
-              <Field label="最終比分" value={formatFinalScore(selectedDetailData)} />
-              <Field label="最後同步時間" value={formatSyncTime(selectedDetail.last_synced_at)} />
-              <LinkField label="來源連結" href={detailSourceUrl} />
+            <details className="sports-technical-details">
+              <summary>同步與來源資訊</summary>
+              <Field label="detail_status" value={detailStatusLabel} />
+              <Field label="detail_status 原始值" value={detailStatus} />
+              <Field label="sync_phase" value={selectedDetail.sync_phase} />
               {selectedDetail.source_name ? <Field label="details 來源" value={selectedDetail.source_name} /> : null}
-              {selectedDetail.sync_phase ? <Field label="同步階段" value={selectedDetail.sync_phase} /> : null}
-            </div>
+              <Field label="source_type" value={selectedEvent.source_type} />
+              <Field label="source_name" value={selectedEvent.source_name} />
+              <Field label="source_file" value={selectedEvent.source_file} />
+            </details>
 
             <div className="sports-editor">
               <label>
@@ -581,17 +652,36 @@ export default function SportsCalendarPage() {
                 </button>
               ))}
             </div>
-
-            <div className="sports-source-box">
-              <Field label="source_type" value={selectedEvent.source_type} />
-              <Field label="source_name" value={selectedEvent.source_name} />
-              <Field label="source_file" value={selectedEvent.source_file} />
-            </div>
           </>
+        ) : selectedDateKey ? (
+          <div className="sports-day-list-panel">
+            <div className="sports-detail-kicker">
+              <span>{selectedDateKey}</span>
+              <b>{selectedDateEvents.length} 場</b>
+            </div>
+            <h2>當日賽事列表</h2>
+            {selectedDateEvents.length ? (
+              <div className="sports-day-event-list">
+                {selectedDateEvents.map((event) => (
+                  <button key={event.id} type="button" className="sports-day-event-row" onClick={() => selectEvent(event)}>
+                    <time>{taipeiTime(event.start_time)}</time>
+                    <span>{event.league || event.sport_type}</span>
+                    <b>{formatMatchup(event)}</b>
+                    <small>{STATUS_LABELS[event.status] || event.status || "-"}</small>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="sports-detail-empty compact">
+                <h2>這天沒有賽事</h2>
+                <p>可改選其他日期，或調整左側分類與搜尋條件。</p>
+              </div>
+            )}
+          </div>
         ) : (
           <div className="sports-detail-empty">
-            <h2>尚未選取賽事</h2>
-            <p>{selectedSportList.length ? "點選月曆中的賽事查看詳情。" : "請先從左側選擇賽事分類。"}</p>
+            <h2>尚未選取</h2>
+            <p>{selectedSportList.length ? "請從月曆選擇日期或賽事。" : "請先從左側選擇賽事分類，再從月曆選擇日期或賽事。"}</p>
           </div>
         )}
       </aside>

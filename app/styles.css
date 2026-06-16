@@ -8071,11 +8071,26 @@ textarea:disabled {
 .sports-day-cell {
   min-height: 118px;
   padding: 10px;
+  border-top: 0;
+  border-left: 0;
   background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
 }
 
 .sports-day-cell.is-today {
   background: #fffdf8;
+}
+
+.sports-day-cell:focus-visible {
+  outline: 2px solid #2f5f98;
+  outline-offset: -2px;
+}
+
+.sports-day-cell.is-selected-day {
+  background: #f4f9ff;
 }
 
 .sports-day-number {
@@ -8099,7 +8114,7 @@ textarea:disabled {
   min-width: 0;
   min-height: 30px;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto minmax(0, 1fr);
   align-items: center;
   gap: 6px;
   margin-top: 6px;
@@ -8110,6 +8125,7 @@ textarea:disabled {
   padding: 5px 7px;
   text-align: left;
   box-shadow: none;
+  overflow: hidden;
 }
 
 .sports-event-pill span {
@@ -8134,6 +8150,7 @@ textarea:disabled {
   color: var(--hotel-muted, #667085);
   font-size: 11px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .sports-event-pill.is-selected {
@@ -8148,10 +8165,26 @@ textarea:disabled {
 }
 
 .sports-more {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   margin-top: 6px;
+  border: 1px solid #d8e3ef;
+  border-radius: 999px;
+  background: #f8fafc;
   color: var(--hotel-muted, #667085);
+  padding: 2px 8px;
+  font-size: 12px;
   font-weight: 800;
+}
+
+.sports-summary-card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--hotel-line, #dde4ee);
+  border-radius: 10px;
+  background: #fbfcfe;
+  padding: 14px;
 }
 
 .sports-detail-kicker {
@@ -8187,12 +8220,31 @@ textarea:disabled {
   line-height: 1.35;
 }
 
+.sports-summary-card h2 {
+  margin-bottom: 0;
+  font-size: 21px;
+}
+
+.sports-summary-subtitle {
+  margin: -6px 0 0;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .sports-detail-grid,
-.sports-source-box {
+.sports-source-box,
+.sports-summary-rows {
   display: grid;
   gap: 9px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--hotel-line, #dde4ee);
+}
+
+.sports-summary-rows {
+  grid-template-columns: 1fr;
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .sports-live-detail-grid {
@@ -8232,7 +8284,7 @@ textarea:disabled {
 .sports-editor {
   display: grid;
   gap: 10px;
-  padding: 16px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--hotel-line, #dde4ee);
 }
 
@@ -8271,13 +8323,91 @@ textarea:disabled {
 .sports-favorite-actions {
   display: grid;
   gap: 8px;
-  padding: 16px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--hotel-line, #dde4ee);
 }
 
 .sports-source-box {
   padding-top: 16px;
   border-bottom: 0;
+}
+
+.sports-technical-details {
+  margin-top: 12px;
+  border-bottom: 1px solid var(--hotel-line, #dde4ee);
+  padding-bottom: 12px;
+}
+
+.sports-technical-details summary {
+  cursor: pointer;
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.sports-technical-details .sports-detail-field {
+  margin-top: 9px;
+}
+
+.sports-day-list-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.sports-day-list-panel h2 {
+  margin-bottom: 0;
+}
+
+.sports-day-event-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sports-day-event-row {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 44px auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text, #162033);
+  padding: 9px 10px;
+  text-align: left;
+  box-shadow: none;
+}
+
+.sports-day-event-row:hover {
+  border-color: #b7cce2;
+  background: #f8fbff;
+}
+
+.sports-day-event-row time,
+.sports-day-event-row small {
+  color: var(--hotel-muted, #667085);
+  font-size: 12px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.sports-day-event-row span {
+  border-radius: 999px;
+  background: #e8f1fb;
+  color: var(--hotel-blue, #2f5f98);
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.sports-day-event-row b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
 }
 
 .sports-detail-empty {
@@ -8295,6 +8425,10 @@ textarea:disabled {
   margin: 0;
   color: var(--hotel-muted, #667085);
   line-height: 1.6;
+}
+
+.sports-detail-empty.compact {
+  min-height: 140px;
 }
 
 /* Quick notes compact UI */
