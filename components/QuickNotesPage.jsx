@@ -106,7 +106,7 @@ export default function QuickNotesPage() {
     <section className="section-page quick-notes-page">
       <header className="section-head">
         <div>
-          <h1>快速備忘錄</h1>
+          <h1>今日備忘</h1>
           <p>記錄臨時事項、交辦提醒與待確認資訊。</p>
         </div>
       </header>
@@ -120,7 +120,7 @@ export default function QuickNotesPage() {
           required
           placeholder="輸入備忘內容，例如交辦事項、需追蹤問題或會議提醒..."
         />
-        <button onClick={addNote}>新增備忘</button>
+        <button onClick={addNote}>+ 新增</button>
       </div>
       <div className="quick-notes-grid">
         {loading ? (
@@ -148,8 +148,10 @@ export default function QuickNotesPage() {
               title="可拖曳調整排序"
             >
               <p>{note.content}</p>
-              <div>
-                <span className="drag-handle">拖曳排序</span>
+              <div className="quick-note-actions">
+                <span className="drag-handle" aria-label="拖曳排序" title="拖曳排序">
+                  ⋮⋮
+                </span>
                 <button onClick={() => editNote(note)}>編輯</button>
                 <button onClick={() => deleteNote(note.id)}>刪除</button>
               </div>

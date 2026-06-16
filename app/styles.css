@@ -8297,6 +8297,123 @@ textarea:disabled {
   line-height: 1.6;
 }
 
+/* Quick notes compact UI */
+.quick-notes-page .notes-composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+.quick-notes-page .notes-composer textarea {
+  width: 100%;
+  min-height: 52px;
+  height: 52px;
+  max-height: 84px;
+  resize: none;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.quick-notes-page .notes-composer button {
+  width: 120px;
+  height: 44px;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-self: center;
+  border-radius: 10px;
+  padding: 0 14px;
+  white-space: nowrap;
+}
+
+.quick-notes-page .quick-notes-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.quick-notes-page .quick-note-card {
+  min-height: 130px;
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.quick-notes-page .quick-note-card p {
+  margin-bottom: 12px;
+}
+
+.quick-notes-page .quick-note-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.quick-notes-page .drag-handle {
+  margin-right: auto;
+  color: #94a3b8;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  opacity: 0.65;
+  transition: color 0.14s ease, opacity 0.14s ease;
+}
+
+.quick-notes-page .quick-note-card:hover .drag-handle {
+  color: #64748b;
+  opacity: 1;
+}
+
+.quick-notes-page .quick-note-actions button {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.quick-notes-page .quick-note-actions button:last-child {
+  border-color: rgba(220, 38, 38, 0.2);
+  background: rgba(220, 38, 38, 0.04);
+  color: #b42318;
+}
+
+.quick-notes-page .quick-note-actions button:last-child:hover {
+  border-color: rgba(220, 38, 38, 0.34);
+  background: rgba(220, 38, 38, 0.08);
+  color: #991b1b;
+}
+
+@media (max-width: 700px) {
+  .quick-notes-page .notes-composer {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-notes-page .notes-composer button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .quick-notes-page .quick-notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-notes-page .quick-note-actions {
+    flex-wrap: nowrap;
+  }
+
+  .quick-notes-page .quick-note-actions button {
+    min-height: 32px;
+  }
+}
+
 @media (max-width: 1300px) {
   .sports-calendar-page {
     grid-template-columns: 260px minmax(680px, 1fr) 300px;
