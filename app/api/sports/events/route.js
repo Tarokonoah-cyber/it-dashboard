@@ -40,10 +40,14 @@ async function attachDetails(rows) {
   if (!ids.length) return rows.map((row) => ({ ...row, detail: emptyEventDetails(row.id) }));
 
   try {
-    const detailsRows = await supabaseRequest(
-      "sports_event_details",
-      `select=*&event_id=in.${encodeURIComponent(encodeIdIn(ids))}`
-    );
+    const detailsRows = [];
+    for (let index = 0; index < ids.length; index += 100) {
+      const chunk = ids.slice(index, index + 100);
+      detailsRows.push(...await supabaseRequest(
+        "sports_event_details",
+        `select=*&event_id=in.${encodeURIComponent(encodeIdIn(chunk))}`
+      ));
+    }
     const detailMap = new Map(detailsRows.map((detail) => [detail.event_id, { ...detail, exists: true }]));
     return rows.map((row) => ({
       ...row,

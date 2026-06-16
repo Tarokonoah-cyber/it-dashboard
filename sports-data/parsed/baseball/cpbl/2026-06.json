@@ -1,0 +1,1973 @@
+{
+  "metadata": {
+    "sport_type": "baseball",
+    "league": "CPBL",
+    "source_type": "official_endpoint",
+    "source_name": "CPBL official schedule endpoint",
+    "source_url": "https://www.cpbl.com.tw/schedule",
+    "source_month": "2026-06",
+    "limitations": "Generated from CPBL official schedule/getgamedatas endpoint for first-team regular-season games. Weather is not included."
+  },
+  "events": [
+    {
+      "event_key": "cpbl-2026-A-14-20260627",
+      "title": "統一7-ELEVEn獅 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-27T17:05:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=14",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=14",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=14",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=14"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-15-20260627",
+      "title": "樂天桃猿 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-27T17:05:00",
+      "venue": "新莊",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=15",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=15",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=15",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=15"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-24-20260602",
+      "title": "樂天桃猿 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "味全龍",
+      "start_time": "2026-06-02T18:35:00",
+      "venue": "天母",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=24",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=24",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "魔爾曼"
+            },
+            "home": {
+              "name": "蔣銲"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 3,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=24",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=24"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-57-20260623",
+      "title": "富邦悍將 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-23T18:35:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=57",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=57",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=57",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=57"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-58-20260624",
+      "title": "味全龍 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-24T18:35:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=58",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=58",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=58",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=58"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-80-20260626",
+      "title": "樂天桃猿 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-26T18:35:00",
+      "venue": "新莊",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=80",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=80",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=80",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=80"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-137-20260602",
+      "title": "統一7-ELEVEn獅 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-02T18:35:00",
+      "venue": "大巨蛋",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=137",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=137",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "郭俊麟"
+            },
+            "home": {
+              "name": "菲力士"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 3,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=137",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=137"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-138-20260603",
+      "title": "統一7-ELEVEn獅 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-03T18:35:00",
+      "venue": "大巨蛋",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=138",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=138",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "銳力獅"
+            },
+            "home": {
+              "name": "羅戈"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 0,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=138",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=138"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-139-20260603",
+      "title": "味全龍 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-03T18:35:00",
+      "venue": "樂天桃園",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=139",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=139",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "郭郁政"
+            },
+            "home": {
+              "name": "陳克羿"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 3,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=139",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=139"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-140-20260603",
+      "title": "富邦悍將 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-03T18:35:00",
+      "venue": "澄清湖",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=140",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=140",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "阿部雄大"
+            },
+            "home": {
+              "name": "艾速特"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 13,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=140",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=140"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-141-20260604",
+      "title": "富邦悍將 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-04T18:35:00",
+      "venue": "澄清湖",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-141-20260624",
+      "title": "富邦悍將 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-24T18:35:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=141"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-142-20260605",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-05T18:35:00",
+      "venue": "洲際",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=142",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=142",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "艾菩樂"
+            },
+            "home": {
+              "name": "鄭浩均"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 6,
+            "home": 7,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=142",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=142"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-143-20260605",
+      "title": "富邦悍將 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-05T18:35:00",
+      "venue": "大巨蛋",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=143",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=143",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "魔力藍"
+            },
+            "home": {
+              "name": "布雷克"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 6,
+            "home": 2,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=143",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=143"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-144-20260605",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-05T18:35:00",
+      "venue": "澄清湖",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-144-20260623",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-23T18:35:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=144"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-145-20260606",
+      "title": "富邦悍將 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-06T16:05:00",
+      "venue": "大巨蛋",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=145",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=145",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "鈴木駿輔"
+            },
+            "home": {
+              "name": "喬登"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 8,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=145",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=145"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-146-20260606",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-06T16:05:00",
+      "venue": "澄清湖",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=146",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=146",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "梅賽鍶"
+            },
+            "home": {
+              "name": "後勁"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 10,
+            "home": 2,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=146",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=146"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-147-20260606",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-06T17:05:00",
+      "venue": "洲際",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=147",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=147",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "麥斯威尼"
+            },
+            "home": {
+              "name": "勝騎士"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 8,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=147",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=147"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-148-20260607",
+      "title": "富邦悍將 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-07T16:05:00",
+      "venue": "大巨蛋",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=148",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=148",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "李東洺"
+            },
+            "home": {
+              "name": "獅帝芬"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 1,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=148",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=148"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-149-20260607",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-07T16:05:00",
+      "venue": "澄清湖",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=149",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=149",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "鋼龍"
+            },
+            "home": {
+              "name": "黃子鵬"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 2,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=149",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=149"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-150-20260607",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-07T00:00:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-150-20260628",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-28T17:05:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=150"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-151-20260609",
+      "title": "味全龍 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-09T18:35:00",
+      "venue": "新莊",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-151-20260625",
+      "title": "味全龍 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-25T18:35:00",
+      "venue": "新莊",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=151"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-152-20260609",
+      "title": "台鋼雄鷹 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-09T18:35:00",
+      "venue": "洲際",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-152-20260626",
+      "title": "台鋼雄鷹 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-26T18:35:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=152"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-153-20260610",
+      "title": "統一7-ELEVEn獅 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-10T18:35:00",
+      "venue": "樂天桃園",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-153-20260623",
+      "title": "統一7-ELEVEn獅 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-23T18:35:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=153"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-154-20260611",
+      "title": "中信兄弟 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "味全龍",
+      "start_time": "2026-06-11T18:35:00",
+      "venue": "天母",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=154",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=154",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "菲力士"
+            },
+            "home": {
+              "name": "蔣銲"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 4,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=154",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=154"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-155-20260611",
+      "title": "統一7-ELEVEn獅 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-11T18:35:00",
+      "venue": "新莊",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=155",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=155",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "林詔恩"
+            },
+            "home": {
+              "name": "阿部雄大"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 6,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=155",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=155"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-156-20260611",
+      "title": "樂天桃猿 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-11T18:35:00",
+      "venue": "澄清湖",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-156-20260617",
+      "title": "樂天桃猿 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-17T18:35:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=156"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-157-20260612",
+      "title": "中信兄弟 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "味全龍",
+      "start_time": "2026-06-12T18:35:00",
+      "venue": "天母",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-157-20260630",
+      "title": "中信兄弟 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "味全龍",
+      "start_time": "2026-06-30T18:35:00",
+      "venue": "天母",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=157"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-158-20260612",
+      "title": "統一7-ELEVEn獅 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-12T18:35:00",
+      "venue": "新莊",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-158-20260630",
+      "title": "統一7-ELEVEn獅 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-30T18:35:00",
+      "venue": "新莊",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=158"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-159-20260612",
+      "title": "樂天桃猿 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-12T18:35:00",
+      "venue": "澄清湖",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=159",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=159",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "魔爾曼"
+            },
+            "home": {
+              "name": "後勁"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 0,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=159",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=159"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-160-20260613",
+      "title": "統一7-ELEVEn獅 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "味全龍",
+      "start_time": "2026-06-13T17:05:00",
+      "venue": "天母",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=160",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=160",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "喬登"
+            },
+            "home": {
+              "name": "魔神龍"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 6,
+            "home": 1,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=160",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=160"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-161-20260613",
+      "title": "台鋼雄鷹 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-13T17:05:00",
+      "venue": "新莊",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=161",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=161",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "黃子鵬"
+            },
+            "home": {
+              "name": "魔力藍"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 9,
+            "home": 0,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=161",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=161"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-162-20260613",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-13T17:05:00",
+      "venue": "洲際",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=162",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=162",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "艾菩樂"
+            },
+            "home": {
+              "name": "勝騎士"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 9,
+            "home": 9,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=162",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=162"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-163-20260614",
+      "title": "統一7-ELEVEn獅 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "統一7-ELEVEn獅",
+      "home_team": "味全龍",
+      "start_time": "2026-06-14T16:05:00",
+      "venue": "天母",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=163",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=163",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "布雷克"
+            },
+            "home": {
+              "name": "鋼龍"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 5,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=163",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=163"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-164-20260614",
+      "title": "台鋼雄鷹 @ 富邦悍將",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "富邦悍將",
+      "start_time": "2026-06-14T17:05:00",
+      "venue": "新莊",
+      "status": "completed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=164",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=164",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": {
+              "name": "艾速特"
+            },
+            "home": {
+              "name": "李東洺"
+            },
+            "status": "announced"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 7,
+            "status": "final"
+          },
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=164",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=164"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-165-20260614",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-14T17:05:00",
+      "venue": "洲際",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-165-20260625",
+      "title": "樂天桃猿 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-25T18:35:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=165"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-166-20260616",
+      "title": "中信兄弟 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-16T18:35:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=166",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=166",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=166",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=166"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-167-20260616",
+      "title": "樂天桃猿 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "樂天桃猿",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-16T18:35:00",
+      "venue": "亞太主",
+      "status": "postponed",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=167",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=167",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=167",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=167"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-168-20260617",
+      "title": "富邦悍將 @ 味全龍",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "味全龍",
+      "start_time": "2026-06-17T18:35:00",
+      "venue": "天母",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=168",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=168",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=168",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=168"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-169-20260618",
+      "title": "台鋼雄鷹 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-18T18:35:00",
+      "venue": "亞太主",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=169",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=169",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=169",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=169"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-170-20260618",
+      "title": "味全龍 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-18T18:35:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=170",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=170",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=170",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=170"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-171-20260618",
+      "title": "富邦悍將 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-18T18:35:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=171",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=171",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=171",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=171"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-172-20260619",
+      "title": "台鋼雄鷹 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "台鋼雄鷹",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-19T16:05:00",
+      "venue": "亞太主",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=172",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=172",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=172",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=172"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-173-20260619",
+      "title": "味全龍 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-19T17:05:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=173",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=173",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=173",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=173"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-174-20260619",
+      "title": "富邦悍將 @ 中信兄弟",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "中信兄弟",
+      "start_time": "2026-06-19T17:05:00",
+      "venue": "洲際",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=174",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=174",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=174",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=174"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-175-20260620",
+      "title": "中信兄弟 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-20T16:05:00",
+      "venue": "亞太主",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=175",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=175",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=175",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=175"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-176-20260620",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-20T16:05:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=176",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=176",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=176",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=176"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-177-20260620",
+      "title": "富邦悍將 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-20T17:05:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=177",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=177",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=177",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=177"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-178-20260621",
+      "title": "中信兄弟 @ 統一7-ELEVEn獅",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "中信兄弟",
+      "home_team": "統一7-ELEVEn獅",
+      "start_time": "2026-06-21T16:05:00",
+      "venue": "亞太主",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=178",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=178",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=178",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=178"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-179-20260621",
+      "title": "味全龍 @ 台鋼雄鷹",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "味全龍",
+      "home_team": "台鋼雄鷹",
+      "start_time": "2026-06-21T16:05:00",
+      "venue": "澄清湖",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=179",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=179",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=179",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=179"
+        }
+      }
+    },
+    {
+      "event_key": "cpbl-2026-A-180-20260621",
+      "title": "富邦悍將 @ 樂天桃猿",
+      "sport_type": "baseball",
+      "league": "CPBL",
+      "away_team": "富邦悍將",
+      "home_team": "樂天桃猿",
+      "start_time": "2026-06-21T17:05:00",
+      "venue": "樂天桃園",
+      "status": "scheduled",
+      "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=180",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=180",
+        "source_name": "CPBL official schedule endpoint",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "????"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=180",
+          "source_url": "https://www.cpbl.com.tw/box?year=2026&kindCode=A&gameSno=180"
+        }
+      }
+    }
+  ]
+}

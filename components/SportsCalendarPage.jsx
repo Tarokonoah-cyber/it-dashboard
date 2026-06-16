@@ -7,7 +7,7 @@ const SPORT_OPTIONS = [
   { key: "football", label: "足球", icon: "🏆" },
   { key: "basketball", label: "籃球", icon: "🏀" },
   { key: "cycling", label: "自行車", icon: "🚲" },
-  { key: "motorsport", label: "賽車", icon: "🏎" },
+  { key: "racing", label: "賽車", icon: "🏎" },
   { key: "tennis", label: "網球", icon: "🎾" },
   { key: "other", label: "其他", icon: "◇" }
 ];
@@ -82,6 +82,20 @@ function taipeiDateTime(value) {
   }).format(new Date(value));
 }
 
+function isTimeTbd(event) {
+  return event?.detail?.details?.time_status === "tbd";
+}
+
+function eventTimeLabel(event) {
+  if (!event?.start_time || isTimeTbd(event)) return "";
+  return taipeiTime(event.start_time);
+}
+
+function eventDateTimeLabel(event) {
+  if (!event?.start_time) return "-";
+  return isTimeTbd(event) ? `${taipeiDate(event.start_time)}（時間未定）` : taipeiDateTime(event.start_time);
+}
+
 function formatSyncTime(value) {
   return value ? taipeiDateTime(value) : "尚未同步";
 }
@@ -124,6 +138,42 @@ function formatFinalScore(details, event) {
     return `${event?.away_team || "客隊"} ${score.away} - ${score.home} ${event?.home_team || "主隊"}`;
   }
   return `${score.away} - ${score.home}`;
+}
+
+function formatDistance(value) {
+  if (value === undefined || value === null || value === "") return "尚未公布";
+  return typeof value === "number" ? `${value} km` : String(value);
+}
+
+function sportDetailRows(event, details) {
+  if (event?.sport_type === "cycling") {
+    const route = [details.start_location, details.finish_location].filter(Boolean).join(" → ");
+    return [
+      { label: "賽段", value: details.stage_number ? `Stage ${details.stage_number}` : details.stage || "尚未公布" },
+      { label: "賽段類型", value: details.stage_type || "尚未公布" },
+      { label: "路線", value: route || "尚未公布" },
+      { label: "距離", value: formatDistance(details.distance) }
+    ];
+  }
+  if (event?.sport_type === "racing" || event?.sport_type === "motorsport") {
+    return [
+      { label: "Grand Prix", value: details.grand_prix || "尚未公布" },
+      { label: "Session", value: details.session_name || details.session_type || "尚未公布" },
+      { label: "賽道", value: details.circuit || "尚未公布" },
+      { label: "國家 / 城市", value: [details.city, details.country].filter(Boolean).join(" / ") || "尚未公布" }
+    ];
+  }
+  if (event?.sport_type === "baseball") {
+    return [
+      { label: "最終比分", value: formatFinalScore(details, event) },
+      { label: "先發投手", value: formatPitchers(details, event) },
+      { label: "天氣", value: formatWeather(details.weather) }
+    ];
+  }
+  return [
+    { label: "最終比分", value: formatFinalScore(details, event) },
+    { label: "天氣", value: formatWeather(details.weather) }
+  ];
 }
 
 function currentTaipeiMonth() {
@@ -176,7 +226,7 @@ function formatMatchup(event) {
 function formatChipTitle(event) {
   const parts = [
     event.league ? `[${event.league}]` : "",
-    event.start_time ? taipeiTime(event.start_time) : "",
+    eventTimeLabel(event),
     formatMatchup(event)
   ].filter(Boolean);
   return parts.join(" ");
@@ -203,7 +253,7 @@ function EventBadge({ event, selected, onSelect }) {
       title={formatChipTitle(event)}
     >
       {event.league ? <span>{event.league}</span> : null}
-      <time>{taipeiTime(event.start_time)}</time>
+      {eventTimeLabel(event) ? <time>{eventTimeLabel(event)}</time> : null}
       <b>{formatMatchup(event)}</b>
     </button>
   );
@@ -574,14 +624,11 @@ export default function SportsCalendarPage() {
               ) : null}
 
               <div className="sports-summary-rows">
-                <Field label="日期時間" value={taipeiDateTime(selectedEvent.start_time)} />
+                <Field label="日期時間" value={eventDateTimeLabel(selectedEvent)} />
                 <Field label="場地" value={selectedEvent.venue || "尚未公布"} />
-                <Field label="最終比分" value={formatFinalScore(selectedDetailData, selectedEvent)} />
-                <Field
-                  label="先發投手"
-                  value={selectedEvent.sport_type === "baseball" ? formatPitchers(selectedDetailData, selectedEvent) : "此運動暫無此欄位"}
-                />
-                <Field label="天氣" value={formatWeather(selectedDetailData.weather)} />
+                {sportDetailRows(selectedEvent, selectedDetailData).map((row) => (
+                  <Field key={row.label} label={row.label} value={row.value} />
+                ))}
                 <Field label="最後同步時間" value={formatSyncTime(selectedDetail.last_synced_at)} />
                 <LinkField label="來源連結" href={detailSourceUrl} />
               </div>
@@ -664,7 +711,7 @@ export default function SportsCalendarPage() {
               <div className="sports-day-event-list">
                 {selectedDateEvents.map((event) => (
                   <button key={event.id} type="button" className="sports-day-event-row" onClick={() => selectEvent(event)}>
-                    <time>{taipeiTime(event.start_time)}</time>
+                    <time>{eventTimeLabel(event) || "時間未定"}</time>
                     <span>{event.league || event.sport_type}</span>
                     <b>{formatMatchup(event)}</b>
                     <small>{STATUS_LABELS[event.status] || event.status || "-"}</small>

@@ -1,0 +1,634 @@
+{
+  "metadata": {
+    "sport_type": "cycling",
+    "league": "Tour de France",
+    "source_type": "public_route_table",
+    "source_name": "Tour de France 2026 route table / ASO route data",
+    "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+    "source_month": "2026-07",
+    "limitations": "Stage dates, route, distance, and stage type are from published 2026 Tour route tables. Stage start times are not included and are marked time_status=tbd."
+  },
+  "events": [
+    {
+      "event_key": "tdf-2026-stage-01",
+      "title": "Tour de France Stage 1: Barcelona",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-04",
+      "venue": "Barcelona",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 1,
+          "stage_type": "team time trial",
+          "start_location": "Barcelona",
+          "finish_location": "Barcelona",
+          "distance": "19.7 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-02",
+      "title": "Tour de France Stage 2: Tarragona ? Barcelona",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-05",
+      "venue": "Tarragona ? Barcelona",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 2,
+          "stage_type": "hilly",
+          "start_location": "Tarragona",
+          "finish_location": "Barcelona",
+          "distance": "178 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-03",
+      "title": "Tour de France Stage 3: Granollers ? Les Angles",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-06",
+      "venue": "Granollers ? Les Angles",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 3,
+          "stage_type": "mountain",
+          "start_location": "Granollers",
+          "finish_location": "Les Angles",
+          "distance": "196 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-04",
+      "title": "Tour de France Stage 4: Carcassonne ? Foix",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-07",
+      "venue": "Carcassonne ? Foix",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 4,
+          "stage_type": "hilly",
+          "start_location": "Carcassonne",
+          "finish_location": "Foix",
+          "distance": "182 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-05",
+      "title": "Tour de France Stage 5: Lannemezan ? Pau",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-08",
+      "venue": "Lannemezan ? Pau",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 5,
+          "stage_type": "flat",
+          "start_location": "Lannemezan",
+          "finish_location": "Pau",
+          "distance": "158 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-06",
+      "title": "Tour de France Stage 6: Pau ? Gavarnie-G?dre",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-09",
+      "venue": "Pau ? Gavarnie-G?dre",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 6,
+          "stage_type": "mountain",
+          "start_location": "Pau",
+          "finish_location": "Gavarnie-G?dre",
+          "distance": "186 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-07",
+      "title": "Tour de France Stage 7: Hagetmau ? Bordeaux",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-10",
+      "venue": "Hagetmau ? Bordeaux",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 7,
+          "stage_type": "flat",
+          "start_location": "Hagetmau",
+          "finish_location": "Bordeaux",
+          "distance": "175 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-08",
+      "title": "Tour de France Stage 8: P?rigueux ? Bergerac",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-11",
+      "venue": "P?rigueux ? Bergerac",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 8,
+          "stage_type": "flat",
+          "start_location": "P?rigueux",
+          "finish_location": "Bergerac",
+          "distance": "182 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-09",
+      "title": "Tour de France Stage 9: Malemort ? Ussel",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-12",
+      "venue": "Malemort ? Ussel",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 9,
+          "stage_type": "hilly",
+          "start_location": "Malemort",
+          "finish_location": "Ussel",
+          "distance": "185 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-rest-2026-07-13",
+      "title": "Tour de France Rest Day: Cantal",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-13",
+      "venue": "Cantal",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": null,
+          "stage_type": "rest_day",
+          "start_location": "Cantal",
+          "finish_location": "Cantal",
+          "distance": null,
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-10",
+      "title": "Tour de France Stage 10: Aurillac ? Le Lioran",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-14",
+      "venue": "Aurillac ? Le Lioran",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 10,
+          "stage_type": "mountain",
+          "start_location": "Aurillac",
+          "finish_location": "Le Lioran",
+          "distance": "167 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-11",
+      "title": "Tour de France Stage 11: Vichy ? Nevers",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-15",
+      "venue": "Vichy ? Nevers",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 11,
+          "stage_type": "flat",
+          "start_location": "Vichy",
+          "finish_location": "Nevers",
+          "distance": "161 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-12",
+      "title": "Tour de France Stage 12: Circuit de Nevers Magny-Cours ? Chalon-sur-Sa?ne",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-16",
+      "venue": "Circuit de Nevers Magny-Cours ? Chalon-sur-Sa?ne",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 12,
+          "stage_type": "flat",
+          "start_location": "Circuit de Nevers Magny-Cours",
+          "finish_location": "Chalon-sur-Sa?ne",
+          "distance": "181 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-13",
+      "title": "Tour de France Stage 13: Dole ? Belfort",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-17",
+      "venue": "Dole ? Belfort",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 13,
+          "stage_type": "hilly",
+          "start_location": "Dole",
+          "finish_location": "Belfort",
+          "distance": "205 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-14",
+      "title": "Tour de France Stage 14: Mulhouse ? Le Markstein Fellering",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-18",
+      "venue": "Mulhouse ? Le Markstein Fellering",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 14,
+          "stage_type": "mountain",
+          "start_location": "Mulhouse",
+          "finish_location": "Le Markstein Fellering",
+          "distance": "155 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-15",
+      "title": "Tour de France Stage 15: Champagnole ? Plateau de Solaison",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-19",
+      "venue": "Champagnole ? Plateau de Solaison",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 15,
+          "stage_type": "mountain",
+          "start_location": "Champagnole",
+          "finish_location": "Plateau de Solaison",
+          "distance": "184 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-rest-2026-07-20",
+      "title": "Tour de France Rest Day: Haute-Savoie",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-20",
+      "venue": "Haute-Savoie",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": null,
+          "stage_type": "rest_day",
+          "start_location": "Haute-Savoie",
+          "finish_location": "Haute-Savoie",
+          "distance": null,
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-16",
+      "title": "Tour de France Stage 16: ?vian-les-Bains ? Thonon-les-Bains",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-21",
+      "venue": "?vian-les-Bains ? Thonon-les-Bains",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 16,
+          "stage_type": "individual time trial",
+          "start_location": "?vian-les-Bains",
+          "finish_location": "Thonon-les-Bains",
+          "distance": "26 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-17",
+      "title": "Tour de France Stage 17: Chamb?ry ? Voiron",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-22",
+      "venue": "Chamb?ry ? Voiron",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 17,
+          "stage_type": "flat",
+          "start_location": "Chamb?ry",
+          "finish_location": "Voiron",
+          "distance": "175 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-18",
+      "title": "Tour de France Stage 18: Voiron ? Orci?res-Merlette",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-23",
+      "venue": "Voiron ? Orci?res-Merlette",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 18,
+          "stage_type": "mountain",
+          "start_location": "Voiron",
+          "finish_location": "Orci?res-Merlette",
+          "distance": "185 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-19",
+      "title": "Tour de France Stage 19: Gap ? Alpe d'Huez",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-24",
+      "venue": "Gap ? Alpe d'Huez",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 19,
+          "stage_type": "mountain",
+          "start_location": "Gap",
+          "finish_location": "Alpe d'Huez",
+          "distance": "128 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-20",
+      "title": "Tour de France Stage 20: Le Bourg-d'Oisans ? Alpe d'Huez",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-25",
+      "venue": "Le Bourg-d'Oisans ? Alpe d'Huez",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 20,
+          "stage_type": "mountain",
+          "start_location": "Le Bourg-d'Oisans",
+          "finish_location": "Alpe d'Huez",
+          "distance": "171 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    },
+    {
+      "event_key": "tdf-2026-stage-21",
+      "title": "Tour de France Stage 21: Thoiry ? Paris (Champs-?lys?es)",
+      "sport_type": "cycling",
+      "league": "Tour de France",
+      "start_time": "2026-07-26",
+      "venue": "Thoiry ? Paris (Champs-?lys?es)",
+      "status": "scheduled",
+      "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France",
+        "source_name": "Tour de France 2026 route table",
+        "details": {
+          "time_status": "tbd",
+          "stage_number": 21,
+          "stage_type": "flat",
+          "start_location": "Thoiry",
+          "finish_location": "Paris (Champs-?lys?es)",
+          "distance": "130 km",
+          "route_url": "https://www.letour.fr/en/",
+          "source_url": "https://en.wikipedia.org/wiki/2026_Tour_de_France"
+        }
+      }
+    }
+  ]
+}

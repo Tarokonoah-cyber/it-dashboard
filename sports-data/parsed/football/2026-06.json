@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "sport_type": "football",
+    "league": null,
+    "source_type": "placeholder_import_structure",
+    "source_name": "No stable football source selected",
+    "source_url": null,
+    "source_month": "2026-06",
+    "limitations": "No football events imported in this round because no stable source was selected. Folder import support is present."
+  },
+  "events": []
+}

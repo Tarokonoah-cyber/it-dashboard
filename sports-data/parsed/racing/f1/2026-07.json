@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "sport_type": "racing",
+    "league": "F1",
+    "source_type": "public_calendar",
+    "source_name": "Formula 1 2026 calendar",
+    "source_url": "https://www.formula1.com/en/racing/2026",
+    "source_month": "2026-07",
+    "limitations": "Race dates and circuits are based on the published 2026 Formula 1 calendar. Exact session start times are not included and are marked time_status=tbd. Qualifying is represented on the day before race day for normal weekends; British GP sprint is included because the 2026 sprint calendar lists Britain as a sprint weekend."
+  },
+  "events": [
+    {
+      "event_key": "f1-2026-2026-07-04-british-qualifying",
+      "title": "F1 British Grand Prix - Qualifying",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-04",
+      "venue": "Silverstone Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "British Grand Prix",
+          "circuit": "Silverstone Circuit",
+          "country": "United Kingdom",
+          "city": "Silverstone",
+          "session_type": "qualifying",
+          "session_name": "Qualifying",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-04-british-sprint",
+      "title": "F1 British Grand Prix - Sprint",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-04",
+      "venue": "Silverstone Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "British Grand Prix",
+          "circuit": "Silverstone Circuit",
+          "country": "United Kingdom",
+          "city": "Silverstone",
+          "session_type": "sprint",
+          "session_name": "Sprint",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-05-british-race",
+      "title": "F1 British Grand Prix - Race",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-05",
+      "venue": "Silverstone Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "British Grand Prix",
+          "circuit": "Silverstone Circuit",
+          "country": "United Kingdom",
+          "city": "Silverstone",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-18-belgian-qualifying",
+      "title": "F1 Belgian Grand Prix - Qualifying",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-18",
+      "venue": "Circuit de Spa-Francorchamps",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "Belgian Grand Prix",
+          "circuit": "Circuit de Spa-Francorchamps",
+          "country": "Belgium",
+          "city": "Stavelot",
+          "session_type": "qualifying",
+          "session_name": "Qualifying",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-19-belgian-race",
+      "title": "F1 Belgian Grand Prix - Race",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-19",
+      "venue": "Circuit de Spa-Francorchamps",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "Belgian Grand Prix",
+          "circuit": "Circuit de Spa-Francorchamps",
+          "country": "Belgium",
+          "city": "Stavelot",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-25-hungarian-qualifying",
+      "title": "F1 Hungarian Grand Prix - Qualifying",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-25",
+      "venue": "Hungaroring",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "Hungarian Grand Prix",
+          "circuit": "Hungaroring",
+          "country": "Hungary",
+          "city": "Mogyor?d",
+          "session_type": "qualifying",
+          "session_name": "Qualifying",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    },
+    {
+      "event_key": "f1-2026-2026-07-26-hungarian-race",
+      "title": "F1 Hungarian Grand Prix - Race",
+      "sport_type": "racing",
+      "league": "F1",
+      "start_time": "2026-07-26",
+      "venue": "Hungaroring",
+      "status": "scheduled",
+      "source_url": "https://www.formula1.com/en/racing/2026",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.formula1.com/en/racing/2026",
+        "source_name": "Formula 1 2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "grand_prix": "Hungarian Grand Prix",
+          "circuit": "Hungaroring",
+          "country": "Hungary",
+          "city": "Mogyor?d",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.formula1.com/en/racing/2026"
+        }
+      }
+    }
+  ]
+}
