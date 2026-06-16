@@ -1,0 +1,31 @@
+[
+  {
+    "event_id": "00000000-0000-0000-0000-000000000000",
+    "sport_type": "baseball",
+    "detail_status": "pre_game_synced",
+    "sync_phase": "pre_game_3h",
+    "details": {
+      "probable_pitchers": {
+        "away": {
+          "name": "Away starter",
+          "throws": "R"
+        },
+        "home": {
+          "name": "Home starter",
+          "throws": "L"
+        },
+        "status": "announced"
+      },
+      "weather": {
+        "summary": "Partly cloudy",
+        "temperature": 29,
+        "rain_probability": "20%"
+      },
+      "final_score": null,
+      "box_url": null,
+      "source_url": "https://example.com/game"
+    },
+    "source_url": "https://example.com/game",
+    "source_name": "Example baseball details provider"
+  }
+]

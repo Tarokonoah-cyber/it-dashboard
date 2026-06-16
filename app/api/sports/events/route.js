@@ -1,6 +1,7 @@
 import { requireDashboardAuth } from "../../../../lib/auth";
 import { fail, ok, supabaseRequest } from "../../../../lib/supabase-rest";
 import {
+  emptyEventDetails,
   getTaipeiMonthRange,
   normalizeDateTime,
   normalizeEventPayload,
@@ -18,6 +19,42 @@ function buildSearchFilter(keyword) {
   const pattern = `*${escaped}*`;
   const fields = ["title", "league", "home_team", "away_team", "venue"];
   return `or=(${fields.map((field) => `${field}.ilike.${encodeURIComponent(pattern)}`).join(",")})`;
+}
+
+function encodeIdIn(values) {
+  return `(${values.map((value) => String(value).trim()).join(",")})`;
+}
+
+function isMissingDetailsTable(error) {
+  const message = String(error?.message || "");
+  return message.includes("sports_event_details") && (
+    message.includes("does not exist") ||
+    message.includes("Could not find") ||
+    message.includes("schema cache")
+  );
+}
+
+async function attachDetails(rows) {
+  if (!rows.length) return rows;
+  const ids = rows.map((row) => row.id).filter(Boolean);
+  if (!ids.length) return rows.map((row) => ({ ...row, detail: emptyEventDetails(row.id) }));
+
+  try {
+    const detailsRows = await supabaseRequest(
+      "sports_event_details",
+      `select=*&event_id=in.${encodeURIComponent(encodeIdIn(ids))}`
+    );
+    const detailMap = new Map(detailsRows.map((detail) => [detail.event_id, { ...detail, exists: true }]));
+    return rows.map((row) => ({
+      ...row,
+      detail: detailMap.get(row.id) || emptyEventDetails(row.id)
+    }));
+  } catch (error) {
+    if (isMissingDetailsTable(error)) {
+      return rows.map((row) => ({ ...row, detail: emptyEventDetails(row.id) }));
+    }
+    throw error;
+  }
 }
 
 export async function GET(request) {
@@ -49,7 +86,7 @@ export async function GET(request) {
     if (searchFilter) query.push(searchFilter);
 
     const rows = await supabaseRequest("sports_events", query.join("&"));
-    return ok(rows);
+    return ok(await attachDetails(rows));
   } catch (error) {
     return fail(error, error.name === "ValidationError" ? 400 : 500);
   }

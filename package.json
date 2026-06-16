@@ -8,6 +8,7 @@
     "start": "next start",
     "upload:soc-sop": "node scripts/upload-soc-sop.ts",
     "import:sports": "node scripts/importSportsEvents.js",
+    "sync:sports-details": "node scripts/syncSportsDetails.js",
     "lint": "eslint ."
   },
   "dependencies": {

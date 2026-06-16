@@ -27,6 +27,14 @@ const IMPORTANCE_LABELS = {
   must_watch: "must_watch"
 };
 
+const DETAIL_STATUS_LABELS = {
+  not_synced: "尚未同步",
+  not_announced: "尚未公布",
+  pre_game_synced: "賽前資料已同步",
+  waiting_final: "賽後更新",
+  post_game_synced: "賽後資料已同步"
+};
+
 async function api(path, options) {
   const response = await fetch(path, {
     ...options,
@@ -72,6 +80,50 @@ function taipeiDateTime(value) {
     minute: "2-digit",
     hour12: false
   }).format(new Date(value));
+}
+
+function formatSyncTime(value) {
+  return value ? taipeiDateTime(value) : "尚未同步";
+}
+
+function valueOrPending(value, pending = "尚未公布") {
+  if (value === undefined || value === null || value === "") return pending;
+  return value;
+}
+
+function formatWeather(weather) {
+  if (!weather || typeof weather !== "object") return "尚未同步";
+  const parts = [
+    weather.summary || weather.condition,
+    weather.temperature ? `${weather.temperature}°` : "",
+    weather.rain_probability ? `降雨 ${weather.rain_probability}` : "",
+    weather.wind ? `風 ${weather.wind}` : ""
+  ].filter(Boolean);
+  return parts.length ? parts.join(" · ") : "尚未公布";
+}
+
+function pitcherName(value) {
+  if (!value) return "尚未公布";
+  if (typeof value === "string") return value || "尚未公布";
+  return value.name || "尚未公布";
+}
+
+function formatPitchers(details) {
+  const pitchers = details?.probable_pitchers;
+  if (!pitchers || typeof pitchers !== "object") return "尚未同步";
+  const away = pitcherName(pitchers.away);
+  const home = pitcherName(pitchers.home);
+  if (away === "尚未公布" && home === "尚未公布") return pitchers.status || "尚未公布";
+  return `客隊：${away} / 主隊：${home}`;
+}
+
+function formatFinalScore(details) {
+  const score = details?.final_score;
+  if (!score || typeof score !== "object") return "賽後更新";
+  if (score.away === null || score.away === undefined || score.home === null || score.home === undefined) {
+    return score.status || "賽後更新";
+  }
+  return `${score.away} : ${score.home}`;
 }
 
 function currentTaipeiMonth() {
@@ -136,6 +188,15 @@ function Field({ label, value }) {
     <div className="sports-detail-field">
       <span>{label}</span>
       <b>{value || "-"}</b>
+    </div>
+  );
+}
+
+function LinkField({ label, href }) {
+  return (
+    <div className="sports-detail-field">
+      <span>{label}</span>
+      {href ? <a href={href} target="_blank" rel="noreferrer">開啟來源</a> : <b>尚未同步</b>}
     </div>
   );
 }
@@ -328,6 +389,11 @@ export default function SportsCalendarPage() {
 
   const emptyMessage = selectedRangeMessage();
   const selectedEventValue = selectedEvent?.event_key || selectedEvent?.id;
+  const selectedDetail = selectedEvent?.detail || {};
+  const selectedDetailData = selectedDetail.details || {};
+  const detailStatus = selectedDetail.detail_status || "not_synced";
+  const detailStatusLabel = DETAIL_STATUS_LABELS[detailStatus] || detailStatus;
+  const detailSourceUrl = selectedDetail.source_url || selectedDetailData.source_url || selectedDetailData.box_url || "";
 
   return (
     <div className="sports-calendar-page">
@@ -436,7 +502,7 @@ export default function SportsCalendarPage() {
           <>
             <div className="sports-detail-kicker">
               <span>{selectedEvent.league || selectedEvent.sport_type}</span>
-              <b>{selectedEvent.status || "scheduled"}</b>
+              <b>{detailStatusLabel}</b>
             </div>
             <h2>{selectedEvent.title}</h2>
             <div className="sports-detail-grid">
@@ -448,6 +514,17 @@ export default function SportsCalendarPage() {
               <Field label="結束時間" value={taipeiDateTime(selectedEvent.end_time)} />
               <Field label="地點" value={selectedEvent.venue} />
               <Field label="狀態" value={STATUS_LABELS[selectedEvent.status] || selectedEvent.status} />
+            </div>
+
+            <div className="sports-detail-grid sports-live-detail-grid">
+              <Field label="details 狀態" value={detailStatusLabel} />
+              <Field label="天氣" value={formatWeather(selectedDetailData.weather)} />
+              <Field label="先發投手" value={selectedEvent.sport_type === "baseball" ? formatPitchers(selectedDetailData) : "此運動暫無此欄位"} />
+              <Field label="最終比分" value={formatFinalScore(selectedDetailData)} />
+              <Field label="最後同步時間" value={formatSyncTime(selectedDetail.last_synced_at)} />
+              <LinkField label="來源連結" href={detailSourceUrl} />
+              {selectedDetail.source_name ? <Field label="details 來源" value={selectedDetail.source_name} /> : null}
+              {selectedDetail.sync_phase ? <Field label="同步階段" value={selectedDetail.sync_phase} /> : null}
             </div>
 
             <div className="sports-editor">

@@ -8195,6 +8195,10 @@ textarea:disabled {
   border-bottom: 1px solid var(--hotel-line, #dde4ee);
 }
 
+.sports-live-detail-grid {
+  padding-top: 16px;
+}
+
 .sports-detail-field {
   display: grid;
   gap: 4px;
@@ -8211,6 +8215,18 @@ textarea:disabled {
   color: var(--hotel-text, #162033);
   font-size: 14px;
   line-height: 1.45;
+}
+
+.sports-detail-field a {
+  width: fit-content;
+  color: var(--hotel-blue, #2f5f98);
+  font-size: 14px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.sports-detail-field a:hover {
+  text-decoration: underline;
 }
 
 .sports-editor {
