@@ -8414,6 +8414,197 @@ textarea:disabled {
   }
 }
 
+/* Work center compact operations */
+.work-management-page {
+  gap: 14px;
+}
+
+.work-management-page .section-head {
+  margin-bottom: 2px;
+}
+
+.work-management-page .work-entry-panel,
+.work-management-page .work-records-panel {
+  padding: 16px;
+  border-radius: 14px;
+}
+
+.work-management-page .work-entry-panel header,
+.work-management-page .work-records-head {
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.work-management-page .work-entry-panel h2,
+.work-management-page .work-records-head h2 {
+  margin-bottom: 0;
+  font-size: 1.08rem;
+}
+
+.work-management-page .work-entry-grid {
+  display: grid;
+  grid-template-columns: 140px 132px minmax(260px, 1fr) 120px 120px auto auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.work-management-page .work-entry-grid label,
+.work-management-page .work-filters label {
+  gap: 5px;
+  font-size: 12px;
+}
+
+.work-management-page .work-entry-grid .wide {
+  grid-column: auto;
+}
+
+.work-management-page .work-entry-grid .note-field {
+  grid-column: 1 / -1;
+}
+
+.work-management-page .work-entry-grid input,
+.work-management-page .work-entry-grid select,
+.work-management-page .work-entry-grid textarea,
+.work-management-page .work-filters input,
+.work-management-page .work-filters select {
+  min-height: 40px;
+  border-radius: 10px;
+  padding: 9px 11px;
+  font-size: 14px;
+}
+
+.work-management-page .work-entry-grid textarea {
+  height: 44px;
+  min-height: 44px;
+  max-height: 96px;
+  resize: vertical;
+}
+
+.work-form-actions,
+.work-note-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.work-form-actions button,
+.work-note-toggle button,
+.work-clear-filters,
+.work-row-actions button {
+  min-height: 34px;
+  border-radius: 9px;
+  padding: 0 12px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.work-form-actions .primary-action {
+  min-width: 104px;
+}
+
+.work-note-toggle button,
+.work-clear-filters,
+.work-row-actions button {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.work-note-toggle button:hover,
+.work-clear-filters:hover,
+.work-row-actions button:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-muted);
+  color: var(--text-primary);
+}
+
+.work-management-page .work-filters {
+  display: grid;
+  grid-template-columns: 150px 140px 140px 140px auto;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.work-clear-filters {
+  justify-self: start;
+}
+
+.work-management-page .full-work-row {
+  grid-template-columns: 112px 96px minmax(240px, 1.45fr) 104px 104px minmax(160px, 1fr) 112px;
+  min-width: 1120px;
+  min-height: 44px;
+  padding: 10px 14px;
+  gap: 10px;
+}
+
+.work-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.work-row-actions button {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.work-row-actions button.danger {
+  border-color: rgba(220, 38, 38, 0.18);
+  background: rgba(220, 38, 38, 0.03);
+  color: #b42318;
+}
+
+.work-row-actions button.danger:hover {
+  border-color: rgba(220, 38, 38, 0.32);
+  background: rgba(220, 38, 38, 0.07);
+  color: #991b1b;
+}
+
+.work-row-actions button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+@media (max-width: 1320px) {
+  .work-management-page .work-entry-grid {
+    grid-template-columns: 140px 132px minmax(260px, 1fr) 120px 120px;
+  }
+
+  .work-form-actions,
+  .work-note-toggle {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 980px) {
+  .work-management-page .work-entry-grid,
+  .work-management-page .work-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .work-form-actions,
+  .work-note-toggle,
+  .work-clear-filters {
+    justify-self: stretch;
+  }
+
+  .work-form-actions button,
+  .work-note-toggle button,
+  .work-clear-filters {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .work-management-page .work-entry-grid,
+  .work-management-page .work-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1300px) {
   .sports-calendar-page {
     grid-template-columns: 260px minmax(680px, 1fr) 300px;

@@ -3,6 +3,7 @@ import { requireDashboardAuth } from "../../../lib/auth";
 import { normalizeWork } from "../../../lib/dailyOpsSync";
 
 const MAX_WORK_TEXT_LENGTH = 1000;
+const MAX_WORK_TITLE_LENGTH = 200;
 
 function cleanText(value) {
   return String(value || "").trim();
@@ -16,6 +17,21 @@ function validateText(value, label, maxLength = MAX_WORK_TEXT_LENGTH) {
     throw error;
   }
   return text;
+}
+
+function validateWorkTitle(value) {
+  const title = validateText(value, "Title", MAX_WORK_TITLE_LENGTH);
+  if (!title) {
+    const error = new Error("工作內容不可空白");
+    error.name = "ValidationError";
+    throw error;
+  }
+  if (/^\d+$/.test(title)) {
+    const error = new Error("工作內容不可只輸入數字");
+    error.name = "ValidationError";
+    throw error;
+  }
+  return title;
 }
 
 export async function GET(request) {
@@ -50,7 +66,7 @@ export async function POST(request) {
     const body = await request.json();
     const date = cleanText(body.date || todayTaipei());
     const staff = validateText(body.staff, "Staff", 120);
-    const title = validateText(body.title, "Title", 200);
+    const title = validateWorkTitle(body.title);
     const category = validateText(body.category || "工作", "Category", 120);
     const status = validateText(body.status || "未完成", "Status", 120);
     const description = validateText(body.description || "", "Description");
@@ -58,8 +74,6 @@ export async function POST(request) {
 
     if (!date) return fail(new Error("Date is required"), 400);
     if (!staff) return fail(new Error("Staff is required"), 400);
-    if (!title) return fail(new Error("Title is required"), 400);
-
     const rows = await supabaseRequest("work_logs", "select=*", {
       method: "POST",
       body: {
@@ -90,24 +104,61 @@ export async function PATCH(request) {
   try {
     const body = await request.json();
     const id = cleanText(body.id);
-    const status = cleanText(body.status);
-    const allowedKeys = new Set(["id", "status"]);
+    const allowedKeys = new Set(["id", "date", "staff", "title", "category", "status", "note", "description"]);
     const unsupportedKeys = Object.keys(body || {}).filter((key) => !allowedKeys.has(key));
 
     if (!id) return fail(new Error("Work log id is required"), 400);
-    if (unsupportedKeys.length) return fail(new Error("Only id and status can be updated"), 400);
-    if (status !== "已完成") return fail(new Error("Only marking a single work item as completed is allowed"), 400);
+    if (unsupportedKeys.length) return fail(new Error("Unsupported work log fields"), 400);
+
+    const payload = {};
+    if (body.date !== undefined) {
+      const date = cleanText(body.date);
+      if (!date) return fail(new Error("Date is required"), 400);
+      payload.date = date;
+    }
+    if (body.staff !== undefined) {
+      const staff = validateText(body.staff, "Staff", 120);
+      if (!staff) return fail(new Error("Staff is required"), 400);
+      payload.staff = staff;
+    }
+    if (body.title !== undefined) payload.title = validateWorkTitle(body.title);
+    if (body.category !== undefined) payload.category = validateText(body.category || "工作", "Category", 120);
+    if (body.status !== undefined) payload.status = validateText(body.status || "未完成", "Status", 120);
+    if (body.note !== undefined) payload.note = validateText(body.note || "", "Note");
+    if (body.description !== undefined) payload.description = validateText(body.description || "", "Description");
+
+    if (!Object.keys(payload).length) return fail(new Error("No work log fields to update"), 400);
 
     const rows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(id)}&select=*`, {
       method: "PATCH",
       body: {
-        status: "已完成",
+        ...payload,
         updated_at: new Date().toISOString()
       }
     });
 
     if (!rows.length) return fail(new Error("Work log not found"), 404);
     return ok(normalizeWork(rows[0]));
+  } catch (error) {
+    return fail(error, error.name === "ValidationError" ? 400 : 500);
+  }
+}
+
+export async function DELETE(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = cleanText(searchParams.get("id"));
+    if (!id) return fail(new Error("Work log id is required"), 400);
+
+    const rows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(id)}&select=id`, {
+      method: "DELETE"
+    });
+
+    if (!rows.length) return fail(new Error("Work log not found"), 404);
+    return ok({ id });
   } catch (error) {
     return fail(error);
   }

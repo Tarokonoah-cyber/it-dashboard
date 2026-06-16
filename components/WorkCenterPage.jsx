@@ -60,7 +60,10 @@ export default function WorkCenterPage() {
   const [works, setWorks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState("");
   const [error, setError] = useState("");
+  const [showNote, setShowNote] = useState(false);
+  const [editingId, setEditingId] = useState("");
   const [filters, setFilters] = useState({ date: "", staff: "", status: "", category: "" });
   const [form, setForm] = useState({
     date: today,
@@ -70,6 +73,8 @@ export default function WorkCenterPage() {
     status: WORK_STATUSES[0],
     note: ""
   });
+  const hasFilters = Boolean(filters.date || filters.staff || filters.status || filters.category);
+  const isEditing = Boolean(editingId);
 
   async function load() {
     setLoading(true);
@@ -104,20 +109,76 @@ export default function WorkCenterPage() {
 
   async function submitWork(event) {
     event.preventDefault();
+    const title = form.title.trim();
+    if (!title) {
+      setError("工作內容不可空白");
+      return;
+    }
+    if (/^\d+$/.test(title)) {
+      setError("工作內容不可只輸入數字，請補上可辨識的工作說明");
+      return;
+    }
     setSaving(true);
     setError("");
     try {
-      const created = await api("/api/work-logs", {
-        method: "POST",
-        body: JSON.stringify(form)
+      const payload = {
+        ...form,
+        title
+      };
+      const saved = await api("/api/work-logs", {
+        method: isEditing ? "PATCH" : "POST",
+        body: JSON.stringify(isEditing ? { id: editingId, ...payload } : payload)
       });
-      setForm((current) => ({ ...current, title: "", note: "" }));
+      resetForm();
       setFilters({ date: "", staff: "", status: "", category: "" });
-      setWorks((current) => [created, ...current.filter((work) => work.id !== created.id)]);
+      setWorks((current) => [saved, ...current.filter((work) => work.id !== saved.id)]);
     } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  function resetForm() {
+    setEditingId("");
+    setShowNote(false);
+    setForm({
+      date: today,
+      staff: "Noah",
+      title: "",
+      category: WORK_CATEGORIES[0],
+      status: WORK_STATUSES[0],
+      note: ""
+    });
+  }
+
+  function editWork(work) {
+    setEditingId(work.id);
+    setShowNote(Boolean(work.note));
+    setForm({
+      date: dateKey(work.date || work.created_at) || today,
+      staff: work.staff || "Noah",
+      title: work.title || "",
+      category: work.category || WORK_CATEGORIES[0],
+      status: normalizeStatus(work.status),
+      note: work.note || ""
+    });
+    setError("");
+  }
+
+  async function deleteWork(work) {
+    if (!work?.id) return;
+    if (!window.confirm("確定要刪除這筆工作紀錄嗎？此操作無法復原。")) return;
+    setDeletingId(work.id);
+    setError("");
+    try {
+      await api(`/api/work-logs?id=${encodeURIComponent(work.id)}`, { method: "DELETE" });
+      setWorks((current) => current.filter((item) => item.id !== work.id));
+      if (editingId === work.id) resetForm();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeletingId("");
     }
   }
 
@@ -130,7 +191,6 @@ export default function WorkCenterPage() {
       <header className="section-head">
         <div>
           <h1>工作中心</h1>
-          <p>新增、篩選與追蹤日常工作紀錄。</p>
         </div>
         <div className="work-head-actions">
           <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>查看 KPI 報表</button>
@@ -142,12 +202,8 @@ export default function WorkCenterPage() {
       <form className="work-entry-panel" onSubmit={submitWork}>
         <header>
           <div>
-            <h2>新增工作</h2>
-            <span>建立一筆可追蹤的工作紀錄，並同步進入工作列表。</span>
+            <h2>{isEditing ? "編輯工作" : "新增工作"}</h2>
           </div>
-          <button className="primary-action" disabled={saving} type="submit">
-            {saving ? "新增中..." : "新增工作"}
-          </button>
         </header>
         <div className="work-entry-grid">
           <label>
@@ -174,10 +230,23 @@ export default function WorkCenterPage() {
               {WORK_STATUSES.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
-          <label className="wide">
-            備註
-            <textarea value={form.note} onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))} placeholder="補充處理細節、廠商回覆或後續追蹤事項" />
-          </label>
+          <div className="work-form-actions">
+            <button className="primary-action" disabled={saving} type="submit">
+              {saving ? (isEditing ? "更新中..." : "新增中...") : (isEditing ? "更新工作" : "新增工作")}
+            </button>
+            {isEditing ? <button type="button" onClick={resetForm}>取消</button> : null}
+          </div>
+          <div className="work-note-toggle">
+            <button type="button" onClick={() => setShowNote((current) => !current)}>
+              {showNote ? "收合備註" : "加入備註"}
+            </button>
+          </div>
+          {showNote ? (
+            <label className="wide note-field">
+              備註
+              <textarea value={form.note} onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))} placeholder="補充處理細節、廠商回覆或後續追蹤事項" />
+            </label>
+          ) : null}
         </div>
       </form>
 
@@ -187,7 +256,6 @@ export default function WorkCenterPage() {
             <h2>工作紀錄</h2>
             <span>{loading ? "讀取中..." : `${works.length} 筆`}</span>
           </div>
-          <button onClick={clearFilters}>清除篩選</button>
         </header>
         <div className="work-filters">
           <label>
@@ -215,6 +283,7 @@ export default function WorkCenterPage() {
               {options.category.map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
+          {hasFilters ? <button className="work-clear-filters" onClick={clearFilters} type="button">清除篩選</button> : null}
         </div>
         <div className="full-work-table">
           <div className="full-work-row head">
@@ -224,6 +293,7 @@ export default function WorkCenterPage() {
             <span>類型</span>
             <span>狀態</span>
             <span>備註</span>
+            <span>操作</span>
           </div>
           {loading ? (
             <div className="empty">讀取工作紀錄中...</div>
@@ -238,6 +308,12 @@ export default function WorkCenterPage() {
                 <span>{work.category || "一般"}</span>
                 <b className={isDoneStatus(work.status) ? "status-done" : statusClassName(work.status)}>{normalizeStatus(work.status)}</b>
                 <span title={work.note || ""}>{work.note || "-"}</span>
+                <span className="work-row-actions">
+                  <button type="button" onClick={() => editWork(work)}>編輯</button>
+                  <button className="danger" disabled={deletingId === work.id} type="button" onClick={() => deleteWork(work)}>
+                    {deletingId === work.id ? "刪除中" : "刪除"}
+                  </button>
+                </span>
               </div>
             ))
           )}
