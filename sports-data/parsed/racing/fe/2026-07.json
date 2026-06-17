@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "sport_type": "racing",
+    "league": "FE",
+    "source_type": "public_calendar_reference",
+    "source_name": "Formula E 2025/2026 calendar",
+    "source_url": "https://www.fiaformulae.com/en/calendar",
+    "source_month": "2026-07",
+    "official_data": false,
+    "race_only": true,
+    "limitations": "The official Formula E calendar page is dynamic in this environment, so this file uses the published 2025/2026 Formula E calendar as a reliable public reference. Practice and qualifying are excluded; exact race start times are not included and are marked time_status=tbd."
+  },
+  "events": [
+    {
+      "event_key": "fe-2026-2026-07-04-shanghai-race-1",
+      "title": "FE Shanghai E-Prix Race 1",
+      "sport_type": "racing",
+      "league": "FE",
+      "start_time": "2026-07-04",
+      "venue": "Shanghai International Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.fiaformulae.com/en/calendar",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fiaformulae.com/en/calendar",
+        "source_name": "Formula E 2025/2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "series": "Formula E",
+          "event_name": "Shanghai E-Prix Race 1",
+          "circuit": "Shanghai International Circuit",
+          "country": "China",
+          "city": "Shanghai",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.fiaformulae.com/en/calendar"
+        }
+      }
+    },
+    {
+      "event_key": "fe-2026-2026-07-05-shanghai-race-2",
+      "title": "FE Shanghai E-Prix Race 2",
+      "sport_type": "racing",
+      "league": "FE",
+      "start_time": "2026-07-05",
+      "venue": "Shanghai International Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.fiaformulae.com/en/calendar",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fiaformulae.com/en/calendar",
+        "source_name": "Formula E 2025/2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "series": "Formula E",
+          "event_name": "Shanghai E-Prix Race 2",
+          "circuit": "Shanghai International Circuit",
+          "country": "China",
+          "city": "Shanghai",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.fiaformulae.com/en/calendar"
+        }
+      }
+    },
+    {
+      "event_key": "fe-2026-2026-07-25-tokyo-race-1",
+      "title": "FE Tokyo E-Prix Race 1",
+      "sport_type": "racing",
+      "league": "FE",
+      "start_time": "2026-07-25",
+      "venue": "Tokyo Street Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.fiaformulae.com/en/calendar",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fiaformulae.com/en/calendar",
+        "source_name": "Formula E 2025/2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "series": "Formula E",
+          "event_name": "Tokyo E-Prix Race 1",
+          "circuit": "Tokyo Street Circuit",
+          "country": "Japan",
+          "city": "Tokyo",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.fiaformulae.com/en/calendar"
+        }
+      }
+    },
+    {
+      "event_key": "fe-2026-2026-07-26-tokyo-race-2",
+      "title": "FE Tokyo E-Prix Race 2",
+      "sport_type": "racing",
+      "league": "FE",
+      "start_time": "2026-07-26",
+      "venue": "Tokyo Street Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.fiaformulae.com/en/calendar",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fiaformulae.com/en/calendar",
+        "source_name": "Formula E 2025/2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "series": "Formula E",
+          "event_name": "Tokyo E-Prix Race 2",
+          "circuit": "Tokyo Street Circuit",
+          "country": "Japan",
+          "city": "Tokyo",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.fiaformulae.com/en/calendar"
+        }
+      }
+    }
+  ]
+}

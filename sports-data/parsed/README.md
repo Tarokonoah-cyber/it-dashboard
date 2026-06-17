@@ -16,9 +16,13 @@ sports-data/parsed/baseball/cpbl/2026-06.json
 sports-data/parsed/baseball/mlb/2026-06.json
 sports-data/parsed/baseball/npb/2026-06.json
 sports-data/parsed/football/2026-06.json
+sports-data/parsed/football/world-cup/2026-06.json
+sports-data/parsed/football/world-cup/2026-07.json
 sports-data/parsed/cycling/tour-de-france/2026-07.json
 sports-data/parsed/racing/f1/2026-06.json
 sports-data/parsed/racing/f1/2026-07.json
+sports-data/parsed/racing/fe/2026-06.json
+sports-data/parsed/racing/fe/2026-07.json
 ```
 
 Guidelines:
@@ -29,7 +33,8 @@ Guidelines:
 - Parsed screenshot JSON is a fallback and audit trail, not the main data source.
 - Each event should include `sport_type`, `league`, `title`, `start_time`, and source metadata when available.
 - `racing` is the canonical sport type for F1 and future motorsport data. `motorsport` can remain as a legacy compatibility value, but new files should use `racing`.
-- Basketball and tennis intentionally have no imported data in this round. Empty results for those filters are expected.
+- Basketball intentionally has no imported data in this round. Empty results for that filter are expected.
+- Tennis is no longer shown in the Sports Calendar filter UI. Existing API/database compatibility is unchanged.
 
 Import examples:
 
@@ -82,8 +87,10 @@ Source notes for current data:
 - MLB 2026-06: generated from the MLB Stats API schedule endpoint. Probable pitchers and weather are not populated by this import.
 - NPB 2026-06: generated from the NPB.jp official June 2026 detailed schedule/results page (`https://npb.jp/games/2026/schedule_06_detail.html`). This file is marked `complete_schedule: true` for the source month. Weather and probable pitchers are not included; completed game final scores are included when present on the source page.
 - Tour de France 2026-07: route/stage data is based on published 2026 Tour route tables and ASO route information as reflected in public route references. Stage start times are not included and are marked `time_status: "tbd"`.
-- F1 2026-06 and 2026-07: race dates and circuits are based on the published 2026 Formula 1 calendar. Exact session times are not included and are marked `time_status: "tbd"`.
-- Football 2026-06: present as an empty import structure only. No stable football source is selected in this round.
+- F1 2026-06 and 2026-07: race dates and circuits are based on the published 2026 Formula 1 calendar. These files intentionally include race days only; practice, qualifying, and sprint sessions are excluded. Exact session times are not included and are marked `time_status: "tbd"`.
+- FE 2026-06 and 2026-07: Formula E race-day entries only. The official Formula E calendar page is dynamic, so these JSON files are marked `official_data: false` and cite the official calendar plus public race-date references. Practice and qualifying sessions are excluded.
+- FIFA World Cup 2026-06 and 2026-07: FIFA's official fixtures page is listed as the primary source URL, but the current import files are marked `official_data: false` because the official page is dynamic and the structured fixtures could not be reliably fetched in this environment. Group-stage fixtures use public fixture references, kickoff times are marked `time_status: "tbd"`, and July knockout entries are placeholders for confirmed rounds/dates only with teams marked TBD.
+- Football 2026-06: the legacy empty import structure remains for compatibility; current World Cup data lives under `football/world-cup/`.
 
 Details sync skeleton:
 

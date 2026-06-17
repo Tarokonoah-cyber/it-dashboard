@@ -1,0 +1,394 @@
+{
+  "metadata": {
+    "sport_type": "football",
+    "league": "FIFA World Cup",
+    "source_type": "public_fixture_reference",
+    "source_name": "FIFA World Cup 2026 knockout schedule references",
+    "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+    "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup",
+    "source_month": "2026-07",
+    "official_data": false,
+    "complete_schedule": false,
+    "limitations": "FIFA official fixtures page is dynamic and did not expose stable structured data in this environment. July knockout dates are schedule placeholders from reliable public fixture references; teams, most venues, and kickoff times are TBD and marked as such."
+  },
+  "events": [
+    {
+      "event_key": "world-cup-2026-2026-07-01-round-of-32-01",
+      "title": "FIFA World Cup Round of 32",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-01",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 32",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-02-round-of-32-02",
+      "title": "FIFA World Cup Round of 32",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-02",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 32",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-03-round-of-32-03",
+      "title": "FIFA World Cup Round of 32",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-03",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 32",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-04-round-of-16-04",
+      "title": "FIFA World Cup Round of 16",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-04",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 16",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-05-round-of-16-05",
+      "title": "FIFA World Cup Round of 16",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-05",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 16",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-06-round-of-16-06",
+      "title": "FIFA World Cup Round of 16",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-06",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 16",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-07-round-of-16-07",
+      "title": "FIFA World Cup Round of 16",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-07",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Round of 16",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-09-quarterfinal-08",
+      "title": "FIFA World Cup Quarterfinal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-09",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Quarterfinal",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-10-quarterfinal-09",
+      "title": "FIFA World Cup Quarterfinal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-10",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Quarterfinal",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-11-quarterfinal-10",
+      "title": "FIFA World Cup Quarterfinal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-11",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Quarterfinal",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-14-semifinal-11",
+      "title": "FIFA World Cup Semifinal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-14",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Semifinal",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-15-semifinal-12",
+      "title": "FIFA World Cup Semifinal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-15",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Semifinal",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-18-third-place-match-13",
+      "title": "FIFA World Cup Third-place match",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-18",
+      "venue": null,
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Third-place match",
+          "teams_status": "tbd",
+          "venue": null,
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-07-19-final-14",
+      "title": "FIFA World Cup Final",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": null,
+      "home_team": null,
+      "start_time": "2026-07-19",
+      "venue": "MetLife Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "not_announced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 knockout schedule references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Final",
+          "teams_status": "tbd",
+          "venue": "MetLife Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "metadata": {
+    "sport_type": "racing",
+    "league": "FE",
+    "source_type": "public_calendar_reference",
+    "source_name": "Formula E 2025/2026 calendar",
+    "source_url": "https://www.fiaformulae.com/en/calendar",
+    "source_month": "2026-06",
+    "official_data": false,
+    "race_only": true,
+    "limitations": "The official Formula E calendar page is dynamic in this environment, so this file uses the published 2025/2026 Formula E calendar as a reliable public reference. Practice and qualifying are excluded; exact race start times are not included and are marked time_status=tbd."
+  },
+  "events": [
+    {
+      "event_key": "fe-2026-2026-06-20-sanya-race",
+      "title": "FE Sanya E-Prix",
+      "sport_type": "racing",
+      "league": "FE",
+      "start_time": "2026-06-20",
+      "venue": "Haitang Bay Circuit",
+      "status": "scheduled",
+      "source_url": "https://www.fiaformulae.com/en/calendar",
+      "details": {
+        "sport_type": "racing",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fiaformulae.com/en/calendar",
+        "source_name": "Formula E 2025/2026 calendar",
+        "details": {
+          "time_status": "tbd",
+          "series": "Formula E",
+          "event_name": "Sanya E-Prix",
+          "circuit": "Haitang Bay Circuit",
+          "country": "China",
+          "city": "Sanya",
+          "session_type": "race",
+          "session_name": "Race",
+          "source_url": "https://www.fiaformulae.com/en/calendar"
+        }
+      }
+    }
+  ]
+}

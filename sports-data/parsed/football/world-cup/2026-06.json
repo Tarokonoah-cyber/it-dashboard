@@ -1,0 +1,1960 @@
+{
+  "metadata": {
+    "sport_type": "football",
+    "league": "FIFA World Cup",
+    "source_type": "public_fixture_reference",
+    "source_name": "FIFA World Cup 2026 fixture references",
+    "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+    "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup",
+    "source_month": "2026-06",
+    "official_data": false,
+    "complete_schedule": false,
+    "limitations": "FIFA official fixtures page is dynamic and did not expose stable structured data in this environment. June group-stage fixtures are compiled from reliable public fixture references that cite FIFA schedule pages. Kickoff times are not imported and are marked time_status=tbd; verify against FIFA before operational use."
+  },
+  "events": [
+    {
+      "event_key": "world-cup-2026-2026-06-11-south-africa-mexico",
+      "title": "South Africa @ Mexico",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "South Africa",
+      "home_team": "Mexico",
+      "start_time": "2026-06-11",
+      "venue": "Mexico City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Mexico City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-11-czechia-korea-republic",
+      "title": "Czechia @ Korea Republic",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Czechia",
+      "home_team": "Korea Republic",
+      "start_time": "2026-06-11",
+      "venue": "Estadio Guadalajara",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Estadio Guadalajara",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-12-bosnia-and-herzegovina-canada",
+      "title": "Bosnia and Herzegovina @ Canada",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Bosnia and Herzegovina",
+      "home_team": "Canada",
+      "start_time": "2026-06-12",
+      "venue": "Toronto Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "Toronto Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-12-paraguay-usa",
+      "title": "Paraguay @ USA",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Paraguay",
+      "home_team": "USA",
+      "start_time": "2026-06-12",
+      "venue": "Los Angeles Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "Los Angeles Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-13-scotland-haiti",
+      "title": "Scotland @ Haiti",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Scotland",
+      "home_team": "Haiti",
+      "start_time": "2026-06-13",
+      "venue": "Boston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "Boston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-13-turkiye-australia",
+      "title": "Turkiye @ Australia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Turkiye",
+      "home_team": "Australia",
+      "start_time": "2026-06-13",
+      "venue": "BC Place Vancouver",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "BC Place Vancouver",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-13-morocco-brazil",
+      "title": "Morocco @ Brazil",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Morocco",
+      "home_team": "Brazil",
+      "start_time": "2026-06-13",
+      "venue": "New York New Jersey Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "New York New Jersey Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-13-switzerland-qatar",
+      "title": "Switzerland @ Qatar",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Switzerland",
+      "home_team": "Qatar",
+      "start_time": "2026-06-13",
+      "venue": "San Francisco Bay Area Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "San Francisco Bay Area Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-14-ecuador-cote-d-ivoire",
+      "title": "Ecuador @ Cote d'Ivoire",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Ecuador",
+      "home_team": "Cote d'Ivoire",
+      "start_time": "2026-06-14",
+      "venue": "Philadelphia Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "Philadelphia Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-14-curacao-germany",
+      "title": "Curacao @ Germany",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Curacao",
+      "home_team": "Germany",
+      "start_time": "2026-06-14",
+      "venue": "Houston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "Houston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-14-japan-netherlands",
+      "title": "Japan @ Netherlands",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Japan",
+      "home_team": "Netherlands",
+      "start_time": "2026-06-14",
+      "venue": "Dallas Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Dallas Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-14-tunisia-sweden",
+      "title": "Tunisia @ Sweden",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Tunisia",
+      "home_team": "Sweden",
+      "start_time": "2026-06-14",
+      "venue": "Estadio Monterrey",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Estadio Monterrey",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-15-uruguay-saudi-arabia",
+      "title": "Uruguay @ Saudi Arabia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Uruguay",
+      "home_team": "Saudi Arabia",
+      "start_time": "2026-06-15",
+      "venue": "Miami Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Miami Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-15-cabo-verde-spain",
+      "title": "Cabo Verde @ Spain",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Cabo Verde",
+      "home_team": "Spain",
+      "start_time": "2026-06-15",
+      "venue": "Atlanta Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Atlanta Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-15-new-zealand-ir-iran",
+      "title": "New Zealand @ IR Iran",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "New Zealand",
+      "home_team": "IR Iran",
+      "start_time": "2026-06-15",
+      "venue": "Los Angeles Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "Los Angeles Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-15-egypt-belgium",
+      "title": "Egypt @ Belgium",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Egypt",
+      "home_team": "Belgium",
+      "start_time": "2026-06-15",
+      "venue": "Seattle Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "Seattle Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-16-senegal-france",
+      "title": "Senegal @ France",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Senegal",
+      "home_team": "France",
+      "start_time": "2026-06-16",
+      "venue": "New York New Jersey Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "New York New Jersey Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-16-norway-iraq",
+      "title": "Norway @ Iraq",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Norway",
+      "home_team": "Iraq",
+      "start_time": "2026-06-16",
+      "venue": "Boston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "Boston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-16-algeria-argentina",
+      "title": "Algeria @ Argentina",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Algeria",
+      "home_team": "Argentina",
+      "start_time": "2026-06-16",
+      "venue": "Kansas City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "Kansas City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-16-jordan-austria",
+      "title": "Jordan @ Austria",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Jordan",
+      "home_team": "Austria",
+      "start_time": "2026-06-16",
+      "venue": "San Francisco Bay Area Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "San Francisco Bay Area Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-17-panama-ghana",
+      "title": "Panama @ Ghana",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Panama",
+      "home_team": "Ghana",
+      "start_time": "2026-06-17",
+      "venue": "Toronto Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "Toronto Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-17-croatia-england",
+      "title": "Croatia @ England",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Croatia",
+      "home_team": "England",
+      "start_time": "2026-06-17",
+      "venue": "Dallas Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "Dallas Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-17-congo-dr-portugal",
+      "title": "Congo DR @ Portugal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Congo DR",
+      "home_team": "Portugal",
+      "start_time": "2026-06-17",
+      "venue": "Houston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Houston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-17-colombia-uzbekistan",
+      "title": "Colombia @ Uzbekistan",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Colombia",
+      "home_team": "Uzbekistan",
+      "start_time": "2026-06-17",
+      "venue": "Mexico City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Mexico City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-18-south-africa-czechia",
+      "title": "South Africa @ Czechia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "South Africa",
+      "home_team": "Czechia",
+      "start_time": "2026-06-18",
+      "venue": "Atlanta Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Atlanta Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-18-bosnia-and-herzegovina-switzerland",
+      "title": "Bosnia and Herzegovina @ Switzerland",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Bosnia and Herzegovina",
+      "home_team": "Switzerland",
+      "start_time": "2026-06-18",
+      "venue": "Los Angeles Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "Los Angeles Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-18-qatar-canada",
+      "title": "Qatar @ Canada",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Qatar",
+      "home_team": "Canada",
+      "start_time": "2026-06-18",
+      "venue": "BC Place Vancouver",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "BC Place Vancouver",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-18-korea-republic-mexico",
+      "title": "Korea Republic @ Mexico",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Korea Republic",
+      "home_team": "Mexico",
+      "start_time": "2026-06-18",
+      "venue": "Estadio Guadalajara",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Estadio Guadalajara",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-19-haiti-brazil",
+      "title": "Haiti @ Brazil",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Haiti",
+      "home_team": "Brazil",
+      "start_time": "2026-06-19",
+      "venue": "Philadelphia Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "Philadelphia Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-19-morocco-scotland",
+      "title": "Morocco @ Scotland",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Morocco",
+      "home_team": "Scotland",
+      "start_time": "2026-06-19",
+      "venue": "Boston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "Boston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-19-paraguay-turkiye",
+      "title": "Paraguay @ Turkiye",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Paraguay",
+      "home_team": "Turkiye",
+      "start_time": "2026-06-19",
+      "venue": "San Francisco Bay Area Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "San Francisco Bay Area Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-19-australia-usa",
+      "title": "Australia @ USA",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Australia",
+      "home_team": "USA",
+      "start_time": "2026-06-19",
+      "venue": "Seattle Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "Seattle Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-20-cote-d-ivoire-germany",
+      "title": "Cote d'Ivoire @ Germany",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Cote d'Ivoire",
+      "home_team": "Germany",
+      "start_time": "2026-06-20",
+      "venue": "Toronto Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "Toronto Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-20-curacao-ecuador",
+      "title": "Curacao @ Ecuador",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Curacao",
+      "home_team": "Ecuador",
+      "start_time": "2026-06-20",
+      "venue": "Kansas City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "Kansas City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-20-sweden-netherlands",
+      "title": "Sweden @ Netherlands",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Sweden",
+      "home_team": "Netherlands",
+      "start_time": "2026-06-20",
+      "venue": "Houston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Houston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-20-japan-tunisia",
+      "title": "Japan @ Tunisia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Japan",
+      "home_team": "Tunisia",
+      "start_time": "2026-06-20",
+      "venue": "Estadio Monterrey",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Estadio Monterrey",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-21-cabo-verde-uruguay",
+      "title": "Cabo Verde @ Uruguay",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Cabo Verde",
+      "home_team": "Uruguay",
+      "start_time": "2026-06-21",
+      "venue": "Miami Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Miami Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-21-saudi-arabia-spain",
+      "title": "Saudi Arabia @ Spain",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Saudi Arabia",
+      "home_team": "Spain",
+      "start_time": "2026-06-21",
+      "venue": "Atlanta Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Atlanta Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-21-ir-iran-belgium",
+      "title": "IR Iran @ Belgium",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "IR Iran",
+      "home_team": "Belgium",
+      "start_time": "2026-06-21",
+      "venue": "Los Angeles Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "Los Angeles Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-21-egypt-new-zealand",
+      "title": "Egypt @ New Zealand",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Egypt",
+      "home_team": "New Zealand",
+      "start_time": "2026-06-21",
+      "venue": "BC Place Vancouver",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "BC Place Vancouver",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-22-senegal-norway",
+      "title": "Senegal @ Norway",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Senegal",
+      "home_team": "Norway",
+      "start_time": "2026-06-22",
+      "venue": "New York New Jersey Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "New York New Jersey Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-22-iraq-france",
+      "title": "Iraq @ France",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Iraq",
+      "home_team": "France",
+      "start_time": "2026-06-22",
+      "venue": "Philadelphia Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "Philadelphia Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-22-austria-argentina",
+      "title": "Austria @ Argentina",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Austria",
+      "home_team": "Argentina",
+      "start_time": "2026-06-22",
+      "venue": "Dallas Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "Dallas Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-22-algeria-jordan",
+      "title": "Algeria @ Jordan",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Algeria",
+      "home_team": "Jordan",
+      "start_time": "2026-06-22",
+      "venue": "San Francisco Bay Area Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "San Francisco Bay Area Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-23-ghana-england",
+      "title": "Ghana @ England",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Ghana",
+      "home_team": "England",
+      "start_time": "2026-06-23",
+      "venue": "Boston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "Boston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-23-croatia-panama",
+      "title": "Croatia @ Panama",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Croatia",
+      "home_team": "Panama",
+      "start_time": "2026-06-23",
+      "venue": "Toronto Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "Toronto Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-23-uzbekistan-portugal",
+      "title": "Uzbekistan @ Portugal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Uzbekistan",
+      "home_team": "Portugal",
+      "start_time": "2026-06-23",
+      "venue": "Houston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Houston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-23-congo-dr-colombia",
+      "title": "Congo DR @ Colombia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Congo DR",
+      "home_team": "Colombia",
+      "start_time": "2026-06-23",
+      "venue": "Estadio Guadalajara",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Estadio Guadalajara",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-brazil-scotland",
+      "title": "Brazil @ Scotland",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Brazil",
+      "home_team": "Scotland",
+      "start_time": "2026-06-24",
+      "venue": "Miami Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "Miami Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-haiti-morocco",
+      "title": "Haiti @ Morocco",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Haiti",
+      "home_team": "Morocco",
+      "start_time": "2026-06-24",
+      "venue": "Atlanta Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group C",
+          "group": "C",
+          "venue": "Atlanta Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-canada-switzerland",
+      "title": "Canada @ Switzerland",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Canada",
+      "home_team": "Switzerland",
+      "start_time": "2026-06-24",
+      "venue": "BC Place Vancouver",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "BC Place Vancouver",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-qatar-bosnia-and-herzegovina",
+      "title": "Qatar @ Bosnia and Herzegovina",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Qatar",
+      "home_team": "Bosnia and Herzegovina",
+      "start_time": "2026-06-24",
+      "venue": "Seattle Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group B",
+          "group": "B",
+          "venue": "Seattle Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-mexico-czechia",
+      "title": "Mexico @ Czechia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Mexico",
+      "home_team": "Czechia",
+      "start_time": "2026-06-24",
+      "venue": "Mexico City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Mexico City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-24-korea-republic-south-africa",
+      "title": "Korea Republic @ South Africa",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Korea Republic",
+      "home_team": "South Africa",
+      "start_time": "2026-06-24",
+      "venue": "Estadio Monterrey",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group A",
+          "group": "A",
+          "venue": "Estadio Monterrey",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-cote-d-ivoire-curacao",
+      "title": "Cote d'Ivoire @ Curacao",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Cote d'Ivoire",
+      "home_team": "Curacao",
+      "start_time": "2026-06-25",
+      "venue": "Philadelphia Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "Philadelphia Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-germany-ecuador",
+      "title": "Germany @ Ecuador",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Germany",
+      "home_team": "Ecuador",
+      "start_time": "2026-06-25",
+      "venue": "New York New Jersey Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group E",
+          "group": "E",
+          "venue": "New York New Jersey Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-sweden-japan",
+      "title": "Sweden @ Japan",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Sweden",
+      "home_team": "Japan",
+      "start_time": "2026-06-25",
+      "venue": "Dallas Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Dallas Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-netherlands-tunisia",
+      "title": "Netherlands @ Tunisia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Netherlands",
+      "home_team": "Tunisia",
+      "start_time": "2026-06-25",
+      "venue": "Kansas City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group F",
+          "group": "F",
+          "venue": "Kansas City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-usa-turkiye",
+      "title": "USA @ Turkiye",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "USA",
+      "home_team": "Turkiye",
+      "start_time": "2026-06-25",
+      "venue": "Los Angeles Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "Los Angeles Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-25-australia-paraguay",
+      "title": "Australia @ Paraguay",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Australia",
+      "home_team": "Paraguay",
+      "start_time": "2026-06-25",
+      "venue": "San Francisco Bay Area Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group D",
+          "group": "D",
+          "venue": "San Francisco Bay Area Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-france-norway",
+      "title": "France @ Norway",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "France",
+      "home_team": "Norway",
+      "start_time": "2026-06-26",
+      "venue": "Boston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "Boston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-iraq-senegal",
+      "title": "Iraq @ Senegal",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Iraq",
+      "home_team": "Senegal",
+      "start_time": "2026-06-26",
+      "venue": "Toronto Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group I",
+          "group": "I",
+          "venue": "Toronto Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-ir-iran-egypt",
+      "title": "IR Iran @ Egypt",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "IR Iran",
+      "home_team": "Egypt",
+      "start_time": "2026-06-26",
+      "venue": "Seattle Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "Seattle Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-belgium-new-zealand",
+      "title": "Belgium @ New Zealand",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Belgium",
+      "home_team": "New Zealand",
+      "start_time": "2026-06-26",
+      "venue": "BC Place Vancouver",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group G",
+          "group": "G",
+          "venue": "BC Place Vancouver",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-saudi-arabia-cabo-verde",
+      "title": "Saudi Arabia @ Cabo Verde",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Saudi Arabia",
+      "home_team": "Cabo Verde",
+      "start_time": "2026-06-26",
+      "venue": "Houston Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Houston Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-26-spain-uruguay",
+      "title": "Spain @ Uruguay",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Spain",
+      "home_team": "Uruguay",
+      "start_time": "2026-06-26",
+      "venue": "Estadio Guadalajara",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group H",
+          "group": "H",
+          "venue": "Estadio Guadalajara",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-england-panama",
+      "title": "England @ Panama",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "England",
+      "home_team": "Panama",
+      "start_time": "2026-06-27",
+      "venue": "New York New Jersey Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "New York New Jersey Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-ghana-croatia",
+      "title": "Ghana @ Croatia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Ghana",
+      "home_team": "Croatia",
+      "start_time": "2026-06-27",
+      "venue": "Philadelphia Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group L",
+          "group": "L",
+          "venue": "Philadelphia Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-austria-algeria",
+      "title": "Austria @ Algeria",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Austria",
+      "home_team": "Algeria",
+      "start_time": "2026-06-27",
+      "venue": "Kansas City Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "Kansas City Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-argentina-jordan",
+      "title": "Argentina @ Jordan",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Argentina",
+      "home_team": "Jordan",
+      "start_time": "2026-06-27",
+      "venue": "Dallas Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group J",
+          "group": "J",
+          "venue": "Dallas Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-portugal-colombia",
+      "title": "Portugal @ Colombia",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Portugal",
+      "home_team": "Colombia",
+      "start_time": "2026-06-27",
+      "venue": "Miami Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Miami Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    },
+    {
+      "event_key": "world-cup-2026-2026-06-27-uzbekistan-congo-dr",
+      "title": "Uzbekistan @ Congo DR",
+      "sport_type": "football",
+      "league": "FIFA World Cup",
+      "away_team": "Uzbekistan",
+      "home_team": "Congo DR",
+      "start_time": "2026-06-27",
+      "venue": "Atlanta Stadium",
+      "status": "scheduled",
+      "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+      "details": {
+        "sport_type": "football",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+        "source_name": "FIFA World Cup 2026 fixture references",
+        "details": {
+          "time_status": "tbd",
+          "round": "Group K",
+          "group": "K",
+          "venue": "Atlanta Stadium",
+          "source_url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/fixtures-results",
+          "reference_url": "https://en.wikipedia.org/wiki/2026_FIFA_World_Cup"
+        }
+      }
+    }
+  ]
+}
