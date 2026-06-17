@@ -3,13 +3,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const SPORT_OPTIONS = [
-  { key: "baseball", label: "棒球", icon: "⚾" },
   { key: "football", label: "足球", icon: "🏆" },
   { key: "basketball", label: "籃球", icon: "🏀" },
   { key: "cycling", label: "自行車", icon: "🚲" },
   { key: "racing", label: "賽車", icon: "🏎" },
   { key: "tennis", label: "網球", icon: "🎾" },
   { key: "other", label: "其他", icon: "◇" }
+];
+
+const BASEBALL_LEAGUES = [
+  { key: "CPBL", label: "CPBL" },
+  { key: "MLB", label: "MLB" }
 ];
 
 const STATUS_LABELS = {
@@ -280,6 +284,7 @@ function LinkField({ label, href }) {
 export default function SportsCalendarPage() {
   const [month, setMonth] = useState(currentTaipeiMonth);
   const [selectedSports, setSelectedSports] = useState(() => new Set());
+  const [selectedBaseballLeagues, setSelectedBaseballLeagues] = useState(() => new Set());
   const [query, setQuery] = useState("");
   const [rangeMode, setRangeMode] = useState("month");
   const [viewMode, setViewMode] = useState("month");
@@ -293,8 +298,12 @@ export default function SportsCalendarPage() {
   const [error, setError] = useState("");
   const [detailDraft, setDetailDraft] = useState({ importance: "normal", notes: "" });
 
-  const selectedSportList = useMemo(() => [...selectedSports], [selectedSports]);
-  const selectedSportKey = selectedSportList.join(",");
+  const selectedRegularSportList = useMemo(() => [...selectedSports], [selectedSports]);
+  const selectedSportList = useMemo(() => [
+    ...selectedRegularSportList,
+    ...(selectedBaseballLeagues.size ? ["baseball"] : [])
+  ], [selectedBaseballLeagues, selectedRegularSportList]);
+  const selectedBaseballLeagueList = useMemo(() => [...selectedBaseballLeagues], [selectedBaseballLeagues]);
   const favoriteMap = useMemo(() => {
     const map = new Set();
     favorites.forEach((favorite) => map.add(favoriteKey(favorite.favorite_type, favorite.favorite_value)));
@@ -328,24 +337,34 @@ export default function SportsCalendarPage() {
     setLoading(true);
     setError("");
     try {
-      const params = new URLSearchParams({
-        month,
-        sportTypes: selectedSportKey
-      });
-      if (query.trim()) params.set("q", query.trim());
-      if (rangeMode === "today") {
-        const today = taipeiDate(new Date());
-        params.set("from", today);
-        const tomorrow = new Date(`${today}T00:00:00+08:00`);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        params.set("to", tomorrow.toISOString());
-      }
-      if (rangeMode === "week") {
-        const range = getWeekRange();
-        params.set("from", range.from);
-        params.set("to", range.to);
-      }
-      const rows = await api(`/api/sports/events?${params.toString()}`, { signal });
+      const buildParams = (sportTypes, leagues = []) => {
+        const params = new URLSearchParams({
+          month,
+          sportTypes: sportTypes.join(",")
+        });
+        if (leagues.length) params.set("leagues", leagues.join(","));
+        if (query.trim()) params.set("q", query.trim());
+        if (rangeMode === "today") {
+          const today = taipeiDate(new Date());
+          params.set("from", today);
+          const tomorrow = new Date(`${today}T00:00:00+08:00`);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          params.set("to", tomorrow.toISOString());
+        }
+        if (rangeMode === "week") {
+          const range = getWeekRange();
+          params.set("from", range.from);
+          params.set("to", range.to);
+        }
+        return params;
+      };
+      const requests = [];
+      if (selectedRegularSportList.length) requests.push(buildParams(selectedRegularSportList));
+      if (selectedBaseballLeagueList.length) requests.push(buildParams(["baseball"], selectedBaseballLeagueList));
+      const results = await Promise.all(requests.map((params) => api(`/api/sports/events?${params.toString()}`, { signal })));
+      const rowsById = new Map();
+      results.flat().forEach((row) => rowsById.set(row.id, row));
+      const rows = sortEventsByTime([...rowsById.values()]);
       setEvents(rows);
       setSelectedEvent((current) => rows.find((row) => row.id === current?.id) || null);
       setSelectedDateKey((current) => (current && rows.some((row) => taipeiDate(row.start_time) === current) ? current : ""));
@@ -357,7 +376,7 @@ export default function SportsCalendarPage() {
     } finally {
       if (!signal?.aborted) setLoading(false);
     }
-  }, [month, query, rangeMode, selectedSportKey]);
+  }, [month, query, rangeMode, selectedBaseballLeagueList, selectedRegularSportList]);
 
   useEffect(() => {
     if (!selectedSportList.length) {
@@ -383,6 +402,18 @@ export default function SportsCalendarPage() {
     });
   }, [selectedEvent]);
 
+  useEffect(() => {
+    if (!selectedEvent && !selectedDateKey) return undefined;
+    function handleKeyDown(event) {
+      if (event.key === "Escape") {
+        setSelectedEvent(null);
+        setSelectedDateKey("");
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedDateKey, selectedEvent]);
+
   async function loadFavorites() {
     setFavoritesLoading(true);
     try {
@@ -403,10 +434,25 @@ export default function SportsCalendarPage() {
     });
   }
 
-  function toggleAllSports() {
-    setSelectedSports((current) => (
-      current.size === SPORT_OPTIONS.length ? new Set() : new Set(SPORT_OPTIONS.map((item) => item.key))
+  function toggleBaseballParent() {
+    setSelectedBaseballLeagues((current) => (
+      current.size === BASEBALL_LEAGUES.length ? new Set() : new Set(BASEBALL_LEAGUES.map((league) => league.key))
     ));
+  }
+
+  function toggleBaseballLeague(league) {
+    setSelectedBaseballLeagues((current) => {
+      const next = new Set(current);
+      if (next.has(league)) next.delete(league);
+      else next.add(league);
+      return next;
+    });
+  }
+
+  function toggleAllSports() {
+    const allSelected = selectedSports.size === SPORT_OPTIONS.length && selectedBaseballLeagues.size === BASEBALL_LEAGUES.length;
+    setSelectedSports(allSelected ? new Set() : new Set(SPORT_OPTIONS.map((item) => item.key)));
+    setSelectedBaseballLeagues(allSelected ? new Set() : new Set(BASEBALL_LEAGUES.map((item) => item.key)));
   }
 
   async function saveEventDetails() {
@@ -475,6 +521,11 @@ export default function SportsCalendarPage() {
     setSelectedEvent(event);
   }
 
+  function closeSportsOverlay() {
+    setSelectedEvent(null);
+    setSelectedDateKey("");
+  }
+
   function selectedRangeMessage() {
     if (!selectedSportList.length) return "請從左側選擇賽事分類";
     if (loading) return "賽事讀取中...";
@@ -526,10 +577,23 @@ export default function SportsCalendarPage() {
         <section className="sports-side-block">
           <h2>賽事分類</h2>
           <button type="button" className="sports-check-row" onClick={toggleAllSports}>
-            <span className={selectedSports.size === SPORT_OPTIONS.length ? "checked" : ""} />
+            <span className={selectedSports.size === SPORT_OPTIONS.length && selectedBaseballLeagues.size === BASEBALL_LEAGUES.length ? "checked" : ""} />
             <b>全選</b>
-            <small>{selectedSports.size}</small>
+            <small>{selectedSportList.length}</small>
           </button>
+          <button type="button" className="sports-check-row sports-parent-row" onClick={toggleBaseballParent}>
+            <span className={selectedBaseballLeagues.size === BASEBALL_LEAGUES.length ? "checked" : ""} />
+            <b>⚾ 棒球</b>
+            <small>{selectedBaseballLeagues.size}</small>
+          </button>
+          <div className="sports-child-list">
+            {BASEBALL_LEAGUES.map((league) => (
+              <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleBaseballLeague(league.key)}>
+                <span className={selectedBaseballLeagues.has(league.key) ? "checked" : ""} />
+                <b>{league.label}</b>
+              </button>
+            ))}
+          </div>
           {SPORT_OPTIONS.map((sport) => (
             <button key={sport.key} type="button" className="sports-check-row" onClick={() => toggleSport(sport.key)}>
               <span className={selectedSports.has(sport.key) ? "checked" : ""} />
@@ -610,7 +674,10 @@ export default function SportsCalendarPage() {
         {emptyMessage ? <div className="sports-empty-state">{emptyMessage}</div> : null}
       </section>
 
-      <aside className="sports-detail-panel">
+      {selectedEvent || selectedDateKey ? (
+        <div className="sports-detail-overlay" role="presentation" onClick={closeSportsOverlay}>
+          <aside className="sports-detail-panel" role="dialog" aria-modal="true" aria-label={selectedEvent ? "賽事詳情" : "當日賽事列表"} onClick={(event) => event.stopPropagation()}>
+            <button type="button" className="sports-detail-close" aria-label="關閉" onClick={closeSportsOverlay}>×</button>
         {selectedEvent ? (
           <>
             <div className="sports-summary-card">
@@ -700,7 +767,7 @@ export default function SportsCalendarPage() {
               ))}
             </div>
           </>
-        ) : selectedDateKey ? (
+        ) : (
           <div className="sports-day-list-panel">
             <div className="sports-detail-kicker">
               <span>{selectedDateKey}</span>
@@ -725,13 +792,10 @@ export default function SportsCalendarPage() {
               </div>
             )}
           </div>
-        ) : (
-          <div className="sports-detail-empty">
-            <h2>尚未選取</h2>
-            <p>{selectedSportList.length ? "請從月曆選擇日期或賽事。" : "請先從左側選擇賽事分類，再從月曆選擇日期或賽事。"}</p>
-          </div>
         )}
-      </aside>
+          </aside>
+        </div>
+      ) : null}
     </div>
   );
 }

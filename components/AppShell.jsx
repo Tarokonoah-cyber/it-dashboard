@@ -140,8 +140,16 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
   );
 }
 
-export default function AppShell({ activeSection = "dashboard", title, children, onNavigate }) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function AppShell({
+  activeSection = "dashboard",
+  title,
+  children,
+  onNavigate,
+  defaultSidebarCollapsed = false,
+  sidebarStorageScope = ""
+}) {
+  const pageSidebarStorageKey = sidebarStorageScope ? `${SIDEBAR_STORAGE_KEY}:${sidebarStorageScope}` : "";
+  const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const currentTitle = useMemo(
@@ -150,15 +158,32 @@ export default function AppShell({ activeSection = "dashboard", title, children,
   );
 
   useEffect(() => {
+    if (pageSidebarStorageKey) {
+      const pageSaved = window.localStorage.getItem(pageSidebarStorageKey);
+      if (pageSaved === "expanded") {
+        setCollapsed(false);
+        return;
+      }
+      if (pageSaved === "collapsed") {
+        setCollapsed(true);
+        return;
+      }
+    }
+    if (defaultSidebarCollapsed) {
+      setCollapsed(true);
+      return;
+    }
     const saved = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
     if (saved === "expanded") setCollapsed(false);
     if (saved === "collapsed") setCollapsed(true);
-  }, []);
+  }, [defaultSidebarCollapsed, pageSidebarStorageKey]);
 
   function toggleSidebar() {
     setCollapsed((value) => {
       const next = !value;
-      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next ? "collapsed" : "expanded");
+      const storedValue = next ? "collapsed" : "expanded";
+      if (pageSidebarStorageKey) window.localStorage.setItem(pageSidebarStorageKey, storedValue);
+      else window.localStorage.setItem(SIDEBAR_STORAGE_KEY, storedValue);
       return next;
     });
   }

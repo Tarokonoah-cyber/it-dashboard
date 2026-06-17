@@ -12,6 +12,14 @@ function encodeIn(values) {
   return `(${values.map((value) => String(value).trim()).join(",")})`;
 }
 
+function parseLeagues(value) {
+  return [...new Set(String(value || "")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean))]
+    .slice(0, 20);
+}
+
 function buildSearchFilter(keyword) {
   const q = String(keyword || "").trim();
   if (!q) return "";
@@ -86,6 +94,8 @@ export async function GET(request) {
       "order=start_time.asc",
       "limit=500"
     ];
+    const leagues = parseLeagues(searchParams.get("leagues"));
+    if (leagues.length) query.push(`league=in.${encodeURIComponent(encodeIn(leagues))}`);
     const searchFilter = buildSearchFilter(searchParams.get("q"));
     if (searchFilter) query.push(searchFilter);
 
