@@ -150,10 +150,20 @@ function formatSyncTime(value) {
   return value ? taipeiDateTime(value) : "尚未同步";
 }
 
+function invalidDisplayText(value) {
+  const text = String(value || "").trim();
+  return !text || /^\?+$/.test(text) || text.includes("????") || text.includes("�");
+}
+
+function safeDisplayText(value) {
+  const text = String(value || "").trim();
+  return invalidDisplayText(text) ? "" : text;
+}
+
 function formatWeather(weather) {
   if (!weather || typeof weather !== "object") return "尚未同步";
   const parts = [
-    weather.summary || weather.condition,
+    safeDisplayText(weather.summary || weather.condition),
     weather.temperature ? `${weather.temperature}°` : "",
     weather.rain_probability ? `降雨 ${weather.rain_probability}` : "",
     weather.wind ? `風 ${weather.wind}` : ""
@@ -163,26 +173,45 @@ function formatWeather(weather) {
 
 function pitcherName(value) {
   if (!value) return "尚未公布";
-  if (typeof value === "string") return value || "尚未公布";
-  return value.name || "尚未公布";
+  if (typeof value === "string") return safeDisplayText(value) || "尚未公布";
+  return safeDisplayText(value.name) || "尚未公布";
 }
 
-function formatPitchers(details, event) {
-  const pitchers = details?.probable_pitchers;
+function getPitchers(details) {
+  return details?.starting_pitchers || details?.probable_pitchers;
+}
+
+function formatPitcherStatus(value) {
+  const status = safeDisplayText(value);
+  return status || "尚未公布";
+}
+
+function formatPitcherRows(details) {
+  const pitchers = getPitchers(details);
   if (!pitchers || typeof pitchers !== "object") return "尚未公布";
   const away = pitcherName(pitchers.away);
   const home = pitcherName(pitchers.home);
-  if (away === "尚未公布" && home === "尚未公布") return pitchers.status || "尚未公布";
-  const awayLabel = teamDisplayName(event?.away_team) || "客隊";
-  const homeLabel = teamDisplayName(event?.home_team) || "主隊";
-  return `${awayLabel}：${away} / ${homeLabel}：${home}`;
+  if (away === "尚未公布" && home === "尚未公布") {
+    return {
+      away: formatPitcherStatus(pitchers.status),
+      home: formatPitcherStatus(pitchers.status)
+    };
+  }
+  return { away, home };
+}
+
+function scoreObject(details) {
+  return details?.score || details?.final_score;
 }
 
 function formatFinalScore(details, event) {
-  const score = details?.final_score;
+  const score = scoreObject(details);
   if (!score || typeof score !== "object") return "賽後更新";
+  const status = safeDisplayText(score.status);
+  if (status === "postponed" || status === "延賽") return "延賽";
+  if (status === "cancelled" || status === "取消") return "取消";
   if (score.away === null || score.away === undefined || score.home === null || score.home === undefined) {
-    return score.status || "賽後更新";
+    return status || "賽後更新";
   }
   if (event?.away_team || event?.home_team) {
     return `${teamDisplayName(event?.away_team) || "客隊"} ${score.away} - ${score.home} ${teamDisplayName(event?.home_team) || "主隊"}`;
@@ -219,9 +248,11 @@ function sportDetailRows(event, details) {
     ];
   }
   if (event?.sport_type === "baseball") {
+    const pitcherRows = formatPitcherRows(details);
     return [
       { label: "最終比分", value: formatFinalScore(details, event) },
-      { label: "先發投手", value: formatPitchers(details, event) },
+      { label: "客場先發", value: pitcherRows.away || "尚未公布" },
+      { label: "主場先發", value: pitcherRows.home || "尚未公布" },
       { label: "天氣", value: formatWeather(details.weather) }
     ];
   }
@@ -840,7 +871,7 @@ export default function SportsCalendarPage() {
                 {sportDetailRows(selectedEvent, selectedDetailData).map((row) => (
                   <Field key={row.label} label={row.label} value={row.value} />
                 ))}
-                <Field label="最後同步時間" value={formatSyncTime(selectedDetail.last_synced_at)} />
+                <Field label="最後同步時間" value={formatSyncTime(selectedDetailData.sync?.synced_at || selectedDetail.last_synced_at)} />
                 <LinkField label="來源連結" href={detailSourceUrl} />
               </div>
             </div>
