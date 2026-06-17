@@ -14,6 +14,7 @@ Current file layout:
 ```text
 sports-data/parsed/baseball/cpbl/2026-06.json
 sports-data/parsed/baseball/mlb/2026-06.json
+sports-data/parsed/baseball/npb/2026-06.json
 sports-data/parsed/football/2026-06.json
 sports-data/parsed/cycling/tour-de-france/2026-07.json
 sports-data/parsed/racing/f1/2026-06.json
@@ -79,6 +80,7 @@ Source notes for current data:
 
 - CPBL 2026-06: generated from the CPBL official schedule page endpoint (`/schedule/getgamedatas`) for first-team regular-season games. Weather is not included.
 - MLB 2026-06: generated from the MLB Stats API schedule endpoint. Probable pitchers and weather are not populated by this import.
+- NPB 2026-06: generated from the NPB.jp official June 2026 detailed schedule/results page (`https://npb.jp/games/2026/schedule_06_detail.html`). This file is marked `complete_schedule: true` for the source month. Weather and probable pitchers are not included; completed game final scores are included when present on the source page.
 - Tour de France 2026-07: route/stage data is based on published 2026 Tour route tables and ASO route information as reflected in public route references. Stage start times are not included and are marked `time_status: "tbd"`.
 - F1 2026-06 and 2026-07: race dates and circuits are based on the published 2026 Formula 1 calendar. Exact session times are not included and are marked `time_status: "tbd"`.
 - Football 2026-06: present as an empty import structure only. No stable football source is selected in this round.

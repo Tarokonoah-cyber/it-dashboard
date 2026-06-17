@@ -1,0 +1,4452 @@
+{
+  "metadata": {
+    "sport_type": "baseball",
+    "league": "NPB",
+    "source_type": "official_html",
+    "source_name": "NPB.jp official schedule/results",
+    "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+    "source_month": "2026-06",
+    "complete_schedule": true,
+    "limitations": "Generated from NPB.jp official June 2026 detailed schedule/results page. Weather and probable pitchers are not included; completed game final scores are included when present on the source page."
+  },
+  "events": [
+    {
+      "event_key": "npb-2026-0602-c-f-01",
+      "title": "日本ハム @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "広島",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "cancelled",
+      "source_url": "https://npb.jp/scores/2026/0602/c-f-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/scores/2026/0602/c-f-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/scores/2026/0602/c-f-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/c-f-01/",
+          "source_note": "中止"
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0602-d-h-01",
+      "title": "ソフトバンク @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "中日",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0602/d-h-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0602/d-h-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0602/d-h-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/d-h-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0602-db-e-01",
+      "title": "楽天 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "DeNA",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0602/db-e-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0602/db-e-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0602/db-e-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/db-e-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0602-g-b-01",
+      "title": "オリックス @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "巨人",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0602/g-b-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0602/g-b-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0602/g-b-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/g-b-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0602-s-m-01",
+      "title": "ロッテ @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0602/s-m-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0602/s-m-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 5,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0602/s-m-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/s-m-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0602-t-l-01",
+      "title": "西武 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "阪神",
+      "start_time": "2026-06-02T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "cancelled",
+      "source_url": "https://npb.jp/scores/2026/0602/t-l-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/scores/2026/0602/t-l-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/scores/2026/0602/t-l-01/",
+          "source_url": "https://npb.jp/scores/2026/0602/t-l-01/",
+          "source_note": "中止"
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-c-f-01",
+      "title": "日本ハム @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "広島",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/c-f-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/c-f-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/c-f-01/",
+          "source_url": "https://npb.jp/scores/2026/0603/c-f-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-d-h-02",
+      "title": "ソフトバンク @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "中日",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/d-h-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/d-h-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 8,
+            "home": 5,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/d-h-02/",
+          "source_url": "https://npb.jp/scores/2026/0603/d-h-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-db-e-02",
+      "title": "楽天 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "DeNA",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/db-e-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/db-e-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/db-e-02/",
+          "source_url": "https://npb.jp/scores/2026/0603/db-e-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-g-b-02",
+      "title": "オリックス @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "巨人",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/g-b-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/g-b-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 5,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/g-b-02/",
+          "source_url": "https://npb.jp/scores/2026/0603/g-b-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-s-m-02",
+      "title": "ロッテ @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/s-m-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/s-m-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/s-m-02/",
+          "source_url": "https://npb.jp/scores/2026/0603/s-m-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0603-t-l-01",
+      "title": "西武 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "阪神",
+      "start_time": "2026-06-03T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0603/t-l-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0603/t-l-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0603/t-l-01/",
+          "source_url": "https://npb.jp/scores/2026/0603/t-l-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-c-f-02",
+      "title": "日本ハム @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "広島",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/c-f-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/c-f-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 5,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/c-f-02/",
+          "source_url": "https://npb.jp/scores/2026/0604/c-f-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-d-h-03",
+      "title": "ソフトバンク @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "中日",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/d-h-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/d-h-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/d-h-03/",
+          "source_url": "https://npb.jp/scores/2026/0604/d-h-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-db-e-03",
+      "title": "楽天 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "DeNA",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/db-e-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/db-e-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/db-e-03/",
+          "source_url": "https://npb.jp/scores/2026/0604/db-e-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-g-b-03",
+      "title": "オリックス @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "巨人",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/g-b-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/g-b-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/g-b-03/",
+          "source_url": "https://npb.jp/scores/2026/0604/g-b-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-s-m-03",
+      "title": "ロッテ @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/s-m-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/s-m-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 5,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/s-m-03/",
+          "source_url": "https://npb.jp/scores/2026/0604/s-m-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0604-t-l-02",
+      "title": "西武 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "阪神",
+      "start_time": "2026-06-04T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0604/t-l-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0604/t-l-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0604/t-l-02/",
+          "source_url": "https://npb.jp/scores/2026/0604/t-l-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-c-b-01",
+      "title": "オリックス @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "広島",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/c-b-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/c-b-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/c-b-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/c-b-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-d-l-01",
+      "title": "西武 @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "中日",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/d-l-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/d-l-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/d-l-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/d-l-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-db-h-01",
+      "title": "ソフトバンク @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "DeNA",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/db-h-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/db-h-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/db-h-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/db-h-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-g-m-01",
+      "title": "ロッテ @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "巨人",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/g-m-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/g-m-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/g-m-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/g-m-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-s-f-01",
+      "title": "日本ハム @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/s-f-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/s-f-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/s-f-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/s-f-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0605-t-e-01",
+      "title": "楽天 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "阪神",
+      "start_time": "2026-06-05T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0605/t-e-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0605/t-e-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0605/t-e-01/",
+          "source_url": "https://npb.jp/scores/2026/0605/t-e-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-c-b-02",
+      "title": "オリックス @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "広島",
+      "start_time": "2026-06-06T14:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/c-b-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/c-b-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 7,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/c-b-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/c-b-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-d-l-02",
+      "title": "西武 @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "中日",
+      "start_time": "2026-06-06T14:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/d-l-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/d-l-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 5,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/d-l-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/d-l-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-db-h-02",
+      "title": "ソフトバンク @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "DeNA",
+      "start_time": "2026-06-06T14:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/db-h-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/db-h-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 6,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/db-h-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/db-h-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-s-f-02",
+      "title": "日本ハム @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-06T14:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/s-f-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/s-f-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/s-f-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/s-f-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-t-e-02",
+      "title": "楽天 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "阪神",
+      "start_time": "2026-06-06T14:00:00+09:00",
+      "venue": "甲子園",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/t-e-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/t-e-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/t-e-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/t-e-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0606-g-m-02",
+      "title": "ロッテ @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "巨人",
+      "start_time": "2026-06-06T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0606/g-m-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0606/g-m-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0606/g-m-02/",
+          "source_url": "https://npb.jp/scores/2026/0606/g-m-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-c-b-03",
+      "title": "オリックス @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "広島",
+      "start_time": "2026-06-07T13:30:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0607/c-b-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0607/c-b-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 5,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0607/c-b-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/c-b-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-d-l-03",
+      "title": "西武 @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "中日",
+      "start_time": "2026-06-07T13:30:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0607/d-l-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0607/d-l-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0607/d-l-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/d-l-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-db-h-03",
+      "title": "ソフトバンク @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "DeNA",
+      "start_time": "2026-06-07T14:00:00+09:00",
+      "venue": "横 浜",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0607/db-h-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0607/db-h-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0607/db-h-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/db-h-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-g-m-03",
+      "title": "ロッテ @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "巨人",
+      "start_time": "2026-06-07T14:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0607/g-m-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0607/g-m-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0607/g-m-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/g-m-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-s-f-03",
+      "title": "日本ハム @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-07T14:00:00+09:00",
+      "venue": "神 宮",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0607/s-f-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0607/s-f-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0607/s-f-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/s-f-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0607-t-e-03",
+      "title": "楽天 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "阪神",
+      "start_time": "2026-06-07T14:00:00+09:00",
+      "venue": "甲子園",
+      "status": "cancelled",
+      "source_url": "https://npb.jp/scores/2026/0607/t-e-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/scores/2026/0607/t-e-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/scores/2026/0607/t-e-03/",
+          "source_url": "https://npb.jp/scores/2026/0607/t-e-03/",
+          "source_note": "中止"
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0608-t-e-03",
+      "title": "楽天 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "阪神",
+      "start_time": "2026-06-08T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "cancelled",
+      "source_url": "https://npb.jp/scores/2026/0608/t-e-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/scores/2026/0608/t-e-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/scores/2026/0608/t-e-03/",
+          "source_url": "https://npb.jp/scores/2026/0608/t-e-03/",
+          "source_note": "中止"
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-b-s-01",
+      "title": "ヤクルト @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "オリックス",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/b-s-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/b-s-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/b-s-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/b-s-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-e-g-01",
+      "title": "巨人 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "楽天",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/e-g-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/e-g-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 8,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/e-g-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/e-g-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-f-db-01",
+      "title": "DeNA @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/f-db-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/f-db-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/f-db-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/f-db-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-h-t-01",
+      "title": "阪神 @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/h-t-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/h-t-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 10,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/h-t-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/h-t-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-l-c-01",
+      "title": "広島 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "西武",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/l-c-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/l-c-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/l-c-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/l-c-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0609-m-d-01",
+      "title": "中日 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-09T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0609/m-d-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0609/m-d-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0609/m-d-01/",
+          "source_url": "https://npb.jp/scores/2026/0609/m-d-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-b-s-02",
+      "title": "ヤクルト @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "オリックス",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/b-s-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/b-s-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/b-s-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/b-s-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-e-g-02",
+      "title": "巨人 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "楽天",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/e-g-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/e-g-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 7,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/e-g-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/e-g-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-f-db-02",
+      "title": "DeNA @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/f-db-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/f-db-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/f-db-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/f-db-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-h-t-02",
+      "title": "阪神 @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/h-t-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/h-t-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 6,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/h-t-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/h-t-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-l-c-02",
+      "title": "広島 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "西武",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/l-c-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/l-c-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 5,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/l-c-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/l-c-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0610-m-d-02",
+      "title": "中日 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-10T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0610/m-d-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0610/m-d-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 11,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0610/m-d-02/",
+          "source_url": "https://npb.jp/scores/2026/0610/m-d-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-b-s-03",
+      "title": "ヤクルト @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "オリックス",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/b-s-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/b-s-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/b-s-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/b-s-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-e-g-03",
+      "title": "巨人 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "楽天",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/e-g-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/e-g-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/e-g-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/e-g-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-f-db-03",
+      "title": "DeNA @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/f-db-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/f-db-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/f-db-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/f-db-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-h-t-03",
+      "title": "阪神 @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/h-t-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/h-t-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/h-t-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/h-t-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-l-c-03",
+      "title": "広島 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "西武",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/l-c-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/l-c-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/l-c-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/l-c-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0611-m-d-03",
+      "title": "中日 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-11T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0611/m-d-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0611/m-d-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0611/m-d-03/",
+          "source_url": "https://npb.jp/scores/2026/0611/m-d-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-b-t-01",
+      "title": "阪神 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "オリックス",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/b-t-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/b-t-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/b-t-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/b-t-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-e-c-01",
+      "title": "広島 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "楽天",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/e-c-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/e-c-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/e-c-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/e-c-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-f-d-01",
+      "title": "中日 @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/f-d-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/f-d-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/f-d-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/f-d-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-h-s-01",
+      "title": "ヤクルト @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/h-s-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/h-s-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 2,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/h-s-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/h-s-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-l-g-01",
+      "title": "巨人 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "西武",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/l-g-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/l-g-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/l-g-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/l-g-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0612-m-db-01",
+      "title": "DeNA @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-12T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0612/m-db-01/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0612/m-db-01/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0612/m-db-01/",
+          "source_url": "https://npb.jp/scores/2026/0612/m-db-01/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-e-c-02",
+      "title": "広島 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "楽天",
+      "start_time": "2026-06-13T14:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/e-c-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/e-c-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/e-c-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/e-c-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-f-d-02",
+      "title": "中日 @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-13T14:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/f-d-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/f-d-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 4,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/f-d-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/f-d-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-h-s-02",
+      "title": "ヤクルト @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-13T14:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/h-s-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/h-s-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 8,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/h-s-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/h-s-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-m-db-02",
+      "title": "DeNA @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-13T14:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/m-db-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/m-db-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 16,
+            "home": 6,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/m-db-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/m-db-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-b-t-02",
+      "title": "阪神 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "オリックス",
+      "start_time": "2026-06-13T15:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/b-t-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/b-t-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 6,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/b-t-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/b-t-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0613-l-g-02",
+      "title": "巨人 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "西武",
+      "start_time": "2026-06-13T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0613/l-g-02/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0613/l-g-02/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0613/l-g-02/",
+          "source_url": "https://npb.jp/scores/2026/0613/l-g-02/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-b-t-03",
+      "title": "阪神 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "オリックス",
+      "start_time": "2026-06-14T13:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/b-t-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/b-t-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 3,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/b-t-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/b-t-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-e-c-03",
+      "title": "広島 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "楽天",
+      "start_time": "2026-06-14T13:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/e-c-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/e-c-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 3,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/e-c-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/e-c-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-f-d-03",
+      "title": "中日 @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-14T13:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/f-d-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/f-d-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 9,
+            "home": 5,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/f-d-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/f-d-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-h-s-03",
+      "title": "ヤクルト @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-14T13:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/h-s-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/h-s-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/h-s-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/h-s-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-l-g-03",
+      "title": "巨人 @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "西武",
+      "start_time": "2026-06-14T13:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/l-g-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/l-g-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 0,
+            "home": 1,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/l-g-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/l-g-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0614-m-db-03",
+      "title": "DeNA @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-14T14:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0614/m-db-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0614/m-db-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 4,
+            "home": 6,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0614/m-db-03/",
+          "source_url": "https://npb.jp/scores/2026/0614/m-db-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0616-c-f-03",
+      "title": "日本ハム @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "広島",
+      "start_time": "2026-06-16T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0616/c-f-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0616/c-f-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 2,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0616/c-f-03/",
+          "source_url": "https://npb.jp/scores/2026/0616/c-f-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0616-t-l-03",
+      "title": "西武 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "阪神",
+      "start_time": "2026-06-16T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "completed",
+      "source_url": "https://npb.jp/scores/2026/0616/t-l-03/",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "post_game_synced",
+        "sync_phase": "post_game",
+        "source_url": "https://npb.jp/scores/2026/0616/t-l-03/",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": {
+            "away": 1,
+            "home": 0,
+            "status": "Final"
+          },
+          "box_url": "https://npb.jp/scores/2026/0616/t-l-03/",
+          "source_url": "https://npb.jp/scores/2026/0616/t-l-03/",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0617-日本ハム-広島",
+      "title": "日本ハム @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "広島",
+      "start_time": "2026-06-17T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": "(予備日)"
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0617-楽天-阪神",
+      "title": "楽天 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "阪神",
+      "start_time": "2026-06-17T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-中日-巨人",
+      "title": "中日 @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "巨人",
+      "start_time": "2026-06-19T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-広島-ヤクルト",
+      "title": "広島 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-19T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-西武-オリックス",
+      "title": "西武 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "オリックス",
+      "start_time": "2026-06-19T18:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-楽天-ロッテ",
+      "title": "楽天 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-19T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-ソフトバンク-日本ハム",
+      "title": "ソフトバンク @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-19T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0619-阪神-dena",
+      "title": "阪神 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "DeNA",
+      "start_time": "2026-06-19T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-中日-巨人",
+      "title": "中日 @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "巨人",
+      "start_time": "2026-06-20T14:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-広島-ヤクルト",
+      "title": "広島 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-20T14:00:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-西武-オリックス",
+      "title": "西武 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "オリックス",
+      "start_time": "2026-06-20T14:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-ソフトバンク-日本ハム",
+      "title": "ソフトバンク @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-20T14:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-楽天-ロッテ",
+      "title": "楽天 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-20T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0620-阪神-dena",
+      "title": "阪神 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "DeNA",
+      "start_time": "2026-06-20T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-西武-オリックス",
+      "title": "西武 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "オリックス",
+      "start_time": "2026-06-21T13:00:00+09:00",
+      "venue": "京セラD大阪",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-ソフトバンク-日本ハム",
+      "title": "ソフトバンク @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-21T13:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-広島-ヤクルト",
+      "title": "広島 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-21T13:30:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-中日-巨人",
+      "title": "中日 @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "巨人",
+      "start_time": "2026-06-21T14:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-楽天-ロッテ",
+      "title": "楽天 @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-21T17:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0621-阪神-dena",
+      "title": "阪神 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "DeNA",
+      "start_time": "2026-06-21T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0622-西武-楽天",
+      "title": "西武 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "楽天",
+      "start_time": "2026-06-22T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-ロッテ-日本ハム",
+      "title": "ロッテ @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-23T13:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-巨人-広島",
+      "title": "巨人 @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "広島",
+      "start_time": "2026-06-23T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-西武-楽天",
+      "title": "西武 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "楽天",
+      "start_time": "2026-06-23T18:00:00+09:00",
+      "venue": "山形市",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-dena-中日",
+      "title": "DeNA @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "中日",
+      "start_time": "2026-06-23T18:00:00+09:00",
+      "venue": "岐 阜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-オリックス-ソフトバンク",
+      "title": "オリックス @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-23T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0623-ヤクルト-阪神",
+      "title": "ヤクルト @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "阪神",
+      "start_time": "2026-06-23T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0624-ロッテ-日本ハム",
+      "title": "ロッテ @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-24T13:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0624-巨人-広島",
+      "title": "巨人 @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "広島",
+      "start_time": "2026-06-24T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0624-dena-中日",
+      "title": "DeNA @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "中日",
+      "start_time": "2026-06-24T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0624-オリックス-ソフトバンク",
+      "title": "オリックス @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-24T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0624-ヤクルト-阪神",
+      "title": "ヤクルト @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "阪神",
+      "start_time": "2026-06-24T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0625-西武-楽天",
+      "title": "西武 @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "楽天",
+      "start_time": "2026-06-25T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0625-dena-中日",
+      "title": "DeNA @ 中日",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "DeNA",
+      "home_team": "中日",
+      "start_time": "2026-06-25T18:00:00+09:00",
+      "venue": "バンテリンドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0625-オリックス-ソフトバンク",
+      "title": "オリックス @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-25T18:00:00+09:00",
+      "venue": "みずほPayPay",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0625-ヤクルト-阪神",
+      "title": "ヤクルト @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "阪神",
+      "start_time": "2026-06-25T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0626-中日-ヤクルト",
+      "title": "中日 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-26T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0626-日本ハム-西武",
+      "title": "日本ハム @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "西武",
+      "start_time": "2026-06-26T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0626-阪神-広島",
+      "title": "阪神 @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "広島",
+      "start_time": "2026-06-26T18:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0626-ソフトバンク-ロッテ",
+      "title": "ソフトバンク @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-26T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0626-巨人-dena",
+      "title": "巨人 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "DeNA",
+      "start_time": "2026-06-26T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-阪神-広島",
+      "title": "阪神 @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "広島",
+      "start_time": "2026-06-27T14:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-中日-ヤクルト",
+      "title": "中日 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-27T18:00:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-日本ハム-西武",
+      "title": "日本ハム @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "西武",
+      "start_time": "2026-06-27T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-楽天-オリックス",
+      "title": "楽天 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "オリックス",
+      "start_time": "2026-06-27T18:00:00+09:00",
+      "venue": "ほっと神戸",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-ソフトバンク-ロッテ",
+      "title": "ソフトバンク @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-27T18:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0627-巨人-dena",
+      "title": "巨人 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "DeNA",
+      "start_time": "2026-06-27T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-阪神-広島",
+      "title": "阪神 @ 広島",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "阪神",
+      "home_team": "広島",
+      "start_time": "2026-06-28T14:00:00+09:00",
+      "venue": "マツダスタジアム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-楽天-オリックス",
+      "title": "楽天 @ オリックス",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "楽天",
+      "home_team": "オリックス",
+      "start_time": "2026-06-28T16:00:00+09:00",
+      "venue": "ほっと神戸",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-中日-ヤクルト",
+      "title": "中日 @ ヤクルト",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "ヤクルト",
+      "start_time": "2026-06-28T17:00:00+09:00",
+      "venue": "神 宮",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-ソフトバンク-ロッテ",
+      "title": "ソフトバンク @ ロッテ",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ソフトバンク",
+      "home_team": "ロッテ",
+      "start_time": "2026-06-28T17:00:00+09:00",
+      "venue": "ZOZOマリン",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-日本ハム-西武",
+      "title": "日本ハム @ 西武",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "日本ハム",
+      "home_team": "西武",
+      "start_time": "2026-06-28T18:00:00+09:00",
+      "venue": "ベルーナドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0628-巨人-dena",
+      "title": "巨人 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "巨人",
+      "home_team": "DeNA",
+      "start_time": "2026-06-28T18:15:00+09:00",
+      "venue": "横 浜",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-中日-阪神",
+      "title": "中日 @ 阪神",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "中日",
+      "home_team": "阪神",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "甲子園",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-広島-dena",
+      "title": "広島 @ DeNA",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "広島",
+      "home_team": "DeNA",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "ハードオフ新潟",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-西武-ソフトバンク",
+      "title": "西武 @ ソフトバンク",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "西武",
+      "home_team": "ソフトバンク",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "東京ドーム",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-オリックス-日本ハム",
+      "title": "オリックス @ 日本ハム",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "オリックス",
+      "home_team": "日本ハム",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "エスコンＦ",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-ヤクルト-巨人",
+      "title": "ヤクルト @ 巨人",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ヤクルト",
+      "home_team": "巨人",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "弘 前",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    },
+    {
+      "event_key": "npb-2026-0630-ロッテ-楽天",
+      "title": "ロッテ @ 楽天",
+      "sport_type": "baseball",
+      "league": "NPB",
+      "away_team": "ロッテ",
+      "home_team": "楽天",
+      "start_time": "2026-06-30T18:00:00+09:00",
+      "venue": "楽天モバイル",
+      "status": "scheduled",
+      "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+      "details": {
+        "sport_type": "baseball",
+        "detail_status": "not_announced",
+        "sync_phase": "schedule",
+        "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+        "source_name": "NPB.jp official schedule/results",
+        "details": {
+          "probable_pitchers": {
+            "away": null,
+            "home": null,
+            "status": "尚未公布"
+          },
+          "weather": null,
+          "final_score": null,
+          "box_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_url": "https://npb.jp/games/2026/schedule_06_detail.html",
+          "source_note": null
+        }
+      }
+    }
+  ]
+}

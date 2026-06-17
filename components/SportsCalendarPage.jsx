@@ -13,8 +13,48 @@ const SPORT_OPTIONS = [
 
 const BASEBALL_LEAGUES = [
   { key: "CPBL", label: "CPBL" },
-  { key: "MLB", label: "MLB" }
+  { key: "MLB", label: "MLB" },
+  { key: "NPB", label: "NPB" }
 ];
+
+const BASEBALL_TEAM_SHORT_NAMES = {
+  "統一7-ELEVEn獅": "統一獅",
+  "樂天桃猿": "桃猿",
+  "富邦悍將": "富邦",
+  "味全龍": "味全",
+  "台鋼雄鷹": "台鋼",
+  "中信兄弟": "兄弟",
+  "Arizona Diamondbacks": "D-backs",
+  "Athletics": "Athletics",
+  "Atlanta Braves": "Braves",
+  "Baltimore Orioles": "Orioles",
+  "Boston Red Sox": "Red Sox",
+  "Chicago Cubs": "Cubs",
+  "Chicago White Sox": "White Sox",
+  "Cincinnati Reds": "Reds",
+  "Cleveland Guardians": "Guardians",
+  "Colorado Rockies": "Rockies",
+  "Detroit Tigers": "Tigers",
+  "Houston Astros": "Astros",
+  "Kansas City Royals": "Royals",
+  "Los Angeles Angels": "Angels",
+  "Los Angeles Dodgers": "Dodgers",
+  "Miami Marlins": "Marlins",
+  "Milwaukee Brewers": "Brewers",
+  "Minnesota Twins": "Twins",
+  "New York Mets": "Mets",
+  "New York Yankees": "Yankees",
+  "Philadelphia Phillies": "Phillies",
+  "Pittsburgh Pirates": "Pirates",
+  "San Diego Padres": "Padres",
+  "San Francisco Giants": "Giants",
+  "Seattle Mariners": "Mariners",
+  "St. Louis Cardinals": "Cardinals",
+  "Tampa Bay Rays": "Rays",
+  "Texas Rangers": "Rangers",
+  "Toronto Blue Jays": "Blue Jays",
+  "Washington Nationals": "Nationals"
+};
 
 const STATUS_LABELS = {
   scheduled: "scheduled",
@@ -127,8 +167,8 @@ function formatPitchers(details, event) {
   const away = pitcherName(pitchers.away);
   const home = pitcherName(pitchers.home);
   if (away === "尚未公布" && home === "尚未公布") return pitchers.status || "尚未公布";
-  const awayLabel = event?.away_team || "客隊";
-  const homeLabel = event?.home_team || "主隊";
+  const awayLabel = teamDisplayName(event?.away_team) || "客隊";
+  const homeLabel = teamDisplayName(event?.home_team) || "主隊";
   return `${awayLabel}：${away} / ${homeLabel}：${home}`;
 }
 
@@ -139,9 +179,14 @@ function formatFinalScore(details, event) {
     return score.status || "賽後更新";
   }
   if (event?.away_team || event?.home_team) {
-    return `${event?.away_team || "客隊"} ${score.away} - ${score.home} ${event?.home_team || "主隊"}`;
+    return `${teamDisplayName(event?.away_team) || "客隊"} ${score.away} - ${score.home} ${teamDisplayName(event?.home_team) || "主隊"}`;
   }
   return `${score.away} - ${score.home}`;
+}
+
+function teamDisplayName(name) {
+  if (!name) return "";
+  return BASEBALL_TEAM_SHORT_NAMES[name] || name;
 }
 
 function formatDistance(value) {
@@ -223,7 +268,7 @@ function favoriteKey(type, value) {
 }
 
 function formatMatchup(event) {
-  if (event.away_team && event.home_team) return `${event.away_team} @ ${event.home_team}`;
+  if (event.away_team && event.home_team) return `${teamDisplayName(event.away_team)} @ ${teamDisplayName(event.home_team)}`;
   return event.title || event.league || event.sport_type || "未命名賽事";
 }
 

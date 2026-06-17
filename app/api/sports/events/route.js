@@ -92,7 +92,7 @@ export async function GET(request) {
       `start_time=lt.${encodeURIComponent(to)}`,
       `sport_type=in.${encodeURIComponent(encodeIn(sportTypes))}`,
       "order=start_time.asc",
-      "limit=500"
+      "limit=1000"
     ];
     const leagues = parseLeagues(searchParams.get("leagues"));
     if (leagues.length) query.push(`league=in.${encodeURIComponent(encodeIn(leagues))}`);
