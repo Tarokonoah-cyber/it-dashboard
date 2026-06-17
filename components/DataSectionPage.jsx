@@ -441,7 +441,6 @@ export default function DataSectionPage({ sectionKey }) {
     <section className="section-page">
       <header className="section-head">
         <div>
-          <h1>{config.title}</h1>
           <p>{config.hint}</p>
         </div>
         <div className="section-actions">

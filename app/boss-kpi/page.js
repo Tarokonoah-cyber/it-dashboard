@@ -347,7 +347,6 @@ export default function BossKpiPage() {
         <div>
           <button className="boss-back no-print" onClick={() => { window.location.href = "/"; }}>返回工作中心</button>
           <p>Work KPI</p>
-          <h1>工作 KPI</h1>
           <span>主管查看用，獨立頁面，不混在日常主選單。</span>
         </div>
         <div className="boss-kpi-actions">

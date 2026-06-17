@@ -171,7 +171,6 @@ export default function InspectionForm({ mode = "new", recordId = "" }) {
     <section className="section-page inspection-page">
       <header className="section-head">
         <div>
-          <h1>{isEdit ? "編輯每日巡檢紀錄" : "新增每日巡檢紀錄"}</h1>
           <p>同一天只允許一張巡檢紀錄，巡檢人員名稱為必填</p>
         </div>
         <div className="section-actions">

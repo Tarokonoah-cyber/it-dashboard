@@ -104,7 +104,6 @@ export default function InspectionList() {
     <section className="section-page inspection-page">
       <header className="section-head">
         <div>
-          <h1>每日巡檢紀錄</h1>
           <p>檢視每日 IT 例行檢查、異常與處理進度</p>
         </div>
         <div className="section-actions">

@@ -109,7 +109,6 @@ export default function PasswordsPage() {
     <section className="section-page password-index-page">
       <header className="section-head">
         <div>
-          <h1>密碼管理索引</h1>
           <p>只保存系統入口與 Vault 位置，不在此頁顯示密碼。</p>
         </div>
       </header>

@@ -59,7 +59,6 @@ export default function InspectionDetail({ recordId }) {
     <section className="section-page inspection-page">
       <header className="section-head">
         <div>
-          <h1>每日巡檢紀錄詳細</h1>
           <p>查看單日巡檢結果、異常與處理方式</p>
         </div>
         <div className="section-actions">

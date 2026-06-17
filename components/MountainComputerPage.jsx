@@ -185,7 +185,6 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
         <div>
           <div className="breadcrumb">設備清單 / 山上電腦</div>
           <div className="asset-title-row">
-            <h1>{config.title}</h1>
             <span className="count-badge">{loading ? "讀取中" : `${rows.length} 筆`}</span>
           </div>
           <p>{config.hint}</p>
