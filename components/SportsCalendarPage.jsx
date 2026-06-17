@@ -338,8 +338,9 @@ export default function SportsCalendarPage() {
   const [selectedBaseballLeagues, setSelectedBaseballLeagues] = useState(() => new Set());
   const [selectedFootballLeagues, setSelectedFootballLeagues] = useState(() => new Set());
   const [selectedRacingLeagues, setSelectedRacingLeagues] = useState(() => new Set());
+  const [expandedCategories, setExpandedCategories] = useState(() => new Set());
   const [query, setQuery] = useState("");
-  const [rangeMode, setRangeMode] = useState("month");
+  const rangeMode = "month";
   const [events, setEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -592,11 +593,6 @@ export default function SportsCalendarPage() {
     }
   }
 
-  function selectQuickRange(mode) {
-    setRangeMode(mode);
-    if (mode === "today") setMonth(todayKey.slice(0, 7));
-  }
-
   function selectDate(dateKey) {
     if (!dateKey) return;
     setSelectedDateKey(dateKey);
@@ -611,6 +607,15 @@ export default function SportsCalendarPage() {
   function closeSportsOverlay() {
     setSelectedEvent(null);
     setSelectedDateKey("");
+  }
+
+  function toggleCategoryExpanded(category) {
+    setExpandedCategories((current) => {
+      const next = new Set(current);
+      if (next.has(category)) next.delete(category);
+      else next.add(category);
+      return next;
+    });
   }
 
   function selectedRangeMessage() {
@@ -641,12 +646,6 @@ export default function SportsCalendarPage() {
           />
         </div>
 
-        <section className="sports-filter-section">
-          <button type="button" className={rangeMode === "today" ? "active" : ""} onClick={() => selectQuickRange("today")}>今天</button>
-          <button type="button" className={rangeMode === "week" ? "active" : ""} onClick={() => selectQuickRange("week")}>本週</button>
-          <button type="button" className={rangeMode === "month" ? "active" : ""} onClick={() => selectQuickRange("month")}>本月</button>
-        </section>
-
         <section className="sports-side-block">
           <h2>收藏</h2>
           {favoritesLoading ? <p>讀取中...</p> : null}
@@ -671,45 +670,84 @@ export default function SportsCalendarPage() {
             <b>全選</b>
             <small>{selectedSportList.length}</small>
           </button>
-          <button type="button" className="sports-check-row sports-parent-row" onClick={toggleBaseballParent}>
-            <span className={selectedBaseballLeagues.size === BASEBALL_LEAGUES.length ? "checked" : ""} />
-            <b>⚾ 棒球</b>
-            <small>{selectedBaseballLeagues.size}</small>
-          </button>
-          <div className="sports-child-list">
-            {BASEBALL_LEAGUES.map((league) => (
-              <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleBaseballLeague(league.key)}>
-                <span className={selectedBaseballLeagues.has(league.key) ? "checked" : ""} />
-                <b>{league.label}</b>
-              </button>
-            ))}
+          <div className="sports-category-parent">
+            <button type="button" className="sports-check-row sports-parent-check" onClick={toggleBaseballParent}>
+              <span className={selectedBaseballLeagues.size === BASEBALL_LEAGUES.length ? "checked" : ""} />
+              <b>⚾ 棒球</b>
+              <small>{selectedBaseballLeagues.size}</small>
+            </button>
+            <button
+              type="button"
+              className="sports-parent-toggle"
+              aria-label={expandedCategories.has("baseball") ? "Collapse baseball" : "Expand baseball"}
+              aria-expanded={expandedCategories.has("baseball")}
+              onClick={() => toggleCategoryExpanded("baseball")}
+            >
+              ›
+            </button>
           </div>
-          <button type="button" className="sports-check-row sports-parent-row" onClick={toggleFootballParent}>
-            <span className={selectedFootballLeagues.size === FOOTBALL_LEAGUES.length ? "checked" : ""} />
-            <b>🏆 足球</b>
-            <small>{selectedFootballLeagues.size}</small>
-          </button>
-          <div className="sports-child-list">
-            {FOOTBALL_LEAGUES.map((league) => (
-              <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleFootballLeague(league.key)}>
-                <span className={selectedFootballLeagues.has(league.key) ? "checked" : ""} />
-                <b>{league.label}</b>
-              </button>
-            ))}
+          {expandedCategories.has("baseball") ? (
+            <div className="sports-child-list">
+              {BASEBALL_LEAGUES.map((league) => (
+                <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleBaseballLeague(league.key)}>
+                  <span className={selectedBaseballLeagues.has(league.key) ? "checked" : ""} />
+                  <b>{league.label}</b>
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <div className="sports-category-parent">
+            <button type="button" className="sports-check-row sports-parent-check" onClick={toggleFootballParent}>
+              <span className={selectedFootballLeagues.size === FOOTBALL_LEAGUES.length ? "checked" : ""} />
+              <b>🏆 足球</b>
+              <small>{selectedFootballLeagues.size}</small>
+            </button>
+            <button
+              type="button"
+              className="sports-parent-toggle"
+              aria-label={expandedCategories.has("football") ? "Collapse football" : "Expand football"}
+              aria-expanded={expandedCategories.has("football")}
+              onClick={() => toggleCategoryExpanded("football")}
+            >
+              ›
+            </button>
           </div>
-          <button type="button" className="sports-check-row sports-parent-row" onClick={toggleRacingParent}>
-            <span className={selectedRacingLeagues.size === RACING_LEAGUES.length ? "checked" : ""} />
-            <b>🏎 賽車</b>
-            <small>{selectedRacingLeagues.size}</small>
-          </button>
-          <div className="sports-child-list">
-            {RACING_LEAGUES.map((league) => (
-              <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleRacingLeague(league.key)}>
-                <span className={selectedRacingLeagues.has(league.key) ? "checked" : ""} />
-                <b>{league.label}</b>
-              </button>
-            ))}
+          {expandedCategories.has("football") ? (
+            <div className="sports-child-list">
+              {FOOTBALL_LEAGUES.map((league) => (
+                <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleFootballLeague(league.key)}>
+                  <span className={selectedFootballLeagues.has(league.key) ? "checked" : ""} />
+                  <b>{league.label}</b>
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <div className="sports-category-parent">
+            <button type="button" className="sports-check-row sports-parent-check" onClick={toggleRacingParent}>
+              <span className={selectedRacingLeagues.size === RACING_LEAGUES.length ? "checked" : ""} />
+              <b>🏎 賽車</b>
+              <small>{selectedRacingLeagues.size}</small>
+            </button>
+            <button
+              type="button"
+              className="sports-parent-toggle"
+              aria-label={expandedCategories.has("racing") ? "Collapse racing" : "Expand racing"}
+              aria-expanded={expandedCategories.has("racing")}
+              onClick={() => toggleCategoryExpanded("racing")}
+            >
+              ›
+            </button>
           </div>
+          {expandedCategories.has("racing") ? (
+            <div className="sports-child-list">
+              {RACING_LEAGUES.map((league) => (
+                <button key={league.key} type="button" className="sports-check-row sports-child-row" onClick={() => toggleRacingLeague(league.key)}>
+                  <span className={selectedRacingLeagues.has(league.key) ? "checked" : ""} />
+                  <b>{league.label}</b>
+                </button>
+              ))}
+            </div>
+          ) : null}
           {SPORT_OPTIONS.map((sport) => (
             <button key={sport.key} type="button" className="sports-check-row" onClick={() => toggleSport(sport.key)}>
               <span className={selectedSports.has(sport.key) ? "checked" : ""} />
