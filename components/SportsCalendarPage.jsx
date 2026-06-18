@@ -29,9 +29,9 @@ const RACING_LEAGUES = [
 const STATUS_LABELS = {
   scheduled: "scheduled",
   live: "live",
-  completed: "completed",
+  completed: "final",
   postponed: "postponed",
-  cancelled: "cancelled"
+  cancelled: "canceled"
 };
 
 const IMPORTANCE_LABELS = {
@@ -183,6 +183,34 @@ function formatFinalScore(details, event) {
   return `${score.away} - ${score.home}`;
 }
 
+function baseballScore(event) {
+  const score = scoreObject(event?.detail?.details);
+  if (!score || typeof score !== "object") return null;
+  if (score.away === null || score.away === undefined || score.home === null || score.home === undefined) return null;
+  return score;
+}
+
+function statusChipLabel(event) {
+  const status = event?.status;
+  if (status === "completed") return "final";
+  if (status === "cancelled") return "canceled";
+  if (status === "live") return "live";
+  if (status === "postponed") return "postponed";
+  return eventTimeLabel(event);
+}
+
+function baseballChipParts(event) {
+  const score = baseballScore(event);
+  const away = teamDisplayName(event?.away_team, event?.league);
+  const home = teamDisplayName(event?.home_team, event?.league);
+  return {
+    away,
+    home,
+    scoreLabel: score ? `${score.away} - ${score.home}` : "@",
+    statusLabel: statusChipLabel(event)
+  };
+}
+
 function teamDisplayName(name, league) {
   if (!name) return "";
   return getTeamShortName(name, league);
@@ -293,6 +321,9 @@ function sortEventsByTime(rows) {
 }
 
 function EventBadge({ event, selected, onSelect }) {
+  const isBaseballMatchup = event.sport_type === "baseball" && event.away_team && event.home_team;
+  const baseballParts = isBaseballMatchup ? baseballChipParts(event) : null;
+
   return (
     <button
       type="button"
@@ -303,9 +334,24 @@ function EventBadge({ event, selected, onSelect }) {
       }}
       title={formatChipTitle(event)}
     >
-      {event.league ? <span>{event.league}</span> : null}
-      {eventTimeLabel(event) ? <time>{eventTimeLabel(event)}</time> : null}
-      <b>{formatMatchup(event)}</b>
+      {event.league ? <span className="sports-league-badge">{event.league}</span> : null}
+      {isBaseballMatchup ? (
+        <>
+          <span className="sports-chip-matchup">
+            <TeamMark teamName={event.away_team} league={event.league} className="is-chip" />
+            <b>{baseballParts.away}</b>
+            <small>{baseballParts.scoreLabel}</small>
+            <b>{baseballParts.home}</b>
+            <TeamMark teamName={event.home_team} league={event.league} className="is-chip" />
+          </span>
+          {baseballParts.statusLabel ? <time>{baseballParts.statusLabel}</time> : null}
+        </>
+      ) : (
+        <>
+          {eventTimeLabel(event) ? <time>{eventTimeLabel(event)}</time> : null}
+          <b>{formatMatchup(event)}</b>
+        </>
+      )}
     </button>
   );
 }
@@ -346,6 +392,18 @@ function MatchupHeader({ event }) {
       <MatchupTeam label="客隊" teamName={event.away_team} league={event.league} />
       <span className="sports-matchup-at">@</span>
       <MatchupTeam label="主隊" teamName={event.home_team} league={event.league} />
+    </div>
+  );
+}
+
+function BaseballScoreline({ event }) {
+  if (event?.sport_type !== "baseball") return null;
+  const score = baseballScore(event);
+  const label = statusChipLabel(event);
+  return (
+    <div className="sports-matchup-scoreline">
+      {score ? <b>{score.away} - {score.home}</b> : <b>{eventTimeLabel(event) || "-"}</b>}
+      {label ? <span>{label}</span> : null}
     </div>
   );
 }
@@ -1083,6 +1141,7 @@ export default function SportsCalendarPage() {
                 <b>{STATUS_LABELS[selectedEvent.status] || selectedEvent.status || "scheduled"}</b>
               </div>
               <MatchupHeader event={selectedEvent} />
+              <BaseballScoreline event={selectedEvent} />
               {selectedEvent.title && selectedEvent.title !== formatMatchup(selectedEvent) ? (
                 <p className="sports-summary-subtitle">{selectedEvent.title}</p>
               ) : null}
@@ -1207,6 +1266,69 @@ export default function SportsCalendarPage() {
           hasUnsupportedSelection={hasUnsupportedStandingsSelection}
         />
       ) : null}
+      <style>{`
+        .sports-event-pill {
+          grid-template-columns: auto minmax(0, 1fr) auto;
+        }
+
+        .sports-event-pill .sports-league-badge {
+          border-radius: 999px;
+          background: #e8f1fb;
+          color: var(--hotel-blue, #2f5f98);
+          padding: 1px 5px;
+          font-size: 9px;
+          font-weight: 900;
+          white-space: nowrap;
+        }
+
+        .sports-chip-matchup {
+          min-width: 0;
+          display: grid;
+          grid-template-columns: 18px minmax(20px, 1fr) auto minmax(20px, 1fr) 18px;
+          align-items: center;
+          gap: 3px;
+        }
+
+        .sports-chip-matchup small {
+          color: var(--hotel-text, #162033);
+          font-size: 10px;
+          font-weight: 800;
+          white-space: nowrap;
+        }
+
+        .sports-team-mark.is-chip {
+          width: 18px;
+          height: 18px;
+          border-radius: 5px;
+          font-size: 7px;
+        }
+
+        .sports-matchup-scoreline {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          border-radius: 8px;
+          background: #f3f7fb;
+          padding: 8px 10px;
+        }
+
+        .sports-matchup-scoreline b {
+          color: var(--hotel-text, #162033);
+          font-size: 24px;
+          font-weight: 800;
+          line-height: 1;
+        }
+
+        .sports-matchup-scoreline span {
+          border-radius: 999px;
+          background: #fff;
+          color: var(--hotel-muted, #667085);
+          padding: 3px 8px;
+          font-size: 11px;
+          font-weight: 900;
+        }
+      `}</style>
     </div>
   );
 }

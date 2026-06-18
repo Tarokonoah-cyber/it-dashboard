@@ -10,6 +10,10 @@
     "import:sports": "node scripts/importSportsEvents.js",
     "import:sports:folder": "node scripts/importSportsEvents.js",
     "import:sports:all": "node scripts/importSportsEvents.js --all",
+    "sports:sync:baseball": "node scripts/syncBaseball.js --league=MLB,NPB,CPBL",
+    "sports:sync:mlb": "node scripts/syncBaseball.js --league=MLB",
+    "sports:sync:npb": "node scripts/syncBaseball.js --league=NPB",
+    "sports:sync:cpbl": "node scripts/syncBaseball.js --league=CPBL",
     "sync:sports-details": "node scripts/syncSportsDetails.js",
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "lint": "eslint ."

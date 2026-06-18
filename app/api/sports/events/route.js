@@ -8,6 +8,9 @@ import {
   parseSportTypes
 } from "../../../../lib/sportsCalendar";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function encodeIn(values) {
   return `(${values.map((value) => String(value).trim()).join(",")})`;
 }
