@@ -16,6 +16,7 @@ export const APP_SECTIONS = [
       { key: "assets_mountain_pc", label: "山上電腦", href: "/assets/mountain-pc" },
       { key: "assets_downhill_pc", label: "山下電腦", href: "/assets/downhill-pc" },
       { key: "assets_printer", label: "印表機", href: "/assets/printers" },
+      { key: "it_incidents", label: "故障總表 / 異常事件紀錄", href: "/incidents" },
       { key: "assets_north_ya", label: "北 YA", href: "/assets/north-ya" },
       { key: "assets_iptv", label: "IPTV", href: "/assets/iptv" }
     ]
