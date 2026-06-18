@@ -15,7 +15,7 @@ const SOURCE_ALIASES = {
   contracts_software: ["contracts"],
   contracts_mobile: ["mobile_contracts"],
   anydesk: ["anydesk"],
-  passwords: ["password_index"],
+  passwords: ["password_entries"],
   sop: ["sop"],
   sop_docs: ["sop"],
   soc_docs: ["sop"]
@@ -36,89 +36,6 @@ function getPublicStorageUrl(bucket, path) {
 
 function getSocSopPublicUrl() {
   return SOC_SOP_PUBLIC_URL;
-}
-
-const PASSWORD_INDEX_ITEMS = [
-  {
-    id: "booking-backoffice",
-    name: "Booking.com 後台",
-    category: "SaaS",
-    risk_level: "General",
-    description: "訂房平台後台入口，登入資訊請依 Vault 紀錄為準。",
-    owner: "IT",
-    login_url: "https://admin.booking.com/",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - General",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "僅保留入口索引，不顯示帳密。"
-  },
-  {
-    id: "google-business-profile",
-    name: "Google Business Profile",
-    category: "SaaS",
-    risk_level: "General",
-    description: "Google 商家檔案管理入口，帳務與權限請至 Vault 查看。",
-    owner: "IT",
-    login_url: "https://business.google.com/",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - General",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "僅保留入口索引，不顯示帳密。"
-  },
-  {
-    id: "main-nas",
-    name: "主力 NAS",
-    category: "NAS",
-    risk_level: "Critical",
-    description: "主要檔案服務，詳細連線資訊請至 Bitwarden 查看。",
-    owner: "IT",
-    login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
-  },
-  {
-    id: "opera-db",
-    name: "Opera DB",
-    category: "Database",
-    risk_level: "Critical",
-    description: "飯店系統資料庫索引，詳細連線資訊請至 Bitwarden 查看。",
-    owner: "IT",
-    login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
-  },
-  {
-    id: "fortigate-main-firewall",
-    name: "Fortigate Main Firewall",
-    category: "Network",
-    risk_level: "Critical",
-    description: "主要防火牆，詳細連線資訊請至 Bitwarden 查看。",
-    owner: "IT",
-    login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "不可在此頁顯示 IP、帳號、密碼或連線細節。"
-  }
-];
-
-function passwordIndexRows() {
-  return PASSWORD_INDEX_ITEMS.map((item) => ({
-    id: item.id,
-    source_key: "passwords",
-    source_label: "密碼索引",
-    record_key: item.id,
-    data: item
-  }));
 }
 
 const NORMALIZED_SOURCES = {
@@ -295,7 +212,18 @@ export async function GET(request) {
     const source = String(searchParams.get("source") || "").trim();
     const sources = SOURCE_ALIASES[source];
     if (!sources) return fail(new Error("未知資料來源"), 400);
-    if (source === "passwords") return ok({ source, normalized: true, rows: passwordIndexRows() });
+    if (source === "passwords") {
+      let rows = [];
+      try {
+        rows = await supabaseRequest(
+          "password_entries",
+          "select=id,category,system_name,login_url,username,password_item,notes,bitwarden_item_name,bitwarden_item_id,created_at,updated_at&order=category.asc,system_name.asc,id.asc&limit=1000"
+        );
+      } catch (error) {
+        if (!String(error.message || "").includes("Could not find the table")) throw error;
+      }
+      return ok({ source, normalized: true, rows: wrapNormalizedRows(source, rows, (row) => row) });
+    }
 
     const normalized = normalizedConfigFor(source);
     if (normalized) {

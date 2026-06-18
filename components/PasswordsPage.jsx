@@ -1,191 +1,221 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-const PASSWORD_INDEX_ITEMS = [
+const SEARCH_KEYS = [
+  "category",
+  "system_name",
+  "login_url",
+  "username",
+  "password_item",
+  "notes",
+  "bitwarden_item_name"
+];
+
+const FALLBACK_PASSWORD_ENTRIES = [
   {
-    id: "booking-backoffice",
-    name: "Booking.com 後台",
+    id: "sample-001",
     category: "SaaS",
-    risk_level: "General",
-    description: "訂房平台管理入口。實際帳密請以 Vault 為準。",
-    owner: "IT",
-    login_url: "https://admin.booking.com/",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - General",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "僅保存入口與索引，不顯示密碼。"
+    system_name: "範例管理後台",
+    login_url: "https://example.com/admin",
+    username: "sample-user",
+    password_item: "Example Vault Item",
+    notes: "範例資料；實際帳密請存放於 Bitwarden。",
+    bitwarden_item_name: "Example Vault Item",
+    bitwarden_item_id: ""
   },
   {
-    id: "google-business-profile",
-    name: "Google Business Profile",
-    category: "SaaS",
-    risk_level: "General",
-    description: "Google 商家資訊管理入口。需由 Vault 查找實際登入資訊。",
-    owner: "IT",
-    login_url: "https://business.google.com/",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - General",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "僅保存入口與索引，不顯示密碼。"
-  },
-  {
-    id: "main-nas",
-    name: "主 NAS",
-    category: "NAS",
-    risk_level: "Critical",
-    description: "核心儲存設備。敏感資訊請至 Bitwarden / KeePassXC 查詢。",
-    owner: "IT",
-    login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "Critical 項目不提供登入網址複製。"
-  },
-  {
-    id: "opera-db",
-    name: "Opera DB",
-    category: "Database",
-    risk_level: "Critical",
-    description: "營運資料庫索引。敏感資訊請至 Vault 查詢。",
-    owner: "IT",
-    login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "Critical 項目不提供登入網址複製。"
-  },
-  {
-    id: "fortigate-main-firewall",
-    name: "Fortigate Main Firewall",
+    id: "sample-002",
     category: "Network",
-    risk_level: "Critical",
-    description: "主要防火牆管理索引。敏感資訊請至 Vault 查詢。",
-    owner: "IT",
+    system_name: "範例網路設備",
     login_url: "",
-    vault_provider: "Bitwarden",
-    vault_collection: "IT - Critical",
-    vault_item_url: "",
-    sop_url: "",
-    notes_public: "Critical 項目不提供登入網址複製。"
+    username: "",
+    password_item: "Network Vault Reference",
+    notes: "僅示範索引用途，不包含內部 IP、URL 或帳密。",
+    bitwarden_item_name: "Network Vault Reference",
+    bitwarden_item_id: ""
   }
 ];
 
-const PASSWORD_INDEX_SEARCH_KEYS = [
-  "name",
-  "category",
-  "risk_level",
-  "description",
-  "owner",
-  "vault_provider",
-  "vault_collection",
-  "notes_public"
-];
+async function api(path) {
+  const response = await fetch(path, {
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
+  return Array.isArray(data.data) ? data.data : [];
+}
+
+function displayValue(value, fallback = "-") {
+  const text = String(value || "").trim();
+  return text || fallback;
+}
+
+function normalizeLoginUrl(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  if (/^https?:\/\//i.test(text)) return text;
+  return `https://${text}`;
+}
+
+function notifyBitwardenPending() {
+  window.alert("尚未串接 Bitwarden 讀取；此頁不保存或顯示實際密碼。");
+}
 
 export default function PasswordsPage() {
+  const [entries, setEntries] = useState([]);
   const [query, setQuery] = useState("");
-  const keyword = query.trim().toLowerCase();
-  const filteredItems = useMemo(() => {
-    if (!keyword) return PASSWORD_INDEX_ITEMS;
-    return PASSWORD_INDEX_ITEMS.filter((item) =>
-      PASSWORD_INDEX_SEARCH_KEYS.some((key) => String(item[key] || "").toLowerCase().includes(keyword))
-    );
-  }, [keyword]);
+  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState("");
 
-  function copyLoginUrl(item) {
-    if (!item.login_url || item.risk_level === "Critical") return;
-    navigator.clipboard?.writeText(item.login_url);
+  async function load() {
+    setLoading(true);
+    setNotice("");
+    try {
+      const rows = await api("/api/password-entries");
+      if (rows.length) {
+        setEntries(rows);
+        return;
+      }
+      setEntries(FALLBACK_PASSWORD_ENTRIES);
+      setNotice("目前沒有可顯示的密碼索引資料，以下為安全範例資料。");
+    } catch {
+      setEntries(FALLBACK_PASSWORD_ENTRIES);
+      setNotice("密碼索引資料暫時無法讀取，以下為安全範例資料。");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function openUrl(url, fallback) {
-    window.open(url || fallback, "_blank", "noopener,noreferrer");
+  useEffect(() => {
+    load();
+  }, []);
+
+  const filteredEntries = useMemo(() => {
+    const keyword = query.trim().toLowerCase();
+    if (!keyword) return entries;
+    return entries.filter((entry) =>
+      SEARCH_KEYS.some((key) => String(entry[key] || "").toLowerCase().includes(keyword))
+    );
+  }, [entries, query]);
+
+  async function copyUsername(entry) {
+    const username = String(entry.username || "").trim();
+    if (!username) return;
+    await navigator.clipboard?.writeText(username);
+  }
+
+  function openLoginUrl(entry) {
+    const url = normalizeLoginUrl(entry.login_url);
+    if (!url) return;
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function openBitwarden() {
+    window.open("https://vault.bitwarden.com/", "_blank", "noopener,noreferrer");
   }
 
   return (
     <section className="section-page password-index-page">
       <header className="section-head">
         <div>
-          <p>只保存系統入口與 Vault 位置，不在此頁顯示密碼。</p>
+          <p>依密碼索引資料整理；實際密碼不儲存在此系統，請至 Bitwarden 查詢。</p>
+        </div>
+        <div className="section-actions">
+          <button type="button" onClick={load}>重新整理</button>
         </div>
       </header>
 
       <div className="security-notice">
-        安全提醒：此頁僅作為登入入口與 Vault 索引。Critical 項目請至 Bitwarden / KeePassXC 查詢，避免在管理系統中保存或揭露密碼。
+        此頁只保存系統入口、帳號索引與 Bitwarden 對應項目，不保存實際密碼。顯示密碼與複製密碼按鈕目前僅為預留介面。
       </div>
+
+      {notice ? <div className="error-box">{notice}</div> : null}
 
       <div className="records-toolbar password-index-toolbar">
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="搜尋系統名稱、分類、風險等級、Vault 位置..."
+          placeholder="搜尋分類、系統名稱、登入網址、帳號、Bitwarden 項目或備註..."
         />
-        <span>{filteredItems.length} 筆</span>
+        <span>{loading ? "讀取中..." : `${filteredEntries.length.toLocaleString("en-US")} 筆`}</span>
       </div>
 
-      {PASSWORD_INDEX_ITEMS.length === 0 ? (
+      {loading ? (
+        <div className="empty">正在讀取密碼索引...</div>
+      ) : entries.length === 0 ? (
         <div className="password-empty-state">
           <h2>尚未建立密碼索引</h2>
-          <p>請新增系統入口與 Vault 位置。實際密碼仍應保存在 Bitwarden 或 KeePassXC。</p>
-          <button className="primary-action" type="button">新增索引</button>
+          <p>請先在 Supabase 建立 public.password_entries，並只匯入不含實際密碼的索引資料。</p>
         </div>
-      ) : filteredItems.length === 0 ? (
+      ) : filteredEntries.length === 0 ? (
         <div className="empty">找不到符合條件的密碼索引</div>
       ) : (
         <div className="password-index-table-wrap">
           <table className="password-index-table">
             <thead>
               <tr>
-                <th>系統名稱</th>
                 <th>分類</th>
-                <th>風險</th>
-                <th>用途 / 說明</th>
-                <th>負責人</th>
-                <th>Vault 位置</th>
-                <th>SOP</th>
+                <th>系統名稱</th>
+                <th>登入網址</th>
+                <th>帳號 / 密碼</th>
+                <th>備註</th>
                 <th>操作</th>
               </tr>
             </thead>
             <tbody>
-              {filteredItems.map((item) => {
-                const isCritical = item.risk_level === "Critical";
-                const isSensitive = item.risk_level === "Sensitive";
-                const vaultText = `${item.vault_provider} > ${item.vault_collection}`;
-                const loginText = isCritical
-                  ? "Critical 項目：請至 Vault 查詢"
-                  : isSensitive || item.risk_level === "Internal"
-                    ? "請至 Vault 查詢"
-                    : item.login_url || "請至 Vault 查詢";
+              {filteredEntries.map((entry) => {
+                const username = displayValue(entry.username);
+                const loginUrl = displayValue(entry.login_url);
+                const vaultItem = displayValue(entry.bitwarden_item_name || entry.password_item, "");
 
                 return (
-                  <tr key={item.id}>
+                  <tr key={entry.id}>
+                    <td>{displayValue(entry.category)}</td>
                     <td>
-                      <strong>{item.name}</strong>
-                      <small>{loginText}</small>
-                    </td>
-                    <td>{item.category}</td>
-                    <td>
-                      <span className={`risk-badge ${item.risk_level.toLowerCase()}`}>{item.risk_level}</span>
+                      <strong>{displayValue(entry.system_name)}</strong>
+                      {vaultItem ? <small>Bitwarden: {vaultItem}</small> : null}
                     </td>
                     <td>
-                      {item.description}
-                      {item.notes_public ? <small>{item.notes_public}</small> : null}
+                      {entry.login_url ? (
+                        <button className="password-link-button" type="button" onClick={() => openLoginUrl(entry)}>
+                          {loginUrl}
+                        </button>
+                      ) : (
+                        <span className="muted">-</span>
+                      )}
                     </td>
-                    <td>{item.owner}</td>
-                    <td>{vaultText}</td>
-                    <td>{item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>開啟 SOP</button> : <span className="muted">尚未設定</span>}</td>
+                    <td>
+                      <div className="password-credential-cell">
+                        <div>
+                          <span>帳號</span>
+                          <strong>{username}</strong>
+                        </div>
+                        <div>
+                          <span>密碼</span>
+                          <strong aria-label="密碼已隱藏">••••••••</strong>
+                        </div>
+                        <div className="password-inline-actions">
+                          <button type="button" onClick={notifyBitwardenPending}>顯示密碼</button>
+                          <button type="button" onClick={notifyBitwardenPending}>複製密碼</button>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="password-notes-cell">{displayValue(entry.notes)}</td>
                     <td>
                       <div className="password-actions">
-                        <button type="button" onClick={() => openUrl(item.vault_item_url, "https://vault.bitwarden.com/")}>
+                        <button type="button" onClick={() => copyUsername(entry)} disabled={!entry.username}>
+                          複製帳號
+                        </button>
+                        <button type="button" onClick={() => openLoginUrl(entry)} disabled={!entry.login_url}>
+                          開啟登入網址
+                        </button>
+                        <button type="button" onClick={openBitwarden}>
                           開啟 Bitwarden
                         </button>
-                        {item.sop_url ? <button type="button" onClick={() => openUrl(item.sop_url)}>開啟 SOP</button> : null}
-                        {!isCritical && item.login_url ? (
-                          <button type="button" onClick={() => copyLoginUrl(item)}>複製登入網址</button>
-                        ) : null}
                       </div>
                     </td>
                   </tr>
