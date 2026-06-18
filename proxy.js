@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireDashboardAuth } from "./lib/auth";
 
 const PUBLIC_PATHS = [
+  "/api/cron/sports",
   "/api/line/webhook",
   "/favicon.ico",
   "/robots.txt"
@@ -9,6 +10,7 @@ const PUBLIC_PATHS = [
 
 function isPublicPath(pathname) {
   if (PUBLIC_PATHS.includes(pathname)) return true;
+  if (pathname.startsWith("/api/cron/sports/")) return true;
   return pathname.startsWith("/_next/");
 }
 
