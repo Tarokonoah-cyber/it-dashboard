@@ -5,7 +5,7 @@ import InspectionForm from "../../../components/inspections/InspectionForm";
 
 export default function NewInspectionRoutePage() {
   return (
-    <AppShell activeSection="daily_inspections" title="新增每日巡檢紀錄">
+    <AppShell activeSection="daily_inspections" title="新增每日巡檢">
       <InspectionForm mode="new" />
     </AppShell>
   );

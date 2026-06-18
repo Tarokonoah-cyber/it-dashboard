@@ -4,6 +4,7 @@ export const APP_SECTIONS = [
   { key: "dashboard", icon: "⌂", label: "儀表板", href: "/" },
   { key: "quick-notes", icon: "✎", label: "快速備忘錄", href: "/quick-notes" },
   { key: "work", icon: "□", label: "工作中心", href: "/work" },
+  { key: "daily_inspections", icon: "☑", label: "每日巡檢", href: "/inspections" },
   { key: "documents", icon: "▤", label: "送交單據紀錄", href: "/documents" },
   { key: "contacts", icon: "☷", label: "通訊錄", href: "/contacts" },
   {
@@ -16,8 +17,7 @@ export const APP_SECTIONS = [
       { key: "assets_downhill_pc", label: "山下電腦", href: "/assets/downhill-pc" },
       { key: "assets_printer", label: "印表機", href: "/assets/printers" },
       { key: "assets_north_ya", label: "北 YA", href: "/assets/north-ya" },
-      { key: "assets_iptv", label: "IPTV", href: "/assets/iptv" },
-      { key: "daily_inspections", label: "每日巡檢紀錄", href: "/inspections" }
+      { key: "assets_iptv", label: "IPTV", href: "/assets/iptv" }
     ]
   },
   {

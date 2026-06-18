@@ -1940,62 +1940,129 @@ input {
 
 .inspection-page {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
-.inspection-filters,
-.inspection-main-panel,
-.inspection-issue-grid {
+.inspection-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.inspection-page-head.compact {
+  margin-bottom: 2px;
+}
+
+.inspection-page-head h1 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+  font-size: 1.55rem;
+  letter-spacing: 0;
+}
+
+.inspection-page-head p {
+  margin: 5px 0 0;
+  color: var(--hotel-muted, #667085);
+}
+
+.inspection-overview {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
 }
 
-.inspection-filters,
-.inspection-main-panel,
-.inspection-items-panel,
+.inspection-overview-card,
+.inspection-toolbar,
 .inspection-detail-summary,
 .inspection-detail-items,
 .inspection-table,
-.inspection-form-actions,
 .inspection-notice {
   border: 1px solid var(--hotel-line, rgba(148, 163, 184, 0.22));
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--hotel-card, #fff);
   box-shadow: var(--hotel-shadow-soft, 0 4px 14px rgba(18, 34, 56, 0.06));
-  padding: 16px;
 }
 
-.inspection-filters label,
-.inspection-main-panel label,
-.inspection-issue-grid label,
-.inspection-item-card label {
+.inspection-overview-card {
   display: grid;
   gap: 6px;
-  color: var(--hotel-muted, #667085);
-  font-size: 0.84rem;
-  font-weight: 760;
+  min-height: 76px;
+  padding: 13px 14px;
 }
 
-.inspection-main-panel .wide,
-.inspection-issue-grid .wide {
-  grid-column: 1 / -1;
+.inspection-overview-card span,
+.inspection-detail-summary span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inspection-overview-card strong {
+  color: var(--hotel-text, #162033);
+  font-size: 1.42rem;
+  line-height: 1;
+}
+
+.inspection-overview-card.ok {
+  border-color: #bbf7d0;
+}
+
+.inspection-overview-card.danger {
+  border-color: #fecaca;
+}
+
+.inspection-overview-card.warning {
+  border-color: #fed7aa;
+}
+
+.inspection-overview-card.status {
+  align-content: center;
+}
+
+.inspection-toolbar {
+  display: grid;
+  grid-template-columns: 150px 160px 145px minmax(180px, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 10px;
+}
+
+.inspection-toolbar label,
+.quick-inspection-meta label,
+.quick-note,
+.quick-issue-fields label,
+.inspection-item-card label {
+  display: grid;
+  gap: 5px;
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inspection-toolbar input,
+.inspection-toolbar select,
+.quick-inspection-meta input,
+.quick-note textarea,
+.quick-issue-fields textarea {
+  width: 100%;
 }
 
 .inspection-table {
   overflow-x: auto;
+  padding: 6px 14px;
 }
 
 .inspection-row {
   display: grid;
-  grid-template-columns: 116px 116px 92px 80px 80px 92px 112px 150px 128px;
+  grid-template-columns: 116px 116px 92px 72px 72px 84px 112px 150px 122px;
   align-items: center;
   gap: 10px;
-  min-width: 980px;
+  min-width: 936px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-  padding: 11px 0;
+  padding: 10px 0;
   color: var(--hotel-text, #162033);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .inspection-row:last-child {
@@ -2004,7 +2071,7 @@ input {
 
 .inspection-row.head {
   color: var(--hotel-muted, #667085);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 850;
 }
 
@@ -2013,18 +2080,14 @@ input {
 }
 
 .inspection-actions,
-.inspection-form-actions,
-.inspection-status-options,
 .inspection-item-head,
-.inspection-items-panel header,
 .inspection-detail-items header {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.inspection-actions,
-.inspection-form-actions {
+.inspection-actions {
   justify-content: flex-end;
 }
 
@@ -2037,6 +2100,32 @@ input {
   background: #fffbeb;
   color: #92400e;
   font-weight: 780;
+  padding: 14px 16px;
+}
+
+.inspection-notice.compact {
+  padding: 10px 12px;
+  font-size: 0.88rem;
+}
+
+.inspection-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 936px;
+  padding: 28px 16px;
+  color: var(--hotel-muted, #667085);
+  text-align: center;
+}
+
+.inspection-empty-state h2 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+  font-size: 1rem;
+}
+
+.inspection-empty-state p {
+  margin: 0;
 }
 
 .inspection-status-badge {
@@ -2076,22 +2165,16 @@ input {
   color: #475569;
 }
 
-.inspection-form {
-  display: grid;
-  gap: 16px;
-}
-
-.inspection-items-panel {
+.inspection-detail-items {
   display: grid;
   gap: 14px;
+  padding: 16px;
 }
 
-.inspection-items-panel header,
 .inspection-detail-items header {
   justify-content: space-between;
 }
 
-.inspection-items-panel h2,
 .inspection-detail-items h2 {
   margin: 0;
   color: var(--hotel-text, #162033);
@@ -2184,9 +2267,15 @@ input {
 }
 
 @media (max-width: 900px) {
-  .inspection-filters,
-  .inspection-main-panel,
-  .inspection-issue-grid,
+  .inspection-page-head {
+    flex-direction: column;
+  }
+
+  .inspection-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .inspection-toolbar,
   .inspection-detail-summary {
     grid-template-columns: 1fr;
   }
@@ -2198,6 +2287,252 @@ input {
 
   .inspection-status-options {
     justify-content: flex-start;
+  }
+}
+
+.quick-drawer-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.quick-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 23, 42, 0.34);
+  cursor: pointer;
+}
+
+.quick-drawer {
+  position: relative;
+  z-index: 1;
+  width: min(620px, calc(100vw - 32px));
+  height: 100%;
+  background: #f8fafc;
+  box-shadow: -18px 0 36px rgba(15, 23, 42, 0.18);
+  overflow-y: auto;
+}
+
+.quick-inspection-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.quick-inspection-panel.as-drawer {
+  min-height: 100%;
+  padding: 18px;
+}
+
+.quick-inspection-panel.as-page {
+  max-width: 920px;
+}
+
+.quick-inspection-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quick-inspection-head h2 {
+  margin: 2px 0 0;
+  color: var(--hotel-text, #162033);
+  font-size: 1.25rem;
+}
+
+.quick-inspection-head p {
+  margin: 5px 0 0;
+  color: var(--hotel-muted, #667085);
+}
+
+.quick-close-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 1.2rem;
+}
+
+.quick-inspection-meta,
+.quick-summary-strip,
+.quick-action-bar,
+.quick-item-row,
+.quick-note,
+.quick-footer-actions,
+.quick-inspection-loading,
+.quick-empty-filter {
+  border: 1px solid var(--hotel-line, rgba(148, 163, 184, 0.22));
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--hotel-shadow-soft, 0 4px 14px rgba(18, 34, 56, 0.06));
+}
+
+.quick-inspection-meta {
+  display: grid;
+  grid-template-columns: 150px minmax(140px, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding: 12px;
+}
+
+.quick-overall-status {
+  display: grid;
+  gap: 6px;
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.quick-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.quick-summary-strip div {
+  display: grid;
+  gap: 2px;
+}
+
+.quick-summary-strip span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.quick-summary-strip strong {
+  color: var(--hotel-text, #162033);
+  font-size: 1.05rem;
+}
+
+.quick-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+}
+
+.quick-action-bar button.active {
+  border-color: #2f5f98;
+  background: #edf5ff;
+  color: #2f5f98;
+}
+
+.quick-item-list {
+  display: grid;
+  gap: 9px;
+}
+
+.quick-item-row {
+  display: grid;
+  gap: 10px;
+  padding: 11px;
+}
+
+.quick-item-row.needs-attention {
+  border-color: rgba(217, 119, 6, 0.3);
+  background: #fffaf0;
+}
+
+.quick-item-main {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.quick-item-main span {
+  display: block;
+  color: var(--hotel-muted, #667085);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.quick-item-main strong {
+  color: var(--hotel-text, #162033);
+  font-size: 0.95rem;
+}
+
+.quick-status-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.quick-status-buttons button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.quick-status-buttons button.active {
+  border-color: #2f5f98;
+  background: #edf5ff;
+  color: #2f5f98;
+  font-weight: 850;
+}
+
+.quick-issue-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quick-issue-fields textarea,
+.quick-note textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.quick-note {
+  padding: 12px;
+}
+
+.quick-footer-actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px;
+}
+
+.quick-inspection-loading,
+.quick-empty-filter {
+  padding: 18px;
+  color: var(--hotel-muted, #667085);
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .quick-drawer {
+    width: 100%;
+  }
+
+  .quick-inspection-panel.as-drawer {
+    padding: 14px;
+  }
+
+  .quick-inspection-meta,
+  .quick-summary-strip,
+  .quick-item-main,
+  .quick-issue-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-status-buttons {
+    justify-content: flex-start;
+  }
+
+  .quick-footer-actions {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }
 
