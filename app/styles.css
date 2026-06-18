@@ -8662,6 +8662,18 @@ textarea:disabled {
   color: var(--hotel-blue, #2f5f98);
 }
 
+.sports-standings-refresh {
+  width: fit-content;
+  min-height: 32px;
+  margin-top: 12px;
+  border: 1px solid #d8e3ef;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-blue, #2f5f98);
+  padding: 0 12px;
+  font-weight: 700;
+  box-shadow: none;
+}
 .sports-standings-sections {
   display: grid;
   gap: 16px;

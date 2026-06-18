@@ -456,6 +456,7 @@ function StandingsDrawer({
   loading,
   error,
   onClose,
+  onRefresh,
   onSelectLeague,
   standingsByLeague,
   hasUnsupportedSelection
@@ -471,7 +472,7 @@ function StandingsDrawer({
           <span>Standings</span>
           <h2>{title}</h2>
           {selectedData?.source ? (
-            <p>{selectedData.source.name}{selectedData.status === "fallback" ? " · fallback" : ""}</p>
+            <p>{selectedData.source.name}{selectedData.sourceUpdatedLabel ? ` · ${selectedData.sourceUpdatedLabel}` : selectedData.updatedAt ? ` · 更新 ${taipeiDateTime(selectedData.updatedAt)}` : ""}</p>
           ) : null}
         </div>
 
@@ -501,6 +502,9 @@ function StandingsDrawer({
         {baseballLeagues.length > 0 && loading ? <div className="sports-empty-state">排名讀取中...</div> : null}
         {baseballLeagues.length > 0 && error ? <div className="sports-alert">{error}</div> : null}
         {baseballLeagues.length > 0 && !loading && !error ? <StandingsTable standings={selectedData} league={activeLeague} /> : null}
+        {baseballLeagues.length > 0 && !loading ? (
+          <button type="button" className="sports-standings-refresh" onClick={onRefresh}>重新整理</button>
+        ) : null}
       </aside>
     </div>
   );
@@ -547,6 +551,7 @@ export default function SportsCalendarPage() {
   const [standingsLoading, setStandingsLoading] = useState(false);
   const [standingsError, setStandingsError] = useState("");
   const [activeStandingsLeague, setActiveStandingsLeague] = useState("");
+  const [standingsRefreshKey, setStandingsRefreshKey] = useState(0);
 
   const selectedRegularSportList = useMemo(() => [...selectedSports], [selectedSports]);
   const selectedSportList = useMemo(() => [
@@ -680,7 +685,7 @@ export default function SportsCalendarPage() {
     setActiveStandingsLeague((current) => (
       standingsLeagueList.includes(current) ? current : standingsLeagueList[0] || ""
     ));
-  }, [standingsLeagueList, standingsOpen]);
+  }, [standingsLeagueList, standingsOpen, standingsRefreshKey]);
 
   useEffect(() => {
     if (!standingsOpen || !standingsLeagueList.length) {
@@ -1195,6 +1200,7 @@ export default function SportsCalendarPage() {
           loading={standingsLoading}
           error={standingsError}
           onClose={closeSportsOverlay}
+          onRefresh={() => setStandingsRefreshKey((current) => current + 1)}
           onSelectLeague={setActiveStandingsLeague}
           standingsByLeague={standingsByLeague}
           hasUnsupportedSelection={hasUnsupportedStandingsSelection}
