@@ -3,4 +3,6 @@ import { baseballSyncHandler } from "../../../../../lib/sportsCron";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const GET = baseballSyncHandler(["MLB", "NPB", "CPBL"]);
+const handler = baseballSyncHandler(["MLB", "NPB", "CPBL"]);
+
+export { handler as GET, handler as POST };
