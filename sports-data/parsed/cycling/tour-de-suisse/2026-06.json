@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "sport_type": "cycling",
+    "league": "Cycling",
+    "source_type": "procyclingstats_race_url",
+    "source_name": "ProCyclingStats",
+    "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+    "source_month": "2026-06",
+    "limitations": "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later. ProCyclingStats CLI fetch may be blocked by browser challenge. Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available."
+  },
+  "events": [
+    {
+      "event_key": "tour-de-suisse-2026-stage-01",
+      "title": "Tour de Suisse Stage 1",
+      "sport_type": "cycling",
+      "league": "Cycling",
+      "start_time": "2026-06-17",
+      "venue": null,
+      "status": "scheduled",
+      "source_name": "ProCyclingStats",
+      "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+      "source_month": "2026-06",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+        "source_name": "ProCyclingStats",
+        "details": {
+          "race_name": "Tour de Suisse",
+          "stage_number": 1,
+          "stage_name": null,
+          "stage_type": null,
+          "date": "2026-06-17",
+          "start_location": null,
+          "finish_location": null,
+          "distance": null,
+          "route_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "limitations": [
+            "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later.",
+            "ProCyclingStats CLI fetch may be blocked by browser challenge.",
+            "Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available.",
+            "PCS stage page was unavailable during import; route fields are intentionally null.",
+            "Start location was not available from the source.",
+            "Finish location was not available from the source.",
+            "Distance was not available from the source."
+          ]
+        }
+      }
+    },
+    {
+      "event_key": "tour-de-suisse-2026-stage-02",
+      "title": "Tour de Suisse Stage 2",
+      "sport_type": "cycling",
+      "league": "Cycling",
+      "start_time": "2026-06-18",
+      "venue": null,
+      "status": "scheduled",
+      "source_name": "ProCyclingStats",
+      "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+      "source_month": "2026-06",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+        "source_name": "ProCyclingStats",
+        "details": {
+          "race_name": "Tour de Suisse",
+          "stage_number": 2,
+          "stage_name": null,
+          "stage_type": null,
+          "date": "2026-06-18",
+          "start_location": null,
+          "finish_location": null,
+          "distance": null,
+          "route_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "limitations": [
+            "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later.",
+            "ProCyclingStats CLI fetch may be blocked by browser challenge.",
+            "Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available.",
+            "PCS stage page was unavailable during import; route fields are intentionally null.",
+            "Start location was not available from the source.",
+            "Finish location was not available from the source.",
+            "Distance was not available from the source."
+          ]
+        }
+      }
+    },
+    {
+      "event_key": "tour-de-suisse-2026-stage-03",
+      "title": "Tour de Suisse Stage 3",
+      "sport_type": "cycling",
+      "league": "Cycling",
+      "start_time": "2026-06-19",
+      "venue": null,
+      "status": "scheduled",
+      "source_name": "ProCyclingStats",
+      "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+      "source_month": "2026-06",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+        "source_name": "ProCyclingStats",
+        "details": {
+          "race_name": "Tour de Suisse",
+          "stage_number": 3,
+          "stage_name": null,
+          "stage_type": null,
+          "date": "2026-06-19",
+          "start_location": null,
+          "finish_location": null,
+          "distance": null,
+          "route_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "limitations": [
+            "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later.",
+            "ProCyclingStats CLI fetch may be blocked by browser challenge.",
+            "Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available.",
+            "PCS stage page was unavailable during import; route fields are intentionally null.",
+            "Start location was not available from the source.",
+            "Finish location was not available from the source.",
+            "Distance was not available from the source."
+          ]
+        }
+      }
+    },
+    {
+      "event_key": "tour-de-suisse-2026-stage-04",
+      "title": "Tour de Suisse Stage 4",
+      "sport_type": "cycling",
+      "league": "Cycling",
+      "start_time": "2026-06-20",
+      "venue": null,
+      "status": "scheduled",
+      "source_name": "ProCyclingStats",
+      "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+      "source_month": "2026-06",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+        "source_name": "ProCyclingStats",
+        "details": {
+          "race_name": "Tour de Suisse",
+          "stage_number": 4,
+          "stage_name": null,
+          "stage_type": null,
+          "date": "2026-06-20",
+          "start_location": null,
+          "finish_location": null,
+          "distance": null,
+          "route_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "limitations": [
+            "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later.",
+            "ProCyclingStats CLI fetch may be blocked by browser challenge.",
+            "Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available.",
+            "PCS stage page was unavailable during import; route fields are intentionally null.",
+            "Start location was not available from the source.",
+            "Finish location was not available from the source.",
+            "Distance was not available from the source."
+          ]
+        }
+      }
+    },
+    {
+      "event_key": "tour-de-suisse-2026-stage-05",
+      "title": "Tour de Suisse Stage 5",
+      "sport_type": "cycling",
+      "league": "Cycling",
+      "start_time": "2026-06-21",
+      "venue": null,
+      "status": "scheduled",
+      "source_name": "ProCyclingStats",
+      "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+      "source_month": "2026-06",
+      "details": {
+        "sport_type": "cycling",
+        "detail_status": "pre_game_synced",
+        "sync_phase": "manual",
+        "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+        "source_name": "ProCyclingStats",
+        "details": {
+          "race_name": "Tour de Suisse",
+          "stage_number": 5,
+          "stage_name": null,
+          "stage_type": null,
+          "date": "2026-06-21",
+          "start_location": null,
+          "finish_location": null,
+          "distance": null,
+          "route_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "source_url": "https://www.procyclingstats.com/race/tour-de-suisse/2026",
+          "limitations": [
+            "ProCyclingStats returned a browser challenge/403; provide saved HTML or retry manually later.",
+            "ProCyclingStats CLI fetch may be blocked by browser challenge.",
+            "Fallback seed includes only confirmed race dates and stage count; route fields remain null until PCS HTML is available.",
+            "PCS stage page was unavailable during import; route fields are intentionally null.",
+            "Start location was not available from the source.",
+            "Finish location was not available from the source.",
+            "Distance was not available from the source."
+          ]
+        }
+      }
+    }
+  ]
+}

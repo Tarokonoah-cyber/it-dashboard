@@ -195,11 +195,12 @@ function formatDistance(value) {
 
 function sportDetailRows(event, details) {
   if (event?.sport_type === "cycling") {
-    const route = [details.start_location, details.finish_location].filter(Boolean).join(" → ");
     return [
-      { label: "賽段", value: details.stage_number ? `Stage ${details.stage_number}` : details.stage || "尚未公布" },
+      { label: "賽事名稱", value: details.race_name || event.title || "尚未公布" },
+      { label: "賽段", value: details.stage_number ? `Stage ${details.stage_number}${details.stage_name ? `: ${details.stage_name}` : ""}` : details.stage || "尚未公布" },
       { label: "賽段類型", value: details.stage_type || "尚未公布" },
-      { label: "路線", value: route || "尚未公布" },
+      { label: "起點", value: details.start_location || "尚未公布" },
+      { label: "終點", value: details.finish_location || "尚未公布" },
       { label: "距離", value: formatDistance(details.distance) }
     ];
   }
