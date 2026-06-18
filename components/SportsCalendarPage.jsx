@@ -1,6 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
+import { getTeamFallbackLabel, getTeamLogo, getTeamShortName } from "../lib/sportsTeams";
 
 const SPORT_OPTIONS = [
   { key: "basketball", label: "籃球", icon: "🏀" },
@@ -22,45 +25,6 @@ const RACING_LEAGUES = [
   { key: "F1", label: "F1" },
   { key: "FE", label: "FE" }
 ];
-
-const BASEBALL_TEAM_SHORT_NAMES = {
-  "統一7-ELEVEn獅": "統一獅",
-  "樂天桃猿": "桃猿",
-  "富邦悍將": "富邦",
-  "味全龍": "味全",
-  "台鋼雄鷹": "台鋼",
-  "中信兄弟": "兄弟",
-  "Arizona Diamondbacks": "D-backs",
-  "Athletics": "Athletics",
-  "Atlanta Braves": "Braves",
-  "Baltimore Orioles": "Orioles",
-  "Boston Red Sox": "Red Sox",
-  "Chicago Cubs": "Cubs",
-  "Chicago White Sox": "White Sox",
-  "Cincinnati Reds": "Reds",
-  "Cleveland Guardians": "Guardians",
-  "Colorado Rockies": "Rockies",
-  "Detroit Tigers": "Tigers",
-  "Houston Astros": "Astros",
-  "Kansas City Royals": "Royals",
-  "Los Angeles Angels": "Angels",
-  "Los Angeles Dodgers": "Dodgers",
-  "Miami Marlins": "Marlins",
-  "Milwaukee Brewers": "Brewers",
-  "Minnesota Twins": "Twins",
-  "New York Mets": "Mets",
-  "New York Yankees": "Yankees",
-  "Philadelphia Phillies": "Phillies",
-  "Pittsburgh Pirates": "Pirates",
-  "San Diego Padres": "Padres",
-  "San Francisco Giants": "Giants",
-  "Seattle Mariners": "Mariners",
-  "St. Louis Cardinals": "Cardinals",
-  "Tampa Bay Rays": "Rays",
-  "Texas Rangers": "Rangers",
-  "Toronto Blue Jays": "Blue Jays",
-  "Washington Nationals": "Nationals"
-};
 
 const STATUS_LABELS = {
   scheduled: "scheduled",
@@ -214,14 +178,14 @@ function formatFinalScore(details, event) {
     return status || "賽後更新";
   }
   if (event?.away_team || event?.home_team) {
-    return `${teamDisplayName(event?.away_team) || "客隊"} ${score.away} - ${score.home} ${teamDisplayName(event?.home_team) || "主隊"}`;
+    return `${teamDisplayName(event?.away_team, event?.league) || "客隊"} ${score.away} - ${score.home} ${teamDisplayName(event?.home_team, event?.league) || "主隊"}`;
   }
   return `${score.away} - ${score.home}`;
 }
 
-function teamDisplayName(name) {
+function teamDisplayName(name, league) {
   if (!name) return "";
-  return BASEBALL_TEAM_SHORT_NAMES[name] || name;
+  return getTeamShortName(name, league);
 }
 
 function formatDistance(value) {
@@ -305,7 +269,7 @@ function favoriteKey(type, value) {
 }
 
 function formatMatchup(event) {
-  if (event.away_team && event.home_team) return `${teamDisplayName(event.away_team)} @ ${teamDisplayName(event.home_team)}`;
+  if (event.away_team && event.home_team) return `${teamDisplayName(event.away_team, event.league)} @ ${teamDisplayName(event.home_team, event.league)}`;
   return event.title || event.league || event.sport_type || "未命名賽事";
 }
 
@@ -345,6 +309,203 @@ function EventBadge({ event, selected, onSelect }) {
   );
 }
 
+function TeamMark({ teamName, league, className = "" }) {
+  const [logoFailed, setLogoFailed] = useState(false);
+  const logo = logoFailed ? null : getTeamLogo(teamName, league);
+  const label = getTeamFallbackLabel(teamName, league);
+
+  if (logo) {
+    return (
+      <span className={`sports-team-mark ${className}`}>
+        <Image src={logo} alt="" width={30} height={30} onError={() => setLogoFailed(true)} />
+      </span>
+    );
+  }
+
+  return <span className={`sports-team-mark is-fallback ${className}`}>{label}</span>;
+}
+
+function MatchupTeam({ label, teamName, league }) {
+  return (
+    <div className="sports-matchup-team">
+      <TeamMark teamName={teamName} league={league} />
+      <span>{label}</span>
+      <b>{teamDisplayName(teamName, league) || "-"}</b>
+    </div>
+  );
+}
+
+function MatchupHeader({ event }) {
+  if (!event?.away_team || !event?.home_team) {
+    return <h2>{formatMatchup(event)}</h2>;
+  }
+
+  return (
+    <div className="sports-matchup-header" aria-label={formatMatchup(event)}>
+      <MatchupTeam label="客隊" teamName={event.away_team} league={event.league} />
+      <span className="sports-matchup-at">@</span>
+      <MatchupTeam label="主隊" teamName={event.home_team} league={event.league} />
+    </div>
+  );
+}
+
+function standingsColumns(league) {
+  if (league === "MLB") {
+    return [
+      { key: "team", label: "球隊" },
+      { key: "wins", label: "W" },
+      { key: "losses", label: "L" },
+      { key: "pct", label: "Pct" },
+      { key: "gb", label: "GB" },
+      { key: "home", label: "Home" },
+      { key: "away", label: "Away" },
+      { key: "l10", label: "L10" }
+    ];
+  }
+
+  if (league === "NPB") {
+    return [
+      { key: "rank", label: "排名" },
+      { key: "team", label: "球隊" },
+      { key: "games", label: "出賽" },
+      { key: "wins", label: "勝" },
+      { key: "losses", label: "敗" },
+      { key: "ties", label: "和" },
+      { key: "pct", label: "勝率" },
+      { key: "gb", label: "勝差" }
+    ];
+  }
+
+  return [
+    { key: "rank", label: "排名" },
+    { key: "team", label: "球隊" },
+    { key: "games", label: "出賽" },
+    { key: "record", label: "勝-敗-和" },
+    { key: "pct", label: "勝率" },
+    { key: "gb", label: "勝差" },
+    { key: "recent", label: "近況" }
+  ];
+}
+
+function StandingTeamCell({ row, league, showInlineRank }) {
+  return (
+    <div className="sports-standing-team">
+      {showInlineRank ? <span className="sports-standing-rank">{row.rank}</span> : null}
+      <TeamMark teamName={row.teamName || row.team} league={league} />
+      <span>
+        <b>{teamDisplayName(row.teamName || row.team, league)}</b>
+        {row.teamName && row.teamName !== teamDisplayName(row.teamName, league) ? <small>{row.teamName}</small> : null}
+      </span>
+    </div>
+  );
+}
+
+function StandingsCell({ column, row, league }) {
+  if (column.key === "team") {
+    return <td><StandingTeamCell row={row} league={league} showInlineRank={league === "MLB"} /></td>;
+  }
+  if (column.key === "record") return <td>{row.wins}-{row.losses}-{row.ties}</td>;
+  return <td>{row[column.key] ?? "-"}</td>;
+}
+
+function StandingsTable({ standings, league }) {
+  const columns = standingsColumns(league);
+  const divisions = standings?.divisions || [];
+
+  if (!divisions.some((division) => division.rows?.length)) {
+    return (
+      <div className="sports-detail-empty compact">
+        <h2>目前沒有排名資料</h2>
+        <p>{standings?.message || "資料來源暫時沒有可顯示的排名。"}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="sports-standings-sections">
+      {divisions.map((division) => (
+        <section key={division.key || division.name} className="sports-standings-section">
+          <h3>{division.name}</h3>
+          <div className="sports-standings-table-wrap">
+            <table className="sports-standings-table">
+              <thead>
+                <tr>
+                  {columns.map((column) => <th key={column.key}>{column.label}</th>)}
+                </tr>
+              </thead>
+              <tbody>
+                {(division.rows || []).map((row) => (
+                  <tr key={`${division.key || division.name}-${row.team}`}>
+                    {columns.map((column) => (
+                      <StandingsCell key={column.key} column={column} row={row} league={league} />
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function StandingsDrawer({
+  activeLeague,
+  baseballLeagues,
+  loading,
+  error,
+  onClose,
+  onSelectLeague,
+  standingsByLeague,
+  hasUnsupportedSelection
+}) {
+  const selectedData = activeLeague ? standingsByLeague[activeLeague] : null;
+  const title = baseballLeagues.length === 1 && activeLeague ? `${activeLeague} 戰績排名` : "戰績排名";
+
+  return (
+    <div className="sports-detail-overlay" role="presentation" onClick={onClose}>
+      <aside className="sports-detail-panel sports-standings-panel" role="dialog" aria-modal="true" aria-label="戰績排名" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="sports-detail-close" aria-label="關閉" onClick={onClose}>×</button>
+        <div className="sports-standings-head">
+          <span>Standings</span>
+          <h2>{title}</h2>
+          {selectedData?.source ? (
+            <p>{selectedData.source.name}{selectedData.status === "fallback" ? " · fallback" : ""}</p>
+          ) : null}
+        </div>
+
+        {baseballLeagues.length > 1 ? (
+          <div className="sports-standings-tabs" role="tablist" aria-label="棒球聯盟排名">
+            {baseballLeagues.map((league) => (
+              <button
+                key={league}
+                type="button"
+                className={league === activeLeague ? "active" : ""}
+                aria-current={league === activeLeague ? "true" : undefined}
+                onClick={() => onSelectLeague(league)}
+              >
+                {league}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
+        {!baseballLeagues.length ? (
+          <div className="sports-detail-empty compact">
+            <h2>請先選擇棒球聯盟查看排名。</h2>
+            {hasUnsupportedSelection ? <p>目前尚未支援排名</p> : null}
+          </div>
+        ) : null}
+
+        {baseballLeagues.length > 0 && loading ? <div className="sports-empty-state">排名讀取中...</div> : null}
+        {baseballLeagues.length > 0 && error ? <div className="sports-alert">{error}</div> : null}
+        {baseballLeagues.length > 0 && !loading && !error ? <StandingsTable standings={selectedData} league={activeLeague} /> : null}
+      </aside>
+    </div>
+  );
+}
+
 function Field({ label, value }) {
   return (
     <div className="sports-detail-field">
@@ -381,6 +542,11 @@ export default function SportsCalendarPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [detailDraft, setDetailDraft] = useState({ importance: "normal", notes: "" });
+  const [standingsOpen, setStandingsOpen] = useState(false);
+  const [standingsByLeague, setStandingsByLeague] = useState({});
+  const [standingsLoading, setStandingsLoading] = useState(false);
+  const [standingsError, setStandingsError] = useState("");
+  const [activeStandingsLeague, setActiveStandingsLeague] = useState("");
 
   const selectedRegularSportList = useMemo(() => [...selectedSports], [selectedSports]);
   const selectedSportList = useMemo(() => [
@@ -392,6 +558,12 @@ export default function SportsCalendarPage() {
   const selectedBaseballLeagueList = useMemo(() => [...selectedBaseballLeagues], [selectedBaseballLeagues]);
   const selectedFootballLeagueList = useMemo(() => [...selectedFootballLeagues], [selectedFootballLeagues]);
   const selectedRacingLeagueList = useMemo(() => [...selectedRacingLeagues], [selectedRacingLeagues]);
+  const standingsLeagueList = useMemo(() => (
+    selectedBaseballLeagueList.filter((league) => BASEBALL_LEAGUES.some((item) => item.key === league))
+  ), [selectedBaseballLeagueList]);
+  const hasUnsupportedStandingsSelection = selectedRegularSportList.length > 0
+    || selectedFootballLeagueList.length > 0
+    || selectedRacingLeagueList.length > 0;
   const favoriteMap = useMemo(() => {
     const map = new Set();
     favorites.forEach((favorite) => map.add(favoriteKey(favorite.favorite_type, favorite.favorite_value)));
@@ -493,16 +665,50 @@ export default function SportsCalendarPage() {
   }, [selectedEvent]);
 
   useEffect(() => {
-    if (!selectedEvent && !selectedDateKey) return undefined;
+    if (!selectedEvent && !selectedDateKey && !standingsOpen) return undefined;
     function handleKeyDown(event) {
       if (event.key === "Escape") {
-        setSelectedEvent(null);
-        setSelectedDateKey("");
+        closeSportsOverlay();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedDateKey, selectedEvent]);
+  }, [selectedDateKey, selectedEvent, standingsOpen]);
+
+  useEffect(() => {
+    if (!standingsOpen) return;
+    setActiveStandingsLeague((current) => (
+      standingsLeagueList.includes(current) ? current : standingsLeagueList[0] || ""
+    ));
+  }, [standingsLeagueList, standingsOpen]);
+
+  useEffect(() => {
+    if (!standingsOpen || !standingsLeagueList.length) {
+      setStandingsLoading(false);
+      setStandingsError("");
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    setStandingsLoading(true);
+    setStandingsError("");
+
+    Promise.all(standingsLeagueList.map(async (league) => {
+      const data = await api(`/api/sports/standings?league=${encodeURIComponent(league)}`, { signal: controller.signal });
+      return [league, data];
+    }))
+      .then((entries) => {
+        if (!controller.signal.aborted) setStandingsByLeague(Object.fromEntries(entries));
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") setStandingsError(err.message || "排名資料讀取失敗");
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setStandingsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [standingsLeagueList, standingsOpen]);
 
   async function loadFavorites() {
     setFavoritesLoading(true);
@@ -628,16 +834,25 @@ export default function SportsCalendarPage() {
     if (!dateKey) return;
     setSelectedDateKey(dateKey);
     setSelectedEvent(null);
+    setStandingsOpen(false);
   }
 
   function selectEvent(event) {
     setSelectedDateKey(taipeiDate(event.start_time));
     setSelectedEvent(event);
+    setStandingsOpen(false);
   }
 
   function closeSportsOverlay() {
     setSelectedEvent(null);
     setSelectedDateKey("");
+    setStandingsOpen(false);
+  }
+
+  function openStandingsDrawer() {
+    setSelectedEvent(null);
+    setSelectedDateKey("");
+    setStandingsOpen(true);
   }
 
   function toggleCategoryExpanded(category) {
@@ -801,6 +1016,7 @@ export default function SportsCalendarPage() {
             <div className="sports-segmented" role="tablist" aria-label="Calendar view">
               <button type="button" className="active" aria-current="true">月</button>
             </div>
+            <button type="button" className="sports-standings-button" onClick={openStandingsDrawer}>排名</button>
           </div>
         </header>
 
@@ -860,7 +1076,7 @@ export default function SportsCalendarPage() {
                 <span>{selectedEvent.league || selectedEvent.sport_type}</span>
                 <b>{STATUS_LABELS[selectedEvent.status] || selectedEvent.status || "scheduled"}</b>
               </div>
-              <h2>{formatMatchup(selectedEvent)}</h2>
+              <MatchupHeader event={selectedEvent} />
               {selectedEvent.title && selectedEvent.title !== formatMatchup(selectedEvent) ? (
                 <p className="sports-summary-subtitle">{selectedEvent.title}</p>
               ) : null}
@@ -970,6 +1186,19 @@ export default function SportsCalendarPage() {
         )}
           </aside>
         </div>
+      ) : null}
+
+      {standingsOpen ? (
+        <StandingsDrawer
+          activeLeague={activeStandingsLeague}
+          baseballLeagues={standingsLeagueList}
+          loading={standingsLoading}
+          error={standingsError}
+          onClose={closeSportsOverlay}
+          onSelectLeague={setActiveStandingsLeague}
+          standingsByLeague={standingsByLeague}
+          hasUnsupportedSelection={hasUnsupportedStandingsSelection}
+        />
       ) : null}
     </div>
   );
