@@ -54,6 +54,17 @@ function formatUpdatedAt(value) {
   }).format(date);
 }
 
+function formatTime(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("zh-TW", {
+    timeZone: "Asia/Taipei",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
+}
+
 function getRecordSummary(record) {
   if (!record) {
     return {
@@ -61,6 +72,7 @@ function getRecordSummary(record) {
       normal_count: 0,
       abnormal_count: 0,
       observation_count: 0,
+      unchecked_count: INSPECTION_TEMPLATE.length,
       overall_status: "未建立"
     };
   }
@@ -74,6 +86,7 @@ function getRecordSummary(record) {
     normal_count: record.normal_count || 0,
     abnormal_count: record.abnormal_count || 0,
     observation_count: record.observation_count || 0,
+    unchecked_count: record.unchecked_count || 0,
     overall_status: record.overall_status || "未檢查"
   };
 }
@@ -110,6 +123,13 @@ export default function InspectionList() {
     [rows, today]
   );
   const todaySummary = getRecordSummary(todayRecord);
+  const todayAttentionItems = useMemo(
+    () => (todayRecord?.items || []).filter((item) => {
+      const status = normalizeInspectionStatus(item.status);
+      return status === "異常" || status === "待觀察";
+    }),
+    [todayRecord]
+  );
 
   const inspectorOptions = useMemo(
     () => Array.from(new Set(rows.map((row) => row.inspector_name).filter(Boolean))).sort(),
@@ -145,6 +165,14 @@ export default function InspectionList() {
     }
   }
 
+  function handleEditToday() {
+    if (todayRecord?.id) {
+      setDrawerState({ mode: "edit", recordId: todayRecord.id });
+      return;
+    }
+    handleCreateToday();
+  }
+
   function clearFilters() {
     setFilters({ date: "", inspector_name: "", overall_status: "", search: "" });
   }
@@ -159,40 +187,84 @@ export default function InspectionList() {
     <section className="section-page inspection-page">
       <header className="inspection-page-head">
         <div>
-          <h1>每日巡檢紀錄</h1>
-          <p>檢視每日 IT 例行檢查、異常與處理進度</p>
+          <h1>每日巡檢</h1>
+          <p>{today}</p>
         </div>
         <div className="section-actions">
-          <button className="primary-action" onClick={handleCreateToday}>新增今日巡檢</button>
+          <button className="primary-action" onClick={handleEditToday}>
+            {todayRecord ? "編輯今日巡檢" : "新增今日巡檢"}
+          </button>
+          {todayRecord ? <button onClick={() => router.push(`/inspections/${todayRecord.id}`)}>查看今日巡檢</button> : null}
           <button onClick={load}>重新整理</button>
         </div>
       </header>
 
+      <div className="inspection-workbench-title">
+        <div>
+          <h2>每日巡檢紀錄</h2>
+          <p>快速掌握今日檢查、異常項目與歷史紀錄。</p>
+        </div>
+      </div>
+
       <section className="inspection-overview" aria-label="今日巡檢概況">
         <div className="inspection-overview-card">
-          <span>巡檢項目總數</span>
+          <i aria-hidden="true">□</i>
+          <span>巡檢項目</span>
           <strong>{todaySummary.item_count}</strong>
         </div>
         <div className="inspection-overview-card ok">
+          <i aria-hidden="true">✓</i>
           <span>正常</span>
           <strong>{todaySummary.normal_count}</strong>
         </div>
         <div className="inspection-overview-card danger">
+          <i aria-hidden="true">!</i>
           <span>異常</span>
           <strong>{todaySummary.abnormal_count}</strong>
         </div>
         <div className="inspection-overview-card warning">
+          <i aria-hidden="true">◇</i>
           <span>待觀察</span>
           <strong>{todaySummary.observation_count}</strong>
         </div>
         <div className="inspection-overview-card status">
-          <span>整體狀態</span>
+          <i aria-hidden="true">●</i>
+          <span>今日狀態</span>
           <InspectionStatusBadge value={todaySummary.overall_status} />
         </div>
       </section>
 
       {error ? <div className="error-box">{error}</div> : null}
       {notice ? <div className="inspection-notice compact">{notice}</div> : null}
+      {todayRecord ? (
+        <section className={`inspection-status-banner ${todaySummary.abnormal_count > 0 ? "has-abnormal" : ""}`}>
+          <div>
+            <strong>今日巡檢已完成</strong>
+            <span>完成時間：{formatTime(todayRecord.updated_at)}｜異常 {todaySummary.abnormal_count || 0} 項</span>
+          </div>
+          <div className="inspection-banner-actions">
+            {todaySummary.abnormal_count > 0 ? <button onClick={() => router.push(`/inspections/${todayRecord.id}`)}>查看異常</button> : null}
+            <button onClick={() => setDrawerState({ mode: "edit", recordId: todayRecord.id })}>編輯巡檢</button>
+          </div>
+        </section>
+      ) : null}
+
+      {todayAttentionItems.length ? (
+        <section className="inspection-attention-panel">
+          <header>
+            <h3>今日異常項目</h3>
+            <span>{todayAttentionItems.length} 項需要留意</span>
+          </header>
+          <div>
+            {todayAttentionItems.map((item) => (
+              <button key={item.id || `${item.category}-${item.item_name}`} type="button" onClick={() => router.push(`/inspections/${todayRecord.id}`)}>
+                <strong>{item.item_name}</strong>
+                <InspectionStatusBadge value={item.status} type="item" />
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <div className="inspection-toolbar">
         <label>

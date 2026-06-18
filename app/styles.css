@@ -1940,14 +1940,15 @@ input {
 
 .inspection-page {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .inspection-page-head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+  margin-bottom: -2px;
 }
 
 .inspection-page-head.compact {
@@ -1957,23 +1958,47 @@ input {
 .inspection-page-head h1 {
   margin: 0;
   color: var(--hotel-text, #162033);
-  font-size: 1.55rem;
+  font-size: 1.42rem;
   letter-spacing: 0;
 }
 
 .inspection-page-head p {
-  margin: 5px 0 0;
+  margin: 3px 0 0;
   color: var(--hotel-muted, #667085);
+  font-size: 0.9rem;
+  font-weight: 760;
+}
+
+.inspection-workbench-title {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inspection-workbench-title h2 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+  font-size: 1.08rem;
+  letter-spacing: 0;
+}
+
+.inspection-workbench-title p {
+  margin: 2px 0 0;
+  color: var(--hotel-muted, #667085);
+  font-size: 0.83rem;
 }
 
 .inspection-overview {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .inspection-overview-card,
 .inspection-toolbar,
+.inspection-status-banner,
+.inspection-attention-panel,
 .inspection-detail-summary,
 .inspection-detail-items,
 .inspection-table,
@@ -1986,21 +2011,43 @@ input {
 
 .inspection-overview-card {
   display: grid;
-  gap: 6px;
-  min-height: 76px;
-  padding: 13px 14px;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "icon label"
+    "icon value";
+  align-items: center;
+  column-gap: 9px;
+  row-gap: 1px;
+  min-height: 58px;
+  padding: 10px 12px;
+}
+
+.inspection-overview-card i {
+  grid-area: icon;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #eef4fb;
+  color: #2f5f98;
+  font-style: normal;
+  font-size: 0.85rem;
+  font-weight: 900;
 }
 
 .inspection-overview-card span,
 .inspection-detail-summary span {
+  grid-area: label;
   color: var(--hotel-muted, #667085);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
 }
 
 .inspection-overview-card strong {
+  grid-area: value;
   color: var(--hotel-text, #162033);
-  font-size: 1.42rem;
+  font-size: 1.22rem;
   line-height: 1;
 }
 
@@ -2008,24 +2055,132 @@ input {
   border-color: #bbf7d0;
 }
 
+.inspection-overview-card.ok i {
+  background: #ecfdf3;
+  color: #168255;
+}
+
 .inspection-overview-card.danger {
   border-color: #fecaca;
+}
+
+.inspection-overview-card.danger i {
+  background: #fff1f2;
+  color: #b91c1c;
 }
 
 .inspection-overview-card.warning {
   border-color: #fed7aa;
 }
 
+.inspection-overview-card.warning i {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
 .inspection-overview-card.status {
   align-content: center;
 }
 
+.inspection-status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-left: 3px solid #2f7d5b;
+  background: #f7fbf8;
+}
+
+.inspection-status-banner.has-abnormal {
+  border-left-color: #dc2626;
+  background: #fffafa;
+}
+
+.inspection-status-banner div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--hotel-text, #162033);
+}
+
+.inspection-status-banner strong {
+  font-size: 0.88rem;
+}
+
+.inspection-status-banner span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+.inspection-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.inspection-banner-actions button {
+  min-height: 30px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+}
+
+.inspection-attention-panel {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border-color: rgba(220, 38, 38, 0.22);
+  background: #fff;
+}
+
+.inspection-attention-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.inspection-attention-panel h3 {
+  margin: 0;
+  color: #991b1b;
+  font-size: 0.92rem;
+}
+
+.inspection-attention-panel header span {
+  color: var(--hotel-muted, #667085);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.inspection-attention-panel > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.inspection-attention-panel button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 6px 9px;
+  border-color: rgba(220, 38, 38, 0.2);
+  background: #fff7f7;
+}
+
+.inspection-attention-panel button strong {
+  color: var(--hotel-text, #162033);
+  font-size: 0.82rem;
+}
+
 .inspection-toolbar {
   display: grid;
-  grid-template-columns: 150px 160px 145px minmax(180px, 1fr) auto;
+  grid-template-columns: 138px 150px 132px minmax(180px, 1fr) auto;
   align-items: end;
-  gap: 10px;
-  padding: 10px;
+  gap: 8px;
+  padding: 8px;
 }
 
 .inspection-toolbar label,
@@ -2034,9 +2189,9 @@ input {
 .quick-issue-fields label,
 .inspection-item-card label {
   display: grid;
-  gap: 5px;
+  gap: 4px;
   color: var(--hotel-muted, #667085);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
 }
 
@@ -2048,9 +2203,22 @@ input {
   width: 100%;
 }
 
+.inspection-toolbar input,
+.inspection-toolbar select {
+  min-height: 34px;
+  padding: 7px 9px;
+  font-size: 0.84rem;
+}
+
+.inspection-toolbar > button {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+}
+
 .inspection-table {
   overflow-x: auto;
-  padding: 6px 14px;
+  padding: 4px 10px;
 }
 
 .inspection-row {
@@ -2060,9 +2228,9 @@ input {
   gap: 10px;
   min-width: 936px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-  padding: 10px 0;
+  padding: 8px 0;
   color: var(--hotel-text, #162033);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .inspection-row:last-child {
@@ -2071,7 +2239,7 @@ input {
 
 .inspection-row.head {
   color: var(--hotel-muted, #667085);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 850;
 }
 
@@ -2100,12 +2268,12 @@ input {
   background: #fffbeb;
   color: #92400e;
   font-weight: 780;
-  padding: 14px 16px;
+  padding: 9px 11px;
 }
 
 .inspection-notice.compact {
-  padding: 10px 12px;
-  font-size: 0.88rem;
+  padding: 7px 10px;
+  font-size: 0.82rem;
 }
 
 .inspection-empty-state {
