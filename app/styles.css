@@ -1997,6 +1997,8 @@ input {
 .inspection-page {
   display: grid;
   gap: 10px;
+  align-content: start;
+  grid-auto-rows: max-content;
 }
 
 .inspection-page-head {
@@ -9833,6 +9835,63 @@ textarea:disabled {
 
 .sports-detail-field a:hover {
   text-decoration: underline;
+}
+
+.cycling-extra-details {
+  display: grid;
+  gap: 14px;
+  padding-top: 16px;
+}
+
+.cycling-detail-section {
+  display: grid;
+  gap: 8px;
+}
+
+.cycling-detail-section h3 {
+  margin: 0;
+  color: var(--hotel-text, #162033);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.cycling-detail-section p,
+.cycling-detail-section li,
+.cycling-profile-missing,
+.cycling-profile-figure figcaption {
+  color: var(--hotel-muted, #667085);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.cycling-detail-section ul {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.cycling-profile-figure {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.cycling-profile-figure img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border: 1px solid var(--hotel-line, #dde4ee);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.cycling-profile-missing {
+  margin: 0;
+  border: 1px dashed var(--hotel-line, #dde4ee);
+  border-radius: 8px;
+  padding: 10px 12px;
 }
 
 .sports-editor {

@@ -221,7 +221,40 @@ function formatDistance(value) {
   return typeof value === "number" ? `${value} km` : String(value);
 }
 
+function presentValue(value) {
+  if (value === undefined || value === null || value === "") return "-";
+  return String(value);
+}
+
+function cyclingDetailRows(event, details) {
+  const raceName = [details.race_name, details.display_name_zh].filter(Boolean).join(" / ");
+  return [
+    { label: "賽事名稱", value: raceName || event.title || "-" },
+    { label: "Stage number", value: details.stage_number ? `Stage ${details.stage_number}` : "-" },
+    { label: "日期", value: details.date || "-" },
+    { label: "開始時間", value: details.start_time_local || eventTimeLabel(event) },
+    { label: "起點", value: details.start_location || details.departure || "-" },
+    { label: "終點", value: details.finish_location || details.arrival || "-" },
+    { label: "距離", value: formatDistance(details.distance) },
+    { label: "Stage type / Parcours type", value: [details.stage_type, details.parcours_type].filter(Boolean).join(" / ") || "-" },
+    { label: "ProfileScore", value: presentValue(details.profile_score) },
+    { label: "Vertical meters", value: presentValue(details.vertical_meters) },
+    { label: "Gradient final km", value: presentValue(details.gradient_final_km) },
+    { label: "Timelimit", value: presentValue(details.timelimit) },
+    { label: "Classification", value: presentValue(details.classification) },
+    { label: "Race category", value: presentValue(details.race_category) },
+    { label: "Points scale", value: presentValue(details.points_scale) },
+    { label: "UCI scale", value: presentValue(details.uci_scale) },
+    { label: "Race ranking", value: presentValue(details.race_ranking) },
+    { label: "Startlist quality score", value: presentValue(details.startlist_quality_score) },
+    { label: "Avg speed winner", value: presentValue(details.avg_speed_winner) },
+    { label: "Won how", value: presentValue(details.won_how) },
+    { label: "Avg temperature", value: presentValue(details.avg_temperature) }
+  ];
+}
+
 function sportDetailRows(event, details) {
+  if (event?.sport_type === "cycling") return cyclingDetailRows(event, details);
   if (event?.sport_type === "cycling") {
     return [
       { label: "賽事名稱", value: details.race_name || event.title || "尚未公布" },
@@ -583,6 +616,55 @@ function LinkField({ label, href }) {
     <div className="sports-detail-field">
       <span>{label}</span>
       {href ? <a href={href} target="_blank" rel="noreferrer">開啟來源</a> : <b>尚未同步</b>}
+    </div>
+  );
+}
+
+function CyclingListSection({ title, items }) {
+  if (!Array.isArray(items) || !items.length) return null;
+  return (
+    <section className="cycling-detail-section">
+      <h3>{title}</h3>
+      <ul>
+        {items.map((item) => <li key={item}>{item}</li>)}
+      </ul>
+    </section>
+  );
+}
+
+function CyclingProfileImage({ src }) {
+  const [loaded, setLoaded] = useState(Boolean(src));
+
+  useEffect(() => {
+    setLoaded(Boolean(src));
+  }, [src]);
+
+  if (!src || !loaded) {
+    return <p className="cycling-profile-missing">Race profile 圖片尚未匯入</p>;
+  }
+
+  return (
+    <figure className="cycling-profile-figure">
+      <Image src={src} alt="Race profile" width={720} height={320} unoptimized onError={() => setLoaded(false)} />
+      <figcaption>Race profile</figcaption>
+    </figure>
+  );
+}
+
+function CyclingExtraDetails({ details }) {
+  if (!details) return null;
+  const profileImage = details.profile_image_path || details.profile_image_url || "";
+  return (
+    <div className="cycling-extra-details">
+      <CyclingListSection title="Climbs" items={details.climbs} />
+      {details.story_of_the_day ? (
+        <section className="cycling-detail-section">
+          <h3>Story of the day</h3>
+          <p>{details.story_of_the_day}</p>
+        </section>
+      ) : null}
+      <CyclingListSection title="Jersey wearers" items={details.jersey_wearers} />
+      <CyclingProfileImage src={profileImage} />
     </div>
   );
 }
@@ -1155,6 +1237,7 @@ export default function SportsCalendarPage() {
                 <Field label="最後同步時間" value={formatSyncTime(selectedDetailData.sync?.synced_at || selectedDetail.last_synced_at)} />
                 <LinkField label="來源連結" href={detailSourceUrl} />
               </div>
+              {selectedEvent.sport_type === "cycling" ? <CyclingExtraDetails details={selectedDetailData} /> : null}
             </div>
 
             <details className="sports-technical-details">
