@@ -3436,8 +3436,12 @@ body {
 .dashboard-todo-list {
   display: grid;
   gap: 9px;
-  max-height: 360px;
-  overflow: auto;
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 2px;
 }
 
@@ -5948,9 +5952,13 @@ textarea::placeholder {
 .dashboard-todo-list {
   display: grid;
   gap: 8px;
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
   max-height: none;
-  overflow: visible;
-  padding-right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
 }
 
 .dashboard-todo-row {
@@ -8142,9 +8150,13 @@ textarea:disabled {
 
 .dashboard-todo-list {
   gap: 9px;
+  align-content: start;
+  flex: 1 1 auto;
+  min-height: 0;
   max-height: none;
-  overflow: visible;
-  padding-right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
 }
 
 .dashboard-todo-row {
@@ -8512,7 +8524,24 @@ textarea:disabled {
 }
 
 .dashboard-todo-panel .panel-title {
+  flex: 0 0 auto;
   margin-bottom: 10px;
+}
+
+.dashboard-todo-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.dashboard-todo-panel .error-box,
+.dashboard-todo-input.is-expanded {
+  flex: 0 0 auto;
+}
+
+.dashboard-todo-panel .todo-view-all {
+  flex: 0 0 auto;
+  align-self: flex-start;
 }
 
 .dashboard-todo-panel .panel-title button {

@@ -7,7 +7,6 @@ import { getSectionHref } from "./navigation";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
-const TODO_PREVIEW_LIMIT = 5;
 const TODO_COMPLETE_EXIT_MS = 600;
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -305,7 +304,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
         {todos.length === 0 ? (
           <div className="empty">目前沒有待辦項目</div>
         ) : (
-          todos.slice(0, TODO_PREVIEW_LIMIT).map((todo) => (
+          todos.map((todo) => (
             <TodoRow
               key={todo.id}
               todo={todo}
@@ -319,7 +318,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
           ))
         )}
       </div>
-      {todos.length > TODO_PREVIEW_LIMIT ? (
+      {todos.length > 0 ? (
         <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work")}>
           查看全部 {todos.length} 筆 →
         </button>
