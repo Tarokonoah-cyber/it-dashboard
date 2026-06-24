@@ -8338,20 +8338,14 @@ textarea:disabled {
 
 /* Dashboard local UX refinements */
 .dashboard-kpi-strip {
-  padding: 24px 32px 16px;
+  padding: 20px 32px 14px;
   background: var(--hotel-bg);
 }
 
-.dashboard-kpi-strip .modern-metrics-grid {
+.dashboard-kpi-summary {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  padding: 0;
-}
-
-.dashboard-kpi-card {
-  min-height: 148px;
-  padding: 17px 18px;
+  grid-template-columns: 1fr 1fr 1fr minmax(260px, 1.2fr);
+  align-items: stretch;
   border: 1px solid var(--hotel-line);
   border-radius: var(--hotel-radius);
   background: var(--hotel-card);
@@ -8360,97 +8354,72 @@ textarea:disabled {
   overflow: hidden;
 }
 
-.dashboard-kpi-card.bad {
-  border-color: #f4caca;
-  background: #fffafa;
+.kpi-summary-item {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  min-height: 86px;
+  padding: 14px 18px;
+  border-right: 1px solid var(--hotel-line);
 }
 
-.dashboard-kpi-card.warn {
-  border-color: #f3dfb8;
+.kpi-summary-item:last-child {
+  border-right: 0;
+}
+
+.kpi-summary-item.warn {
   background: #fffdf8;
 }
 
-.kpi-card-top,
-.kpi-card-body,
-.kpi-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.kpi-summary-item.bad {
+  background: #fffafa;
 }
 
-.kpi-card-top {
-  margin-bottom: 14px;
-}
-
-.kpi-card-top span {
-  flex: 1;
+.kpi-summary-label {
   color: var(--hotel-muted);
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 850;
 }
 
-.dashboard-kpi-card .metric-icon {
-  position: static;
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  border: 1px solid #d7e0ec;
-  border-radius: 8px;
-  background: #f8fafc;
-  color: var(--hotel-blue);
-  font-size: 15px;
-  box-shadow: none;
-}
-
-.dashboard-kpi-card.bad .metric-icon {
-  border-color: #f4caca;
-  background: #fff1f2;
-  color: var(--hotel-red);
-}
-
-.dashboard-kpi-card.warn .metric-icon {
-  border-color: #f3dfb8;
-  background: #fff7e6;
-  color: var(--hotel-amber);
-}
-
-.dashboard-kpi-card .metric-value {
+.kpi-summary-main strong,
+.completion-summary-main strong {
   display: flex;
   align-items: baseline;
   gap: 4px;
-  margin: 0;
   color: var(--hotel-text);
-  font-size: 31px;
+  font-size: 30px;
   line-height: 1;
   font-weight: 850;
 }
 
-.dashboard-kpi-card .metric-value small {
+.completion-summary-main strong {
+  font-size: 20px;
+}
+
+.kpi-summary-main small,
+.completion-summary-main small {
   color: var(--hotel-muted);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
 }
 
-.dashboard-kpi-card .metric-detail {
-  display: block;
-  margin-top: 8px;
-  color: var(--hotel-muted);
-  font-size: 12px;
-}
-
-.kpi-card-foot {
-  justify-content: flex-start;
-  margin-top: 13px;
+.kpi-summary-meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
   color: var(--hotel-muted);
   font-size: 12px;
   font-weight: 750;
 }
 
-.kpi-card-foot .delta {
+.kpi-delta {
   display: inline-flex;
   align-items: center;
+  gap: 5px;
   min-height: 24px;
   border-radius: 999px;
   padding: 3px 8px;
@@ -8458,50 +8427,43 @@ textarea:disabled {
   background: #f8fafc;
   color: var(--hotel-blue);
   font-weight: 850;
+  white-space: nowrap;
 }
 
-.kpi-card-foot .delta.good {
+.kpi-delta small {
+  color: currentColor;
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+.kpi-delta.good {
   border-color: #cbe8da;
   background: #f0fbf5;
   color: var(--hotel-green);
 }
 
-.kpi-card-foot .delta.bad {
-  border-color: #f4caca;
-  background: #fff1f2;
-  color: var(--hotel-red);
-}
-
-.kpi-card-foot .delta.warn {
+.kpi-delta.warn {
   border-color: #f3dfb8;
   background: #fff8e8;
   color: var(--hotel-amber);
 }
 
-.kpi-sparkline {
-  flex: 0 0 96px;
-  width: 96px;
-  height: 34px;
+.kpi-delta.bad {
+  border-color: #f4caca;
+  background: #fff1f2;
+  color: var(--hotel-red);
 }
 
-.kpi-sparkline polyline {
-  fill: none;
-  stroke: var(--hotel-blue);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.kpi-delta.flat {
+  border-color: #d8e3ef;
+  background: #f8fafc;
+  color: var(--hotel-muted);
 }
 
-.kpi-sparkline.good polyline {
-  stroke: var(--hotel-green);
-}
-
-.kpi-sparkline.bad polyline {
-  stroke: var(--hotel-red);
-}
-
-.kpi-sparkline.warn polyline {
-  stroke: var(--hotel-amber);
+.completion-summary-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .kpi-donut {
@@ -8514,7 +8476,7 @@ textarea:disabled {
   border-radius: 50%;
   background:
     radial-gradient(circle at center, #fff 58%, transparent 59%),
-    conic-gradient(var(--hotel-blue) var(--progress), #e5ebf2 0);
+    conic-gradient(var(--hotel-green) var(--progress), #e5ebf2 0);
 }
 
 .kpi-donut span {
@@ -8596,8 +8558,16 @@ textarea:disabled {
 }
 
 @media (max-width: 1100px) {
-  .dashboard-kpi-strip .modern-metrics-grid {
+  .dashboard-kpi-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kpi-summary-item:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .kpi-summary-item:nth-child(n + 3) {
+    border-top: 1px solid var(--hotel-line);
   }
 }
 
@@ -8606,12 +8576,19 @@ textarea:disabled {
     padding: 18px 14px 12px;
   }
 
-  .dashboard-kpi-strip .modern-metrics-grid {
+  .dashboard-kpi-summary {
     grid-template-columns: 1fr;
   }
 
-  .dashboard-kpi-card {
-    min-height: 134px;
+  .kpi-summary-item,
+  .kpi-summary-item:nth-child(2n) {
+    min-height: 78px;
+    border-right: 0;
+    border-top: 1px solid var(--hotel-line);
+  }
+
+  .kpi-summary-item:first-child {
+    border-top: 0;
   }
 
   .kpi-donut {

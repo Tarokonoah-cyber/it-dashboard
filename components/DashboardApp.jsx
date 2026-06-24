@@ -36,69 +36,63 @@ function isDoneStatus(status) {
   return DONE_STATUSES.has(String(status || "").trim());
 }
 
-function MiniSparkline({ values = [], tone = "neutral" }) {
-  const safeValues = values.length ? values : [0, 0, 0, 0];
-  const max = Math.max(1, ...safeValues);
-  const width = 96;
-  const height = 34;
-  const points = safeValues.map((value, index) => {
-    const x = safeValues.length <= 1 ? 0 : (index / (safeValues.length - 1)) * width;
-    const y = height - Math.max(2, (value / max) * (height - 4));
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(" ");
+function parseDelta(value) {
+  const numeric = Number(String(value ?? "0").replace(/[^\d.-]/g, ""));
+  if (!Number.isFinite(numeric) || numeric === 0) {
+    return { text: "0", direction: "flat", label: "持平" };
+  }
+  return {
+    text: `${numeric > 0 ? "+" : "-"}${Math.abs(numeric)}`,
+    direction: numeric > 0 ? "up" : "down",
+    label: numeric > 0 ? "增加" : "減少"
+  };
+}
+
+function KpiSummaryItem({ label, value, unit = "", delta, deltaLabel = "", detail = "", tone = "neutral", deltaImpact = "neutral" }) {
+  const parsedDelta = parseDelta(delta);
+  const deltaTone = parsedDelta.direction === "flat" ? "flat" : deltaImpact;
 
   return (
-    <svg className={`kpi-sparkline ${tone}`} viewBox={`0 0 ${width} ${height}`} aria-hidden="true" preserveAspectRatio="none">
-      <polyline points={points} />
-    </svg>
+    <article className={`kpi-summary-item ${tone}`}>
+      <div className="kpi-summary-label">{label}</div>
+      <div className="kpi-summary-main">
+        <strong>{value}<small>{unit}</small></strong>
+      </div>
+      <div className="kpi-summary-meta">
+        {deltaLabel ? (
+          <span className={`kpi-delta ${deltaTone}`}>
+            {parsedDelta.label} {parsedDelta.text}
+            <small>{deltaLabel}</small>
+          </span>
+        ) : null}
+        {detail ? <span>{detail}</span> : null}
+      </div>
+    </article>
   );
 }
 
-function MetricCard({ label, value, unit = "", delta, deltaLabel = "", tone = "neutral", trendTone = "neutral", weight = "standard", bars = [], icon = "•", detail = "" }) {
-  return (
-    <section className={`metric-card dashboard-kpi-card ${tone} ${weight}`}>
-      <div className="kpi-card-top">
-        <div className="metric-icon" aria-hidden="true">{icon}</div>
-        <span>{label}</span>
-      </div>
-      <div className="kpi-card-body">
-        <div>
-          <strong className="metric-value">{value}<small>{unit}</small></strong>
-          {detail ? <small className="metric-detail">{detail}</small> : null}
-        </div>
-        <MiniSparkline values={bars} tone={trendTone} />
-      </div>
-      <div className="kpi-card-foot">
-        <b className={`delta ${trendTone}`}>{delta}</b>
-        {deltaLabel ? <span>{deltaLabel}</span> : null}
-      </div>
-    </section>
-  );
-}
-
-function CompletionProgressCard({ rate, completed, total, pending }) {
+function CompletionSummaryItem({ rate, completed, total, pending }) {
   const normalized = Math.max(0, Math.min(100, Number(rate) || 0));
-  const status = normalized < 50 ? "進度落後" : normalized < 80 ? "正常追蹤" : "接近完成";
+  const remaining = Math.max(0, Number(pending) || 0);
+  const status = normalized < 50 ? "進度落後" : normalized < 80 ? "持續追蹤" : "接近完成";
   const tone = normalized < 50 ? "warn" : normalized < 80 ? "neutral" : "good";
 
   return (
-    <section className={`metric-card dashboard-kpi-card completion-progress-card ${tone}`}>
-      <div className="kpi-card-top">
-        <div className="metric-icon" aria-hidden="true">%</div>
-        <span>完成率</span>
+    <article className={`kpi-summary-item completion-summary ${tone}`}>
+      <div className="kpi-summary-label">完成率</div>
+      <div className="completion-summary-main">
+        <div className="kpi-donut" style={{ "--progress": `${normalized}%` }} aria-hidden="true">
+          <span>{normalized}%</span>
+        </div>
+        <div>
+          <strong>{completed}<small> / {total} 件</small></strong>
+          <div className="kpi-summary-meta">
+            <span className={`kpi-delta ${tone}`}>{status}</span>
+            <span>尚餘 {remaining} 件</span>
+          </div>
+        </div>
       </div>
-      <div className="completion-progress-main">
-        <strong>{normalized}<small>%</small></strong>
-        <b className={`completion-state ${tone}`}>{status}</b>
-      </div>
-      <div className="completion-progress-meta">
-        <span>已完成 <b>{completed}</b> / {total} 件</span>
-        <span>尚餘 <b>{pending}</b> 件</span>
-      </div>
-      <div className="completion-bar" aria-hidden="true">
-        <span style={{ width: `${normalized}%` }} />
-      </div>
-    </section>
+    </article>
   );
 }
 
@@ -723,33 +717,29 @@ function DashboardTrendPanel({ trend }) {
 }
 
 function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify }) {
-  const trendBars = (dashboard?.workTrend || []).map((item) => item.count);
   const todos = dashboard?.openTodos || [];
   const works = dashboard?.recentWorks || [];
-  const completionRate = dashboard?.completionRate ?? 0;
+  const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
-  const totalCount = dashboard?.monthWorkCount ?? 0;
+  const completionTotal = completedCount + pendingCount;
+  const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
   const abnormalCount = dashboard?.abnormalCount ?? dashboard?.networkSummary?.abnormal ?? 0;
 
   return (
     <>
       <section className="dashboard-kpi-strip">
-        <section className="metrics-grid modern-metrics-grid" aria-label="今日營運指標">
-          <MetricCard
-            icon="✓"
+        <section className="dashboard-kpi-summary" aria-label="今日營運指標">
+          <KpiSummaryItem
             label="今日待處理"
-            value={dashboard?.pendingCount ?? 0}
+            value={pendingCount}
             unit="件"
             delta={dashboard?.deltas?.pending || "0"}
             deltaLabel="較昨日"
-            detail="需追蹤"
-            tone={(dashboard?.pendingCount || 0) > 0 ? "warn" : "good"}
-            trendTone="good"
-            weight="primary"
-            bars={trendBars}
+            detail={`需追蹤 ${pendingCount} 件`}
+            tone={pendingCount > 0 ? "warn" : "good"}
+            deltaImpact={parseDelta(dashboard?.deltas?.pending).direction === "down" ? "good" : "warn"}
           />
-          <MetricCard
-            icon="□"
+          <KpiSummaryItem
             label="本月工作"
             value={dashboard?.monthWorkCount ?? 0}
             unit="件"
@@ -757,28 +747,20 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
             deltaLabel="較上月"
             detail="本月累計"
             tone="neutral"
-            trendTone="neutral"
-            weight="secondary"
-            bars={trendBars}
+            deltaImpact="neutral"
           />
-          <MetricCard
-            icon="!"
+          <KpiSummaryItem
             label="異常單"
             value={abnormalCount}
             unit="件"
-            delta={abnormalCount ? `+${abnormalCount}` : "0"}
-            deltaLabel="需處理"
-            detail="異常 / 逾期"
+            detail={abnormalCount > 0 ? `需處理 ${abnormalCount} 件` : "目前無異常"}
             tone={abnormalCount > 0 ? "bad" : "good"}
-            trendTone={abnormalCount > 0 ? "bad" : "good"}
-            weight="primary"
-            bars={trendBars}
           />
-          <CompletionProgressCard
+          <CompletionSummaryItem
             rate={completionRate}
             completed={completedCount}
-            total={totalCount}
-            pending={dashboard?.pendingCount ?? 0}
+            total={completionTotal}
+            pending={pendingCount}
           />
         </section>
       </section>
