@@ -11305,3 +11305,423 @@ textarea:disabled {
     grid-column: auto;
   }
 }
+
+/* UI UX Pro Max polish layer: dense, calm, and consistent admin surfaces */
+:root {
+  --polish-bg: #f5f7fb;
+  --polish-surface: #ffffff;
+  --polish-surface-soft: #f8fafc;
+  --polish-border: #dbe4ef;
+  --polish-border-strong: #c8d4e3;
+  --polish-text: #172033;
+  --polish-muted: #64748b;
+  --polish-accent: #2563eb;
+  --polish-accent-soft: #eaf2ff;
+  --polish-success: #169b62;
+  --polish-warning: #b7791f;
+  --polish-danger: #c2413a;
+  --polish-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --polish-shadow-md: 0 12px 28px rgba(28, 45, 75, 0.08);
+  --polish-radius: 8px;
+  --polish-radius-sm: 6px;
+}
+
+html {
+  background: var(--polish-bg);
+}
+
+body {
+  min-width: 0;
+  background: var(--polish-bg);
+  color: var(--polish-text);
+  letter-spacing: 0;
+}
+
+.app-shell {
+  grid-template-columns: 292px minmax(0, 1fr);
+  background: var(--polish-bg);
+}
+
+.app-shell.sidebar-is-collapsed {
+  grid-template-columns: 82px minmax(0, 1fr);
+}
+
+.main-area {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, #f8fafc 0%, var(--polish-bg) 240px);
+  padding-bottom: 40px;
+}
+
+.sidebar {
+  border-right: 1px solid rgba(148, 163, 184, 0.18);
+  background: linear-gradient(180deg, #07172a 0%, #0b1d33 100%);
+  box-shadow: 14px 0 34px rgba(15, 23, 42, 0.08);
+}
+
+.brand-row {
+  padding-bottom: 20px;
+}
+
+.brand-mark {
+  border: 1px solid rgba(251, 191, 36, 0.34);
+  background: #1f2937;
+  color: #f8d471;
+  box-shadow: none;
+}
+
+.brand-copy h1 {
+  font-size: 17px;
+  font-weight: 850;
+}
+
+.side-nav {
+  gap: 6px;
+}
+
+.nav-item,
+.nav-child {
+  border-radius: var(--polish-radius);
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.nav-item {
+  min-height: 40px;
+  color: #cbd8ea;
+}
+
+.nav-item:hover,
+.nav-child:hover {
+  background: rgba(226, 232, 240, 0.08);
+  transform: translateX(1px);
+}
+
+.nav-item.active,
+.nav-child.active {
+  border-color: rgba(248, 203, 113, 0.54);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  box-shadow: inset 3px 0 0 #f4c65d;
+}
+
+.nav-icon {
+  color: #a8c4e7;
+}
+
+.section-page,
+.documents-page,
+.boss-kpi-page,
+.inspection-page,
+.mountain-pc-page,
+.password-index-page,
+.quick-notes-page,
+.work-management-page,
+.incident-page {
+  max-width: none;
+  min-height: 100vh;
+  padding: 24px 32px 40px;
+  background: transparent;
+  color: var(--polish-text);
+}
+
+.section-head,
+.documents-header,
+.inspection-page-head,
+.incident-page-head,
+.asset-page-head,
+.boss-kpi-hero,
+.kpi-hero {
+  margin-bottom: 14px;
+}
+
+.section-head h1,
+.documents-header h1,
+.inspection-page-head h1,
+.incident-page-head h1,
+.asset-page-head h1,
+.boss-kpi-hero h1,
+.kpi-hero h1 {
+  color: var(--polish-text);
+  font-size: 26px;
+  line-height: 1.15;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.breadcrumb {
+  color: var(--polish-muted);
+  font-weight: 750;
+}
+
+button,
+.primary-action,
+.boss-kpi-export,
+.sop-open-button,
+.documents-header button,
+.documents-toolbar button,
+.documents-table-card button,
+.documents-modal button,
+.password-link-button,
+.password-actions button,
+.password-inline-actions button,
+.password-index-table td > button {
+  min-height: 36px;
+  border: 1px solid var(--polish-border);
+  border-radius: var(--polish-radius-sm);
+  background: var(--polish-surface);
+  color: #29415f;
+  box-shadow: var(--polish-shadow-sm);
+  font-weight: 750;
+  transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+button:hover,
+.sop-open-button:hover,
+.password-link-button:hover {
+  border-color: #a9c3e9;
+  background: #f8fbff;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+button.primary,
+.primary-action,
+.documents-header button.primary,
+.documents-modal button.primary,
+.boss-kpi-export:first-child {
+  border-color: #1f5fd4;
+  background: var(--polish-accent);
+  color: #ffffff;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.2);
+  outline-offset: 2px;
+  border-color: #4c86e8;
+}
+
+input,
+select,
+textarea,
+.records-toolbar input,
+.documents-toolbar input,
+.documents-toolbar select,
+.documents-form-grid input,
+.documents-form-grid select,
+.documents-form-grid textarea,
+.inspection-toolbar input,
+.inspection-toolbar select,
+.quick-inspection-meta input {
+  border: 1px solid var(--polish-border-strong);
+  border-radius: var(--polish-radius-sm);
+  background: #ffffff;
+  color: var(--polish-text);
+  box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.02);
+}
+
+.records-toolbar,
+.asset-toolbar,
+.password-index-toolbar,
+.documents-toolbar,
+.inspection-toolbar,
+.kpi-filter-panel,
+.work-entry-panel,
+.documents-overview,
+.security-notice {
+  border: 1px solid var(--polish-border);
+  border-radius: var(--polish-radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--polish-shadow-sm);
+}
+
+.records-toolbar,
+.asset-toolbar,
+.password-index-toolbar {
+  min-height: 54px;
+  padding: 10px 12px;
+}
+
+.documents-overview {
+  padding: 10px;
+}
+
+.documents-stat-card,
+.contract-summary-card,
+.inspection-overview-card,
+.incident-stat-card,
+.metric-card,
+.dashboard-kpi-card,
+.mini-card,
+.quick-note-card,
+.sop-card,
+.soc-document-card {
+  border: 1px solid var(--polish-border);
+  border-radius: var(--polish-radius);
+  background: var(--polish-surface);
+  box-shadow: var(--polish-shadow-sm);
+}
+
+.metric-card:hover,
+.dashboard-kpi-card:hover,
+.documents-stat-card:hover,
+.contract-summary-card:hover,
+.inspection-overview-card:hover,
+.incident-stat-card:hover,
+.mini-card:hover,
+.quick-note-card:hover,
+.sop-card:hover,
+.soc-document-card:hover {
+  border-color: #c6d6ea;
+  box-shadow: var(--polish-shadow-md);
+}
+
+.records-table,
+.asset-table-wrap,
+.password-index-table-wrap,
+.documents-table-card,
+.inspection-table,
+.incident-table-wrap {
+  border: 1px solid var(--polish-border);
+  border-radius: var(--polish-radius);
+  background: var(--polish-surface);
+  box-shadow: var(--polish-shadow-sm);
+  overflow: hidden;
+}
+
+.record-head,
+.asset-table th,
+.password-index-table th,
+.documents-table-wrap th,
+.inspection-row.head,
+.incident-table th {
+  background: #eef3f9;
+  color: #344966;
+  font-size: 11.5px;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.records-table .record-row:not(.record-head):hover,
+.asset-table tbody tr:hover td,
+.password-index-table tbody tr:hover td,
+.documents-table-wrap tbody tr:hover td,
+.inspection-row:not(.head):hover,
+.incident-table tbody tr:hover td {
+  background: #f8fbff;
+}
+
+.records-table .record-row,
+.asset-table th,
+.asset-table td,
+.password-index-table th,
+.password-index-table td,
+.documents-table-wrap th,
+.documents-table-wrap td,
+.inspection-row,
+.incident-table th,
+.incident-table td {
+  border-color: #e5edf6;
+}
+
+.documents-table-wrap td,
+.asset-table td,
+.password-index-table td,
+.incident-table td {
+  color: #465a73;
+}
+
+.documents-description-cell,
+.documents-date-cell,
+.documents-month-cell,
+.documents-amount-cell,
+.asset-table td:first-child,
+.record-row span:first-child {
+  color: #20314a;
+}
+
+.documents-format-pill,
+.documents-department-badge,
+.inspection-status-badge,
+.sop-status-badge,
+.inventory-badge,
+.count-badge {
+  border-radius: 999px;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.documents-format-pill,
+.sop-status-badge.is-enabled,
+.inventory-badge.done,
+.inspection-status-badge.ok {
+  border-color: #a8dcc5;
+  background: #eaf8f1;
+  color: #116346;
+}
+
+.documents-department-badge,
+.count-badge {
+  border-color: #bfd4f3;
+  background: var(--polish-accent-soft);
+  color: #2455a4;
+}
+
+.error-box,
+.documents-alert,
+.inspection-notice {
+  border-radius: var(--polish-radius);
+}
+
+.dashboard-kpi-strip {
+  padding-top: 0;
+}
+
+.dashboard-kpi-summary,
+.modern-dashboard-layout,
+.bottom-layout {
+  gap: 14px;
+}
+
+.ai-bot-launcher {
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+}
+
+@media (max-width: 900px) {
+  .main-area {
+    padding-top: 56px;
+  }
+
+  .mobile-menu-btn {
+    border-color: var(--polish-border);
+    background: #ffffff;
+    color: var(--polish-text);
+    box-shadow: var(--polish-shadow-md);
+  }
+
+  .section-page,
+  .documents-page,
+  .boss-kpi-page,
+  .inspection-page,
+  .mountain-pc-page,
+  .password-index-page,
+  .quick-notes-page,
+  .work-management-page,
+  .incident-page {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
