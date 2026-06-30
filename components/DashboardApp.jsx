@@ -9,6 +9,7 @@ const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
+const CALENDAR_EVENTS_STORAGE_KEY = "dashboard-calendar-events";
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -131,6 +132,38 @@ function formatCalendarDate(dateKeyValue) {
 
 function getLocalDateKey(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function getTodayKey() {
+  const now = new Date();
+  return getLocalDateKey(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+function getMonthKey(date) {
+  return `${date.getFullYear()} / ${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function buildSeedCalendarEvents(baseDate = new Date()) {
+  const year = baseDate.getFullYear();
+  const month = baseDate.getMonth();
+  return {
+    [getLocalDateKey(year, month, 11)]: [{ id: "seed-11", title: "維護作業", type: "維護" }],
+    [getLocalDateKey(year, month, 13)]: [{ id: "seed-13", title: "保險調查", type: "任務" }],
+    [getLocalDateKey(year, month, 16)]: [{ id: "seed-16", title: "系統測試", type: "巡檢" }],
+    [getLocalDateKey(year, month, 17)]: [{ id: "seed-17", title: "設備檢測", type: "維護" }]
+  };
+}
+
+function loadStoredCalendarEvents() {
+  if (typeof window === "undefined") return buildSeedCalendarEvents();
+  try {
+    const stored = window.localStorage.getItem(CALENDAR_EVENTS_STORAGE_KEY);
+    if (!stored) return buildSeedCalendarEvents();
+    const parsed = JSON.parse(stored);
+    return parsed && typeof parsed === "object" ? parsed : buildSeedCalendarEvents();
+  } catch {
+    return buildSeedCalendarEvents();
+  }
 }
 
 function DashboardToast({ toast }) {
@@ -323,9 +356,9 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
 
 function TodoRow({ todo, isProcessing, isCompleted, isFading, onComplete, onEdit, onDelete }) {
   const priority = getTodoPriority(todo);
-  const status = isProcessing ? "處理中..." : isCompleted ? "已完成" : todo.status || "未完成";
-  const active = String(status).includes("進");
   const disabled = isProcessing || isCompleted || isFading;
+  const priorityText = isProcessing ? "處理中" : isCompleted ? "已完成" : priority.label;
+  const priorityClass = isProcessing ? "status-processing" : isCompleted ? "status-done" : `priority-badge priority-${priority.tone}`;
 
   return (
     <article className={`dashboard-todo-row priority-${priority.tone} ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
@@ -337,9 +370,8 @@ function TodoRow({ todo, isProcessing, isCompleted, isFading, onComplete, onEdit
       />
       <div className="todo-row-main">
         <strong>{todo.title || "未命名待辦"}</strong>
-        <span>優先級：<b>{priority.label}</b></span>
       </div>
-      <b className={isCompleted ? "status-done" : isProcessing ? "status-processing" : active ? "status-active" : "status-todo"}>{status}</b>
+      <b className={priorityClass}>{priorityText}</b>
       <div className="row-actions">
         <button onClick={onEdit} disabled={disabled}>修改</button>
         <button onClick={onDelete} disabled={disabled}>刪除</button>
@@ -369,10 +401,6 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
     } finally {
       setSyncing(false);
     }
-  }
-
-  function scrollToCalendar() {
-    document.querySelector(".dashboard-calendar-panel")?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   return (
@@ -421,7 +449,6 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
         <div className="quick-action-grid">
           <button type="button" onClick={() => onNavigate?.("work")}>新增工作</button>
           <button type="button" onClick={() => onNavigate?.("work")}>查看待處理</button>
-          <button type="button" onClick={scrollToCalendar}>新增行程</button>
         </div>
       </div>
     </section>
@@ -430,11 +457,12 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
 
 function DashboardCalendarPanel({ notify }) {
   const router = useRouter();
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const today = now.getDate();
-  const todayKey = getLocalDateKey(year, month, today);
+  const todayKey = getTodayKey();
+  const [visibleMonth, setVisibleMonth] = useState(() => new Date());
+  const year = visibleMonth.getFullYear();
+  const month = visibleMonth.getMonth();
+  const today = new Date().getDate();
+  const isCurrentMonth = todayKey.startsWith(`${visibleMonth.getFullYear()}-${String(visibleMonth.getMonth() + 1).padStart(2, "0")}`);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const [selectedDate, setSelectedDate] = useState(todayKey);
@@ -446,18 +474,37 @@ function DashboardCalendarPanel({ notify }) {
     type: CALENDAR_EVENT_TYPES[0],
     note: ""
   });
-  const [localEvents, setLocalEvents] = useState(() => ({
-    [getLocalDateKey(year, month, 11)]: [{ id: "seed-11", title: "維護作業", type: "維護" }],
-    [getLocalDateKey(year, month, 13)]: [{ id: "seed-13", title: "保險調查", type: "任務" }],
-    [getLocalDateKey(year, month, 16)]: [{ id: "seed-16", title: "系統測試", type: "巡檢" }],
-    [getLocalDateKey(year, month, 17)]: [{ id: "seed-17", title: "設備檢測", type: "維護" }]
-  }));
+  const [localEvents, setLocalEvents] = useState(loadStoredCalendarEvents);
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let day = 1; day <= daysInMonth; day++) cells.push(day);
   while (cells.length % 7 !== 0) cells.push(null);
 
   const selectedEvents = localEvents[selectedDate] || [];
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(CALENDAR_EVENTS_STORAGE_KEY, JSON.stringify(localEvents));
+    } catch {
+      // Calendar persistence is best-effort in the browser.
+    }
+  }, [localEvents]);
+
+  function selectMonth(nextMonth) {
+    setVisibleMonth(nextMonth);
+    const nextMonthPrefix = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, "0")}`;
+    setSelectedDate(todayKey.startsWith(nextMonthPrefix) ? todayKey : getLocalDateKey(nextMonth.getFullYear(), nextMonth.getMonth(), 1));
+  }
+
+  function shiftMonth(offset) {
+    selectMonth(new Date(year, month + offset, 1));
+  }
+
+  function jumpToToday() {
+    const now = new Date();
+    selectMonth(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(todayKey);
+  }
 
   function openEventModal(dateValue = selectedDate) {
     setSelectedDate(dateValue);
@@ -500,7 +547,7 @@ function DashboardCalendarPanel({ notify }) {
       <header className="panel-title calendar-title">
         <div>
           <h2>行事曆 <small>Events</small></h2>
-          <b>{year} / {String(month + 1).padStart(2, "0")}</b>
+          <b>{getMonthKey(visibleMonth)}</b>
         </div>
         <div className="calendar-actions">
           <button
@@ -515,9 +562,9 @@ function DashboardCalendarPanel({ notify }) {
           <button className="calendar-add-main" type="button" onClick={() => openEventModal(selectedDate)}>
             + 新增行程
           </button>
-          <button aria-label="上一月">‹</button>
-          <button>今日</button>
-          <button aria-label="下一月">›</button>
+          <button type="button" aria-label="上一月" onClick={() => shiftMonth(-1)}>‹</button>
+          <button type="button" onClick={jumpToToday}>今日</button>
+          <button type="button" aria-label="下一月" onClick={() => shiftMonth(1)}>›</button>
         </div>
       </header>
       <div className="calendar-grid dashboard-calendar-grid">
@@ -547,7 +594,7 @@ function DashboardCalendarPanel({ notify }) {
                 >
                   +
                 </button>
-                <span className={day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
+                <span className={isCurrentMonth && day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
                 {dayEvents.map((event) => <em key={event.id}>{event.time ? `${event.time} ` : ""}{event.title}</em>)}
               </>
               ) : null}
@@ -672,7 +719,8 @@ function DashboardWorkTable({ works, onNavigate }) {
 }
 
 function DashboardTrendPanel({ trend }) {
-  const safeTrend = trend?.length ? trend : [];
+  const safeTrend = trend?.filter((item) => Number(item.count) > 0) || [];
+  if (safeTrend.length === 0) return null;
   const max = Math.max(1, ...safeTrend.map((item) => item.count));
   const chartWidth = 700;
   const chartHeight = 154;
@@ -724,6 +772,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
   const completionTotal = completedCount + pendingCount;
   const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
   const abnormalCount = dashboard?.abnormalCount ?? dashboard?.networkSummary?.abnormal ?? 0;
+  const hasRecentWorkTrend = dashboard?.workTrend?.some((item) => Number(item.count) > 0);
 
   return (
     <>
@@ -772,9 +821,9 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
         <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
       </section>
 
-      <section className="bottom-layout modern-bottom-layout">
+      <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>
         <DashboardWorkTable works={works} onNavigate={onNavigate} />
-        <DashboardTrendPanel trend={dashboard?.workTrend || []} />
+        {hasRecentWorkTrend ? <DashboardTrendPanel trend={dashboard?.workTrend || []} /> : null}
       </section>
     </>
   );
