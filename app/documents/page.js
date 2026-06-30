@@ -4,28 +4,22 @@ import { useEffect, useMemo, useState } from "react";
 import AppShell from "../../components/AppShell";
 import { getField } from "../../components/DataSectionPage";
 
-const EMPTY = "未填寫";
-const STATUS_FILTERS = [
-  { label: "缺金額", value: "missing_amount" },
-  { label: "缺部門", value: "missing_department" },
-  { label: "缺單據內容", value: "missing_content" },
-  { label: "有備註", value: "has_note" },
-  { label: "資料需補齊", value: "incomplete" }
-];
-const DOCUMENT_TYPES = ["請款單", "發票", "收據", "合約", "其他"];
+const EMPTY = "未提供";
+const DOCUMENT_TYPES = ["零用金支付憑證", "用印申請書", "採購單", "支票請求單"];
 const DEPARTMENTS = ["MIS", "ACC", "FO", "FB", "EO", "REC", "HK", "SEC", "HR", "ENG", "RV", "SPA"];
 
 const DOCUMENT_KEYS = {
-  date: ["日期", "date", "doc_date", "?交?", "æ¥æ"],
-  month: ["月份", "month", "doc_month", "?遢", "æä»½"],
-  department: ["部門", "department", "cost_owner", "costOwner", "cost_center", "?券?", "?甇詨惇", "é¨é"],
-  content: ["單據內容", "receipt_content", "document_content", "category", "item_category", "?格??批捆", "å®ææ ¼å¼"],
-  description: ["項目說明", "description", "?隤芣?", "é \u0085ç®èªªæ"],
-  amount: ["金額", "amount", "total_amount", "??", "蝮賡?憿?", "ç¸½éé¡"],
-  format: ["單據格式", "document_type", "format", "?格??澆?", "å®ææ ¼å¼"],
-  vendor: ["供應商", "vendor", "靘??", "ä¾æå"],
-  note: ["備註", "note", "?酉", "åè¨»"],
-  updatedAt: ["最後更新時間", "source_updated_at", "updated_at", "?敺?唳??", "æå¾æ´æ°æé"]
+  id: ["id", "record_key"],
+  date: ["日期", "date", "doc_date", "æ¥æ"],
+  month: ["月份", "month", "doc_month", "æä»½"],
+  department: ["成本歸屬", "部門", "department", "cost_owner", "costOwner", "cost_center", "ææ¬æ­¸å±¬", "é¨é"],
+  description: ["項目說明", "description", "é \u0085ç®èªªæ"],
+  amount: ["總金額", "金額", "amount", "total_amount", "ç¸½éé¡"],
+  format: ["單據格式", "document_type", "format", "å®ææ ¼å¼"],
+  vendor: ["供應商", "vendor", "ä¾æå"],
+  note: ["備註", "note", "åè¨»"],
+  createdAt: ["created_at", "createdAt"],
+  updatedAt: ["updated_at", "updatedAt", "最後更新時間", "source_updated_at", "æå¾æ´æ°æé"]
 };
 
 function text(...values) {
@@ -37,7 +31,10 @@ function text(...values) {
 }
 
 function dateKey(value) {
-  return text(value).slice(0, 10);
+  const raw = text(value).slice(0, 10);
+  const match = raw.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
+  if (!match) return raw;
+  return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
 }
 
 function monthKey(row, date) {
@@ -51,33 +48,60 @@ function monthKey(row, date) {
 
 function parseAmount(value) {
   const raw = text(value);
-  if (!raw) return null;
+  if (!raw) return 0;
   const number = Number(raw.replace(/[^\d.-]/g, ""));
-  return Number.isFinite(number) ? number : null;
+  return Number.isFinite(number) ? number : 0;
+}
+
+function timestampValue(value) {
+  const raw = text(value);
+  if (!raw) return 0;
+  const time = Date.parse(raw);
+  return Number.isFinite(time) ? time : 0;
+}
+
+function splitDepartments(value) {
+  return text(value)
+    .split(/[,\u3001/|;；、\s]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function compareDocuments(a, b) {
+  const dateCompare = b.date.localeCompare(a.date);
+  if (dateCompare !== 0) return dateCompare;
+
+  const createdCompare = timestampValue(b.createdAt) - timestampValue(a.createdAt);
+  if (createdCompare !== 0) return createdCompare;
+
+  const updatedCompare = timestampValue(b.updatedAt) - timestampValue(a.updatedAt);
+  if (updatedCompare !== 0) return updatedCompare;
+
+  return String(b.id).localeCompare(String(a.id));
 }
 
 function normalizeDocument(row) {
   const date = dateKey(getField(row, DOCUMENT_KEYS.date));
   const department = text(getField(row, DOCUMENT_KEYS.department));
-  const content = text(getField(row, DOCUMENT_KEYS.content));
   const description = text(getField(row, DOCUMENT_KEYS.description));
   const amountText = text(getField(row, DOCUMENT_KEYS.amount));
-  const amount = parseAmount(amountText);
-  const note = text(getField(row, DOCUMENT_KEYS.note));
+  const createdAt = text(getField(row, DOCUMENT_KEYS.createdAt), row.created_at);
+  const updatedAt = text(getField(row, DOCUMENT_KEYS.updatedAt), row.updated_at);
 
   return {
-    id: text(row.id, row.record_key, getField(row, ["id", "record_key"]), `${date}-${department}-${content}`),
+    id: text(row.id, getField(row, DOCUMENT_KEYS.id), `${date}-${department}-${description}`),
+    recordKey: text(row.record_key, getField(row, "record_key")),
     date,
     month: monthKey(row, date),
+    vendor: text(getField(row, DOCUMENT_KEYS.vendor)),
     department,
-    content,
     description,
-    amount,
+    amount: parseAmount(amountText),
     amountText,
     format: text(getField(row, DOCUMENT_KEYS.format)),
-    vendor: text(getField(row, DOCUMENT_KEYS.vendor)),
-    note,
-    updatedAt: dateKey(getField(row, DOCUMENT_KEYS.updatedAt)),
+    note: text(getField(row, DOCUMENT_KEYS.note)),
+    createdAt,
+    updatedAt,
     source: row
   };
 }
@@ -96,30 +120,13 @@ async function api(path, options = {}) {
   return data.data;
 }
 
-function splitDepartments(value) {
-  return text(value)
-    .split(/[,、，\s]+/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-}
-
-function hasStatus(row, status) {
-  if (!status) return true;
-  if (status === "missing_amount") return row.amount === null;
-  if (status === "missing_department") return !row.department;
-  if (status === "missing_content") return !row.content;
-  if (status === "has_note") return Boolean(row.note);
-  if (status === "incomplete") return !row.date || row.amount === null || !row.department || !row.content;
-  return true;
-}
-
-function uniqueOptions(defaults, values) {
-  return Array.from(new Set([...defaults, ...values.filter(Boolean)])).sort((a, b) => a.localeCompare(b, "zh-Hant"));
+function uniqueOptions(defaults, values, sortDesc = false) {
+  const options = Array.from(new Set([...defaults, ...values.map(text).filter(Boolean)]));
+  return options.sort((a, b) => sortDesc ? b.localeCompare(a, "zh-Hant") : a.localeCompare(b, "zh-Hant"));
 }
 
 function formatCurrency(value) {
-  if (value === null) return "-";
-  return `NT$${value.toLocaleString("en-US")}`;
+  return `NT$${Number(value || 0).toLocaleString("en-US")}`;
 }
 
 function todayTaipei() {
@@ -131,27 +138,60 @@ function todayTaipei() {
   }).format(new Date());
 }
 
-function initialForm() {
+function currentMonthTaipei() {
+  return todayTaipei().slice(0, 7);
+}
+
+function initialForm(row) {
   return {
-    date: todayTaipei(),
-    cost_center: DEPARTMENTS[0],
-    document_type: DOCUMENT_TYPES[0],
-    description: "",
-    total_amount: "",
-    note: ""
+    id: row?.id || "",
+    date: row?.date || todayTaipei(),
+    vendor: row?.vendor || "",
+    cost_center: row?.department || DEPARTMENTS[0],
+    document_type: DOCUMENT_TYPES.includes(row?.format) ? row.format : DOCUMENT_TYPES[0],
+    description: row?.description || "",
+    total_amount: row?.amountText || (row?.amount ? String(row.amount) : ""),
+    note: row?.note || ""
   };
 }
 
-function DocumentModal({ form, setForm, onClose, onSubmit, saving }) {
+function StatCard({ label, value }) {
+  return (
+    <div className="documents-stat-card">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function DepartmentBadges({ value }) {
+  const departments = splitDepartments(value);
+  if (!departments.length) return <span className="documents-muted">{EMPTY}</span>;
+  return (
+    <div className="documents-badge-list">
+      {departments.map((department) => (
+        <span className="documents-department-badge" key={department}>{department}</span>
+      ))}
+    </div>
+  );
+}
+
+function DocumentTypePill({ value }) {
+  const label = value || EMPTY;
+  const tone = DOCUMENT_TYPES.indexOf(label);
+  return <span className={`documents-format-pill tone-${tone >= 0 ? tone % 4 : "neutral"}`}>{label}</span>;
+}
+
+function DocumentModal({ mode, form, setForm, onClose, onSubmit, saving }) {
   return (
     <div className="documents-modal-backdrop" onMouseDown={onClose}>
       <form className="documents-modal" onSubmit={onSubmit} onMouseDown={(event) => event.stopPropagation()}>
         <header>
           <div>
-            <h2>新增單據</h2>
-            <p>新增後會寫入 documents API。</p>
+            <h2>{mode === "edit" ? "編輯單據" : "新增單據"}</h2>
+            <p>登錄送交日期、成本歸屬、單據格式與金額。</p>
           </div>
-          <button type="button" onClick={onClose}>×</button>
+          <button type="button" onClick={onClose} aria-label="關閉">×</button>
         </header>
         <div className="documents-form-grid">
           <label>
@@ -159,9 +199,13 @@ function DocumentModal({ form, setForm, onClose, onSubmit, saving }) {
             <input type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
           </label>
           <label>
-            <span>部門</span>
+            <span>供應商</span>
+            <input value={form.vendor} onChange={(event) => setForm((current) => ({ ...current, vendor: event.target.value }))} />
+          </label>
+          <label>
+            <span>成本歸屬</span>
             <select value={form.cost_center} onChange={(event) => setForm((current) => ({ ...current, cost_center: event.target.value }))} required>
-              {DEPARTMENTS.map((department) => <option key={department}>{department}</option>)}
+              {uniqueOptions(DEPARTMENTS, [form.cost_center]).map((department) => <option key={department}>{department}</option>)}
             </select>
           </label>
           <label>
@@ -171,7 +215,7 @@ function DocumentModal({ form, setForm, onClose, onSubmit, saving }) {
             </select>
           </label>
           <label>
-            <span>金額</span>
+            <span>總金額</span>
             <input type="number" min="0" step="1" value={form.total_amount} onChange={(event) => setForm((current) => ({ ...current, total_amount: event.target.value }))} />
           </label>
           <label className="wide">
@@ -194,19 +238,19 @@ function DocumentModal({ form, setForm, onClose, onSubmit, saving }) {
 
 export default function DocumentsPage() {
   const [rows, setRows] = useState([]);
-  const [filters, setFilters] = useState({ month: "", department: "", content: "", status: "" });
+  const [filters, setFilters] = useState({ search: "", month: "", department: "", format: "" });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(initialForm);
+  const [modalMode, setModalMode] = useState("");
+  const [form, setForm] = useState(() => initialForm());
 
   async function load() {
     setLoading(true);
     setError("");
     try {
       const data = await api("/api/records?source=documents");
-      setRows((data.rows || []).map(normalizeDocument));
+      setRows((data.rows || []).map(normalizeDocument).sort(compareDocuments));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -221,27 +265,55 @@ export default function DocumentsPage() {
   const options = useMemo(() => {
     const departments = rows.flatMap((row) => splitDepartments(row.department));
     return {
-      months: uniqueOptions([], rows.map((row) => row.month)),
+      months: uniqueOptions([], rows.map((row) => row.month), true),
       departments: uniqueOptions(DEPARTMENTS, departments),
-      contents: uniqueOptions([], rows.map((row) => row.content || EMPTY))
+      formats: DOCUMENT_TYPES
     };
   }, [rows]);
 
   const filteredRows = useMemo(() => rows.filter((row) => {
+    const keyword = filters.search.trim().toLowerCase();
+    if (keyword) {
+      const haystack = `${row.description} ${row.vendor}`.toLowerCase();
+      if (!haystack.includes(keyword)) return false;
+    }
     if (filters.month && row.month !== filters.month) return false;
     if (filters.department && !splitDepartments(row.department).includes(filters.department)) return false;
-    if (filters.content && (row.content || EMPTY) !== filters.content) return false;
-    if (filters.status && !hasStatus(row, filters.status)) return false;
+    if (filters.format && row.format !== filters.format) return false;
     return true;
-  }), [rows, filters]);
+  }).sort(compareDocuments), [rows, filters]);
 
-  const totalAmount = useMemo(
-    () => filteredRows.reduce((sum, row) => sum + (row.amount || 0), 0),
-    [filteredRows]
-  );
+  const stats = useMemo(() => {
+    const currentMonth = currentMonthTaipei();
+    const vendors = new Set(filteredRows.map((row) => row.vendor).filter(Boolean));
+    const amount = filteredRows.reduce((sum, row) => sum + row.amount, 0);
+    return {
+      total: filteredRows.length.toLocaleString("en-US"),
+      month: filteredRows.filter((row) => row.month === currentMonth).length.toLocaleString("en-US"),
+      vendors: vendors.size.toLocaleString("en-US"),
+      amount: formatCurrency(amount)
+    };
+  }, [filteredRows]);
+
+  const hasFilters = Boolean(filters.search || filters.month || filters.department || filters.format);
 
   function updateFilter(key, value) {
     setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function openCreate() {
+    setForm(initialForm());
+    setModalMode("create");
+  }
+
+  function openEdit(row) {
+    setForm(initialForm(row));
+    setModalMode("edit");
+  }
+
+  function closeModal() {
+    if (saving) return;
+    setModalMode("");
   }
 
   async function submitDocument(event) {
@@ -249,11 +321,12 @@ export default function DocumentsPage() {
     setSaving(true);
     setError("");
     try {
+      const method = modalMode === "edit" ? "PATCH" : "POST";
       await api("/api/records", {
-        method: "POST",
+        method,
         body: JSON.stringify({ source: "documents", ...form, month: form.date.slice(0, 7) })
       });
-      setShowForm(false);
+      setModalMode("");
       setForm(initialForm());
       await load();
     } catch (err) {
@@ -269,48 +342,61 @@ export default function DocumentsPage() {
         <header className="documents-header">
           <div>
             <h1>送交單據紀錄</h1>
-            <p>追蹤各部門送交單據、金額與補件狀態。</p>
+            <p>快速登錄與查詢部門送交單據、金額與供應商資訊。</p>
           </div>
           <div className="documents-header-actions">
-            <button className="primary" type="button" onClick={() => setShowForm(true)}>新增單據</button>
+            <button className="primary" type="button" onClick={openCreate}>新增單據</button>
             <button type="button" onClick={load} disabled={loading}>{loading ? "重新整理中..." : "重新整理"}</button>
           </div>
         </header>
 
-        <section className="documents-toolbar">
-          <div className="documents-summary">
-            <span>資料筆數 <strong>{filteredRows.length}</strong></span>
-            <span>總金額 <strong>{formatCurrency(totalAmount)}</strong></span>
+        <section className="documents-overview">
+          <div className="documents-stat-grid">
+            <StatCard label="總筆數" value={stats.total} />
+            <StatCard label="本月筆數" value={stats.month} />
+            <StatCard label="供應商數" value={stats.vendors} />
+            <StatCard label="已登錄金額" value={stats.amount} />
           </div>
+        </section>
+
+        <section className="documents-toolbar">
+          <label className="documents-search">
+            <span>搜尋</span>
+            <input
+              value={filters.search}
+              onChange={(event) => updateFilter("search", event.target.value)}
+              placeholder="搜尋項目說明"
+            />
+          </label>
           <label>
             <span>月份</span>
             <select value={filters.month} onChange={(event) => updateFilter("month", event.target.value)}>
-              <option value="">全部</option>
+              <option value="">全部月份</option>
               {options.months.map((month) => <option key={month}>{month}</option>)}
             </select>
           </label>
           <label>
             <span>部門</span>
             <select value={filters.department} onChange={(event) => updateFilter("department", event.target.value)}>
-              <option value="">全部</option>
+              <option value="">全部部門</option>
               {options.departments.map((department) => <option key={department}>{department}</option>)}
             </select>
           </label>
           <label>
-            <span>單據內容</span>
-            <select value={filters.content} onChange={(event) => updateFilter("content", event.target.value)}>
-              <option value="">全部</option>
-              {options.contents.map((content) => <option key={content}>{content}</option>)}
+            <span>單據格式</span>
+            <select value={filters.format} onChange={(event) => updateFilter("format", event.target.value)}>
+              <option value="">全部格式</option>
+              {options.formats.map((format) => <option key={format}>{format}</option>)}
             </select>
           </label>
-          <label>
-            <span>狀態</span>
-            <select value={filters.status} onChange={(event) => updateFilter("status", event.target.value)}>
-              <option value="">全部</option>
-              {STATUS_FILTERS.map((status) => <option key={status.value} value={status.value}>{status.label}</option>)}
-            </select>
-          </label>
-          <button type="button" onClick={() => setFilters({ month: "", department: "", content: "", status: "" })}>清除</button>
+          <button
+            className="documents-clear"
+            type="button"
+            disabled={!hasFilters}
+            onClick={() => setFilters({ search: "", month: "", department: "", format: "" })}
+          >
+            清除條件
+          </button>
         </section>
 
         {error ? <div className="documents-alert">{error}</div> : null}
@@ -323,25 +409,29 @@ export default function DocumentsPage() {
               <table>
                 <thead>
                   <tr>
-                    <th>日期</th>
-                    <th>部門</th>
-                    <th>單據內容</th>
+                    <th>月份</th>
+                    <th className="documents-date-head">日期 ↓</th>
+                    <th>供應商</th>
+                    <th>成本歸屬</th>
                     <th>項目說明</th>
-                    <th>金額</th>
+                    <th className="documents-number-head">總金額</th>
                     <th>單據格式</th>
-                    <th>操作</th>
+                    <th className="documents-action-head">操作</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRows.map((row) => (
                     <tr key={row.id}>
-                      <td>{row.date || "-"}</td>
-                      <td>{row.department || "-"}</td>
-                      <td>{row.content || EMPTY}</td>
-                      <td className="wrap">{row.description || "-"}</td>
-                      <td>{formatCurrency(row.amount)}</td>
-                      <td>{row.format || "-"}</td>
-                      <td><button type="button" onClick={() => window.alert("詳細檢視功能尚未串接。")}>檢視</button></td>
+                      <td className="documents-month-cell">{row.month || EMPTY}</td>
+                      <td className="documents-date-cell">{row.date || EMPTY}</td>
+                      <td>{row.vendor || EMPTY}</td>
+                      <td><DepartmentBadges value={row.department} /></td>
+                      <td className="documents-description-cell">{row.description || EMPTY}</td>
+                      <td className="documents-amount-cell">{formatCurrency(row.amount)}</td>
+                      <td><DocumentTypePill value={row.format} /></td>
+                      <td className="documents-action-cell">
+                        <button type="button" onClick={() => openEdit(row)}>編輯</button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -350,11 +440,12 @@ export default function DocumentsPage() {
           ) : null}
         </section>
 
-        {showForm ? (
+        {modalMode ? (
           <DocumentModal
+            mode={modalMode}
             form={form}
             setForm={setForm}
-            onClose={() => setShowForm(false)}
+            onClose={closeModal}
             onSubmit={submitDocument}
             saving={saving}
           />

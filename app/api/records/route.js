@@ -156,8 +156,8 @@ const NORMALIZED_SOURCES = {
 };
 
 function assetSourceQuery(source) {
-  if (source === "assets") return "select=*&order=source_key.asc,asset_name.asc&limit=1000";
-  return `select=*&source_key=eq.${encodeURIComponent(source)}&order=asset_name.asc&limit=1000`;
+  if (source === "assets") return "select=*&source_key=in.(assets_mountain_pc,assets_downhill_pc,assets_printer,assets_north_ya,assets_iptv)&order=source_key.asc,record_key.asc&limit=1000";
+  return `select=*&source_key=eq.${encodeURIComponent(source)}&order=record_key.asc&limit=1000`;
 }
 
 function normalizedConfigFor(source) {
@@ -168,30 +168,9 @@ function normalizedConfigFor(source) {
   if (source === "soc_docs") return NORMALIZED_SOURCES.soc_docs;
   if (source === "assets" || source.startsWith("assets_")) {
     return {
-      table: "assets",
+      table: "sheet_records",
       query: assetSourceQuery(source),
-      toData: (row) => ({
-        資產類型: row.asset_type,
-        設備名稱: row.asset_name,
-        電腦名稱: row.asset_name,
-        部門: row.department,
-        使用人: row.user_name,
-        IP位置: row.ip_address,
-        MAC位置: row.mac_address,
-        主機型號: row.model,
-        螢幕型號: "",
-        設備型號: row.model,
-        型號: row.model,
-        WINDOWS版本: row.windows_version,
-        是否裝防毒: row.antivirus_installed,
-        狀態: row.status,
-        盤點狀態: row.status,
-        盤點人員: row.inventory_staff,
-        盤點時間: row.inventory_time,
-        備註: row.note,
-        盤點備註: row.note,
-        最後更新: row.updated_at || row.inventory_time
-      })
+      toData: (row) => row.data || {}
     };
   }
   return NORMALIZED_SOURCES[source];

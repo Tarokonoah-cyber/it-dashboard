@@ -24,11 +24,11 @@ export const APP_SECTIONS = [
   {
     key: "contracts",
     icon: "◇",
-    label: "合約總覽",
+    label: "合約管理",
     href: "/contracts",
     children: [
       { key: "contracts_software", label: "軟體合約", href: "/contracts/software" },
-      { key: "contracts_mobile", label: "行動電話約期", href: "/contracts/mobile" }
+      { key: "contracts_mobile", label: "手機門號合約", href: "/contracts/mobile" }
     ]
   },
   { key: "passwords", icon: "◈", label: "密碼管理", href: "/passwords" },

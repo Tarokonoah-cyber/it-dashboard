@@ -16,6 +16,7 @@
     "sports:sync:cpbl": "node scripts/syncBaseball.js --league=CPBL",
     "sync:sports-details": "node scripts/syncSportsDetails.js",
     "sync:sports:details": "node scripts/syncSportsDetails.js",
+    "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint ."
   },
   "dependencies": {

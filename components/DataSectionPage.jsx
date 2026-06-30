@@ -11,10 +11,10 @@ const DATA_SECTION_CONFIGS = {
   contacts: { title: "通訊錄", source: "contacts", hint: "分機、專線、手機與 Email 查詢" },
   anydesk: { title: "AnyDesk List", source: "anydesk", hint: "遠端連線設備索引" },
   assets: { title: "設備清單", source: "assets", hint: "全館設備資料總覽" },
-  assets_downhill_pc: { title: "山下電腦", source: "assets_downhill_pc", hint: "設備清單 / 山下電腦" },
-  assets_printer: { title: "印表機", source: "assets_printer", hint: "設備清單 / 印表機" },
-  assets_north_ya: { title: "北 YA", source: "assets_north_ya", hint: "設備清單 / 北 YA" },
-  assets_iptv: { title: "IPTV", source: "assets_iptv", hint: "設備清單 / IPTV" },
+  assets_downhill_pc: { title: "山下電腦", source: "assets_downhill_pc", hint: "" },
+  assets_printer: { title: "印表機", source: "assets_printer", hint: "" },
+  assets_north_ya: { title: "北 YA", source: "assets_north_ya", hint: "" },
+  assets_iptv: { title: "IPTV", source: "assets_iptv", hint: "" },
   contracts: { title: "合約總覽", source: "contracts", hint: "合約與維護期限總覽" },
   contracts_software: { title: "軟體合約", source: "contracts_software", hint: "軟體授權、廠商與到期日追蹤" },
   contracts_mobile: { title: "行動電話約期", source: "contracts_mobile", hint: "門號、方案與合約期限" },
@@ -49,6 +49,38 @@ const ASSET_COLUMNS = [
   { label: "盤點狀態", keys: ["盤點狀態", "inventory_status", "?日????", "ç¤é»çæ\u0085"] },
   { label: "備註", keys: ["備註", "note", "?酉", "åè¨»", "ç¤é»åè¨»"] },
   { label: "最後更新", keys: ["最後更新", "updated_at", "?敺??", "æå¾æ´æ°"] }
+];
+
+const PRINTER_COLUMNS = [
+  { label: "設備名稱", keys: ["電腦名稱", "設備名稱", "asset_name"] },
+  { label: "類型", keys: ["設備類型", "資產類型", "asset_type"] },
+  { label: "IP 位址", keys: ["IP 位址", "IP位置", "IP位址", "ip_address"] },
+  { label: "使用部門", keys: ["使用部門", "部門", "department"] },
+  { label: "硬體型號", keys: ["硬體型號", "主機型號", "model"] },
+  { label: "碳粉/墨水", keys: ["碳粉/墨水型號 ", "碳粉/墨水型號", "耗材", "note"] },
+  { label: "資產狀態", keys: ["資產狀態", "狀態", "status"] },
+  { label: "最後更新", keys: ["最後更新", "最後更新時間", "updated_at"] }
+];
+
+const NORTH_YA_COLUMNS = [
+  { label: "職稱", keys: ["職稱", "title"] },
+  { label: "使用者", keys: ["使用者", "使用人", "user_name"] },
+  { label: "電腦名稱", keys: ["電腦名稱", "asset_name"] },
+  { label: "IP 位址", keys: ["IP位址", "IP 位址", "IP", "ip_address"] },
+  { label: "主機品牌", keys: ["主機品牌", "主機型號", "model"] },
+  { label: "Windows", keys: ["WINDOWS版本", "Windows 版本", "windows_version"] },
+  { label: "螢幕尺寸", keys: ["螢幕尺寸", "螢幕型號", "monitor_model"] },
+  { label: "AnyDesk ID", keys: ["Anydesk ID", "AnyDesk ID", "anydesk_id"] },
+  { label: "更新時間", keys: ["資料更新時間", "最後更新", "updated_at"] },
+  { label: "備註", keys: ["備註", "note"] }
+];
+
+const IPTV_COLUMNS = [
+  { label: "名稱", keys: ["名稱", "頻道", "asset_name"] },
+  { label: "IP", keys: ["IP", "IP 位址", "ip_address"] },
+  { label: "TS", keys: ["TS"] },
+  { label: "MAC", keys: ["MAC", "mac_address"] },
+  { label: "原始網路欄位", keys: ["原始網路欄位"] }
 ];
 
 const RECORD_COLUMN_CONFIGS = {
@@ -107,9 +139,9 @@ const RECORD_COLUMN_CONFIGS = {
   ],
   assets: ASSET_COLUMNS,
   assets_downhill_pc: ASSET_COLUMNS,
-  assets_printer: ASSET_COLUMNS,
-  assets_north_ya: ASSET_COLUMNS,
-  assets_iptv: ASSET_COLUMNS
+  assets_printer: PRINTER_COLUMNS,
+  assets_north_ya: NORTH_YA_COLUMNS,
+  assets_iptv: IPTV_COLUMNS
 };
 
 async function api(path, options) {
@@ -159,9 +191,10 @@ function getRecordField(data, column) {
 function getStatusTone(value) {
   const text = String(value || "").trim().toLowerCase();
   if (!text) return "pending";
-  if (text.includes("完成") || text.includes("done") || text.includes("有效") || text.includes("active") || text.includes("valid")) return "done";
+  if (text.includes("完成") || text.includes("正常") || text.includes("✅") || text.includes("done") || text.includes("有效") || text.includes("active") || text.includes("valid")) return "done";
   if (text.includes("異常") || text.includes("逾期") || text.includes("error") || text.includes("失效")) return "danger";
   if (text.includes("進行") || text.includes("處理")) return "active";
+  if (text.includes("需") || text.includes("⚠")) return "pending";
   return "pending";
 }
 
@@ -172,7 +205,7 @@ function StatusBadge({ value }) {
 }
 
 function RecordValue({ value, column }) {
-  if (column?.label === "狀態" || column?.label === "盤點狀態") return <StatusBadge value={value} />;
+  if (["狀態", "盤點狀態", "資產狀態"].includes(column?.label)) return <StatusBadge value={value} />;
   const text = formatDisplayValue(value);
   return text === "-" ? <span className="muted">-</span> : <span title={text}>{text}</span>;
 }
@@ -372,6 +405,9 @@ function getRecordRowClass(source, extra = "") {
     source === "contracts_software" ? "software-contract-row" : "",
     source === "contracts_mobile" ? "mobile-contract-row" : "",
     source === "assets" ? "asset-record-row" : "",
+    source === "assets_printer" ? "printer-record-row" : "",
+    source === "assets_north_ya" ? "north-ya-record-row" : "",
+    source === "assets_iptv" ? "iptv-record-row" : "",
     source === "contacts" ? "contact-record-row" : ""
   ].filter(Boolean).join(" ");
 }
@@ -380,6 +416,7 @@ export default function DataSectionPage({ sectionKey }) {
   const config = DATA_SECTION_CONFIGS[sectionKey];
   const isSocDocs = sectionKey === "soc_docs";
   const isContacts = config?.source === "contacts";
+  const isAssetSection = config?.source === "assets" || config?.source?.startsWith("assets_");
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -438,19 +475,21 @@ export default function DataSectionPage({ sectionKey }) {
   }
 
   return (
-    <section className="section-page">
-      <header className="section-head">
-        <div>
-          <p>{config.hint}</p>
-        </div>
-        <div className="section-actions">
-          <button onClick={load}>重新整理</button>
-        </div>
-      </header>
+    <section className={`section-page ${isAssetSection ? "asset-section-page" : ""}`}>
+      {!isAssetSection ? (
+        <header className="section-head">
+          <div>
+            {config.hint ? <p>{config.hint}</p> : null}
+          </div>
+          <div className="section-actions">
+            <button onClick={load}>重新整理</button>
+          </div>
+        </header>
+      ) : null}
       {error ? <div className="error-box">{error}</div> : null}
       {config.source === "contracts_software" ? <SoftwareContractSummary rows={rows} loading={loading} /> : null}
       {!isSocDocs ? (
-        <div className={`records-toolbar ${isContacts ? "contact-records-toolbar" : ""}`}>
+        <div className={`records-toolbar ${isContacts ? "contact-records-toolbar" : ""} ${isAssetSection ? "asset-records-toolbar" : ""}`}>
           {isContacts ? (
             <span className="records-summary">
               {loading ? "讀取中..." : `共 ${filteredRows.length.toLocaleString("en-US")} 筆通訊錄資料`}
@@ -459,6 +498,7 @@ export default function DataSectionPage({ sectionKey }) {
             <>
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋關鍵字..." />
               <span className="records-summary">{loading ? "讀取中..." : `${filteredRows.length.toLocaleString("en-US")} 筆`}</span>
+              {isAssetSection ? <button onClick={load}>重新整理</button> : null}
             </>
           )}
         </div>
