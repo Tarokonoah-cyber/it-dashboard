@@ -184,23 +184,17 @@ export default function AppShell({
         onCloseMobile={() => setMobileOpen(false)}
       />
       <section className="main-area">
-        <header className="app-header">
-          <button
-            className="mobile-menu-btn"
-            type="button"
-            aria-label="開啟選單"
-            onClick={() => {
-              setCollapsed(false);
-              setMobileOpen(true);
-            }}
-          >
-            ☰
-          </button>
-          <div className="app-header-actions">
-            <span className="online-dot">系統正常</span>
-            <span className="user-chip"><span>A</span><b>Admin</b></span>
-          </div>
-        </header>
+        <button
+          className="mobile-menu-btn"
+          type="button"
+          aria-label="開啟選單"
+          onClick={() => {
+            setCollapsed(false);
+            setMobileOpen(true);
+          }}
+        >
+          ☰
+        </button>
         {children}
       </section>
       <AiCommandAssistant />
