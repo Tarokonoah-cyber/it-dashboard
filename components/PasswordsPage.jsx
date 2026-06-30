@@ -122,7 +122,7 @@ export default function PasswordsPage() {
     <section className="section-page password-index-page">
       <header className="section-head">
         <div>
-          <p>依密碼索引資料整理；實際密碼不儲存在此系統，請至 Bitwarden 查詢。</p>
+          <h1>密碼管理</h1>
         </div>
         <div className="section-actions">
           <button type="button" onClick={load}>重新整理</button>

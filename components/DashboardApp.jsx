@@ -776,6 +776,11 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
 
   return (
     <>
+      <header className="section-head">
+        <div>
+          <h1>儀表板</h1>
+        </div>
+      </header>
       <section className="dashboard-kpi-strip">
         <section className="dashboard-kpi-summary" aria-label="今日營運指標">
           <KpiSummaryItem

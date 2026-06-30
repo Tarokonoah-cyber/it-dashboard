@@ -37,13 +37,34 @@ function dateKey(value) {
   return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
 }
 
-function monthKey(row, date) {
-  const explicit = text(getField(row, DOCUMENT_KEYS.month));
+function displayMonthFromDate(value) {
+  const match = text(value).match(/^\d{4}[/-](\d{1,2})/);
+  if (!match) return "";
+  return `${Number(match[1])}月`;
+}
+
+function yearMonthFromDate(value) {
+  const match = text(value).match(/^(\d{4})[/-](\d{1,2})/);
+  if (!match) return "";
+  return `${match[1]}-${match[2].padStart(2, "0")}`;
+}
+
+function normalizeMonth(value, date) {
+  const explicit = text(value);
   if (explicit) {
-    if (/^\d{4}-\d{2}/.test(explicit)) return explicit.slice(0, 7);
+    const yearMonth = explicit.match(/^\d{4}[/-](\d{1,2})/);
+    if (yearMonth) return `${Number(yearMonth[1])}月`;
+    const monthLabel = explicit.match(/^(\d{1,2})\s*月$/);
+    if (monthLabel) return `${Number(monthLabel[1])}月`;
+    const numeric = explicit.match(/^(\d{1,2})$/);
+    if (numeric) return `${Number(numeric[1])}月`;
     return explicit;
   }
-  return date ? date.slice(0, 7) : "";
+  return displayMonthFromDate(date);
+}
+
+function monthKey(row, date) {
+  return normalizeMonth(getField(row, DOCUMENT_KEYS.month), date);
 }
 
 function parseAmount(value) {
@@ -93,6 +114,7 @@ function normalizeDocument(row) {
     recordKey: text(row.record_key, getField(row, "record_key")),
     date,
     month: monthKey(row, date),
+    yearMonth: yearMonthFromDate(date),
     vendor: text(getField(row, DOCUMENT_KEYS.vendor)),
     department,
     description,
@@ -189,7 +211,6 @@ function DocumentModal({ mode, form, setForm, onClose, onSubmit, saving }) {
         <header>
           <div>
             <h2>{mode === "edit" ? "編輯單據" : "新增單據"}</h2>
-            <p>登錄送交日期、成本歸屬、單據格式與金額。</p>
           </div>
           <button type="button" onClick={onClose} aria-label="關閉">×</button>
         </header>
@@ -285,11 +306,15 @@ export default function DocumentsPage() {
 
   const stats = useMemo(() => {
     const currentMonth = currentMonthTaipei();
+    const currentMonthLabel = displayMonthFromDate(todayTaipei());
     const vendors = new Set(filteredRows.map((row) => row.vendor).filter(Boolean));
     const amount = filteredRows.reduce((sum, row) => sum + row.amount, 0);
     return {
       total: filteredRows.length.toLocaleString("en-US"),
-      month: filteredRows.filter((row) => row.month === currentMonth).length.toLocaleString("en-US"),
+      month: filteredRows
+        .filter((row) => (row.yearMonth ? row.yearMonth === currentMonth : row.month === currentMonthLabel))
+        .length
+        .toLocaleString("en-US"),
       vendors: vendors.size.toLocaleString("en-US"),
       amount: formatCurrency(amount)
     };
@@ -324,7 +349,7 @@ export default function DocumentsPage() {
       const method = modalMode === "edit" ? "PATCH" : "POST";
       await api("/api/records", {
         method,
-        body: JSON.stringify({ source: "documents", ...form, month: form.date.slice(0, 7) })
+        body: JSON.stringify({ source: "documents", ...form })
       });
       setModalMode("");
       setForm(initialForm());
@@ -342,7 +367,6 @@ export default function DocumentsPage() {
         <header className="documents-header">
           <div>
             <h1>送交單據紀錄</h1>
-            <p>快速登錄與查詢部門送交單據、金額與供應商資訊。</p>
           </div>
           <div className="documents-header-actions">
             <button className="primary" type="button" onClick={openCreate}>新增單據</button>

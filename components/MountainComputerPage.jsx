@@ -180,6 +180,11 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
 
   return (
     <section className="section-page mountain-pc-page">
+      <header className="section-head">
+        <div>
+          <h1>{config.title}</h1>
+        </div>
+      </header>
       {error ? <div className="error-box">{error}</div> : null}
 
       <div className="asset-toolbar mountain-pc-toolbar">

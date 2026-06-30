@@ -106,7 +106,7 @@ export default function QuickNotesPage() {
     <section className="section-page quick-notes-page">
       <header className="section-head">
         <div>
-          <p>記錄臨時事項、交辦提醒與待確認資訊。</p>
+          <h1>快速備忘錄</h1>
         </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}

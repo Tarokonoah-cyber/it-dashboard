@@ -403,9 +403,14 @@ export async function GET(request) {
   }
 }
 
+function documentMonthFromDate(docDate) {
+  const match = String(docDate || "").trim().match(/^\d{4}[/-](\d{1,2})/);
+  return match ? `${Number(match[1])}月` : "";
+}
+
 function documentPayload(body) {
   const docDate = String(body.date || "").trim();
-  const docMonth = String(body.month || "").trim() || docDate.slice(0, 7);
+  const docMonth = documentMonthFromDate(docDate);
   const documentType = String(body.document_type || "").trim();
   const costCenter = String(body.cost_center || "").trim();
   const vendor = String(body.vendor || "").trim();
@@ -416,6 +421,7 @@ function documentPayload(body) {
   if (!documentType) throw new Error("請選擇單據格式");
   if (!costCenter) throw new Error("請選擇成本歸屬");
   if (!description) throw new Error("請輸入項目說明");
+  if (!docMonth) throw new Error("日期格式不正確");
 
   return { docDate, docMonth, documentType, costCenter, vendor, description, totalAmount, note };
 }

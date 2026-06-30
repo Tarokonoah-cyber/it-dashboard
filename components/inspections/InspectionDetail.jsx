@@ -65,7 +65,6 @@ export default function InspectionDetail({ recordId }) {
       <header className="inspection-page-head compact">
         <div>
           <h1>每日巡檢詳細</h1>
-          <p>查看單日巡檢結果、異常與處理方式</p>
         </div>
         <div className="section-actions">
           <button onClick={() => router.push("/inspections")}>返回列表</button>

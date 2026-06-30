@@ -188,7 +188,6 @@ export default function InspectionList() {
       <header className="inspection-page-head">
         <div>
           <h1>每日巡檢</h1>
-          <p>{today}</p>
         </div>
         <div className="section-actions">
           <button className="primary-action" onClick={handleEditToday}>
@@ -202,7 +201,6 @@ export default function InspectionList() {
       <div className="inspection-workbench-title">
         <div>
           <h2>每日巡檢紀錄</h2>
-          <p>快速掌握今日檢查、異常項目與歷史紀錄。</p>
         </div>
       </div>
 

@@ -1,26 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AiCommandAssistant from "./AiCommandAssistant";
 import {
   APP_SECTIONS,
-  FLAT_APP_SECTIONS,
   SIDEBAR_STORAGE_KEY,
   getInitialOpenGroups,
   getParentSectionKey,
   getSectionHref
 } from "./navigation";
-
-export function taipeiNowLabel() {
-  return new Intl.DateTimeFormat("zh-Hant-TW", {
-    timeZone: "Asia/Taipei",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    weekday: "short"
-  }).format(new Date());
-}
 
 function navigateTo(item, onNavigate, router) {
   if (!item) return;
@@ -142,7 +131,6 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
 
 export default function AppShell({
   activeSection = "dashboard",
-  title,
   children,
   onNavigate,
   defaultSidebarCollapsed = false,
@@ -152,10 +140,6 @@ export default function AppShell({
   const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
-  const currentTitle = useMemo(
-    () => title || FLAT_APP_SECTIONS.find((item) => item.key === activeSection)?.label || "儀表板",
-    [activeSection, title]
-  );
 
   useEffect(() => {
     if (pageSidebarStorageKey) {
@@ -212,10 +196,6 @@ export default function AppShell({
           >
             ☰
           </button>
-          <div className="app-header-title">
-            <h2>{currentTitle}</h2>
-            <p>今日日期：{taipeiNowLabel()}</p>
-          </div>
           <div className="app-header-actions">
             <span className="online-dot">系統正常</span>
             <span className="user-chip"><span>A</span><b>Admin</b></span>

@@ -493,7 +493,6 @@ export default function IncidentRecordsPage() {
         <div>
           <div className="breadcrumb">IT 管理 / 故障總表</div>
           <h1>故障總表 / 異常事件紀錄</h1>
-          <p>記錄 IT 問題通報、處理狀態、解決方式與關聯設備，方便後續追蹤與統計。</p>
         </div>
         <button className="primary-action" type="button" onClick={openCreate}>
           新增故障案件

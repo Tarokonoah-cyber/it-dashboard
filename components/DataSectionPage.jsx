@@ -476,16 +476,16 @@ export default function DataSectionPage({ sectionKey }) {
 
   return (
     <section className={`section-page ${isAssetSection ? "asset-section-page" : ""}`}>
-      {!isAssetSection ? (
-        <header className="section-head">
-          <div>
-            {config.hint ? <p>{config.hint}</p> : null}
-          </div>
+      <header className="section-head">
+        <div>
+          <h1>{config.title}</h1>
+        </div>
+        {!isAssetSection ? (
           <div className="section-actions">
             <button onClick={load}>重新整理</button>
           </div>
-        </header>
-      ) : null}
+        ) : null}
+      </header>
       {error ? <div className="error-box">{error}</div> : null}
       {config.source === "contracts_software" ? <SoftwareContractSummary rows={rows} loading={loading} /> : null}
       {!isSocDocs ? (

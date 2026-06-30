@@ -189,6 +189,9 @@ export default function WorkCenterPage() {
   return (
     <section className="section-page work-management-page">
       <header className="section-head">
+        <div>
+          <h1>工作中心</h1>
+        </div>
         <div className="work-head-actions">
           <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>查看 KPI 報表</button>
           <button onClick={load}>重新整理</button>
