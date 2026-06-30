@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 
@@ -58,19 +60,21 @@ const NORMALIZED_SOURCES = {
   },
   documents: {
     table: "submitted_documents",
-    query: "select=*&order=doc_date.desc,updated_at.desc&limit=1000",
+    query: "select=*&order=doc_date.desc,created_at.desc,updated_at.desc,id.desc&limit=1000",
     toData: (row) => ({
+      id: row.id,
+      record_key: row.record_key,
       日期: row.doc_date,
       月份: row.doc_month,
       部門: row.department || row.cost_center,
-      單據內容: row.receipt_content || row.document_content || row.category || row.item_category,
       單據格式: row.document_type,
       成本歸屬: row.cost_center,
       供應商: row.vendor,
       項目說明: row.description,
       總金額: row.total_amount,
-      狀態: row.status,
       備註: row.note,
+      created_at: row.created_at,
+      updated_at: row.updated_at,
       最後更新時間: row.source_updated_at
     })
   },
@@ -203,6 +207,163 @@ function wrapNormalizedRows(source, rows, toData) {
   }));
 }
 
+async function readLocalContactsRows() {
+  try {
+    const filePath = path.join(process.cwd(), "data", "contacts.json");
+    const text = await fs.readFile(filePath, "utf8");
+    const rows = JSON.parse(text);
+    return Array.isArray(rows) ? rows : [];
+  } catch {
+    return [];
+  }
+}
+
+async function contactsFallbackResponse(source) {
+  const rows = await readLocalContactsRows();
+  if (!rows.length) return null;
+  return ok({ source, normalized: true, rows: wrapNormalizedRows(source, rows, NORMALIZED_SOURCES.contacts.toData) });
+}
+
+async function readContactExtensionRows() {
+  try {
+    const filePath = path.join(process.cwd(), "data", "contacts_extensions.json");
+    const text = await fs.readFile(filePath, "utf8");
+    const rows = JSON.parse(text);
+    return Array.isArray(rows) ? rows : [];
+  } catch {
+    return [];
+  }
+}
+
+function normalizeContactKey(value) {
+  return String(value || "").replace(/\s+/g, "").toLowerCase();
+}
+
+function contactValue(row, keys) {
+  const data = row?.data || row || {};
+  for (const key of keys) {
+    const value = data[key];
+    if (value !== null && value !== undefined && String(value).trim() !== "") return String(value).trim();
+  }
+  return "";
+}
+
+function contactLookupKeys(row) {
+  const department = normalizeContactKey(contactValue(row, ["單位", "department"]));
+  const titleZh = normalizeContactKey(contactValue(row, ["職稱", "title_zh"]));
+  const titleEn = normalizeContactKey(contactValue(row, ["Position", "title_en"]));
+  const nameZh = normalizeContactKey(contactValue(row, ["姓名", "name_zh"]));
+  const nameEn = normalizeContactKey(contactValue(row, ["Name", "name_en"]));
+  const email = normalizeContactKey(contactValue(row, ["E-mail address", "email"]));
+  return [
+    email ? `email:${email}` : "",
+    department && nameZh ? `dept-name:${department}:${nameZh}` : "",
+    department && nameEn ? `dept-name-en:${department}:${nameEn}` : "",
+    department && titleZh ? `dept-title:${department}:${titleZh}` : "",
+    department && titleEn ? `dept-title-en:${department}:${titleEn}` : ""
+  ].filter(Boolean);
+}
+
+async function applyContactExtensionOverlay(rows) {
+  const extensionRows = await readContactExtensionRows();
+  if (!extensionRows.length) return rows;
+
+  const extensionsByKey = new Map();
+  const matchedExtensionIndexes = new Set();
+  extensionRows.forEach((row, index) => {
+    const extension = contactValue(row, ["分機 Extension", "extension"]);
+    if (!extension) return;
+    for (const key of contactLookupKeys(row)) {
+      if (!extensionsByKey.has(key)) extensionsByKey.set(key, { extension, index });
+    }
+  });
+
+  const mergedRows = rows.map((row) => {
+    const match = contactLookupKeys(row).map((key) => extensionsByKey.get(key)).find(Boolean);
+    if (!match) return row;
+    matchedExtensionIndexes.add(match.index);
+    return {
+      ...row,
+      data: {
+        ...row.data,
+        "分機 Extension": match.extension
+      }
+    };
+  });
+
+  const appendedRows = extensionRows
+    .filter((row) => contactValue(row, ["分機 Extension", "extension"]))
+    .map((row) => ({
+      id: `extension-${row.record_key}`,
+      source_key: "contacts",
+      source_label: "contacts",
+      record_key: `extension-${row.record_key}`,
+      data: {
+        單位: row.department || "",
+        職稱: row.title_zh || "",
+        姓名: row.name_zh || "",
+        "分機 Extension": row.extension || "",
+        "中華電信 *55": "",
+        個人行動電話: "",
+        "E-mail address": row.email || "",
+        Position: row.title_en || "",
+        Name: row.name_en || "",
+        備註: ""
+      }
+    }));
+
+  return [...mergedRows, ...appendedRows];
+}
+
+function sortableDate(value) {
+  const raw = String(value || "").trim().slice(0, 10);
+  const match = raw.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/);
+  if (!match) return raw;
+  return `${match[1]}-${match[2].padStart(2, "0")}-${match[3].padStart(2, "0")}`;
+}
+
+function sortableTime(value) {
+  const time = Date.parse(String(value || ""));
+  return Number.isFinite(time) ? time : 0;
+}
+
+function compareSubmittedDocuments(a, b) {
+  const dateCompare = sortableDate(b.doc_date).localeCompare(sortableDate(a.doc_date));
+  if (dateCompare !== 0) return dateCompare;
+
+  const createdCompare = sortableTime(b.created_at) - sortableTime(a.created_at);
+  if (createdCompare !== 0) return createdCompare;
+
+  const updatedCompare = sortableTime(b.updated_at) - sortableTime(a.updated_at);
+  if (updatedCompare !== 0) return updatedCompare;
+
+  return String(b.id || "").localeCompare(String(a.id || ""));
+}
+
+function dataValue(data, keys) {
+  for (const key of keys) {
+    const value = data?.[key];
+    if (value !== null && value !== undefined && String(value).trim() !== "") return value;
+  }
+  return "";
+}
+
+function compareSheetDocuments(a, b) {
+  const aData = a.data || {};
+  const bData = b.data || {};
+  const dateKeys = ["日期", "æ¥æ"];
+  const dateCompare = sortableDate(dataValue(bData, dateKeys)).localeCompare(sortableDate(dataValue(aData, dateKeys)));
+  if (dateCompare !== 0) return dateCompare;
+
+  const createdCompare = sortableTime(b.created_at) - sortableTime(a.created_at);
+  if (createdCompare !== 0) return createdCompare;
+
+  const updatedCompare = sortableTime(b.updated_at) - sortableTime(a.updated_at);
+  if (updatedCompare !== 0) return updatedCompare;
+
+  return String(b.id || "").localeCompare(String(a.id || ""));
+}
+
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
   if (authError) return authError;
@@ -229,8 +390,22 @@ export async function GET(request) {
     if (normalized) {
       try {
         const rows = await supabaseRequest(normalized.table, normalized.query);
-        return ok({ source, normalized: true, rows: wrapNormalizedRows(source, rows, normalized.toData) });
+        if (source === "contacts" && rows.length === 0) {
+          const fallback = await contactsFallbackResponse(source);
+          if (fallback) return fallback;
+        }
+        if (source === "documents") rows.sort(compareSubmittedDocuments);
+        const normalizedRows = wrapNormalizedRows(source, rows, normalized.toData);
+        return ok({
+          source,
+          normalized: true,
+          rows: source === "contacts" ? await applyContactExtensionOverlay(normalizedRows) : normalizedRows
+        });
       } catch (error) {
+        if (source === "contacts") {
+          const fallback = await contactsFallbackResponse(source);
+          if (fallback) return fallback;
+        }
         if (source === "soc_docs") throw error;
         if (!String(error.message || "").includes("Could not find the table")) throw error;
       }
@@ -241,6 +416,7 @@ export async function GET(request) {
       "sheet_records",
       `select=*&source_key=in.(${sourceFilter})&order=source_key.asc,record_key.asc&limit=1000`
     );
+    if (source === "documents") rows.sort(compareSheetDocuments);
 
     return ok({ source, rows });
   } catch (error) {
@@ -253,6 +429,7 @@ function documentPayload(body) {
   const docMonth = String(body.month || "").trim() || docDate.slice(0, 7);
   const documentType = String(body.document_type || "").trim();
   const costCenter = String(body.cost_center || "").trim();
+  const vendor = String(body.vendor || "").trim();
   const description = String(body.description || "").trim();
   const totalAmount = String(body.total_amount || "").trim();
   const note = String(body.note || "").trim();
@@ -261,7 +438,7 @@ function documentPayload(body) {
   if (!costCenter) throw new Error("請選擇成本歸屬");
   if (!description) throw new Error("請輸入項目說明");
 
-  return { docDate, docMonth, documentType, costCenter, description, totalAmount, note };
+  return { docDate, docMonth, documentType, costCenter, vendor, description, totalAmount, note };
 }
 
 function documentRecordKey(payload) {
@@ -290,6 +467,7 @@ export async function POST(request) {
           doc_month: payload.docMonth,
           document_type: payload.documentType,
           cost_center: payload.costCenter,
+          vendor: payload.vendor,
           description: payload.description,
           total_amount: payload.totalAmount,
           note: payload.note
@@ -312,6 +490,7 @@ export async function POST(request) {
           月份: payload.docMonth,
           單據格式: payload.documentType,
           成本歸屬: payload.costCenter,
+          供應商: payload.vendor,
           項目說明: payload.description,
           總金額: payload.totalAmount,
           備註: payload.note,
@@ -323,6 +502,7 @@ export async function POST(request) {
           payload.docMonth,
           payload.documentType,
           payload.costCenter,
+          payload.vendor,
           payload.description,
           payload.totalAmount,
           payload.note
@@ -330,6 +510,40 @@ export async function POST(request) {
       }
     });
     return ok({ normalized: false, row: rows[0] });
+  } catch (error) {
+    return fail(error);
+  }
+}
+
+export async function PATCH(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
+  try {
+    const body = await request.json();
+    const source = String(body.source || "").trim();
+    const id = String(body.id || "").trim();
+    if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄更新"), 400);
+    if (!id) return fail(new Error("缺少單據 id"), 400);
+
+    const payload = documentPayload(body);
+    const rows = await supabaseRequest("submitted_documents", `id=eq.${encodeURIComponent(id)}&select=*`, {
+      method: "PATCH",
+      body: {
+        doc_date: payload.docDate,
+        doc_month: payload.docMonth,
+        document_type: payload.documentType,
+        cost_center: payload.costCenter,
+        vendor: payload.vendor,
+        description: payload.description,
+        total_amount: payload.totalAmount,
+        note: payload.note,
+        updated_at: new Date().toISOString()
+      }
+    });
+
+    if (!rows.length) return fail(new Error("找不到要更新的單據"), 404);
+    return ok({ normalized: true, row: rows[0] });
   } catch (error) {
     return fail(error);
   }

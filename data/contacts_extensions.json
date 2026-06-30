@@ -1,0 +1,1072 @@
+[
+  {
+    "record_key": "contacts-0005",
+    "department": "GRO",
+    "title_zh": "客務部副總監",
+    "title_en": "Asst. Director",
+    "name_zh": "張淑珍",
+    "name_en": "Rita Chang",
+    "email": "rita@silksplace-taroko.com.tw",
+    "extension": "3111"
+  },
+  {
+    "record_key": "contacts-0006",
+    "department": "GRO",
+    "title_zh": "櫃檯辦公室",
+    "title_en": "Front Office",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3116 (錄音)"
+  },
+  {
+    "record_key": "contacts-0007",
+    "department": "GRO",
+    "title_zh": "櫃檯經理",
+    "title_en": "Front Desk Manager",
+    "name_zh": "莊茹蘭",
+    "name_en": "Carol Chuang",
+    "email": "fdm@silksplace-taroko.com.tw",
+    "extension": "3101"
+  },
+  {
+    "record_key": "contacts-0009",
+    "department": "GRO",
+    "title_zh": "櫃檯",
+    "title_en": "Front Desk Clerk",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3130 / 3128"
+  },
+  {
+    "record_key": "contacts-0010",
+    "department": "GRO",
+    "title_zh": "櫃檯",
+    "title_en": "EDC",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3127 / 3129 / 3113"
+  },
+  {
+    "record_key": "contacts-0011",
+    "department": "GRO",
+    "title_zh": "3F 行館交誼廳",
+    "title_en": "3F VIP Lounge",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3191 / 3192"
+  },
+  {
+    "record_key": "contacts-0012",
+    "department": "GRO",
+    "title_zh": "3F 行館交誼廳 EDC",
+    "title_en": "3F VIP Lounge EDC",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3197"
+  },
+  {
+    "record_key": "contacts-0016",
+    "department": "GRO",
+    "title_zh": "訂房值班經理",
+    "title_en": "Reservation Duty Manager",
+    "name_zh": "李仁傑",
+    "name_en": "Edison Lee",
+    "email": "",
+    "extension": "3110"
+  },
+  {
+    "record_key": "contacts-0017",
+    "department": "GRO",
+    "title_zh": "訂房主任",
+    "title_en": "Reservation Supervisor",
+    "name_zh": "田佩雲",
+    "name_en": "Ivy Tien",
+    "email": "rsvn@silksplace-taroko.com.tw",
+    "extension": "3122"
+  },
+  {
+    "record_key": "contacts-0018",
+    "department": "GRO",
+    "title_zh": "訂房員",
+    "title_en": "Reservation / Operator Clerk",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3124 / 3125 / 3126 / 3119"
+  },
+  {
+    "record_key": "contacts-0022",
+    "department": "GRO",
+    "title_zh": "服務中心",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3138 / 3139"
+  },
+  {
+    "record_key": "contacts-0023",
+    "department": "GRO",
+    "title_zh": "故事員",
+    "title_en": "Storyteller",
+    "name_zh": "張吳志輝",
+    "name_en": "Asserwu Zhang",
+    "email": "storyteller@silksplace-taroko.com.tw",
+    "extension": "3401"
+  },
+  {
+    "record_key": "contacts-0026",
+    "department": "GRO",
+    "title_zh": "行李員",
+    "title_en": "Porter",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3140"
+  },
+  {
+    "record_key": "contacts-0039",
+    "department": "房務部",
+    "title_zh": "房務部副總監",
+    "title_en": "Asst. Director",
+    "name_zh": "林寬婷",
+    "name_en": "Kitty Lin",
+    "email": "kitty@silksplace-taroko.com.tw",
+    "extension": "3703"
+  },
+  {
+    "record_key": "contacts-0040",
+    "department": "房務部",
+    "title_zh": "經理",
+    "title_en": "Manager",
+    "name_zh": "周吟華",
+    "name_en": "Emma Chou",
+    "email": "hke@silksplace-taroko.com.tw",
+    "extension": "3705"
+  },
+  {
+    "record_key": "contacts-0043",
+    "department": "房務部",
+    "title_zh": "辦公室",
+    "title_en": "Office Clerk",
+    "name_zh": "",
+    "name_en": "",
+    "email": "hskp@silksplace-taroko.com.tw",
+    "extension": "3700 / 3702"
+  },
+  {
+    "record_key": "contacts-0048",
+    "department": "房務部",
+    "title_zh": "樓層備品室",
+    "title_en": "Spare Room",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3719 / 3729"
+  },
+  {
+    "record_key": "contacts-0049",
+    "department": "房務部",
+    "title_zh": "洗衣房主任",
+    "title_en": "Laundry Supervisor",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3750 / 3751"
+  },
+  {
+    "record_key": "contacts-0050",
+    "department": "房務部",
+    "title_zh": "制服房領班",
+    "title_en": "Uniform Room Captain",
+    "name_zh": "羅秀英",
+    "name_en": "Meylan Lo",
+    "email": "",
+    "extension": "3750"
+  },
+  {
+    "record_key": "contacts-0051",
+    "department": "房務部",
+    "title_zh": "公共區域花房 主任",
+    "title_en": "Public Area Supervisor",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3708"
+  },
+  {
+    "record_key": "contacts-0055",
+    "department": "房務部",
+    "title_zh": "花藝設計師",
+    "title_en": "Florist",
+    "name_zh": "陳怡茹",
+    "name_en": "Tiffany Chen",
+    "email": "florist@silksplace-taroko.com.tw",
+    "extension": "3741"
+  },
+  {
+    "record_key": "contacts-0057",
+    "department": "房務部",
+    "title_zh": "餐飲部 F&B",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_fb@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No：03-869-1289"
+  },
+  {
+    "record_key": "contacts-0059",
+    "department": "房務部",
+    "title_zh": "餐飲部 副總監",
+    "title_en": "F&B Asst. Director",
+    "name_zh": "張雅筑",
+    "name_en": "Coco Chang",
+    "email": "fb@silksplace-taroko.com.tw",
+    "extension": "3204"
+  },
+  {
+    "record_key": "contacts-0061",
+    "department": "房務部",
+    "title_zh": "餐飲部辦公室",
+    "title_en": "F&B Office",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3219"
+  },
+  {
+    "record_key": "contacts-0062",
+    "department": "房務部",
+    "title_zh": "3F 行館交誼廳",
+    "title_en": "3F VIP Lounge",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3191"
+  },
+  {
+    "record_key": "contacts-0063",
+    "department": "房務部",
+    "title_zh": "餐飲部行政專員",
+    "title_en": "F&B Coordinator",
+    "name_zh": "",
+    "name_en": "",
+    "email": "fbrs@silksplace-taroko.com.tw",
+    "extension": "3228"
+  },
+  {
+    "record_key": "contacts-0064",
+    "department": "房務部",
+    "title_zh": "衛斯理西餐廳",
+    "title_en": "Wellesley Restaurant",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3220 / 3221 / 3250"
+  },
+  {
+    "record_key": "contacts-0065",
+    "department": "房務部",
+    "title_zh": "梅園中餐廳",
+    "title_en": "Mei Yuan Restaurant",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3270 / 3271"
+  },
+  {
+    "record_key": "contacts-0070",
+    "department": "廚房",
+    "title_zh": "行政主廚",
+    "title_en": "Exec. Chef",
+    "name_zh": "高磊峰",
+    "name_en": "Lei-feng Kao",
+    "email": "ckitchen@silksplace-taroko.com.tw",
+    "extension": "3276"
+  },
+  {
+    "record_key": "contacts-0071",
+    "department": "廚房",
+    "title_zh": "西餐主廚",
+    "title_en": "Wellesley Chef",
+    "name_zh": "胡宗強",
+    "name_en": "Mike  Hu",
+    "email": "wkitchen@silksplace-taroko.com.tw",
+    "extension": "3225"
+  },
+  {
+    "record_key": "contacts-0072",
+    "department": "廚房",
+    "title_zh": "西餐廚房",
+    "title_en": "Wellesley Kitchen",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3226"
+  },
+  {
+    "record_key": "contacts-0073",
+    "department": "廚房",
+    "title_zh": "點心主廚",
+    "title_en": "Pastry Chef",
+    "name_zh": "邱寶貴",
+    "name_en": "Bryan Chiu",
+    "email": "pkitchen@silksplace-taroko.com.tw",
+    "extension": "3227"
+  },
+  {
+    "record_key": "contacts-0075",
+    "department": "廚房",
+    "title_zh": "營養師",
+    "title_en": "Dietitians",
+    "name_zh": "黃喬敏",
+    "name_en": "Joyce Huang",
+    "email": "dietitians@silksplace-taroko.com.tw",
+    "extension": "3200"
+  },
+  {
+    "record_key": "contacts-0077",
+    "department": "廚房",
+    "title_zh": "休閒娛樂部",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_rec@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No：03-869-1317"
+  },
+  {
+    "record_key": "contacts-0079",
+    "department": "廚房",
+    "title_zh": "經理",
+    "title_en": "Manager",
+    "name_zh": "吳銀萍",
+    "name_en": "Paula Wu",
+    "email": "rec@silksplace-taroko.com.tw",
+    "extension": "3802"
+  },
+  {
+    "record_key": "contacts-0080",
+    "department": "廚房",
+    "title_zh": "娛樂館櫃檯",
+    "title_en": "Recreation Counter",
+    "name_zh": "",
+    "name_en": "",
+    "email": "recadm@silksplace-taroko.com.tw",
+    "extension": "3810 / 3808"
+  },
+  {
+    "record_key": "contacts-0081",
+    "department": "廚房",
+    "title_zh": "1F福利社",
+    "title_en": "The Shop",
+    "name_zh": "",
+    "name_en": "",
+    "email": "shop@silksplace-taroko.com.tw",
+    "extension": "3815"
+  },
+  {
+    "record_key": "contacts-0084",
+    "department": "SPA",
+    "title_zh": "經理",
+    "title_en": "Manager",
+    "name_zh": "周詩婕",
+    "name_en": "Vivian Chou",
+    "email": "vivian@silksplace-taroko.com.tw",
+    "extension": "3803"
+  },
+  {
+    "record_key": "contacts-0087",
+    "department": "SPA",
+    "title_zh": "小澡堂包廂三溫暖",
+    "title_en": "Small bath/ Private sauna",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3811 / 3840"
+  },
+  {
+    "record_key": "contacts-0088",
+    "department": "SPA",
+    "title_zh": "大澡堂/室內溫水泳池",
+    "title_en": "Bath/Indoor heated swimming pool",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3842"
+  },
+  {
+    "record_key": "contacts-0089",
+    "department": "SPA",
+    "title_zh": "戶外泳池",
+    "title_en": "Outdoor swimming pool",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3841"
+  },
+  {
+    "record_key": "contacts-0093",
+    "department": "SPA",
+    "title_zh": "櫃檯",
+    "title_en": "SPA",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3850 / 3851"
+  },
+  {
+    "record_key": "contacts-0096",
+    "department": "SPA",
+    "title_zh": "執行辦公室 EO",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_eo@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No：03-869-1277"
+  },
+  {
+    "record_key": "contacts-0097",
+    "department": "SPA",
+    "title_zh": "總經理",
+    "title_en": "General Manager",
+    "name_zh": "趙嘉綺",
+    "name_en": "Jackie Chao",
+    "email": "jackiechao@silksplace-taroko.com.tw",
+    "extension": "3001"
+  },
+  {
+    "record_key": "contacts-0100",
+    "department": "SPA",
+    "title_zh": "營運經理",
+    "title_en": "Manager",
+    "name_zh": "鄔寧",
+    "name_en": "Cece Wu",
+    "email": "ge@silksplace-taroko.com.tw",
+    "extension": "3000"
+  },
+  {
+    "record_key": "contacts-0101",
+    "department": "SPA",
+    "title_zh": "主任",
+    "title_en": "Supervisor",
+    "name_zh": "孫婉筑",
+    "name_en": "Nora Sun",
+    "email": "ge1@silksplace-taroko.com.tw",
+    "extension": "3005"
+  },
+  {
+    "record_key": "contacts-0102",
+    "department": "SPA",
+    "title_zh": "顧客關係專員",
+    "title_en": "Guest Experience Coordinator",
+    "name_zh": "李亭儀",
+    "name_en": "Julia Li",
+    "email": "ge2@silksplace-taroko.com.tw",
+    "extension": "3003"
+  },
+  {
+    "record_key": "contacts-0105",
+    "department": "SMD",
+    "title_zh": "電話 : 02-2560-3266",
+    "title_en": "",
+    "name_zh": "傳真 Fax No : 02-2511-2327",
+    "name_en": "",
+    "email": "",
+    "extension": "館內分機直撥 3999-"
+  },
+  {
+    "record_key": "contacts-0107",
+    "department": "SMD",
+    "title_zh": "總經理",
+    "title_en": "General Manager",
+    "name_zh": "趙嘉綺",
+    "name_en": "Jackie Chao",
+    "email": "jackiechao@silksplace-taroko.com.tw",
+    "extension": "233"
+  },
+  {
+    "record_key": "contacts-0108",
+    "department": "SMD",
+    "title_zh": "業務總監",
+    "title_en": "Director of Sales",
+    "name_zh": "陳曉芸",
+    "name_en": "Ellie Chen",
+    "email": "elliechen@silksplace-taroko.com.tw",
+    "extension": "216"
+  },
+  {
+    "record_key": "contacts-0109",
+    "department": "SMD",
+    "title_zh": "業務經理",
+    "title_en": "Sales Manager",
+    "name_zh": "劉人豪",
+    "name_en": "Wesley",
+    "email": "corp@silksplace-taroko.com.tw",
+    "extension": "214"
+  },
+  {
+    "record_key": "contacts-0110",
+    "department": "SMD",
+    "title_zh": "資深業務主任",
+    "title_en": "Sr. Sales Supervisor",
+    "name_zh": "",
+    "name_en": "",
+    "email": "tacorp@silksplace-taroko.com.tw",
+    "extension": "210"
+  },
+  {
+    "record_key": "contacts-0111",
+    "department": "SMD",
+    "title_zh": "業務主任",
+    "title_en": "Sales Supervisor",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "213"
+  },
+  {
+    "record_key": "contacts-0112",
+    "department": "SMD",
+    "title_zh": "營銷經理",
+    "title_en": "Manager of Revenue",
+    "name_zh": "黃郁玲",
+    "name_en": "Winnie Huang",
+    "email": "tacorp2@silksplace-taroko.com.tw",
+    "extension": "226"
+  },
+  {
+    "record_key": "contacts-0113",
+    "department": "SMD",
+    "title_zh": "網路營銷專員",
+    "title_en": "Online Revenue Coordinator",
+    "name_zh": "張簡旻倫",
+    "name_en": "Ellen Changchien",
+    "email": "online@silksplace-taroko.com.tw",
+    "extension": "211"
+  },
+  {
+    "record_key": "contacts-0114",
+    "department": "SMD",
+    "title_zh": "營銷訂房專員",
+    "title_en": "Revenue Coordinator",
+    "name_zh": "何家芳",
+    "name_en": "Candy Ho",
+    "email": "revenue@silksplace-taroko.com.tw",
+    "extension": "202"
+  },
+  {
+    "record_key": "contacts-0115",
+    "department": "SMD",
+    "title_zh": "行政助理",
+    "title_en": "Sales Administration",
+    "name_zh": "",
+    "name_en": "",
+    "email": "smasst@silksplace-taroko.com.tw",
+    "extension": "215"
+  },
+  {
+    "record_key": "contacts-0116",
+    "department": "SMD",
+    "title_zh": "行政助理",
+    "title_en": "Sales Administration",
+    "name_zh": "卓依琳",
+    "name_en": "Elin Cho",
+    "email": "asst@silksplace-taroko.com.tw",
+    "extension": "219"
+  },
+  {
+    "record_key": "contacts-0117",
+    "department": "SMD",
+    "title_zh": "行銷公關經理",
+    "title_en": "Marcom Manager",
+    "name_zh": "謝宜靜",
+    "name_en": "Sunny Hsieh",
+    "email": "marcom@silksplace-taroko.com.tw",
+    "extension": "230"
+  },
+  {
+    "record_key": "contacts-0118",
+    "department": "SMD",
+    "title_zh": "行銷公關主任",
+    "title_en": "PR Supervisor",
+    "name_zh": "",
+    "name_en": "",
+    "email": "pr@silksplace-taroko.com.tw",
+    "extension": "203"
+  },
+  {
+    "record_key": "contacts-0119",
+    "department": "SMD",
+    "title_zh": "行銷業務辦公室助理",
+    "title_en": "Asst of SMD office",
+    "name_zh": "鄭伊珊",
+    "name_en": "Sally Cheng",
+    "email": "digital@silksplace-taroko.com.tw",
+    "extension": "206"
+  },
+  {
+    "record_key": "contacts-0120",
+    "department": "SMD",
+    "title_zh": "藝創設計",
+    "title_en": "Art Creation",
+    "name_zh": "詹欣樺",
+    "name_en": "Carrie",
+    "email": "art@silksplace-taroko.com.tw /art@silksplace-taroko.com.tw",
+    "extension": "204"
+  },
+  {
+    "record_key": "contacts-0121",
+    "department": "SMD",
+    "title_zh": "本館 公關 /美工",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "傳真 Fax No : 03-869-1305"
+  },
+  {
+    "record_key": "contacts-0122",
+    "department": "SMD",
+    "title_zh": "",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3403 (出差用)"
+  },
+  {
+    "record_key": "contacts-0123",
+    "department": "SMD",
+    "title_zh": "採購部 Purchasing",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_pur@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No : 03-869-1250"
+  },
+  {
+    "record_key": "contacts-0124",
+    "department": "SMD",
+    "title_zh": "採購經理",
+    "title_en": "Purchasing Manager",
+    "name_zh": "林麗玉",
+    "name_en": "Ann Lin",
+    "email": "ann@silksplace-taroko.com.tw",
+    "extension": "3350"
+  },
+  {
+    "record_key": "contacts-0125",
+    "department": "SMD",
+    "title_zh": "採購組長",
+    "title_en": "Supervisor",
+    "name_zh": "姚淑華",
+    "name_en": "Star",
+    "email": "pur2@silksplace-taroko.com.tw",
+    "extension": "3351"
+  },
+  {
+    "record_key": "contacts-0126",
+    "department": "SMD",
+    "title_zh": "採購專員",
+    "title_en": "Buyer",
+    "name_zh": "",
+    "name_en": "",
+    "email": "pur1@silksplace-taroko.com.tw",
+    "extension": "3352"
+  },
+  {
+    "record_key": "contacts-0127",
+    "department": "SMD",
+    "title_zh": "財務部 Finance",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_adm@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No : 03- 869-1300"
+  },
+  {
+    "record_key": "contacts-0128",
+    "department": "SMD",
+    "title_zh": "財務長",
+    "title_en": "Financial Controller",
+    "name_zh": "張靜雅",
+    "name_en": "Annie Chang",
+    "email": "annie@silksplace-taroko.com.tw",
+    "extension": "3301"
+  },
+  {
+    "record_key": "contacts-0129",
+    "department": "SMD",
+    "title_zh": "會計副理",
+    "title_en": "Asst. Manager",
+    "name_zh": "王明莉",
+    "name_en": "Milly Wang",
+    "email": "milly@silksplace-taroko.com.tw",
+    "extension": "3312"
+  },
+  {
+    "record_key": "contacts-0130",
+    "department": "SMD",
+    "title_zh": "會計主任",
+    "title_en": "Supervisor",
+    "name_zh": "李蕙芳",
+    "name_en": "Fanny Lee",
+    "email": "fanny@silksplace-taroko.com.tw",
+    "extension": "3310"
+  },
+  {
+    "record_key": "contacts-0131",
+    "department": "SMD",
+    "title_zh": "成控主任",
+    "title_en": "Cost Control Supervisor",
+    "name_zh": "張湘萍",
+    "name_en": "Nana Chang",
+    "email": "nana@silksplace-taroko.com.tw",
+    "extension": "3322"
+  },
+  {
+    "record_key": "contacts-0132",
+    "department": "SMD",
+    "title_zh": "資深會計專員",
+    "title_en": "Sr. Accountant",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3315"
+  },
+  {
+    "record_key": "contacts-0133",
+    "department": "SMD",
+    "title_zh": "資深會計專員",
+    "title_en": "Sr. Accountant",
+    "name_zh": "朱幼琳",
+    "name_en": "Dena Zhu",
+    "email": "dena@silksplace-taroko.com.tw",
+    "extension": "3313"
+  },
+  {
+    "record_key": "contacts-0134",
+    "department": "SMD",
+    "title_zh": "會計專員",
+    "title_en": "Accountant & Admin.",
+    "name_zh": "張家珣",
+    "name_en": "Laura Chang",
+    "email": "laura@silksplace-taroko.com.tw",
+    "extension": "3300"
+  },
+  {
+    "record_key": "contacts-0135",
+    "department": "SMD",
+    "title_zh": "會計專員",
+    "title_en": "Accountant",
+    "name_zh": "陳紅霖",
+    "name_en": "Tiffany Chen",
+    "email": "acc1@silksplace-taroko.com.tw",
+    "extension": "3311"
+  },
+  {
+    "record_key": "contacts-0136",
+    "department": "SMD",
+    "title_zh": "資深會計專員",
+    "title_en": "Sr. Accountant",
+    "name_zh": "吳欣怡",
+    "name_en": "Candy Wu",
+    "email": "candy@silksplace-taroko.com.tw",
+    "extension": "3323"
+  },
+  {
+    "record_key": "contacts-0137",
+    "department": "SMD",
+    "title_zh": "財務部會議室",
+    "title_en": "Meeting Room",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3006"
+  },
+  {
+    "record_key": "contacts-0138",
+    "department": "SMD",
+    "title_zh": "資深倉管驗收管理員",
+    "title_en": "Sr. Storekeeper & Receiver",
+    "name_zh": "董獻文",
+    "name_en": "Frank Tung",
+    "email": "storekeeper@silksplace-taroko.com.tw",
+    "extension": "3324"
+  },
+  {
+    "record_key": "contacts-0139",
+    "department": "SMD",
+    "title_zh": "倉庫/驗收管理員",
+    "title_en": "Storekeeper & Receiver",
+    "name_zh": "邱富群",
+    "name_en": "Max Chiu",
+    "email": "",
+    "extension": "3326"
+  },
+  {
+    "record_key": "contacts-0141",
+    "department": "SMD",
+    "title_zh": "資訊室經理",
+    "title_en": "MIS Manager",
+    "name_zh": "張朝富",
+    "name_en": "Urza Chang",
+    "email": "urza@silksplace-taroko.com.tw",
+    "extension": "3302"
+  },
+  {
+    "record_key": "contacts-0142",
+    "department": "SMD",
+    "title_zh": "資訊專員",
+    "title_en": "System Analyst",
+    "name_zh": "黃一智",
+    "name_en": "Noah Huang",
+    "email": "mis1@silksplace-taroko.com.tw",
+    "extension": "3303"
+  },
+  {
+    "record_key": "contacts-0143",
+    "department": "SMD",
+    "title_zh": "資訊室 1F機房",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3307 / 3308"
+  },
+  {
+    "record_key": "contacts-0145",
+    "department": "SMD",
+    "title_zh": "人力資源室 HR",
+    "title_en": "",
+    "name_zh": "",
+    "name_en": "",
+    "email": "taroko_hr@silksplace-taroko.com.tw",
+    "extension": "傳真 Fax No : : 03-869-1031"
+  },
+  {
+    "record_key": "contacts-0146",
+    "department": "SMD",
+    "title_zh": "經理",
+    "title_en": "HR Manager",
+    "name_zh": "",
+    "name_en": "",
+    "email": "hr@silksplace-taroko.com.tw",
+    "extension": "3601"
+  },
+  {
+    "record_key": "contacts-0147",
+    "department": "SMD",
+    "title_zh": "主任",
+    "title_en": "Supervisor of Human Resource",
+    "name_zh": "陳雅柔",
+    "name_en": "Zoe Chen",
+    "email": "hr1@silksplace-taroko.com.tw",
+    "extension": "3612"
+  },
+  {
+    "record_key": "contacts-0148",
+    "department": "SMD",
+    "title_zh": "行政總務專員",
+    "title_en": "Administration Support",
+    "name_zh": "翁鳳儀",
+    "name_en": "Justine Weng",
+    "email": "hr2@silksplace-taroko.com.tw",
+    "extension": "3602"
+  },
+  {
+    "record_key": "contacts-0149",
+    "department": "SMD",
+    "title_zh": "人資專員",
+    "title_en": "Personnel Coordinator",
+    "name_zh": "陳庭卉",
+    "name_en": "Vina Chen",
+    "email": "hr3@silksplace-taroko.com.tw",
+    "extension": "3600"
+  },
+  {
+    "record_key": "contacts-0151",
+    "department": "司機",
+    "title_zh": "員工餐廳",
+    "title_en": "Staff Canteen",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3631"
+  },
+  {
+    "record_key": "contacts-0152",
+    "department": "司機",
+    "title_zh": "男主管宿舍",
+    "title_en": "Staff Dormitory-M",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3180"
+  },
+  {
+    "record_key": "contacts-0153",
+    "department": "司機",
+    "title_zh": "女主管宿舍",
+    "title_en": "Staff Dormitory-F",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3181"
+  },
+  {
+    "record_key": "contacts-0154",
+    "department": "司機",
+    "title_zh": "男員工艙房 (A艙)",
+    "title_en": "Capsule-A",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3280"
+  },
+  {
+    "record_key": "contacts-0155",
+    "department": "司機",
+    "title_zh": "女員工艙房 (B艙)",
+    "title_en": "Capsule-B",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3283"
+  },
+  {
+    "record_key": "contacts-0156",
+    "department": "司機",
+    "title_zh": "女員工艙房(C艙)",
+    "title_en": "Capsule-C",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3613"
+  },
+  {
+    "record_key": "contacts-0157",
+    "department": "司機",
+    "title_zh": "男員工艙房 (D艙)",
+    "title_en": "Capsule-D",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3818"
+  },
+  {
+    "record_key": "contacts-0158",
+    "department": "司機",
+    "title_zh": "女員工艙房 (E艙)",
+    "title_en": "Capsule-E",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3614"
+  },
+  {
+    "record_key": "contacts-0159",
+    "department": "司機",
+    "title_zh": "男員工艙房 (F艙)",
+    "title_en": "Capsule-F",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3819"
+  },
+  {
+    "record_key": "contacts-0160",
+    "department": "司機",
+    "title_zh": "女員工艙房(G艙)",
+    "title_en": "Capsule-G",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3611"
+  },
+  {
+    "record_key": "contacts-0163",
+    "department": "工程部",
+    "title_zh": "辦公室",
+    "title_en": "Office",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3503"
+  },
+  {
+    "record_key": "contacts-0164",
+    "department": "工程部",
+    "title_zh": "工程行政管理總監",
+    "title_en": "Director of Engineering",
+    "name_zh": "楊德仁",
+    "name_en": "Daren Yan",
+    "email": "engineer@silksplace-taroko.com.tw",
+    "extension": "3501"
+  },
+  {
+    "record_key": "contacts-0166",
+    "department": "工程部",
+    "title_zh": "工程副理",
+    "title_en": "Asst. Manager",
+    "name_zh": "林正昌",
+    "name_en": "James Lin",
+    "email": "asstmgr.eng@silksplace-taroko.com.tw",
+    "extension": "3515"
+  },
+  {
+    "record_key": "contacts-0167",
+    "department": "工程部",
+    "title_zh": "值班工程師",
+    "title_en": "On Duty",
+    "name_zh": "",
+    "name_en": "",
+    "email": "",
+    "extension": "3524"
+  },
+  {
+    "record_key": "contacts-0169",
+    "department": "工程部",
+    "title_zh": "污水處理員",
+    "title_en": "Exclusive personnel of\nwastewater treatment",
+    "name_zh": "",
+    "name_en": "",
+    "email": "eng.taroko@gmail.com",
+    "extension": "3508"
+  },
+  {
+    "record_key": "contacts-0170",
+    "department": "工程部",
+    "title_zh": "工程行政專員",
+    "title_en": "Storekeeper & Admin.",
+    "name_zh": "",
+    "name_en": "",
+    "email": "engadm@silksplace-taroko.com.tw",
+    "extension": "3504"
+  },
+  {
+    "record_key": "contacts-0178",
+    "department": "工程部",
+    "title_zh": "經理",
+    "title_en": "Security Manager",
+    "name_zh": "陳衛華",
+    "name_en": "David Chen",
+    "email": "security@silksplace-taroko.com.tw",
+    "extension": "3331"
+  },
+  {
+    "record_key": "contacts-0179",
+    "department": "工程部",
+    "title_zh": "安全員",
+    "title_en": "Security Guard",
+    "name_zh": "",
+    "name_en": "",
+    "email": "sec.taroko@gmail.com",
+    "extension": "3333"
+  }
+]

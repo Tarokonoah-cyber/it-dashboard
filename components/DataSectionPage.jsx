@@ -27,7 +27,7 @@ const CONTACT_COLUMNS = [
   { label: "部門", keys: ["部門", "單位", "department", "?桐?", "å®ä½"] },
   { label: "職稱", keys: ["職稱", "title_zh", "title", "Position", "?瑞迂", "è·ç¨±"] },
   { label: "姓名", keys: ["姓名", "name_zh", "Name", "name", "憪?", "å§å"] },
-  { label: "分機", keys: ["分機", "extension", "Extension", "?? Extension", "åæ© Extension"] },
+  { label: "分機", keys: ["分機", "分機 Extension", "extension", "Extension", "?? Extension", "åæ© Extension"] },
   { label: "中華電信 *55", keys: ["中華電信 *55", "cht_mobile", "銝剛?颱縑 *55", "ä¸­è¯é»ä¿¡ *55"] },
   { label: "個人行動電話", keys: ["個人行動電話", "mobile_phone", "phone", "?犖銵??餉店", "åäººè¡åé»è©±"] },
   { label: "Email", keys: ["Email", "email", "E-mail address"] }
