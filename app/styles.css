@@ -8245,8 +8245,8 @@ textarea:disabled {
 .dashboard-todo-panel,
 .dashboard-calendar-panel,
 .dashboard-focus-panel {
-  height: 620px;
-  max-height: 620px;
+  height: 500px;
+  max-height: 500px;
   min-height: 0 !important;
   overflow: hidden;
 }
@@ -8257,16 +8257,18 @@ textarea:disabled {
 }
 
 .dashboard-todo-panel .dashboard-todo-list {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
-  max-height: none;
+  max-height: 346px;
   overflow-y: auto;
   padding-right: 5px;
 }
 
 .dashboard-todo-panel .dashboard-todo-row {
   grid-template-columns: 20px minmax(0, 1fr) minmax(48px, auto) auto;
-  min-height: 58px;
+  min-height: 54px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .dashboard-todo-panel .todo-row-main {
@@ -8306,12 +8308,13 @@ textarea:disabled {
 }
 
 .dashboard-calendar-panel .dashboard-calendar-grid {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  grid-auto-rows: 58px;
   min-height: 0;
 }
 
 .dashboard-calendar-panel .dashboard-day-cell {
-  min-height: 0;
+  min-height: 58px;
   padding: 7px;
 }
 
