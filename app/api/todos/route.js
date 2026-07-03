@@ -58,6 +58,7 @@ export async function PATCH(request) {
       payload.description = validateTextLength(body.description, "Todo description", MAX_TODO_TEXT_LENGTH);
     }
     if (body.note !== undefined) payload.note = validateTextLength(body.note, "Todo note", MAX_TODO_TEXT_LENGTH);
+    if (body.priority !== undefined) payload.priority = validateTextLength(body.priority, "Todo priority", 40) || "一般";
     if (body.status !== undefined) payload.status = String(body.status || "").trim();
     if (payload.status !== undefined && isTodoDone(payload)) payload.completed_at = new Date().toISOString();
     payload.updated_at = new Date().toISOString();

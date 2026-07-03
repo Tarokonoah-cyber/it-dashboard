@@ -8210,6 +8210,10 @@ textarea:disabled {
   background: var(--hotel-red);
 }
 
+.dashboard-todo-row.priority-urgent::before {
+  background: #b42318;
+}
+
 .dashboard-todo-row.priority-medium::before {
   background: var(--hotel-amber);
 }
@@ -8306,6 +8310,25 @@ textarea:disabled {
   gap: 0;
 }
 
+.todo-inline-edit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 92px;
+  gap: 8px;
+  align-items: center;
+}
+
+.todo-inline-edit input,
+.todo-inline-edit select {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 0 10px;
+  font-size: 13px;
+}
+
 .priority-badge {
   display: inline-flex;
   align-items: center;
@@ -8325,6 +8348,12 @@ textarea:disabled {
   border-color: #f2cdcd;
   background: #fff0f0;
   color: var(--hotel-red);
+}
+
+.priority-badge.priority-urgent {
+  border-color: #f0b4b4;
+  background: #ffe4e4;
+  color: #b42318;
 }
 
 .priority-badge.priority-medium {
@@ -8648,7 +8677,7 @@ textarea:disabled {
 
 .dashboard-todo-input.is-expanded {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) 96px auto auto;
   gap: 10px;
   margin: 0 0 12px;
   padding: 12px;
@@ -8657,7 +8686,8 @@ textarea:disabled {
   background: #f8fafc;
 }
 
-.dashboard-todo-input.is-expanded input {
+.dashboard-todo-input.is-expanded input,
+.dashboard-todo-input.is-expanded select {
   width: 100%;
   min-height: 40px;
   border: 1px solid #cfd9e6;
@@ -8671,7 +8701,8 @@ textarea:disabled {
   color: #8492a6;
 }
 
-.dashboard-todo-input.is-expanded input:focus {
+.dashboard-todo-input.is-expanded input:focus,
+.dashboard-todo-input.is-expanded select:focus {
   border-color: var(--hotel-gold);
   outline: 3px solid rgba(201, 154, 69, 0.22);
   outline-offset: 1px;

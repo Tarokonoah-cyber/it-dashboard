@@ -8,6 +8,7 @@ import { getSectionHref } from "./navigation";
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
+const TODO_PRIORITIES = ["一般", "中", "高", "緊急"];
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 const CALENDAR_EVENTS_STORAGE_KEY = "dashboard-calendar-events";
 
@@ -100,9 +101,15 @@ function CompletionSummaryItem({ rate, completed, total, pending }) {
 function getTodoPriority(todo) {
   const raw = String(todo.priority || todo.level || todo.importance || "").trim();
   const title = String(todo.title || "").toLowerCase();
+  if (/緊急|critical|urgent/.test(`${raw} ${title}`)) return { label: "緊急", tone: "urgent" };
   if (/高|急|urgent|high|異常|逾期|ups|機房|電池|斷線|故障/.test(`${raw} ${title}`)) return { label: "高", tone: "high" };
   if (/中|medium|檢查|確認|盤點|維護/.test(`${raw} ${title}`)) return { label: "中", tone: "medium" };
   return { label: "一般", tone: "normal" };
+}
+
+function getTodoPriorityValue(todo) {
+  const priority = getTodoPriority(todo).label;
+  return TODO_PRIORITIES.includes(priority) ? priority : "一般";
 }
 
 function formatWorkTitle(work) {
@@ -178,9 +185,13 @@ function DashboardToast({ toast }) {
 
 function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
   const [title, setTitle] = useState("");
+  const [priority, setPriority] = useState("一般");
   const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState("");
+  const [editingTodoId, setEditingTodoId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editPriority, setEditPriority] = useState("一般");
   const [processingTodoIds, setProcessingTodoIds] = useState(() => new Set());
   const [completedTodoIds, setCompletedTodoIds] = useState(() => new Set());
   const [fadingTodoIds, setFadingTodoIds] = useState(() => new Set());
@@ -215,9 +226,10 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
     try {
       await api("/api/todos", {
         method: "POST",
-        body: JSON.stringify({ title: value })
+        body: JSON.stringify({ title: value, priority })
       });
       setTitle("");
+      setPriority("一般");
       await onReload();
       setIsAdding(false);
     } catch (err) {
@@ -229,6 +241,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
 
   function cancelAddTodo() {
     setTitle("");
+    setPriority("一般");
     setIsAdding(false);
   }
 
@@ -265,22 +278,39 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
     }
   }
 
-  async function editTodo(row) {
-    const next = window.prompt("修改待辦內容", row.title || "");
-    if (!next || !next.trim()) return;
-    if (next.trim().length > MAX_TODO_TITLE_LENGTH) {
+  function startEditTodo(row) {
+    setEditingTodoId(row.id);
+    setEditTitle(row.title || "");
+    setEditPriority(getTodoPriorityValue(row));
+    setError("");
+  }
+
+  function cancelEditTodo() {
+    setEditingTodoId("");
+    setEditTitle("");
+    setEditPriority("一般");
+  }
+
+  async function saveEditTodo(row) {
+    const nextTitle = editTitle.trim();
+    if (!nextTitle) return;
+    if (nextTitle.length > MAX_TODO_TITLE_LENGTH) {
       window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
       return;
     }
     setError("");
+    setSaving(true);
     try {
       await api("/api/todos", {
         method: "PATCH",
-        body: JSON.stringify({ id: row.id, title: next.trim() })
+        body: JSON.stringify({ id: row.id, title: nextTitle, priority: editPriority })
       });
+      cancelEditTodo();
       await onReload();
     } catch (err) {
       setError(err.message || "Todo 更新失敗");
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -318,6 +348,13 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
             placeholder="輸入新的待辦事項..."
             autoFocus
           />
+          <select
+            value={priority}
+            onChange={(event) => setPriority(event.target.value)}
+            aria-label="待辦緊急程度"
+          >
+            {TODO_PRIORITIES.map((option) => <option key={option}>{option}</option>)}
+          </select>
           <button className="todo-save-button" type="button" onClick={addTodo} disabled={saving}>
             {saving ? "儲存中" : "儲存"}
           </button>
@@ -338,9 +375,17 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
               isProcessing={processingTodoIds.has(todo.id)}
               isCompleted={completedTodoIds.has(todo.id)}
               isFading={fadingTodoIds.has(todo.id)}
+              isEditing={editingTodoId === todo.id}
+              editTitle={editTitle}
+              editPriority={editPriority}
+              onEditTitleChange={setEditTitle}
+              onEditPriorityChange={setEditPriority}
               onComplete={() => completeTodo(todo)}
-              onEdit={() => editTodo(todo)}
+              onEdit={() => startEditTodo(todo)}
+              onCancelEdit={cancelEditTodo}
+              onSaveEdit={() => saveEditTodo(todo)}
               onDelete={() => deleteTodo(todo.id)}
+              isSaving={saving}
             />
           ))
         )}
@@ -354,7 +399,23 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
   );
 }
 
-function TodoRow({ todo, isProcessing, isCompleted, isFading, onComplete, onEdit, onDelete }) {
+function TodoRow({
+  todo,
+  isProcessing,
+  isCompleted,
+  isFading,
+  isEditing,
+  editTitle,
+  editPriority,
+  onEditTitleChange,
+  onEditPriorityChange,
+  onComplete,
+  onEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onDelete,
+  isSaving
+}) {
   const priority = getTodoPriority(todo);
   const disabled = isProcessing || isCompleted || isFading;
   const priorityText = isProcessing ? "處理中" : isCompleted ? "已完成" : priority.label;
@@ -369,11 +430,37 @@ function TodoRow({ todo, isProcessing, isCompleted, isFading, onComplete, onEdit
         aria-label={isProcessing ? "待辦處理中" : isCompleted ? "待辦已完成" : "完成待辦"}
       />
       <div className="todo-row-main">
-        <strong>{todo.title || "未命名待辦"}</strong>
+        {isEditing ? (
+          <div className="todo-inline-edit">
+            <input
+              value={editTitle}
+              onChange={(event) => onEditTitleChange(event.target.value)}
+              maxLength={MAX_TODO_TITLE_LENGTH}
+              aria-label="修改待辦內容"
+              autoFocus
+            />
+            <select
+              value={editPriority}
+              onChange={(event) => onEditPriorityChange(event.target.value)}
+              aria-label="修改待辦緊急程度"
+            >
+              {TODO_PRIORITIES.map((option) => <option key={option}>{option}</option>)}
+            </select>
+          </div>
+        ) : (
+          <strong>{todo.title || "未命名待辦"}</strong>
+        )}
       </div>
-      <b className={priorityClass}>{priorityText}</b>
+      {isEditing ? null : <b className={priorityClass}>{priorityText}</b>}
       <div className="row-actions">
-        <button onClick={onEdit} disabled={disabled}>修改</button>
+        {isEditing ? (
+          <>
+            <button onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()}>儲存</button>
+            <button onClick={onCancelEdit} disabled={isSaving}>取消</button>
+          </>
+        ) : (
+          <button onClick={onEdit} disabled={disabled || isSaving}>修改</button>
+        )}
         <button onClick={onDelete} disabled={disabled}>刪除</button>
       </div>
     </article>
@@ -719,9 +806,9 @@ function DashboardWorkTable({ works, onNavigate }) {
 }
 
 function DashboardTrendPanel({ trend }) {
-  const safeTrend = trend?.filter((item) => Number(item.count) > 0) || [];
-  if (safeTrend.length === 0) return null;
-  const max = Math.max(1, ...safeTrend.map((item) => item.count));
+  const safeTrend = Array.isArray(trend) ? trend.slice(-7) : [];
+  if (!safeTrend.some((item) => Number(item.count) > 0)) return null;
+  const max = Math.max(1, ...safeTrend.map((item) => Number(item.count) || 0));
   const chartWidth = 700;
   const chartHeight = 154;
   const padX = 18;
@@ -729,9 +816,10 @@ function DashboardTrendPanel({ trend }) {
   const padBottom = 24;
   const plotHeight = chartHeight - padTop - padBottom;
   const points = safeTrend.map((item, index) => {
+    const count = Number(item.count) || 0;
     const x = safeTrend.length <= 1 ? padX : padX + (index / (safeTrend.length - 1)) * (chartWidth - padX * 2);
-    const y = padTop + plotHeight - (item.count / max) * plotHeight;
-    return { ...item, x, y };
+    const y = padTop + plotHeight - (count / max) * plotHeight;
+    return { ...item, count, x, y };
   });
   const polyline = points.map((point) => `${point.x},${point.y}`).join(" ");
   const baseline = chartHeight - padBottom;
@@ -755,7 +843,7 @@ function DashboardTrendPanel({ trend }) {
         <polyline points={polyline} />
         {points.map((point) => <circle key={point.date} cx={point.x} cy={point.y} r="2.8" />)}
       </svg>
-      <div className="trend-labels">
+      <div className="trend-labels" style={{ gridTemplateColumns: `repeat(${Math.max(safeTrend.length, 1)}, minmax(0, 1fr))` }}>
         {safeTrend.map((item) => (
           <span key={item.date}><b>{item.count}</b>{item.date.slice(5)}</span>
         ))}
