@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { requireDashboardAuth } from "./lib/auth";
 
 const PUBLIC_PATHS = [
+  "/login",
+  "/api/login",
+  "/api/logout",
   "/api/cron/sports",
   "/api/line/webhook",
   "/favicon.ico",
@@ -19,7 +22,13 @@ export function proxy(request) {
   if (isPublicPath(pathname)) return NextResponse.next();
 
   const authError = requireDashboardAuth(request);
-  if (authError) return authError;
+  if (authError) {
+    if (pathname.startsWith("/api/")) return authError;
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("next", `${pathname}${request.nextUrl.search}`);
+    return NextResponse.redirect(loginUrl);
+  }
   return NextResponse.next();
 }
 
