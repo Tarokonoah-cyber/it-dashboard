@@ -169,6 +169,31 @@ function DashboardToast({ toast }) {
   );
 }
 
+function DashboardActionHero({ pendingCount, followUpCount, abnormalCount, onNavigate }) {
+  return (
+    <section className="today-action-hero" aria-label="今日行動摘要">
+      <div>
+        <h2>今日行動</h2>
+        <p>先處理待辦與待追蹤，再檢查異常與今日快速操作。</p>
+      </div>
+      <div className="today-action-strip">
+        <button type="button" onClick={() => onNavigate?.("work")}>
+          <span>待辦</span>
+          <strong>{pendingCount}</strong>
+        </button>
+        <button type="button" onClick={() => onNavigate?.("follow-ups")}>
+          <span>待追蹤</span>
+          <strong>{followUpCount}</strong>
+        </button>
+        <button type="button" onClick={() => onNavigate?.("it_incidents")}>
+          <span>異常</span>
+          <strong>{abnormalCount}</strong>
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) {
   const todayKey = getTodayKey();
   const [activeTab, setActiveTab] = useState("todos");
@@ -384,14 +409,16 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
           className={activeTab === "todos" ? "active" : ""}
           onClick={() => setActiveTab("todos")}
         >
-          待辦事項
+          <span>待辦事項</span>
+          <b>{todos.length}</b>
         </button>
         <button
           type="button"
           className={activeTab === "follow-ups" ? "active" : ""}
           onClick={() => setActiveTab("follow-ups")}
         >
-          待追蹤
+          <span>待追蹤</span>
+          <b>{(followUps || []).length}</b>
         </button>
       </div>
       {isAdding && activeTab === "todos" ? (
@@ -584,7 +611,10 @@ function TodoRow({
             <button onClick={onCancelEdit} disabled={isSaving}>取消</button>
           </>
         ) : (
-          <button onClick={onEdit} disabled={disabled || isSaving}>修改</button>
+          <>
+            <button onClick={onComplete} disabled={disabled || isSaving}>完成</button>
+            <button onClick={onEdit} disabled={disabled || isSaving}>修改</button>
+          </>
         )}
         <button onClick={onDelete} disabled={disabled}>刪除</button>
       </div>
@@ -619,15 +649,24 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
     <section className="panel dashboard-focus-panel">
       <header className="panel-title">
         <div>
-          <h2>今日工作中心</h2>
-          <span>LINE、錄音與快速操作</span>
+          <h2>快速操作</h2>
+          <span>今日常用入口</span>
         </div>
         <button onClick={refresh}>{syncing ? "同步中" : "刷新"}</button>
       </header>
 
+      <div className="focus-section quick-actions-section">
+        <b>先做這幾件</b>
+        <div className="quick-action-grid">
+          <button type="button" onClick={() => onNavigate?.("work")}>新增工作</button>
+          <button type="button" onClick={() => onNavigate?.("work")}>查看待處理</button>
+          <button type="button" onClick={() => onNavigate?.("follow-ups")}>查看待追蹤</button>
+        </div>
+      </div>
+
       <div className="focus-section network-section">
         <div className="focus-section-head">
-          <b>今日串流</b>
+          <b>LINE 指派</b>
           <span>{networkRooms.length ? `LINE Bot 已指派 ${networkRooms.length} 間` : "尚未指派"}</span>
         </div>
         {networkRooms.length ? (
@@ -653,14 +692,6 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
         </div>
         <div className="phone-pills">
           {phoneTargets.length ? phoneTargets.map((target) => <span key={target}>{target}</span>) : <span>-</span>}
-        </div>
-      </div>
-
-      <div className="focus-section quick-actions-section">
-        <b>快速操作</b>
-        <div className="quick-action-grid">
-          <button type="button" onClick={() => onNavigate?.("work")}>新增工作</button>
-          <button type="button" onClick={() => onNavigate?.("work")}>查看待處理</button>
         </div>
       </div>
     </section>
@@ -995,7 +1026,21 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
           <h1>儀表板</h1>
         </div>
       </header>
-      <section className="dashboard-kpi-strip">
+      <DashboardActionHero
+        pendingCount={pendingCount}
+        followUpCount={followUps.length}
+        abnormalCount={abnormalCount}
+        onNavigate={onNavigate}
+      />
+      {error ? <div className="error-box">{error}</div> : null}
+
+      <section className="dashboard-layout modern-dashboard-layout">
+        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
+        <DashboardCalendarPanel notify={notify} />
+        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
+      </section>
+
+      <section className="dashboard-kpi-strip supporting-kpi-strip">
         <section className="dashboard-kpi-summary" aria-label="今日營運指標">
           <KpiSummaryItem
             label="今日待處理"
@@ -1031,13 +1076,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
             pending={pendingCount}
           />
         </section>
-      </section>
-      {error ? <div className="error-box">{error}</div> : null}
-
-      <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
-        <DashboardCalendarPanel notify={notify} />
-        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
       </section>
 
       <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>
