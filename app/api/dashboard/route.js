@@ -1,6 +1,7 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 import { isTodoDone, normalizeTodo, normalizeWork } from "../../../lib/dailyOpsSync";
+import { isFollowUpDone, normalizeFollowUp, sortFollowUps } from "../../../lib/followUps";
 
 function toDateKey(value) {
   return value ? String(value).slice(0, 10) : "";
@@ -47,6 +48,21 @@ export async function GET(request) {
     const works = workRows.map(normalizeWork);
     const openTodos = todos.filter((row) => !isTodoDone(row));
     const completedTodos = todos.filter(isTodoDone);
+    let followUps = [];
+    try {
+      const followUpRows = await supabaseRequest(
+        "follow_ups",
+        "select=*&order=next_follow_date.asc,created_at.desc&limit=100"
+      );
+      followUps = sortFollowUps(followUpRows.map(normalizeFollowUp), today)
+        .filter((row) => !isFollowUpDone(row));
+    } catch (error) {
+      console.error("[dashboard optional query error]", { source: "follow_ups", error });
+      warnings.push({
+        source: "follow_ups",
+        message: "Follow-up data failed to load"
+      });
+    }
     const todayWorks = works.filter((row) => toDateKey(row.date || row.created_at) === today);
     const month = today.slice(0, 7);
     const monthWorks = works.filter((row) => toDateKey(row.date || row.created_at).startsWith(month));
@@ -79,6 +95,7 @@ export async function GET(request) {
       completionRate,
       completedCount: completedTodos.length,
       openTodos,
+      followUps,
       networkRooms,
       networkSummary: {
         total: networkRooms.length,

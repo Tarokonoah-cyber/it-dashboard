@@ -8,7 +8,7 @@ import { getSectionHref } from "./navigation";
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
-const TODO_PRIORITIES = ["一般", "中", "高", "緊急"];
+const FOLLOW_UP_STATUSES = ["等待回覆", "處理中", "待確認", "已完成"];
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 const CALENDAR_EVENTS_STORAGE_KEY = "dashboard-calendar-events";
 
@@ -98,20 +98,6 @@ function CompletionSummaryItem({ rate, completed, total, pending }) {
   );
 }
 
-function getTodoPriority(todo) {
-  const raw = String(todo.priority || todo.level || todo.importance || "").trim();
-  const title = String(todo.title || "").toLowerCase();
-  if (/緊急|critical|urgent/.test(`${raw} ${title}`)) return { label: "緊急", tone: "urgent" };
-  if (/高|急|urgent|high|異常|逾期|ups|機房|電池|斷線|故障/.test(`${raw} ${title}`)) return { label: "高", tone: "high" };
-  if (/中|medium|檢查|確認|盤點|維護/.test(`${raw} ${title}`)) return { label: "中", tone: "medium" };
-  return { label: "一般", tone: "normal" };
-}
-
-function getTodoPriorityValue(todo) {
-  const priority = getTodoPriority(todo).label;
-  return TODO_PRIORITIES.includes(priority) ? priority : "一般";
-}
-
 function formatWorkTitle(work) {
   const title = String(work.title || "").trim();
   const description = String(work.description || "").trim();
@@ -183,19 +169,27 @@ function DashboardToast({ toast }) {
   );
 }
 
-function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
+function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) {
+  const todayKey = getTodayKey();
+  const [activeTab, setActiveTab] = useState("todos");
   const [title, setTitle] = useState("");
-  const [priority, setPriority] = useState("一般");
   const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState("");
   const [editingTodoId, setEditingTodoId] = useState("");
   const [editTitle, setEditTitle] = useState("");
-  const [editPriority, setEditPriority] = useState("一般");
   const [processingTodoIds, setProcessingTodoIds] = useState(() => new Set());
   const [completedTodoIds, setCompletedTodoIds] = useState(() => new Set());
   const [fadingTodoIds, setFadingTodoIds] = useState(() => new Set());
+  const [completionTodo, setCompletionTodo] = useState(null);
+  const [isConverting, setIsConverting] = useState(false);
+  const [followForm, setFollowForm] = useState({
+    current_status: "等待回覆",
+    next_follow_date: todayKey,
+    note: ""
+  });
   const todoInputRef = useRef(null);
+  const visibleFollowUps = (followUps || []).slice(0, 5);
 
   function addTodoState(setter, id) {
     setter((current) => {
@@ -226,10 +220,9 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
     try {
       await api("/api/todos", {
         method: "POST",
-        body: JSON.stringify({ title: value, priority })
+        body: JSON.stringify({ title: value })
       });
       setTitle("");
-      setPriority("一般");
       await onReload();
       setIsAdding(false);
     } catch (err) {
@@ -241,14 +234,33 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
 
   function cancelAddTodo() {
     setTitle("");
-    setPriority("一般");
     setIsAdding(false);
+  }
+
+  function openCompleteChoice(todo) {
+    if (!todo?.id || processingTodoIds.has(todo.id) || completedTodoIds.has(todo.id)) return;
+    setCompletionTodo(todo);
+    setIsConverting(false);
+    setFollowForm({
+      current_status: "等待回覆",
+      next_follow_date: todayKey,
+      note: ""
+    });
+    setError("");
+  }
+
+  function closeCompleteChoice() {
+    if (saving) return;
+    setCompletionTodo(null);
+    setIsConverting(false);
   }
 
   async function completeTodo(todo) {
     const id = todo?.id;
     if (!id || processingTodoIds.has(id) || completedTodoIds.has(id)) return;
     setError("");
+    setCompletionTodo(null);
+    setIsConverting(false);
     addTodoState(setProcessingTodoIds, id);
     try {
       await api("/api/todos", {
@@ -278,17 +290,47 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
     }
   }
 
+  async function convertTodoToFollowUp(event) {
+    event.preventDefault();
+    const todo = completionTodo;
+    if (!todo?.id) return;
+    setSaving(true);
+    setError("");
+    addTodoState(setProcessingTodoIds, todo.id);
+    try {
+      await api("/api/follow-ups", {
+        method: "POST",
+        body: JSON.stringify({
+          source_todo_id: todo.id,
+          title: todo.title || "未命名待辦",
+          current_status: followForm.current_status,
+          next_follow_date: followForm.next_follow_date,
+          note: followForm.note
+        })
+      });
+      notify?.({ tone: "success", message: `已轉為待追蹤：${todo.title || "未命名待辦"}` });
+      setCompletionTodo(null);
+      setIsConverting(false);
+      setActiveTab("follow-ups");
+      await onReload();
+    } catch (err) {
+      setError(err.message || "轉為待追蹤失敗");
+      notify?.({ tone: "error", message: "轉為待追蹤失敗，請稍後再試" });
+    } finally {
+      removeTodoState(setProcessingTodoIds, todo.id);
+      setSaving(false);
+    }
+  }
+
   function startEditTodo(row) {
     setEditingTodoId(row.id);
     setEditTitle(row.title || "");
-    setEditPriority(getTodoPriorityValue(row));
     setError("");
   }
 
   function cancelEditTodo() {
     setEditingTodoId("");
     setEditTitle("");
-    setEditPriority("一般");
   }
 
   async function saveEditTodo(row) {
@@ -303,7 +345,7 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
     try {
       await api("/api/todos", {
         method: "PATCH",
-        body: JSON.stringify({ id: row.id, title: nextTitle, priority: editPriority })
+        body: JSON.stringify({ id: row.id, title: nextTitle })
       });
       cancelEditTodo();
       await onReload();
@@ -330,13 +372,29 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
       <header className="panel-title">
         <div>
           <h2>Todo List</h2>
-          <span>待辦事項</span>
+          <span>{activeTab === "todos" ? "待辦事項" : "待追蹤"}</span>
         </div>
-        <button onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))} disabled={saving}>
+        <button onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))} disabled={saving || activeTab !== "todos"}>
           {isAdding ? "取消" : "+ 新增"}
         </button>
       </header>
-      {isAdding ? (
+      <div className="todo-card-tabs" role="tablist" aria-label="Todo List 分頁">
+        <button
+          type="button"
+          className={activeTab === "todos" ? "active" : ""}
+          onClick={() => setActiveTab("todos")}
+        >
+          待辦事項
+        </button>
+        <button
+          type="button"
+          className={activeTab === "follow-ups" ? "active" : ""}
+          onClick={() => setActiveTab("follow-ups")}
+        >
+          待追蹤
+        </button>
+      </div>
+      {isAdding && activeTab === "todos" ? (
         <div className="todo-quick-add dashboard-todo-input is-expanded">
           <input
             ref={todoInputRef}
@@ -348,13 +406,6 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
             placeholder="輸入新的待辦事項..."
             autoFocus
           />
-          <select
-            value={priority}
-            onChange={(event) => setPriority(event.target.value)}
-            aria-label="待辦緊急程度"
-          >
-            {TODO_PRIORITIES.map((option) => <option key={option}>{option}</option>)}
-          </select>
           <button className="todo-save-button" type="button" onClick={addTodo} disabled={saving}>
             {saving ? "儲存中" : "儲存"}
           </button>
@@ -364,38 +415,123 @@ function DashboardTodoPanel({ todos, onReload, onNavigate, notify }) {
         </div>
       ) : null}
       {error ? <div className="error-box">{error}</div> : null}
-      <div className="dashboard-todo-list">
-        {todos.length === 0 ? (
-          <div className="empty">目前沒有待辦項目</div>
-        ) : (
-          todos.map((todo) => (
-            <TodoRow
-              key={todo.id}
-              todo={todo}
-              isProcessing={processingTodoIds.has(todo.id)}
-              isCompleted={completedTodoIds.has(todo.id)}
-              isFading={fadingTodoIds.has(todo.id)}
-              isEditing={editingTodoId === todo.id}
-              editTitle={editTitle}
-              editPriority={editPriority}
-              onEditTitleChange={setEditTitle}
-              onEditPriorityChange={setEditPriority}
-              onComplete={() => completeTodo(todo)}
-              onEdit={() => startEditTodo(todo)}
-              onCancelEdit={cancelEditTodo}
-              onSaveEdit={() => saveEditTodo(todo)}
-              onDelete={() => deleteTodo(todo.id)}
-              isSaving={saving}
-            />
-          ))
-        )}
-      </div>
-      {todos.length > 0 ? (
-        <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work")}>
-          查看全部 {todos.length} 筆 →
-        </button>
+      {activeTab === "todos" ? (
+        <>
+          <div className="dashboard-todo-list">
+            {todos.length === 0 ? (
+              <div className="empty">目前沒有待辦項目</div>
+            ) : (
+              todos.map((todo) => (
+                <TodoRow
+                  key={todo.id}
+                  todo={todo}
+                  isProcessing={processingTodoIds.has(todo.id)}
+                  isCompleted={completedTodoIds.has(todo.id)}
+                  isFading={fadingTodoIds.has(todo.id)}
+                  isEditing={editingTodoId === todo.id}
+                  editTitle={editTitle}
+                  onEditTitleChange={setEditTitle}
+                  onComplete={() => openCompleteChoice(todo)}
+                  onEdit={() => startEditTodo(todo)}
+                  onCancelEdit={cancelEditTodo}
+                  onSaveEdit={() => saveEditTodo(todo)}
+                  onDelete={() => deleteTodo(todo.id)}
+                  isSaving={saving}
+                />
+              ))
+            )}
+          </div>
+          {todos.length > 0 ? (
+            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work")}>
+              查看全部 {todos.length} 筆 →
+            </button>
+          ) : null}
+        </>
+      ) : (
+        <>
+          <div className="dashboard-follow-list">
+            {visibleFollowUps.length === 0 ? (
+              <div className="empty">目前沒有待追蹤項目</div>
+            ) : (
+              visibleFollowUps.map((item) => <FollowUpCompactRow key={item.id} item={item} />)
+            )}
+          </div>
+          {(followUps || []).length > 0 ? (
+            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("follow-ups")}>
+              查看全部 {(followUps || []).length} 筆 →
+            </button>
+          ) : null}
+        </>
+      )}
+      {completionTodo ? (
+        <div className="todo-complete-backdrop" role="presentation" onMouseDown={closeCompleteChoice}>
+          <div className="todo-complete-dialog" role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
+            <header>
+              <div>
+                <h3>{completionTodo.title || "未命名待辦"}</h3>
+                <span>選擇完成方式</span>
+              </div>
+              <button type="button" aria-label="關閉" onClick={closeCompleteChoice}>×</button>
+            </header>
+            {isConverting ? (
+              <form onSubmit={convertTodoToFollowUp}>
+                <label>
+                  目前狀況
+                  <select
+                    value={followForm.current_status}
+                    onChange={(event) => setFollowForm((current) => ({ ...current, current_status: event.target.value }))}
+                  >
+                    {FOLLOW_UP_STATUSES.filter((status) => status !== "已完成").map((status) => <option key={status}>{status}</option>)}
+                  </select>
+                </label>
+                <label>
+                  下次追蹤日
+                  <input
+                    type="date"
+                    value={followForm.next_follow_date}
+                    onChange={(event) => setFollowForm((current) => ({ ...current, next_follow_date: event.target.value }))}
+                    required
+                  />
+                </label>
+                <label>
+                  備註
+                  <textarea
+                    value={followForm.note}
+                    onChange={(event) => setFollowForm((current) => ({ ...current, note: event.target.value }))}
+                    rows={3}
+                  />
+                </label>
+                <footer>
+                  <button type="button" onClick={() => setIsConverting(false)} disabled={saving}>返回</button>
+                  <button className="primary-action" type="submit" disabled={saving || !followForm.next_follow_date}>
+                    {saving ? "儲存中" : "轉為待追蹤"}
+                  </button>
+                </footer>
+              </form>
+            ) : (
+              <div className="todo-complete-choice">
+                <button className="primary-action" type="button" onClick={() => completeTodo(completionTodo)} disabled={saving}>
+                  直接完成
+                </button>
+                <button type="button" onClick={() => setIsConverting(true)} disabled={saving}>
+                  轉為待追蹤
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       ) : null}
     </section>
+  );
+}
+
+function FollowUpCompactRow({ item }) {
+  return (
+    <article className="dashboard-follow-row">
+      <strong>{item.title || "未命名追蹤事項"}</strong>
+      <span>{item.current_status || "等待回覆"}</span>
+      <time>{formatDate(item.next_follow_date)}</time>
+    </article>
   );
 }
 
@@ -406,9 +542,7 @@ function TodoRow({
   isFading,
   isEditing,
   editTitle,
-  editPriority,
   onEditTitleChange,
-  onEditPriorityChange,
   onComplete,
   onEdit,
   onCancelEdit,
@@ -416,13 +550,11 @@ function TodoRow({
   onDelete,
   isSaving
 }) {
-  const priority = getTodoPriority(todo);
   const disabled = isProcessing || isCompleted || isFading;
-  const priorityText = isProcessing ? "處理中" : isCompleted ? "已完成" : priority.label;
-  const priorityClass = isProcessing ? "status-processing" : isCompleted ? "status-done" : `priority-badge priority-${priority.tone}`;
+  const status = isProcessing ? "處理中" : isCompleted ? "已完成" : todo.status || "未完成";
 
   return (
-    <article className={`dashboard-todo-row priority-${priority.tone} ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
+    <article className={`dashboard-todo-row ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
       <button
         className={`circle todo-check ${isProcessing ? "is-loading" : ""} ${isCompleted ? "is-done" : ""}`}
         onClick={onComplete}
@@ -439,19 +571,12 @@ function TodoRow({
               aria-label="修改待辦內容"
               autoFocus
             />
-            <select
-              value={editPriority}
-              onChange={(event) => onEditPriorityChange(event.target.value)}
-              aria-label="修改待辦緊急程度"
-            >
-              {TODO_PRIORITIES.map((option) => <option key={option}>{option}</option>)}
-            </select>
           </div>
         ) : (
           <strong>{todo.title || "未命名待辦"}</strong>
         )}
       </div>
-      {isEditing ? null : <b className={priorityClass}>{priorityText}</b>}
+      {isEditing ? null : <b className={isCompleted ? "status-done" : isProcessing ? "status-processing" : "status-todo"}>{status}</b>}
       <div className="row-actions">
         {isEditing ? (
           <>
@@ -854,6 +979,7 @@ function DashboardTrendPanel({ trend }) {
 
 function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify }) {
   const todos = dashboard?.openTodos || [];
+  const followUps = dashboard?.followUps || [];
   const works = dashboard?.recentWorks || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
@@ -909,7 +1035,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} onReload={onReload} onNavigate={onNavigate} notify={notify} />
+        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
         <DashboardCalendarPanel notify={notify} />
         <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
       </section>

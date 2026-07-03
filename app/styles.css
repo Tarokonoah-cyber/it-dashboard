@@ -11828,3 +11828,331 @@ textarea,
     animation-iteration-count: 1 !important;
   }
 }
+
+.todo-card-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 4px;
+  border: 1px solid #dce5ef;
+  border-radius: 8px;
+  background: #f7fafd;
+}
+
+.todo-card-tabs button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--hotel-muted);
+  font-weight: 850;
+}
+
+.todo-card-tabs button.active {
+  background: #ffffff;
+  color: var(--hotel-blue);
+  box-shadow: 0 1px 4px rgba(15, 35, 57, 0.1);
+}
+
+.dashboard-follow-list {
+  display: grid;
+  gap: 9px;
+  min-height: 0;
+  max-height: 346px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.dashboard-follow-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px 96px;
+  gap: 10px;
+  align-items: center;
+  min-height: 56px;
+  border: 1px solid #dce5ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 12px 10px 14px;
+}
+
+.dashboard-follow-row strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--hotel-text);
+  font-size: 14px;
+  font-weight: 820;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-follow-row span,
+.dashboard-follow-row time {
+  color: var(--hotel-muted);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.todo-complete-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.32);
+  padding: 18px;
+}
+
+.todo-complete-dialog {
+  width: min(460px, 100%);
+  border: 1px solid #d6e1ee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 22px 60px rgba(15, 35, 57, 0.2);
+  padding: 16px;
+}
+
+.todo-complete-dialog header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.todo-complete-dialog h3 {
+  margin: 0;
+  color: var(--hotel-text);
+  font-size: 17px;
+}
+
+.todo-complete-dialog header span {
+  display: block;
+  margin-top: 3px;
+  color: var(--hotel-muted);
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.todo-complete-dialog header button {
+  width: 32px;
+  min-height: 32px;
+  border: 1px solid #dce5ef;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.todo-complete-dialog form {
+  display: grid;
+  gap: 12px;
+}
+
+.todo-complete-dialog label {
+  display: grid;
+  gap: 6px;
+  color: var(--hotel-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.todo-complete-dialog input,
+.todo-complete-dialog select,
+.todo-complete-dialog textarea {
+  width: 100%;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.todo-complete-dialog footer,
+.todo-complete-choice {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.todo-complete-choice button,
+.todo-complete-dialog footer button {
+  min-height: 38px;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 0 14px;
+  font-weight: 850;
+}
+
+.dashboard-todo-input.is-expanded {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.dashboard-todo-panel .dashboard-todo-row {
+  grid-template-columns: 20px minmax(0, 1fr) minmax(68px, auto) auto;
+}
+
+.todo-inline-edit {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.dashboard-todo-row::before,
+.dashboard-todo-row.priority-high::before,
+.dashboard-todo-row.priority-urgent::before,
+.dashboard-todo-row.priority-medium::before,
+.dashboard-todo-row.priority-normal::before {
+  background: var(--hotel-blue);
+}
+
+.follow-ups-page {
+  display: grid;
+  gap: 18px;
+}
+
+.follow-up-entry-panel,
+.follow-up-list-panel {
+  border: 1px solid var(--hotel-line);
+  border-radius: var(--hotel-radius);
+  background: var(--hotel-surface);
+  box-shadow: var(--hotel-shadow-soft);
+  padding: 18px;
+}
+
+.follow-up-entry-panel header,
+.follow-up-list-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.follow-up-entry-panel h2,
+.follow-up-list-panel h2 {
+  margin: 0;
+  color: var(--hotel-text);
+  font-size: 18px;
+}
+
+.follow-up-list-panel header span {
+  color: var(--hotel-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.follow-up-entry-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px 180px;
+  gap: 12px;
+}
+
+.follow-up-entry-grid label {
+  display: grid;
+  gap: 6px;
+  color: var(--hotel-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.follow-up-entry-grid .wide {
+  grid-column: span 3;
+}
+
+.follow-up-entry-grid input,
+.follow-up-entry-grid select,
+.follow-up-entry-grid textarea {
+  width: 100%;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.follow-up-form-actions {
+  grid-column: span 3;
+  display: flex;
+  gap: 10px;
+}
+
+.follow-up-list {
+  display: grid;
+  gap: 10px;
+}
+
+.follow-up-list-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px 120px auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 62px;
+  border: 1px solid #dce5ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+
+.follow-up-list-row.is-done {
+  opacity: 0.72;
+}
+
+.follow-up-list-row strong {
+  color: var(--hotel-text);
+  font-weight: 850;
+}
+
+.follow-up-list-row p {
+  margin: 3px 0 0;
+  color: var(--hotel-muted);
+  font-size: 13px;
+}
+
+.follow-up-list-row span,
+.follow-up-list-row time {
+  color: var(--hotel-muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.follow-up-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.follow-up-row-actions button,
+.follow-up-form-actions button,
+.follow-ups-page .section-head button {
+  min-height: 36px;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 0 12px;
+  font-weight: 850;
+}
+
+.follow-up-row-actions .danger {
+  color: #b42318;
+}
+
+@media (max-width: 760px) {
+  .dashboard-follow-row,
+  .follow-up-list-row,
+  .follow-up-entry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .follow-up-entry-grid .wide,
+  .follow-up-form-actions {
+    grid-column: auto;
+  }
+
+  .follow-up-row-actions {
+    justify-content: flex-start;
+  }
+}
