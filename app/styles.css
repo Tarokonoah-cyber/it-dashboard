@@ -12579,7 +12579,9 @@ textarea,
 }
 
 .redesigned-follow-ups {
-  max-width: 1280px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
   min-height: auto;
   align-content: start;
   grid-auto-rows: max-content;
