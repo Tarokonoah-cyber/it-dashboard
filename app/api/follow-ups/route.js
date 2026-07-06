@@ -14,6 +14,7 @@ import {
 
 const MAX_FOLLOW_UP_TITLE_LENGTH = 160;
 const MAX_FOLLOW_UP_NOTE_LENGTH = 1000;
+const FOLLOW_UPS_TABLE_SETUP_MESSAGE = "待追蹤資料表尚未建立，請先執行 supabase_follow_ups.sql。";
 
 function currentAssignee() {
   return DEFAULT_FOLLOW_UP_ASSIGNEE;
@@ -21,6 +22,14 @@ function currentAssignee() {
 
 function encodeEq(value) {
   return encodeURIComponent(String(value || "").trim());
+}
+
+function isMissingFollowUpsTable(error) {
+  return String(error?.message || error || "").includes("public.follow_ups");
+}
+
+function missingFollowUpsTableError() {
+  return new Error(FOLLOW_UPS_TABLE_SETUP_MESSAGE);
 }
 
 async function loadTodo(id) {
@@ -59,6 +68,7 @@ export async function GET(request) {
     const followUps = sortFollowUps(rows.map(normalizeFollowUp), todayTaipei());
     return ok(includeCompleted ? followUps : followUps.filter((row) => !isFollowUpDone(row)));
   } catch (error) {
+    if (isMissingFollowUpsTable(error)) return ok([]);
     return fail(error);
   }
 }
@@ -93,6 +103,7 @@ export async function POST(request) {
     const todo = sourceTodo ? await completeSourceTodo(sourceTodo) : null;
     return ok({ followUp, todo });
   } catch (error) {
+    if (isMissingFollowUpsTable(error)) return fail(missingFollowUpsTableError(), 503);
     return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
@@ -124,6 +135,7 @@ export async function PATCH(request) {
     });
     return ok(normalizeFollowUp(rows[0] || { id, ...payload }));
   } catch (error) {
+    if (isMissingFollowUpsTable(error)) return fail(missingFollowUpsTableError(), 503);
     return fail(error, error.name === "ValidationError" ? 400 : 500);
   }
 }
@@ -141,6 +153,7 @@ export async function DELETE(request) {
     });
     return ok({ id });
   } catch (error) {
+    if (isMissingFollowUpsTable(error)) return fail(missingFollowUpsTableError(), 503);
     return fail(error);
   }
 }

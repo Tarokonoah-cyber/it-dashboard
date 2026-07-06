@@ -3,8 +3,16 @@ export const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "⌂", label: "儀表板", href: "/" },
   { key: "quick-notes", icon: "✎", label: "快速備忘錄", href: "/quick-notes" },
-  { key: "work", icon: "□", label: "工作中心", href: "/work" },
-  { key: "follow-ups", icon: "⟳", label: "待追蹤", href: "/follow-ups" },
+  {
+    key: "work-center",
+    icon: "□",
+    label: "工作中心",
+    href: "/work",
+    children: [
+      { key: "work", label: "工作紀錄", href: "/work" },
+      { key: "follow-ups", label: "待追蹤", href: "/follow-ups" }
+    ]
+  },
   { key: "daily_inspections", icon: "☑", label: "每日巡檢", href: "/inspections" },
   { key: "documents", icon: "▤", label: "送交單據紀錄", href: "/documents" },
   { key: "contacts", icon: "☷", label: "通訊錄", href: "/contacts" },
