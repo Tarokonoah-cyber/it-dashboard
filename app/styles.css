@@ -12308,16 +12308,20 @@ textarea,
 }
 
 .dashboard-focus-panel {
-  display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
   gap: 10px;
+  overflow: hidden;
 }
 
 .dashboard-focus-panel .focus-section {
+  min-width: 0;
   border-radius: 8px;
   background: #ffffff;
   border-color: #dce5ef;
-  padding: 12px;
+  padding: 11px 12px;
+  overflow: hidden;
 }
 
 .dashboard-focus-panel .focus-section b {
@@ -12330,7 +12334,27 @@ textarea,
 }
 
 .dashboard-focus-panel .network-section {
+  display: grid;
   min-height: 0;
+  gap: 8px;
+}
+
+.dashboard-focus-panel .focus-section-head,
+.dashboard-focus-panel .phone-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-focus-panel .compact-empty {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .dashboard-focus-panel .room-pill-row {
@@ -12348,18 +12372,22 @@ textarea,
 }
 
 .dashboard-focus-panel .quick-action-grid {
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 9px;
 }
 
 .dashboard-focus-panel .quick-action-grid button {
-  min-height: 38px;
+  min-width: 0;
+  min-height: 36px;
   border-radius: 8px;
   background: #f8fafc;
   border: 1px solid #d7e2ee;
   color: var(--hotel-text);
+  padding: 0 8px;
+  font-size: 13px;
   font-weight: 850;
+  white-space: nowrap;
 }
 
 .dashboard-focus-panel .quick-action-grid button:hover {
