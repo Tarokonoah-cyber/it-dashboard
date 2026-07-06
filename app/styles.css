@@ -12580,8 +12580,11 @@ textarea,
 
 .redesigned-follow-ups {
   max-width: 1280px;
+  min-height: auto;
+  align-content: start;
+  grid-auto-rows: max-content;
   gap: 14px;
-  padding-top: 28px;
+  padding-top: 24px;
 }
 
 .follow-ups-head {
@@ -12680,6 +12683,7 @@ textarea,
 }
 
 .redesigned-follow-ups .follow-up-list-panel {
+  min-height: 0;
   padding: 18px;
 }
 
