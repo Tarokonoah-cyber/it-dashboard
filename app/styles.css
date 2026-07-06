@@ -8372,14 +8372,14 @@ textarea:disabled {
 
 .dashboard-calendar-panel .dashboard-calendar-grid {
   flex: 0 0 auto;
-  grid-auto-rows: 64px;
+  grid-auto-rows: 72px;
   min-height: 0;
 }
 
 .dashboard-calendar-panel .dashboard-day-cell {
   display: flex;
   min-width: 0;
-  min-height: 64px;
+  min-height: 72px;
   padding: 8px;
   flex-direction: column;
   align-items: flex-start;
@@ -12223,8 +12223,8 @@ textarea,
 }
 
 .dashboard-calendar-panel {
-  height: 550px;
-  max-height: 550px;
+  height: 620px;
+  max-height: 620px;
 }
 
 .dashboard-focus-panel {
