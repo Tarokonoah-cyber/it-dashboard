@@ -1164,11 +1164,12 @@ input {
   justify-content: space-between;
   gap: 18px;
   margin-bottom: 18px;
+  padding-left: 8px;
 }
 
 .section-head h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 36px;
 }
 
 .section-head p {
@@ -1413,6 +1414,10 @@ input {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
+.contract-summary-card > div {
+  min-width: 0;
+}
+
 .contract-summary-card span {
   display: block;
   color: #9db6dc;
@@ -1422,15 +1427,18 @@ input {
 
 .contract-summary-card strong {
   display: block;
+  max-width: 100%;
   margin-top: 9px;
   color: #f8fbff;
   font-size: 28px;
   line-height: 1;
   font-weight: 850;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .contract-summary-card p {
+  flex: 0 0 auto;
   margin: 0;
   color: #7f96b8;
   font-size: 12px;
@@ -6188,10 +6196,10 @@ textarea::placeholder {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   border: 1px solid #e2e8f0;
-  border-right: 0;
-  border-bottom: 0;
+  gap: 0;
   min-width: 0;
   background: #fff;
+  overflow: hidden;
 }
 
 .weekday,
@@ -7992,10 +8000,9 @@ textarea:disabled {
     118px
     118px
     118px
-    minmax(120px, 0.75fr)
-    104px
+    88px
     minmax(220px, 1.25fr);
-  min-width: 1280px;
+  min-width: 1160px;
   min-height: 46px;
   align-items: center;
 }
@@ -8005,7 +8012,7 @@ textarea:disabled {
   white-space: nowrap;
 }
 
-.software-contract-row span:nth-child(9) {
+.software-contract-row span:nth-child(8) {
   display: -webkit-box;
   overflow: hidden;
   white-space: normal;
@@ -8014,7 +8021,7 @@ textarea:disabled {
   -webkit-line-clamp: 2;
 }
 
-.software-contract-row.record-head span:nth-child(9) {
+.software-contract-row.record-head span:nth-child(8) {
   display: block;
   white-space: nowrap;
   line-height: inherit;
@@ -8414,6 +8421,14 @@ textarea:disabled {
   white-space: nowrap;
 }
 
+.section-page > .section-head > .section-actions,
+.section-page > .section-head > button,
+.records-toolbar button,
+.contact-records-toolbar,
+.section-page:has(.contract-summary-grid) .records-toolbar .records-summary {
+  display: none;
+}
+
 .dashboard-calendar-panel .calendar-day-detail {
   display: none;
 }
@@ -8667,8 +8682,8 @@ textarea:disabled {
   --progress: 0%;
   flex: 0 0 auto;
   display: grid;
-  width: 62px;
-  height: 62px;
+  width: 72px;
+  height: 72px;
   place-items: center;
   border-radius: 50%;
   background:
@@ -8678,7 +8693,7 @@ textarea:disabled {
 
 .kpi-donut span {
   color: var(--hotel-text);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 850;
 }
 
@@ -12040,7 +12055,20 @@ textarea,
 }
 
 .todo-inline-edit {
-  grid-template-columns: minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  gap: 8px;
+}
+
+.todo-inline-edit select {
+  min-width: 0;
+  border: 1px solid #cfd9e6;
+  border-radius: 7px;
+  background: #fff;
+  color: var(--hotel-text);
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .dashboard-todo-row::before,
@@ -12051,9 +12079,34 @@ textarea,
   background: var(--hotel-blue);
 }
 
+.dashboard-todo-row.priority-urgent::before,
+.dashboard-todo-row.priority-high::before {
+  background: var(--hotel-red);
+}
+
+.dashboard-todo-row.priority-medium::before {
+  background: var(--hotel-amber);
+}
+
+.dashboard-todo-row.priority-normal::before {
+  background: var(--hotel-blue);
+}
+
 .follow-ups-page {
   display: grid;
   gap: 18px;
+}
+
+.follow-up-add-toggle {
+  justify-self: start;
+  min-height: 40px;
+  border: 1px solid #cfd9e6;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hotel-blue);
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 850;
 }
 
 .follow-up-entry-panel,
@@ -12208,6 +12261,15 @@ textarea,
   gap: 14px;
   align-items: stretch;
   margin-bottom: 16px;
+}
+
+.main-area > .section-head {
+  padding-left: 10px;
+}
+
+.main-area > .section-head h1 {
+  font-size: 34px;
+  line-height: 1.08;
 }
 
 .dashboard-todo-panel,

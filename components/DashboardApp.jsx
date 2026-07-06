@@ -41,12 +41,11 @@ function isDoneStatus(status) {
 function parseDelta(value) {
   const numeric = Number(String(value ?? "0").replace(/[^\d.-]/g, ""));
   if (!Number.isFinite(numeric) || numeric === 0) {
-    return { text: "0", direction: "flat", label: "持平" };
+    return { text: "0", direction: "flat" };
   }
   return {
     text: `${numeric > 0 ? "+" : "-"}${Math.abs(numeric)}`,
-    direction: numeric > 0 ? "up" : "down",
-    label: numeric > 0 ? "增加" : "減少"
+    direction: numeric > 0 ? "up" : "down"
   };
 }
 
@@ -63,7 +62,7 @@ function KpiSummaryItem({ label, value, unit = "", delta, deltaLabel = "", detai
       <div className="kpi-summary-meta">
         {deltaLabel ? (
           <span className={`kpi-delta ${deltaTone}`}>
-            {parsedDelta.label} {parsedDelta.text}
+            {parsedDelta.text}
             <small>{deltaLabel}</small>
           </span>
         ) : null}
@@ -76,7 +75,6 @@ function KpiSummaryItem({ label, value, unit = "", delta, deltaLabel = "", detai
 function CompletionSummaryItem({ rate, completed, total, pending }) {
   const normalized = Math.max(0, Math.min(100, Number(rate) || 0));
   const remaining = Math.max(0, Number(pending) || 0);
-  const status = normalized < 50 ? "進度落後" : normalized < 80 ? "持續追蹤" : "接近完成";
   const tone = normalized < 50 ? "warn" : normalized < 80 ? "neutral" : "good";
 
   return (
@@ -89,7 +87,6 @@ function CompletionSummaryItem({ rate, completed, total, pending }) {
         <div>
           <strong>{completed}<small> / {total} 件</small></strong>
           <div className="kpi-summary-meta">
-            <span className={`kpi-delta ${tone}`}>{status}</span>
             <span>尚餘 {remaining} 件</span>
           </div>
         </div>
@@ -147,6 +144,20 @@ function getTodayPhoneTargets(date = new Date()) {
   return phoneMap[date.getDay()] || [];
 }
 
+const TODO_PRIORITY_OPTIONS = [
+  { value: "一般", label: "一般", tone: "normal" },
+  { value: "重要", label: "重要", tone: "medium" },
+  { value: "緊急", label: "緊急", tone: "urgent" }
+];
+
+function normalizeTodoPriority(value) {
+  const text = String(value || "").trim();
+  const key = text.toLowerCase ? text.toLowerCase() : text;
+  if (["緊急", "急", "urgent", "critical", "high", "高"].includes(key)) return "urgent";
+  if (["重要", "中", "medium"].includes(key)) return "medium";
+  return "normal";
+}
+
 function emptyCalendarEvents() {
   return {};
 }
@@ -193,6 +204,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
   const [error, setError] = useState("");
   const [editingTodoId, setEditingTodoId] = useState("");
   const [editTitle, setEditTitle] = useState("");
+  const [editPriority, setEditPriority] = useState("一般");
   const [processingTodoIds, setProcessingTodoIds] = useState(() => new Set());
   const [completedTodoIds, setCompletedTodoIds] = useState(() => new Set());
   const [fadingTodoIds, setFadingTodoIds] = useState(() => new Set());
@@ -341,12 +353,14 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
   function startEditTodo(row) {
     setEditingTodoId(row.id);
     setEditTitle(row.title || "");
+    setEditPriority(row.priority || "一般");
     setError("");
   }
 
   function cancelEditTodo() {
     setEditingTodoId("");
     setEditTitle("");
+    setEditPriority("一般");
   }
 
   async function saveEditTodo(row) {
@@ -361,7 +375,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
     try {
       await api("/api/todos", {
         method: "PATCH",
-        body: JSON.stringify({ id: row.id, title: nextTitle })
+        body: JSON.stringify({ id: row.id, title: nextTitle, priority: editPriority })
       });
       cancelEditTodo();
       await onReload();
@@ -452,7 +466,9 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
                   isFading={fadingTodoIds.has(todo.id)}
                   isEditing={editingTodoId === todo.id}
                   editTitle={editTitle}
+                  editPriority={editPriority}
                   onEditTitleChange={setEditTitle}
+                  onEditPriorityChange={setEditPriority}
                   onComplete={() => openCompleteChoice(todo)}
                   onEdit={() => startEditTodo(todo)}
                   onCancelEdit={cancelEditTodo}
@@ -564,7 +580,9 @@ function TodoRow({
   isFading,
   isEditing,
   editTitle,
+  editPriority,
   onEditTitleChange,
+  onEditPriorityChange,
   onComplete,
   onEdit,
   onCancelEdit,
@@ -573,9 +591,10 @@ function TodoRow({
   isSaving
 }) {
   const disabled = isProcessing || isCompleted || isFading;
+  const priorityTone = normalizeTodoPriority(todo.priority);
 
   return (
-    <article className={`dashboard-todo-row ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
+    <article className={`dashboard-todo-row priority-${priorityTone} ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
       <button
         className={`circle todo-check ${isProcessing ? "is-loading" : ""} ${isCompleted ? "is-done" : ""}`}
         onClick={onComplete}
@@ -592,6 +611,13 @@ function TodoRow({
               aria-label="修改待辦內容"
               autoFocus
             />
+            <select
+              value={editPriority}
+              onChange={(event) => onEditPriorityChange(event.target.value)}
+              aria-label="調整緊急程度"
+            >
+              {TODO_PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
           </div>
         ) : (
           <strong>{todo.title || "未命名待辦"}</strong>
@@ -601,8 +627,8 @@ function TodoRow({
         {isEditing ? (
           <>
             <button onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()} aria-label="儲存待辦">✓</button>
-            <button onClick={onCancelEdit} disabled={isSaving} aria-label="取消修改">×</button>
-            <button className="danger" onClick={onDelete} disabled={disabled} aria-label="刪除待辦">刪除</button>
+            <button onClick={onCancelEdit} disabled={isSaving} aria-label="取消修改" title="取消">↩</button>
+            <button className="danger" onClick={onDelete} disabled={disabled} aria-label="刪除待辦" title="刪除">⌫</button>
           </>
         ) : (
           <button className="icon-action" onClick={onEdit} disabled={disabled || isSaving} aria-label="修改待辦內容" title="修改">
@@ -725,7 +751,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
     <section className="panel dashboard-calendar-panel">
       <header className="panel-title calendar-title">
         <div>
-          <h2>行事曆 <b>{getMonthLabel(visibleMonth)}</b> <small>Events</small></h2>
+          <h2>行事曆 <b>{getMonthLabel(visibleMonth)}</b></h2>
         </div>
         <div className="calendar-actions">
           <button
@@ -945,13 +971,11 @@ function DashboardTrendPanel({ trend }) {
 function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify }) {
   const todos = dashboard?.openTodos || [];
   const followUps = dashboard?.followUps || [];
-  const works = dashboard?.recentWorks || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const completionTotal = completedCount + pendingCount;
   const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
-  const abnormalCount = dashboard?.abnormalCount ?? dashboard?.networkSummary?.abnormal ?? 0;
-  const hasRecentWorkTrend = dashboard?.workTrend?.some((item) => Number(item.count) > 0);
+  const urgentTodoCount = todos.filter((todo) => normalizeTodoPriority(todo.priority) === "urgent").length;
 
   return (
     <>
@@ -983,11 +1007,11 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
             deltaImpact="neutral"
           />
           <KpiSummaryItem
-            label="異常單"
-            value={abnormalCount}
+            label="緊急任務"
+            value={urgentTodoCount}
             unit="件"
-            detail={abnormalCount > 0 ? `需處理 ${abnormalCount} 件` : "目前無異常"}
-            tone={abnormalCount > 0 ? "bad" : "good"}
+            detail={urgentTodoCount > 0 ? `優先處理 ${urgentTodoCount} 件` : "目前無緊急"}
+            tone={urgentTodoCount > 0 ? "bad" : "good"}
           />
           <CompletionSummaryItem
             rate={completionRate}
@@ -1002,11 +1026,6 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
       <section className="dashboard-layout modern-dashboard-layout">
         <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
         <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
-      </section>
-
-      <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>
-        <DashboardWorkTable works={works} onNavigate={onNavigate} />
-        {hasRecentWorkTrend ? <DashboardTrendPanel trend={dashboard?.workTrend || []} /> : null}
       </section>
     </>
   );

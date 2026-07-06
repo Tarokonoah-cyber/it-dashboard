@@ -464,7 +464,11 @@ export default function DataSectionPage({ sectionKey }) {
     });
   }, [rows, query, department, config?.source]);
 
-  const columns = useMemo(() => RECORD_COLUMN_CONFIGS[config?.source] || [], [config?.source]);
+  const columns = useMemo(() => {
+    const baseColumns = RECORD_COLUMN_CONFIGS[config?.source] || [];
+    if (config?.source !== "contracts_software") return baseColumns;
+    return baseColumns.filter((column) => !(column.keys || []).includes("owner"));
+  }, [config?.source]);
 
   if (!config) {
     return (

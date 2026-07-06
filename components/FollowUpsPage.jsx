@@ -47,6 +47,7 @@ export default function FollowUpsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const isEditing = Boolean(editingId);
 
   const openItems = useMemo(() => items.filter((item) => item.current_status !== "已完成"), [items]);
@@ -71,6 +72,7 @@ export default function FollowUpsPage() {
   function resetForm() {
     setEditingId("");
     setForm(emptyForm());
+    setIsFormOpen(false);
   }
 
   function editItem(item) {
@@ -81,6 +83,7 @@ export default function FollowUpsPage() {
       next_follow_date: formatDate(item.next_follow_date) === "-" ? todayKey() : formatDate(item.next_follow_date),
       note: item.note || ""
     });
+    setIsFormOpen(true);
     setError("");
   }
 
@@ -187,6 +190,13 @@ export default function FollowUpsPage() {
 
       {error ? <div className="error-box">{error}</div> : null}
 
+      {!isFormOpen ? (
+        <button className="follow-up-add-toggle" type="button" onClick={() => setIsFormOpen(true)}>
+          新增待追蹤
+        </button>
+      ) : null}
+
+      {isFormOpen ? (
       <form className="follow-up-entry-panel" onSubmit={submit}>
         <header>
           <h2>{isEditing ? "編輯待追蹤" : "新增待追蹤"}</h2>
@@ -216,6 +226,7 @@ export default function FollowUpsPage() {
           </div>
         </div>
       </form>
+      ) : null}
 
       <section className="follow-up-list-panel">
         <header>
