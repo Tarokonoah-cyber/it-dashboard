@@ -121,7 +121,7 @@ async function createTodo(action) {
       note: action.note || "",
       status: "\u672a\u5b8c\u6210",
       priority: "\u4e2d",
-      owner: "Noah",
+      owner: "共同",
       due_date: todayTaipei()
     }, "vercel-dashboard-bot");
     return {

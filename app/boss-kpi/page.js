@@ -62,7 +62,6 @@ function normalizeWork(row) {
   return {
     id: clean(row.id || row.record_key || `${workDate}-${summary}`),
     workDate,
-    person: clean(row.person || row.staff || row.owner, "-"),
     summary,
     workType,
     system: clean(row.system || row.related_system || row.service || row.related_sop_name, "其他"),
@@ -167,10 +166,9 @@ function exportCsv(records) {
     return;
   }
 
-  const headers = ["日期", "人員", "工作摘要", "工作類型", "關聯項目", "影響範圍", "狀態", "是否需追蹤", "影響程度", "是否影響營運", "備註"];
+  const headers = ["日期", "工作摘要", "工作類型", "關聯項目", "影響範圍", "狀態", "是否需追蹤", "影響程度", "是否影響營運", "備註"];
   const rows = records.map((row) => [
     row.workDate,
-    row.person,
     row.summary,
     row.workType,
     row.system,
@@ -248,7 +246,7 @@ function FollowList({ rows }) {
           {rows.map((row) => (
             <article key={row.id}>
               <strong>{row.summary}</strong>
-              <span>{row.workDate} · {row.person} · {row.status} · {row.system}</span>
+              <span>{row.workDate} · {row.status} · {row.system}</span>
             </article>
           ))}
         </div>
@@ -260,7 +258,6 @@ function FollowList({ rows }) {
 function RecordsTable({ rows }) {
   const columns = [
     ["workDate", "日期"],
-    ["person", "人員"],
     ["summary", "工作摘要"],
     ["workType", "工作類型"],
     ["system", "關聯項目"],

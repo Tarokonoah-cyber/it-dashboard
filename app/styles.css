@@ -6173,10 +6173,13 @@ textarea::placeholder {
 }
 
 .calendar-actions .calendar-add-main {
-  min-width: 104px;
+  min-width: 34px;
+  width: 34px;
   border-color: #244a76;
   background: #244a76;
   color: #fff;
+  padding: 0;
+  font-size: 17px;
   font-weight: 850;
 }
 
@@ -7599,7 +7602,7 @@ textarea:disabled {
 
   .calendar-actions .calendar-add-main {
     order: -1;
-    flex: 1 1 100%;
+    flex: 0 0 34px;
   }
 
   .dashboard-day-cell {
@@ -8249,7 +8252,7 @@ textarea:disabled {
 }
 
 .dashboard-work-table .work-row {
-  grid-template-columns: 92px 92px 90px minmax(260px, 1fr) 96px 96px;
+  grid-template-columns: 92px 92px minmax(280px, 1fr) 96px 96px;
   min-height: 52px;
   padding: 11px 14px;
   font-size: 14px;
@@ -8382,6 +8385,17 @@ textarea:disabled {
   align-items: flex-start;
   gap: 4px;
   overflow: hidden;
+}
+
+.dashboard-calendar-panel .dashboard-day-cell > span {
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.dashboard-calendar-panel .dashboard-day-cell .today-dot {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
 }
 
 .dashboard-calendar-panel .calendar-cell-add {
@@ -8687,13 +8701,22 @@ textarea:disabled {
 .dashboard-todo-panel .todo-view-all {
   flex: 0 0 auto;
   align-self: flex-start;
+  min-height: 26px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 1;
 }
 
 .dashboard-todo-panel .panel-title button {
-  min-height: 36px;
+  min-width: 34px;
+  width: 34px;
+  min-height: 34px;
   border-color: #cdd8e6;
   background: #f8fafc;
   color: var(--hotel-blue);
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
   box-shadow: none;
 }
 
@@ -8960,7 +8983,7 @@ textarea:disabled {
 }
 
 .dashboard-work-table .work-row {
-  grid-template-columns: 92px 92px 90px minmax(260px, 1fr) 96px 96px;
+  grid-template-columns: 92px 92px minmax(280px, 1fr) 96px 96px;
   min-height: 52px;
   padding: 11px 14px;
   font-size: 14px;
@@ -10617,7 +10640,7 @@ textarea:disabled {
 
 .work-management-page .work-filters {
   display: grid;
-  grid-template-columns: 150px 140px 140px 140px auto;
+  grid-template-columns: 150px 140px 140px auto;
   align-items: end;
   gap: 10px;
   margin-bottom: 12px;
@@ -10628,8 +10651,8 @@ textarea:disabled {
 }
 
 .work-management-page .full-work-row {
-  grid-template-columns: 112px 96px minmax(240px, 1.45fr) 104px 104px minmax(160px, 1fr) 112px;
-  min-width: 1120px;
+  grid-template-columns: 112px minmax(260px, 1.55fr) 104px 104px minmax(180px, 1fr) 112px;
+  min-width: 980px;
   min-height: 44px;
   padding: 10px 14px;
   gap: 10px;

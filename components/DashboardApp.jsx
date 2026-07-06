@@ -378,8 +378,13 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
         <div>
           <h2>Todo List</h2>
         </div>
-        <button onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))} disabled={saving || activeTab !== "todos"}>
-          {isAdding ? "取消" : "+ 新增"}
+        <button
+          onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))}
+          disabled={saving || activeTab !== "todos"}
+          aria-label={isAdding ? "取消新增待辦" : "新增待辦"}
+          title={isAdding ? "取消" : "新增"}
+        >
+          {isAdding ? "×" : "+"}
         </button>
       </header>
       <div className="todo-card-tabs" role="tablist" aria-label="Todo List 分頁">
@@ -598,7 +603,7 @@ function TodoRow({
   );
 }
 
-function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
+function DashboardFocusPanel({ dashboard, onReload }) {
   const [syncing, setSyncing] = useState(false);
   const networkRooms = dashboard?.networkRooms || [];
   const today = new Date();
@@ -626,19 +631,9 @@ function DashboardFocusPanel({ dashboard, onReload, onNavigate }) {
       <header className="panel-title">
         <div>
           <h2>快速操作</h2>
-          <span>今日常用入口</span>
         </div>
         <button onClick={refresh}>{syncing ? "同步中" : "刷新"}</button>
       </header>
-
-      <div className="focus-section quick-actions-section">
-        <b>先做這幾件</b>
-        <div className="quick-action-grid">
-          <button type="button" onClick={() => onNavigate?.("work")}>新增工作</button>
-          <button type="button" onClick={() => onNavigate?.("work")}>查看待處理</button>
-          <button type="button" onClick={() => onNavigate?.("follow-ups")}>查看待追蹤</button>
-        </div>
-      </div>
 
       <div className="focus-section network-section">
         <div className="focus-section-head">
@@ -778,8 +773,8 @@ function DashboardCalendarPanel({ notify }) {
           >
             🏆
           </button>
-          <button className="calendar-add-main" type="button" onClick={() => openEventModal(selectedDate)}>
-            + 新增行程
+          <button className="calendar-add-main" type="button" onClick={() => openEventModal(selectedDate)} aria-label="新增行程" title="新增行程">
+            ＋
           </button>
           <button type="button" aria-label="上一月" onClick={() => shiftMonth(-1)}>‹</button>
           <button type="button" onClick={jumpToToday}>今日</button>
@@ -917,7 +912,6 @@ function DashboardWorkTable({ works, onNavigate }) {
         <div className="work-row head">
           <span>編號</span>
           <span>日期</span>
-          <span>人員</span>
           <span>標題</span>
           <span>類型</span>
           <span>狀態</span>
@@ -926,7 +920,6 @@ function DashboardWorkTable({ works, onNavigate }) {
           <div className="work-row" key={work.id}>
             <span>{work.id || "-"}</span>
             <span title={formatDate(work.date || work.created_at)}>{formatRelativeDate(work.date || work.created_at)}</span>
-            <span>{work.staff || work.owner || "-"}</span>
             <strong>{formatWorkTitle(work)}</strong>
             <span>{work.category || work.type || "工作"}</span>
             <b className={isDoneStatus(work.status) ? "status-done" : "status-pending"}>{work.status || "待辦"}</b>
@@ -1044,7 +1037,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
       <section className="dashboard-layout modern-dashboard-layout">
         <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
         <DashboardCalendarPanel notify={notify} />
-        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
+        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} />
       </section>
 
       <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>

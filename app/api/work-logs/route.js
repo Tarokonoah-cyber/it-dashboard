@@ -4,6 +4,7 @@ import { normalizeWork } from "../../../lib/dailyOpsSync";
 
 const MAX_WORK_TEXT_LENGTH = 1000;
 const MAX_WORK_TITLE_LENGTH = 200;
+const DEFAULT_WORK_STAFF = "共同";
 
 function cleanText(value) {
   return String(value || "").trim();
@@ -42,12 +43,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = ["select=*&order=date.desc,updated_at.desc,created_at.desc&limit=1000"];
     const date = cleanText(searchParams.get("date"));
-    const staff = cleanText(searchParams.get("staff"));
     const status = cleanText(searchParams.get("status"));
     const category = cleanText(searchParams.get("category"));
 
     if (date) query.push(`date=eq.${encodeURIComponent(date)}`);
-    if (staff) query.push(`staff=eq.${encodeURIComponent(staff)}`);
     if (status) query.push(`status=eq.${encodeURIComponent(status)}`);
     if (category) query.push(`category=eq.${encodeURIComponent(category)}`);
 
@@ -65,7 +64,7 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const date = cleanText(body.date || todayTaipei());
-    const staff = validateText(body.staff, "Staff", 120);
+    const staff = validateText(body.staff || DEFAULT_WORK_STAFF, "Staff", 120);
     const title = validateWorkTitle(body.title);
     const category = validateText(body.category || "工作", "Category", 120);
     const status = validateText(body.status || "未完成", "Status", 120);
@@ -73,7 +72,6 @@ export async function POST(request) {
     const note = validateText(body.note || "", "Note");
 
     if (!date) return fail(new Error("Date is required"), 400);
-    if (!staff) return fail(new Error("Staff is required"), 400);
     const rows = await supabaseRequest("work_logs", "select=*", {
       method: "POST",
       body: {
@@ -118,8 +116,7 @@ export async function PATCH(request) {
     }
     if (body.staff !== undefined) {
       const staff = validateText(body.staff, "Staff", 120);
-      if (!staff) return fail(new Error("Staff is required"), 400);
-      payload.staff = staff;
+      payload.staff = staff || DEFAULT_WORK_STAFF;
     }
     if (body.title !== undefined) payload.title = validateWorkTitle(body.title);
     if (body.category !== undefined) payload.category = validateText(body.category || "工作", "Category", 120);

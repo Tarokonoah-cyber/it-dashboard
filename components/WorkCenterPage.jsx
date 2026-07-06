@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const WORK_CATEGORIES = ["一般", "設備維護", "系統更新", "網路", "SOP", "設備", "合約", "系統", "其他"];
 const WORK_STATUSES = ["待處理", "進行中", "已完成", "暫緩", "異常"];
@@ -64,19 +64,18 @@ export default function WorkCenterPage() {
   const [error, setError] = useState("");
   const [showNote, setShowNote] = useState(false);
   const [editingId, setEditingId] = useState("");
-  const [filters, setFilters] = useState({ date: "", staff: "", status: "", category: "" });
+  const [filters, setFilters] = useState({ date: "", status: "", category: "" });
   const [form, setForm] = useState({
     date: today,
-    staff: "Noah",
     title: "",
     category: WORK_CATEGORIES[0],
     status: WORK_STATUSES[0],
     note: ""
   });
-  const hasFilters = Boolean(filters.date || filters.staff || filters.status || filters.category);
+  const hasFilters = Boolean(filters.date || filters.status || filters.category);
   const isEditing = Boolean(editingId);
 
-  async function load() {
+  const load = useCallback(async function load() {
     setLoading(true);
     setError("");
     try {
@@ -92,16 +91,15 @@ export default function WorkCenterPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [filters]);
 
   useEffect(() => {
     load();
-  }, [filters.date, filters.staff, filters.status, filters.category]);
+  }, [load]);
 
   const options = useMemo(() => {
     const unique = (key) => Array.from(new Set(works.map((work) => String(work[key] || "").trim()).filter(Boolean)));
     return {
-      staff: unique("staff"),
       status: unique("status"),
       category: unique("category")
     };
@@ -130,7 +128,7 @@ export default function WorkCenterPage() {
         body: JSON.stringify(isEditing ? { id: editingId, ...payload } : payload)
       });
       resetForm();
-      setFilters({ date: "", staff: "", status: "", category: "" });
+      setFilters({ date: "", status: "", category: "" });
       setWorks((current) => [saved, ...current.filter((work) => work.id !== saved.id)]);
     } catch (err) {
       setError(err.message);
@@ -144,7 +142,6 @@ export default function WorkCenterPage() {
     setShowNote(false);
     setForm({
       date: today,
-      staff: "Noah",
       title: "",
       category: WORK_CATEGORIES[0],
       status: WORK_STATUSES[0],
@@ -157,7 +154,6 @@ export default function WorkCenterPage() {
     setShowNote(Boolean(work.note));
     setForm({
       date: dateKey(work.date || work.created_at) || today,
-      staff: work.staff || "Noah",
       title: work.title || "",
       category: work.category || WORK_CATEGORIES[0],
       status: normalizeStatus(work.status),
@@ -183,7 +179,7 @@ export default function WorkCenterPage() {
   }
 
   function clearFilters() {
-    setFilters({ date: "", staff: "", status: "", category: "" });
+    setFilters({ date: "", status: "", category: "" });
   }
 
   return (
@@ -209,10 +205,6 @@ export default function WorkCenterPage() {
           <label>
             日期
             <input type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
-          </label>
-          <label>
-            負責人
-            <input value={form.staff} onChange={(event) => setForm((current) => ({ ...current, staff: event.target.value }))} placeholder="Noah / Urza" required />
           </label>
           <label className="wide">
             工作內容
@@ -270,13 +262,6 @@ export default function WorkCenterPage() {
             </select>
           </label>
           <label>
-            負責人
-            <select value={filters.staff} onChange={(event) => setFilters((current) => ({ ...current, staff: event.target.value }))}>
-              <option value="">全部</option>
-              {options.staff.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
             類型
             <select value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
               <option value="">全部</option>
@@ -288,7 +273,6 @@ export default function WorkCenterPage() {
         <div className="full-work-table">
           <div className="full-work-row head">
             <span>日期</span>
-            <span>負責人</span>
             <span>工作內容</span>
             <span>類型</span>
             <span>狀態</span>
@@ -303,7 +287,6 @@ export default function WorkCenterPage() {
             works.map((work) => (
               <div className="full-work-row" key={work.id}>
                 <span>{formatDate(work.date || work.created_at)}</span>
-                <span>{work.staff || "-"}</span>
                 <strong title={work.title || ""}>{work.title || "未命名工作"}</strong>
                 <span>{work.category || "一般"}</span>
                 <b className={isDoneStatus(work.status) ? "status-done" : statusClassName(work.status)}>{normalizeStatus(work.status)}</b>
