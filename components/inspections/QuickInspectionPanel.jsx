@@ -3,9 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 import InspectionStatusBadge from "./InspectionStatusBadge";
 import {
+  INSPECTION_PERIODS,
   ITEM_STATUSES,
   calculateInspectionSummary,
   createTemplateItems,
+  filterInspectionItems,
+  getInspectionPeriod,
   needsIssueFields,
   normalizeInspectionStatus
 } from "./inspectionTemplates";
@@ -68,6 +71,7 @@ function draftKey(recordId, date) {
 export default function QuickInspectionPanel({
   mode = "new",
   recordId = "",
+  initialPeriod = "daily",
   drawer = false,
   onCancel,
   onSaved
@@ -75,6 +79,7 @@ export default function QuickInspectionPanel({
   const isEdit = mode === "edit" && recordId;
   const [loading, setLoading] = useState(Boolean(isEdit));
   const [saving, setSaving] = useState(false);
+  const [activePeriod, setActivePeriod] = useState(INSPECTION_PERIODS[initialPeriod] ? initialPeriod : "daily");
   const [showAttentionOnly, setShowAttentionOnly] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -85,10 +90,11 @@ export default function QuickInspectionPanel({
     items: createTemplateItems().map(normalizeFormItem)
   });
 
-  const summary = useMemo(() => calculateInspectionSummary(payloadItems(form.items)), [form.items]);
+  const activeItems = useMemo(() => filterInspectionItems(form.items, activePeriod), [form.items, activePeriod]);
+  const summary = useMemo(() => calculateInspectionSummary(payloadItems(activeItems)), [activeItems]);
   const visibleItems = showAttentionOnly
-    ? form.items.filter((item) => needsIssueFields(item.status))
-    : form.items;
+    ? activeItems.filter((item) => needsIssueFields(item.status))
+    : activeItems;
 
   useEffect(() => {
     let active = true;
@@ -159,31 +165,38 @@ export default function QuickInspectionPanel({
   function markAllNormal() {
     setForm((current) => ({
       ...current,
-      items: current.items.map((item) => ({
-        ...item,
-        status: "正常",
-        issue_description: "",
-        handling_status: "未處理",
-        handling_method: ""
-      }))
+      items: current.items.map((item) =>
+        getInspectionPeriod(item) === activePeriod
+          ? {
+              ...item,
+              status: "正常",
+              issue_description: "",
+              handling_status: "未處理",
+              handling_method: ""
+            }
+          : item
+      )
     }));
-    setMessage("已將所有巡檢項目標記為正常。");
+    setMessage(`已將${INSPECTION_PERIODS[activePeriod].title}項目標記為正常。`);
   }
 
   function clearAll() {
     setForm((current) => ({
       ...current,
-      items: current.items.map((item) => ({
-        ...item,
-        status: "未檢查",
-        issue_description: "",
-        handling_status: "未處理",
-        handling_method: "",
-        note: ""
-      })),
-      note: ""
+      items: current.items.map((item) =>
+        getInspectionPeriod(item) === activePeriod
+          ? {
+              ...item,
+              status: "未檢查",
+              issue_description: "",
+              handling_status: "未處理",
+              handling_method: "",
+              note: ""
+            }
+          : item
+      )
     }));
-    setMessage("已清除本次快速巡檢內容。");
+    setMessage(`已清除${INSPECTION_PERIODS[activePeriod].title}內容。`);
   }
 
   function saveDraft() {
@@ -227,8 +240,8 @@ export default function QuickInspectionPanel({
       <header className="quick-inspection-head">
         <div>
           <span className="eyebrow">快速巡檢清單</span>
-          <h2>{isEdit ? "編輯每日巡檢" : "新增今日巡檢"}</h2>
-          <p>逐項點選狀態，異常與待觀察才需要補充說明。</p>
+          <h2>{isEdit ? "編輯巡檢" : "新增今日巡檢"}</h2>
+          <p>分成每日與每月清單，異常與待觀察才需要補充說明。</p>
         </div>
         {onCancel ? (
           <button className="quick-close-btn" type="button" onClick={onCancel} aria-label="關閉">
@@ -239,6 +252,20 @@ export default function QuickInspectionPanel({
 
       {error ? <div className="error-box">{error}</div> : null}
       {message ? <div className="inspection-notice compact">{message}</div> : null}
+
+      <nav className="inspection-period-tabs compact" aria-label="巡檢分類">
+        {Object.values(INSPECTION_PERIODS).map((period) => (
+          <button
+            key={period.key}
+            type="button"
+            className={activePeriod === period.key ? "active" : ""}
+            onClick={() => setActivePeriod(period.key)}
+          >
+            <span>{period.label}</span>
+            <strong>{period.title}</strong>
+          </button>
+        ))}
+      </nav>
 
       <section className="quick-inspection-meta">
         <label>

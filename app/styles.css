@@ -2035,6 +2035,45 @@ input {
   font-weight: 760;
 }
 
+.inspection-period-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.inspection-period-tabs button {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  min-height: 50px;
+  border: 1px solid var(--hotel-line, rgba(148, 163, 184, 0.26));
+  border-radius: 8px;
+  background: var(--hotel-card, #fff);
+  color: var(--hotel-muted, #667085);
+  box-shadow: var(--hotel-shadow-soft, 0 4px 14px rgba(18, 34, 56, 0.05));
+}
+
+.inspection-period-tabs button.active {
+  border-color: #2f5f98;
+  background: #edf5ff;
+  color: #2f5f98;
+}
+
+.inspection-period-tabs span {
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.inspection-period-tabs strong {
+  color: var(--hotel-text, #162033);
+  font-size: 0.95rem;
+}
+
+.inspection-period-tabs.compact button {
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
 .inspection-workbench-title {
   display: flex;
   align-items: end;

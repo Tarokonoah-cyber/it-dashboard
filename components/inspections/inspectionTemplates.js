@@ -4,20 +4,37 @@ export const HANDLING_STATUSES = ["未處理", "處理中", "已處理", "已通
 
 export const OVERALL_STATUSES = ["正常", "有異常", "待觀察", "已完成", "未檢查"];
 
+export const INSPECTION_PERIODS = {
+  daily: {
+    key: "daily",
+    label: "每日",
+    title: "每日巡檢"
+  },
+  monthly: {
+    key: "monthly",
+    label: "每月",
+    title: "每月巡檢"
+  }
+};
+
 export const LEGACY_STATUS_MAP = {
   需觀察: "待觀察",
   不適用: "未檢查"
 };
 
 export const INSPECTION_TEMPLATE = [
-  { category: "環境", item_name: "機房溫度" },
-  { category: "網路設備", item_name: "防火牆狀態" },
-  { category: "網路設備", item_name: "Wi-Fi 狀態" },
-  { category: "客房服務", item_name: "串流測試" },
-  { category: "備份與儲存", item_name: "NAS / 備份" },
-  { category: "備份與儲存", item_name: "德安備份" },
-  { category: "核心系統", item_name: "OPERA 備份" }
+  { category: "環境", item_name: "機房溫度", period: "daily" },
+  { category: "網路設備", item_name: "防火牆狀態", period: "daily" },
+  { category: "網路設備", item_name: "Wi-Fi 狀態", period: "daily" },
+  { category: "客房服務", item_name: "串流測試", period: "daily" },
+  { category: "備份與儲存", item_name: "NAS / 備份", period: "monthly" },
+  { category: "備份與儲存", item_name: "德安備份", period: "monthly" },
+  { category: "核心系統", item_name: "OPERA 備份", period: "monthly" }
 ];
+
+const TEMPLATE_PERIOD_BY_NAME = new Map(
+  INSPECTION_TEMPLATE.map((item) => [`${item.category}::${item.item_name}`, item.period || "daily"])
+);
 
 export function normalizeInspectionStatus(status) {
   const text = String(status || "").trim();
@@ -34,6 +51,17 @@ export function createTemplateItems() {
     attachments: [],
     note: ""
   }));
+}
+
+export function getInspectionPeriod(item) {
+  const explicit = String(item?.period || "").trim();
+  if (explicit && INSPECTION_PERIODS[explicit]) return explicit;
+  const key = `${item?.category || ""}::${item?.item_name || ""}`;
+  return TEMPLATE_PERIOD_BY_NAME.get(key) || "daily";
+}
+
+export function filterInspectionItems(items = [], period = "daily") {
+  return items.filter((item) => getInspectionPeriod(item) === period);
 }
 
 export function needsIssueFields(status) {

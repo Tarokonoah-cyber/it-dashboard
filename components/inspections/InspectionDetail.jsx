@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InspectionStatusBadge from "./InspectionStatusBadge";
-import { calculateInspectionSummary, needsIssueFields } from "./inspectionTemplates";
+import { INSPECTION_PERIODS, calculateInspectionSummary, filterInspectionItems, needsIssueFields } from "./inspectionTemplates";
 
 async function api(path) {
   const response = await fetch(path, { cache: "no-store" });
@@ -30,9 +30,10 @@ function formatUpdatedAt(value) {
   }).format(date);
 }
 
-export default function InspectionDetail({ recordId }) {
+export default function InspectionDetail({ recordId, initialPeriod = "daily" }) {
   const router = useRouter();
   const [record, setRecord] = useState(null);
+  const [activePeriod, setActivePeriod] = useState(INSPECTION_PERIODS[initialPeriod] ? initialPeriod : "daily");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -58,23 +59,38 @@ export default function InspectionDetail({ recordId }) {
 
   if (loading) return <section className="section-page inspection-page"><div className="empty">讀取巡檢紀錄中...</div></section>;
 
-  const summary = record ? calculateInspectionSummary(record.items || []) : null;
+  const activeItems = record ? filterInspectionItems(record.items || [], activePeriod) : [];
+  const summary = calculateInspectionSummary(activeItems);
 
   return (
     <section className="section-page inspection-page">
       <header className="inspection-page-head compact">
         <div>
-          <h1>每日巡檢詳細</h1>
+          <h1>巡檢詳細</h1>
         </div>
         <div className="section-actions">
           <button onClick={() => router.push("/inspections")}>返回列表</button>
-          {record ? <button className="primary-action" onClick={() => router.push(`/inspections/${record.id}/edit`)}>編輯</button> : null}
+          {record ? <button className="primary-action" onClick={() => router.push(`/inspections/${record.id}/edit?period=${activePeriod}`)}>編輯</button> : null}
         </div>
       </header>
 
       {error ? <div className="error-box">{error}</div> : null}
       {!record ? <div className="empty">找不到巡檢紀錄</div> : (
         <>
+          <nav className="inspection-period-tabs" aria-label="巡檢分類">
+            {Object.values(INSPECTION_PERIODS).map((period) => (
+              <button
+                key={period.key}
+                type="button"
+                className={activePeriod === period.key ? "active" : ""}
+                onClick={() => setActivePeriod(period.key)}
+              >
+                <span>{period.label}</span>
+                <strong>{period.title}</strong>
+              </button>
+            ))}
+          </nav>
+
           <section className={`inspection-detail-summary ${summary.abnormal_count > 0 || summary.observation_count > 0 ? "has-attention" : ""}`}>
             <div>
               <span>巡檢日期</span>
@@ -109,11 +125,11 @@ export default function InspectionDetail({ recordId }) {
 
           <section className="inspection-detail-items">
             <header>
-              <h2>巡檢項目明細</h2>
-              <span>{summary.item_count || record.items?.length || 0} 項</span>
+              <h2>{INSPECTION_PERIODS[activePeriod].title}明細</h2>
+              <span>{summary.item_count || 0} 項</span>
             </header>
             <div className="inspection-item-list">
-              {(record.items || []).map((item) => {
+              {activeItems.map((item) => {
                 const attention = needsIssueFields(item.status);
                 return (
                   <article className={`inspection-item-card ${attention ? "needs-attention" : ""}`} key={item.id}>

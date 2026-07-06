@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import QuickInspectionPanel from "./QuickInspectionPanel";
 
-export default function InspectionForm({ mode = "new", recordId = "" }) {
+export default function InspectionForm({ mode = "new", recordId = "", initialPeriod = "daily" }) {
   const router = useRouter();
 
   return (
@@ -20,7 +20,8 @@ export default function InspectionForm({ mode = "new", recordId = "" }) {
       <QuickInspectionPanel
         mode={mode}
         recordId={recordId}
-        onSaved={(record) => router.push(`/inspections/${record.id}`)}
+        initialPeriod={initialPeriod}
+        onSaved={(record) => router.push(`/inspections/${record.id}?period=${initialPeriod}`)}
       />
     </section>
   );

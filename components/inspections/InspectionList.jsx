@@ -6,8 +6,10 @@ import InspectionStatusBadge from "./InspectionStatusBadge";
 import QuickInspectionPanel from "./QuickInspectionPanel";
 import {
   INSPECTION_TEMPLATE,
+  INSPECTION_PERIODS,
   OVERALL_STATUSES,
   calculateInspectionSummary,
+  filterInspectionItems,
   normalizeInspectionStatus
 } from "./inspectionTemplates";
 
@@ -34,6 +36,10 @@ function todayTaipei() {
     month: "2-digit",
     day: "2-digit"
   }).format(new Date());
+}
+
+function currentMonthTaipei() {
+  return todayTaipei().slice(0, 7);
 }
 
 function formatDate(value) {
@@ -65,20 +71,22 @@ function formatTime(value) {
   }).format(date);
 }
 
-function getRecordSummary(record) {
+function getRecordSummary(record, period = "daily") {
+  const templateCount = filterInspectionItems(INSPECTION_TEMPLATE, period).length;
+
   if (!record) {
     return {
-      item_count: INSPECTION_TEMPLATE.length,
+      item_count: templateCount,
       normal_count: 0,
       abnormal_count: 0,
       observation_count: 0,
-      unchecked_count: INSPECTION_TEMPLATE.length,
+      unchecked_count: templateCount,
       overall_status: "未建立"
     };
   }
 
   if (Array.isArray(record.items) && record.items.length) {
-    return calculateInspectionSummary(record.items);
+    return calculateInspectionSummary(filterInspectionItems(record.items, period));
   }
 
   return {
@@ -94,6 +102,7 @@ function getRecordSummary(record) {
 export default function InspectionList() {
   const router = useRouter();
   const [rows, setRows] = useState([]);
+  const [activePeriod, setActivePeriod] = useState("daily");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -118,17 +127,23 @@ export default function InspectionList() {
   }, []);
 
   const today = todayTaipei();
+  const currentMonth = currentMonthTaipei();
   const todayRecord = useMemo(
     () => rows.find((row) => formatDate(row.inspection_date) === today),
     [rows, today]
   );
-  const todaySummary = getRecordSummary(todayRecord);
-  const todayAttentionItems = useMemo(
-    () => (todayRecord?.items || []).filter((item) => {
+  const monthlyRecord = useMemo(
+    () => rows.find((row) => formatDate(row.inspection_date).startsWith(currentMonth)),
+    [rows, currentMonth]
+  );
+  const activeRecord = activePeriod === "monthly" ? monthlyRecord : todayRecord;
+  const activeSummary = getRecordSummary(activeRecord, activePeriod);
+  const activeAttentionItems = useMemo(
+    () => filterInspectionItems(activeRecord?.items || [], activePeriod).filter((item) => {
       const status = normalizeInspectionStatus(item.status);
       return status === "異常" || status === "待觀察";
     }),
-    [todayRecord]
+    [activeRecord, activePeriod]
   );
 
   const inspectorOptions = useMemo(
@@ -139,14 +154,15 @@ export default function InspectionList() {
   const filteredRows = useMemo(() => {
     const keyword = filters.search.trim().toLowerCase();
     return rows.filter((row) => {
+      const periodItems = filterInspectionItems(row.items || [], activePeriod);
       if (filters.date && formatDate(row.inspection_date) !== filters.date) return false;
       if (filters.inspector_name && row.inspector_name !== filters.inspector_name) return false;
-      if (filters.overall_status && normalizeInspectionStatus(row.overall_status) !== filters.overall_status) return false;
+      if (filters.overall_status && normalizeInspectionStatus(calculateInspectionSummary(periodItems).overall_status) !== filters.overall_status) return false;
       if (!keyword) return true;
-      const itemText = (row.items || []).map((item) => `${item.category} ${item.item_name} ${item.status}`).join(" ");
+      const itemText = periodItems.map((item) => `${item.category} ${item.item_name} ${item.status}`).join(" ");
       return `${row.inspector_name || ""} ${row.overall_status || ""} ${itemText}`.toLowerCase().includes(keyword);
     });
-  }, [rows, filters]);
+  }, [rows, filters, activePeriod]);
 
   async function handleCreateToday() {
     setNotice("");
@@ -165,97 +181,112 @@ export default function InspectionList() {
     }
   }
 
-  function handleEditToday() {
-    if (todayRecord?.id) {
-      setDrawerState({ mode: "edit", recordId: todayRecord.id });
-      return;
-    }
-    handleCreateToday();
-  }
-
   function clearFilters() {
     setFilters({ date: "", inspector_name: "", overall_status: "", search: "" });
   }
 
   async function handleSaved(record) {
     setDrawerState(null);
-    setNotice(`已完成 ${formatDate(record.inspection_date)} 的每日巡檢。`);
+    setNotice(`已完成 ${formatDate(record.inspection_date)} 的${INSPECTION_PERIODS[activePeriod].title}。`);
     await load();
+  }
+
+  function handleEditActiveRecord() {
+    if (activeRecord?.id) {
+      setDrawerState({ mode: "edit", recordId: activeRecord.id });
+      return;
+    }
+    handleCreateToday();
   }
 
   return (
     <section className="section-page inspection-page">
       <header className="inspection-page-head">
         <div>
-          <h1>每日巡檢</h1>
+          <h1>巡檢管理</h1>
         </div>
         <div className="section-actions">
-          <button className="primary-action" onClick={handleEditToday}>
-            {todayRecord ? "編輯今日巡檢" : "新增今日巡檢"}
+          <button className="primary-action" onClick={handleEditActiveRecord}>
+            {activeRecord ? `編輯${INSPECTION_PERIODS[activePeriod].title}` : `新增${INSPECTION_PERIODS[activePeriod].title}`}
           </button>
-          {todayRecord ? <button onClick={() => router.push(`/inspections/${todayRecord.id}`)}>查看今日巡檢</button> : null}
+          {activeRecord ? <button onClick={() => router.push(`/inspections/${activeRecord.id}?period=${activePeriod}`)}>查看{INSPECTION_PERIODS[activePeriod].title}</button> : null}
           <button onClick={load}>重新整理</button>
         </div>
       </header>
 
+      <nav className="inspection-period-tabs" aria-label="巡檢分類">
+        {Object.values(INSPECTION_PERIODS).map((period) => (
+          <button
+            key={period.key}
+            type="button"
+            className={activePeriod === period.key ? "active" : ""}
+            onClick={() => setActivePeriod(period.key)}
+          >
+            <span>{period.label}</span>
+            <strong>{period.title}</strong>
+          </button>
+        ))}
+      </nav>
+
       <div className="inspection-workbench-title">
         <div>
-          <h2>每日巡檢紀錄</h2>
+          <h2>{INSPECTION_PERIODS[activePeriod].title}紀錄</h2>
+          {activePeriod === "monthly" ? <p>月檢項目集中在這裡，但仍可從今日巡檢一併完成。</p> : null}
         </div>
       </div>
 
-      <section className="inspection-overview" aria-label="今日巡檢概況">
+      <section className="inspection-overview" aria-label={`${INSPECTION_PERIODS[activePeriod].title}概況`}>
         <div className="inspection-overview-card">
           <i aria-hidden="true">□</i>
           <span>巡檢項目</span>
-          <strong>{todaySummary.item_count}</strong>
+          <strong>{activeSummary.item_count}</strong>
         </div>
         <div className="inspection-overview-card ok">
           <i aria-hidden="true">✓</i>
           <span>正常</span>
-          <strong>{todaySummary.normal_count}</strong>
+          <strong>{activeSummary.normal_count}</strong>
         </div>
         <div className="inspection-overview-card danger">
           <i aria-hidden="true">!</i>
           <span>異常</span>
-          <strong>{todaySummary.abnormal_count}</strong>
+          <strong>{activeSummary.abnormal_count}</strong>
         </div>
         <div className="inspection-overview-card warning">
           <i aria-hidden="true">◇</i>
           <span>待觀察</span>
-          <strong>{todaySummary.observation_count}</strong>
+          <strong>{activeSummary.observation_count}</strong>
         </div>
         <div className="inspection-overview-card status">
           <i aria-hidden="true">●</i>
-          <span>今日狀態</span>
-          <InspectionStatusBadge value={todaySummary.overall_status} />
+          <span>{activePeriod === "monthly" ? "本月狀態" : "今日狀態"}</span>
+          <InspectionStatusBadge value={activeSummary.overall_status} />
         </div>
       </section>
 
       {error ? <div className="error-box">{error}</div> : null}
       {notice ? <div className="inspection-notice compact">{notice}</div> : null}
-      {todayRecord ? (
-        <section className={`inspection-status-banner ${todaySummary.abnormal_count > 0 ? "has-abnormal" : ""}`}>
+      {activeRecord ? (
+        <section className={`inspection-status-banner ${activeSummary.abnormal_count > 0 ? "has-abnormal" : ""}`}>
           <div>
-            <strong>今日巡檢已完成</strong>
-            <span>完成時間：{formatTime(todayRecord.updated_at)}｜異常 {todaySummary.abnormal_count || 0} 項</span>
+            <strong>{activePeriod === "monthly" ? "本月巡檢已有紀錄" : "今日巡檢已完成"}</strong>
+            <span>最後更新：{formatTime(activeRecord.updated_at)}｜異常 {activeSummary.abnormal_count || 0} 項</span>
           </div>
           <div className="inspection-banner-actions">
-            {todaySummary.abnormal_count > 0 ? <button onClick={() => router.push(`/inspections/${todayRecord.id}`)}>查看異常</button> : null}
-            <button onClick={() => setDrawerState({ mode: "edit", recordId: todayRecord.id })}>編輯巡檢</button>
+            {activeSummary.abnormal_count > 0 ? <button onClick={() => router.push(`/inspections/${activeRecord.id}?period=${activePeriod}`)}>查看異常</button> : null}
+            <button onClick={() => setDrawerState({ mode: "edit", recordId: activeRecord.id })}>編輯巡檢</button>
           </div>
         </section>
       ) : null}
 
-      {todayAttentionItems.length ? (
+      {activeAttentionItems.length ? (
         <section className="inspection-attention-panel">
           <header>
-            <h3>今日異常項目</h3>
-            <span>{todayAttentionItems.length} 項需要留意</span>
+            <h3>{activePeriod === "monthly" ? "本月異常項目" : "今日異常項目"}</h3>
+            <span>{activeAttentionItems.length} 項需要留意</span>
           </header>
           <div>
-            {todayAttentionItems.map((item) => (
-              <button key={item.id || `${item.category}-${item.item_name}`} type="button" onClick={() => router.push(`/inspections/${todayRecord.id}`)}>
+            {activeAttentionItems.map((item) => (
+              <button key={item.id || `${item.category}-${item.item_name}`} type="button" onClick={() => router.push(`/inspections/${activeRecord.id}?period=${activePeriod}`)}>
                 <strong>{item.item_name}</strong>
                 <InspectionStatusBadge value={item.status} type="item" />
               </button>
@@ -306,13 +337,13 @@ export default function InspectionList() {
           <div className="empty">讀取巡檢紀錄中...</div>
         ) : filteredRows.length === 0 ? (
           <div className="inspection-empty-state">
-            <h2>{filters.date || filters.inspector_name || filters.overall_status || filters.search ? "沒有符合條件的巡檢紀錄" : "今天尚未建立巡檢紀錄"}</h2>
-            <p>點選建立今日巡檢，逐項確認後即可完成。</p>
-            <button className="primary-action" onClick={handleCreateToday}>建立今日巡檢</button>
+            <h2>{filters.date || filters.inspector_name || filters.overall_status || filters.search ? "沒有符合條件的巡檢紀錄" : activePeriod === "monthly" ? "本月尚未建立巡檢紀錄" : "今天尚未建立巡檢紀錄"}</h2>
+            <p>點選建立巡檢，逐項確認後即可完成。</p>
+            <button className="primary-action" onClick={handleCreateToday}>建立巡檢</button>
           </div>
         ) : (
           filteredRows.map((row) => {
-            const summary = getRecordSummary(row);
+            const summary = getRecordSummary(row, activePeriod);
             return (
               <div className={`inspection-row ${summary.abnormal_count > 0 ? "has-abnormal" : ""}`} key={row.id}>
                 <span>{formatDate(row.inspection_date)}</span>
@@ -324,7 +355,7 @@ export default function InspectionList() {
                 <InspectionStatusBadge value={summary.overall_status} />
                 <span>{formatUpdatedAt(row.updated_at)}</span>
                 <span className="inspection-actions">
-                  <button onClick={() => router.push(`/inspections/${row.id}`)}>查看</button>
+                  <button onClick={() => router.push(`/inspections/${row.id}?period=${activePeriod}`)}>查看</button>
                   <button onClick={() => setDrawerState({ mode: "edit", recordId: row.id })}>編輯</button>
                 </span>
               </div>
@@ -341,6 +372,7 @@ export default function InspectionList() {
               mode={drawerState.mode}
               recordId={drawerState.recordId}
               drawer
+              initialPeriod={activePeriod}
               onCancel={() => setDrawerState(null)}
               onSaved={handleSaved}
             />
