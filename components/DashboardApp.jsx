@@ -132,8 +132,19 @@ function getTodayKey() {
   return getLocalDateKey(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-function getMonthKey(date) {
-  return `${date.getFullYear()} / ${String(date.getMonth() + 1).padStart(2, "0")}`;
+function getMonthNumber(date) {
+  return String(date.getMonth() + 1).padStart(2, "0");
+}
+
+function getTodayPhoneTargets(date = new Date()) {
+  const phoneMap = {
+    1: ["RV", "FB"],
+    2: ["FB", "FO"],
+    3: ["FO", "HK"],
+    4: ["HK", "SPA"],
+    5: ["Rec", "RV"]
+  };
+  return phoneMap[date.getDay()] || [];
 }
 
 function emptyCalendarEvents() {
@@ -603,75 +614,29 @@ function TodoRow({
   );
 }
 
-function DashboardFocusPanel({ dashboard, onReload }) {
-  const [syncing, setSyncing] = useState(false);
-  const networkRooms = dashboard?.networkRooms || [];
-  const today = new Date();
-  const weekday = today.getDay();
-  const phoneMap = {
-    1: ["RV", "FB"],
-    2: ["FB", "FO"],
-    3: ["FO", "HK"],
-    4: ["HK", "SPA"],
-    5: ["Rec", "RV"]
-  };
-  const phoneTargets = phoneMap[weekday] || [];
-
-  async function refresh() {
-    setSyncing(true);
-    try {
-      await onReload();
-    } finally {
-      setSyncing(false);
-    }
-  }
+function CalendarTodayTest({ networkRooms }) {
+  const streamRooms = (networkRooms || [])
+    .map((room) => String(room.room_no || room.room || "").trim())
+    .filter(Boolean);
+  const phoneTargets = getTodayPhoneTargets();
 
   return (
-    <section className="panel dashboard-focus-panel">
-      <header className="panel-title">
-        <div>
-          <h2>快速操作</h2>
-        </div>
-        <button onClick={refresh}>{syncing ? "同步中" : "刷新"}</button>
-      </header>
-
-      <div className="focus-section network-section">
-        <div className="focus-section-head">
-          <b>LINE 指派</b>
-          <span>{networkRooms.length ? `LINE Bot 已指派 ${networkRooms.length} 間` : "尚未指派"}</span>
-        </div>
-        {networkRooms.length ? (
-          <>
-            <p>LINE Bot 已指派以下測試房間</p>
-            <div className="room-pill-row">
-              {networkRooms.slice(0, 12).map((room) => (
-                <span key={room.id || room.room_no} className={`room-pill ${room.status === "異常" ? "bad" : ""}`}>
-                  {room.room_no}
-                </span>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="compact-empty">目前尚未收到房務 LINE 指派的網路測試房間。</div>
-        )}
-      </div>
-
-      <div className="focus-section phone-section">
-        <div>
-          <b>電話錄音</b>
-          <p>錄音服務正常運行中</p>
-        </div>
-        <div className="phone-pills">
-          {phoneTargets.length ? phoneTargets.map((target) => <span key={target}>{target}</span>) : <span>-</span>}
-        </div>
-      </div>
-    </section>
+    <div className="calendar-today-test" aria-label="今日測試">
+      <b>今日測試</b>
+      <span>
+        串流：{streamRooms.length ? streamRooms.join("、") : "今日尚未指派"}
+      </span>
+      <span>
+        錄音：{phoneTargets.length ? phoneTargets.join("、") : "-"}
+      </span>
+    </div>
   );
 }
 
-function DashboardCalendarPanel({ notify }) {
+function DashboardCalendarPanel({ dashboard, notify }) {
   const router = useRouter();
   const todayKey = getTodayKey();
+  const networkRooms = dashboard?.networkRooms || [];
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
   const year = visibleMonth.getFullYear();
   const month = visibleMonth.getMonth();
@@ -761,7 +726,7 @@ function DashboardCalendarPanel({ notify }) {
       <header className="panel-title calendar-title">
         <div>
           <h2>行事曆 <small>Events</small></h2>
-          <b>{getMonthKey(visibleMonth)}</b>
+          <b>{getMonthNumber(visibleMonth)}</b>
         </div>
         <div className="calendar-actions">
           <button
@@ -781,6 +746,7 @@ function DashboardCalendarPanel({ notify }) {
           <button type="button" aria-label="下一月" onClick={() => shiftMonth(1)}>›</button>
         </div>
       </header>
+      <CalendarTodayTest networkRooms={networkRooms} />
       <div className="calendar-grid dashboard-calendar-grid">
         {["日", "一", "二", "三", "四", "五", "六"].map((day) => (
           <div key={day} className="weekday">{day}</div>
@@ -1036,8 +1002,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
 
       <section className="dashboard-layout modern-dashboard-layout">
         <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
-        <DashboardCalendarPanel notify={notify} />
-        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} />
+        <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
       </section>
 
       <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>
