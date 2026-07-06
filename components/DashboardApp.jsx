@@ -132,8 +132,8 @@ function getTodayKey() {
   return getLocalDateKey(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
-function getMonthNumber(date) {
-  return String(date.getMonth() + 1).padStart(2, "0");
+function getMonthLabel(date) {
+  return `${date.getMonth() + 1}月`;
 }
 
 function getTodayPhoneTargets(date = new Date()) {
@@ -725,8 +725,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
     <section className="panel dashboard-calendar-panel">
       <header className="panel-title calendar-title">
         <div>
-          <h2>行事曆 <small>Events</small></h2>
-          <b>{getMonthNumber(visibleMonth)}</b>
+          <h2>行事曆 <b>{getMonthLabel(visibleMonth)}</b> <small>Events</small></h2>
         </div>
         <div className="calendar-actions">
           <button

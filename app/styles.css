@@ -974,10 +974,10 @@ input {
 }
 
 .calendar-title b {
-  display: block;
-  margin-top: 10px;
+  display: inline;
+  margin: 0 0 0 4px;
   color: #93c5fd;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .calendar-actions {
@@ -6155,7 +6155,7 @@ textarea::placeholder {
 
 .calendar-title b {
   color: var(--hotel-text);
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .calendar-actions {
@@ -12218,8 +12218,8 @@ textarea,
 }
 
 .dashboard-todo-panel {
-  height: 550px;
-  max-height: 550px;
+  height: 620px;
+  max-height: 620px;
 }
 
 .dashboard-calendar-panel {
