@@ -10,7 +10,6 @@ const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
 const FOLLOW_UP_STATUSES = ["等待回覆", "處理中", "待確認", "已完成"];
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
-const CALENDAR_EVENTS_STORAGE_KEY = "dashboard-calendar-events";
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -156,33 +155,6 @@ function normalizeTodoPriority(value) {
   if (["緊急", "急", "urgent", "critical", "high", "高"].includes(key)) return "urgent";
   if (["重要", "中", "medium"].includes(key)) return "medium";
   return "normal";
-}
-
-function emptyCalendarEvents() {
-  return {};
-}
-
-function removeSeedCalendarEvents(events) {
-  if (!events || typeof events !== "object") return emptyCalendarEvents();
-  return Object.entries(events).reduce((nextEvents, [key, value]) => {
-    const cleanEvents = Array.isArray(value)
-      ? value.filter((event) => !String(event?.id || "").startsWith("seed-"))
-      : [];
-    if (cleanEvents.length) nextEvents[key] = cleanEvents;
-    return nextEvents;
-  }, {});
-}
-
-function loadStoredCalendarEvents() {
-  if (typeof window === "undefined") return emptyCalendarEvents();
-  try {
-    const stored = window.localStorage.getItem(CALENDAR_EVENTS_STORAGE_KEY);
-    if (!stored) return emptyCalendarEvents();
-    const parsed = JSON.parse(stored);
-    return removeSeedCalendarEvents(parsed);
-  } catch {
-    return emptyCalendarEvents();
-  }
 }
 
 function DashboardToast({ toast }) {
@@ -679,21 +651,54 @@ function DashboardCalendarPanel({ dashboard, notify }) {
     type: CALENDAR_EVENT_TYPES[0],
     note: ""
   });
-  const [localEvents, setLocalEvents] = useState(loadStoredCalendarEvents);
+  const [calendarEvents, setCalendarEvents] = useState({});
+  const [isCalendarLoading, setIsCalendarLoading] = useState(true);
+  const [calendarSaving, setCalendarSaving] = useState(false);
+  const [deletingEventIds, setDeletingEventIds] = useState(() => new Set());
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let day = 1; day <= daysInMonth; day++) cells.push(day);
   while (cells.length % 7 !== 0) cells.push(null);
 
-  const selectedEvents = localEvents[selectedDate] || [];
+  const selectedEvents = calendarEvents[selectedDate] || [];
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(CALENDAR_EVENTS_STORAGE_KEY, JSON.stringify(localEvents));
-    } catch {
-      // Calendar persistence is best-effort in the browser.
+    let isMounted = true;
+    async function loadCalendarEvents() {
+      setIsCalendarLoading(true);
+      try {
+        const rows = await api("/api/calendar-events");
+        if (!isMounted) return;
+        setCalendarEvents(groupCalendarEvents(rows));
+      } catch (error) {
+        if (!isMounted) return;
+        notify?.({ tone: "error", message: error.message || "行事曆讀取失敗" });
+      } finally {
+        if (isMounted) setIsCalendarLoading(false);
+      }
     }
-  }, [localEvents]);
+    loadCalendarEvents();
+    return () => {
+      isMounted = false;
+    };
+  }, [notify]);
+
+  function groupCalendarEvents(rows) {
+    return (Array.isArray(rows) ? rows : []).reduce((eventsByDate, event) => {
+      const eventDate = dateKey(event.event_date);
+      if (!eventDate) return eventsByDate;
+      const nextEvent = {
+        id: event.id,
+        event_date: eventDate,
+        event_time: event.event_time || "",
+        title: event.title || "未命名行程",
+        event_type: event.event_type || "任務",
+        note: event.note || ""
+      };
+      eventsByDate[eventDate] = [...(eventsByDate[eventDate] || []), nextEvent];
+      return eventsByDate;
+    }, {});
+  }
 
   function selectMonth(nextMonth) {
     setVisibleMonth(nextMonth);
@@ -727,24 +732,66 @@ function DashboardCalendarPanel({ dashboard, notify }) {
     setIsEventModalOpen(false);
   }
 
-  function saveCalendarEvent(event) {
+  async function saveCalendarEvent(event) {
     event.preventDefault();
     const title = eventForm.title.trim();
-    if (!title) return;
-    const nextEvent = {
-      id: `local-${Date.now()}`,
-      title,
-      time: eventForm.time,
-      type: eventForm.type,
-      note: eventForm.note.trim()
-    };
-    setLocalEvents((current) => ({
-      ...current,
-      [eventForm.date]: [...(current[eventForm.date] || []), nextEvent]
-    }));
-    setSelectedDate(eventForm.date);
-    setIsEventModalOpen(false);
-    notify?.({ tone: "success", message: `已新增到 ${formatCalendarDate(eventForm.date)}` });
+    if (!title || calendarSaving) return;
+    setCalendarSaving(true);
+    try {
+      const nextEvent = await api("/api/calendar-events", {
+        method: "POST",
+        body: JSON.stringify({
+          event_date: eventForm.date,
+          event_time: eventForm.time || null,
+          title,
+          event_type: eventForm.type,
+          note: eventForm.note.trim()
+        })
+      });
+      const eventDate = dateKey(nextEvent.event_date);
+      setCalendarEvents((current) => ({
+        ...current,
+        [eventDate]: [...(current[eventDate] || []), {
+          id: nextEvent.id,
+          event_date: eventDate,
+          event_time: nextEvent.event_time || "",
+          title: nextEvent.title || title,
+          event_type: nextEvent.event_type || eventForm.type,
+          note: nextEvent.note || ""
+        }]
+      }));
+      setSelectedDate(eventDate);
+      setIsEventModalOpen(false);
+      notify?.({ tone: "success", message: `已新增到 ${formatCalendarDate(eventDate)}` });
+    } catch (error) {
+      notify?.({ tone: "error", message: error.message || "行程新增失敗" });
+    } finally {
+      setCalendarSaving(false);
+    }
+  }
+
+  async function deleteCalendarEvent(eventId, eventDate) {
+    if (!eventId || deletingEventIds.has(eventId)) return;
+    setDeletingEventIds((current) => new Set(current).add(eventId));
+    try {
+      await api(`/api/calendar-events?id=${encodeURIComponent(eventId)}`, { method: "DELETE" });
+      setCalendarEvents((current) => {
+        const nextEvents = { ...current };
+        const remaining = (nextEvents[eventDate] || []).filter((event) => event.id !== eventId);
+        if (remaining.length) nextEvents[eventDate] = remaining;
+        else delete nextEvents[eventDate];
+        return nextEvents;
+      });
+      notify?.({ tone: "success", message: "已刪除行程" });
+    } catch (error) {
+      notify?.({ tone: "error", message: error.message || "行程刪除失敗" });
+    } finally {
+      setDeletingEventIds((current) => {
+        const next = new Set(current);
+        next.delete(eventId);
+        return next;
+      });
+    }
   }
 
   return (
@@ -778,7 +825,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
         ))}
         {cells.map((day, index) => {
           const cellDate = day ? getLocalDateKey(year, month, day) : "";
-          const dayEvents = cellDate ? localEvents[cellDate] || [] : [];
+          const dayEvents = cellDate ? calendarEvents[cellDate] || [] : [];
           return (
             <div
               key={`${day || "blank"}-${index}`}
@@ -800,7 +847,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
                   +
                 </button>
                 <span className={isCurrentMonth && day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
-                {dayEvents.map((event) => <em key={event.id}>{event.time ? `${event.time} ` : ""}{event.title}</em>)}
+                {dayEvents.map((event) => <em key={event.id}>{event.event_time ? `${event.event_time} ` : ""}{event.title}</em>)}
               </>
               ) : null}
             </div>
@@ -810,14 +857,24 @@ function DashboardCalendarPanel({ dashboard, notify }) {
       <div className="calendar-day-detail">
         <div>
           <b>{formatCalendarDate(selectedDate)}</b>
-          <span>{selectedEvents.length ? `${selectedEvents.length} 筆行程` : "目前沒有行程"}</span>
+          <span>{isCalendarLoading ? "讀取中" : selectedEvents.length ? `${selectedEvents.length} 筆行程` : "目前沒有行程"}</span>
         </div>
         {selectedEvents.length ? (
           <ul>
             {selectedEvents.map((event) => (
               <li key={event.id}>
-                <strong>{event.title}</strong>
-                <span>{event.time || "全天"} · {event.type}</span>
+                <div>
+                  <strong>{event.title}</strong>
+                  <span>{event.event_time || "全天"} · {event.event_type}</span>
+                </div>
+                <button
+                  className="calendar-event-delete"
+                  type="button"
+                  onClick={() => deleteCalendarEvent(event.id, event.event_date)}
+                  disabled={deletingEventIds.has(event.id)}
+                >
+                  刪除
+                </button>
               </li>
             ))}
           </ul>
@@ -880,7 +937,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
             </label>
             <footer>
               <button type="button" onClick={closeEventModal}>取消</button>
-              <button className="primary-action" type="submit">儲存</button>
+              <button className="primary-action" type="submit" disabled={calendarSaving}>{calendarSaving ? "儲存中" : "儲存"}</button>
             </footer>
           </form>
         </div>

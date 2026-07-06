@@ -7473,6 +7473,7 @@ textarea:disabled {
 .calendar-day-detail li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 10px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -7480,10 +7481,31 @@ textarea:disabled {
   padding: 8px 10px;
 }
 
+.calendar-day-detail li > div {
+  display: grid;
+  gap: 4px;
+}
+
 .calendar-day-detail li span {
   color: var(--hotel-muted);
   font-size: 12px;
   font-weight: 800;
+}
+
+.calendar-event-delete {
+  min-height: 30px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fff;
+  color: #b42318;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.calendar-event-delete:disabled {
+  opacity: 0.55;
+  cursor: wait;
 }
 
 .calendar-day-detail > button {
@@ -8469,7 +8491,7 @@ textarea:disabled {
 }
 
 .dashboard-calendar-panel .calendar-day-detail {
-  display: none;
+  display: block;
 }
 
 .dashboard-focus-panel {
