@@ -169,31 +169,6 @@ function DashboardToast({ toast }) {
   );
 }
 
-function DashboardActionHero({ pendingCount, followUpCount, abnormalCount, onNavigate }) {
-  return (
-    <section className="today-action-hero" aria-label="今日行動摘要">
-      <div>
-        <h2>今日行動</h2>
-        <p>先處理待辦與待追蹤，再檢查異常與今日快速操作。</p>
-      </div>
-      <div className="today-action-strip">
-        <button type="button" onClick={() => onNavigate?.("work")}>
-          <span>待辦</span>
-          <strong>{pendingCount}</strong>
-        </button>
-        <button type="button" onClick={() => onNavigate?.("follow-ups")}>
-          <span>待追蹤</span>
-          <strong>{followUpCount}</strong>
-        </button>
-        <button type="button" onClick={() => onNavigate?.("it_incidents")}>
-          <span>異常</span>
-          <strong>{abnormalCount}</strong>
-        </button>
-      </div>
-    </section>
-  );
-}
-
 function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) {
   const todayKey = getTodayKey();
   const [activeTab, setActiveTab] = useState("todos");
@@ -214,6 +189,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
     note: ""
   });
   const todoInputRef = useRef(null);
+  const visibleTodos = (todos || []).slice(0, 6);
   const visibleFollowUps = (followUps || []).slice(0, 5);
 
   function addTodoState(setter, id) {
@@ -397,7 +373,6 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
       <header className="panel-title">
         <div>
           <h2>Todo List</h2>
-          <span>{activeTab === "todos" ? "待辦事項" : "待追蹤"}</span>
         </div>
         <button onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))} disabled={saving || activeTab !== "todos"}>
           {isAdding ? "取消" : "+ 新增"}
@@ -448,7 +423,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
             {todos.length === 0 ? (
               <div className="empty">目前沒有待辦項目</div>
             ) : (
-              todos.map((todo) => (
+              visibleTodos.map((todo) => (
                 <TodoRow
                   key={todo.id}
                   todo={todo}
@@ -578,7 +553,6 @@ function TodoRow({
   isSaving
 }) {
   const disabled = isProcessing || isCompleted || isFading;
-  const status = isProcessing ? "處理中" : isCompleted ? "已完成" : todo.status || "未完成";
 
   return (
     <article className={`dashboard-todo-row ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
@@ -603,20 +577,18 @@ function TodoRow({
           <strong>{todo.title || "未命名待辦"}</strong>
         )}
       </div>
-      {isEditing ? null : <b className={isCompleted ? "status-done" : isProcessing ? "status-processing" : "status-todo"}>{status}</b>}
       <div className="row-actions">
         {isEditing ? (
           <>
-            <button onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()}>儲存</button>
-            <button onClick={onCancelEdit} disabled={isSaving}>取消</button>
+            <button onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()} aria-label="儲存待辦">✓</button>
+            <button onClick={onCancelEdit} disabled={isSaving} aria-label="取消修改">×</button>
+            <button className="danger" onClick={onDelete} disabled={disabled} aria-label="刪除待辦">刪除</button>
           </>
         ) : (
-          <>
-            <button onClick={onComplete} disabled={disabled || isSaving}>完成</button>
-            <button onClick={onEdit} disabled={disabled || isSaving}>修改</button>
-          </>
+          <button className="icon-action" onClick={onEdit} disabled={disabled || isSaving} aria-label="修改待辦內容" title="修改">
+            ✎
+          </button>
         )}
-        <button onClick={onDelete} disabled={disabled}>刪除</button>
       </div>
     </article>
   );
@@ -1026,21 +998,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
           <h1>儀表板</h1>
         </div>
       </header>
-      <DashboardActionHero
-        pendingCount={pendingCount}
-        followUpCount={followUps.length}
-        abnormalCount={abnormalCount}
-        onNavigate={onNavigate}
-      />
-      {error ? <div className="error-box">{error}</div> : null}
-
-      <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
-        <DashboardCalendarPanel notify={notify} />
-        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
-      </section>
-
-      <section className="dashboard-kpi-strip supporting-kpi-strip">
+      <section className="dashboard-kpi-strip">
         <section className="dashboard-kpi-summary" aria-label="今日營運指標">
           <KpiSummaryItem
             label="今日待處理"
@@ -1076,6 +1034,13 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
             pending={pendingCount}
           />
         </section>
+      </section>
+      {error ? <div className="error-box">{error}</div> : null}
+
+      <section className="dashboard-layout modern-dashboard-layout">
+        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
+        <DashboardCalendarPanel notify={notify} />
+        <DashboardFocusPanel dashboard={dashboard} onReload={onReload} onNavigate={onNavigate} />
       </section>
 
       <section className={`bottom-layout modern-bottom-layout ${hasRecentWorkTrend ? "" : "single-panel"}`}>
