@@ -8372,15 +8372,15 @@ textarea:disabled {
 
 .dashboard-calendar-panel .dashboard-calendar-grid {
   flex: 0 0 auto;
-  grid-auto-rows: 58px;
+  grid-auto-rows: 64px;
   min-height: 0;
 }
 
 .dashboard-calendar-panel .dashboard-day-cell {
   display: flex;
   min-width: 0;
-  min-height: 58px;
-  padding: 7px;
+  min-height: 64px;
+  padding: 8px;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
@@ -12218,11 +12218,15 @@ textarea,
 }
 
 .dashboard-todo-panel {
-  height: 520px;
-  max-height: 520px;
+  height: 550px;
+  max-height: 550px;
 }
 
-.dashboard-calendar-panel,
+.dashboard-calendar-panel {
+  height: 550px;
+  max-height: 550px;
+}
+
 .dashboard-focus-panel {
   height: 520px;
   max-height: 520px;
