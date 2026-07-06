@@ -12898,3 +12898,225 @@ textarea,
     justify-content: flex-start;
   }
 }
+
+/* Responsive width repair: keep the app shell fluid while preserving table-level horizontal scroll. */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 0;
+}
+
+.app-shell,
+.app-shell.sidebar-is-collapsed {
+  width: 100%;
+  min-width: 0;
+}
+
+.main-area {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.section-page,
+.documents-page,
+.boss-kpi-page,
+.inspection-page,
+.mountain-pc-page,
+.password-index-page,
+.quick-notes-page,
+.work-management-page,
+.incident-page,
+.assets-page,
+.contracts-page {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.dashboard-kpi-strip,
+.dashboard-kpi-summary,
+.modern-dashboard-layout,
+.dashboard-layout.modern-dashboard-layout,
+.modern-bottom-layout,
+.bottom-layout {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.modern-dashboard-layout,
+.dashboard-layout.modern-dashboard-layout {
+  grid-template-columns: minmax(300px, 0.78fr) minmax(560px, 1.72fr);
+}
+
+.modern-dashboard-layout > *,
+.dashboard-layout.modern-dashboard-layout > * {
+  min-width: 0;
+}
+
+.records-table,
+.asset-table-wrap,
+.password-index-table-wrap,
+.documents-table-card,
+.documents-table-wrap,
+.inspection-table,
+.incident-table-wrap,
+.contract-table-wrap,
+.mobile-contract-table-wrap,
+.hotel-detection-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 1440px) {
+  .app-shell {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .app-shell.sidebar-is-collapsed {
+    grid-template-columns: 80px minmax(0, 1fr);
+  }
+
+  .modern-dashboard-layout,
+  .dashboard-layout.modern-dashboard-layout {
+    grid-template-columns: minmax(280px, 0.82fr) minmax(480px, 1.18fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .app-shell,
+  .app-shell.sidebar-is-collapsed {
+    grid-template-columns: 82px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .sidebar .brand-copy,
+  .sidebar .nav-text,
+  .sidebar .nav-caret,
+  .sidebar .nav-children,
+  .sidebar-foot {
+    display: none;
+  }
+
+  .sidebar .brand-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .sidebar .nav-item,
+  .sidebar .nav-item.has-children {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    width: 44px;
+  }
+
+  .modern-dashboard-layout,
+  .dashboard-layout.modern-dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .modern-dashboard-layout .panel,
+  .dashboard-layout.modern-dashboard-layout .panel {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell,
+  .app-shell.sidebar-is-collapsed {
+    display: block;
+    grid-template-columns: 1fr;
+  }
+
+  .main-area {
+    min-height: 100vh;
+    padding-top: 56px;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar,
+  .sidebar.collapsed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 72;
+    width: min(292px, calc(100vw - 36px));
+    height: 100vh;
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar.mobile-open,
+  .sidebar.collapsed.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar.mobile-open .brand-copy,
+  .sidebar.mobile-open .nav-text,
+  .sidebar.mobile-open .nav-caret {
+    display: block;
+  }
+
+  .sidebar.mobile-open .brand-row,
+  .sidebar.collapsed.mobile-open .brand-row {
+    grid-template-columns: 38px minmax(0, 1fr);
+    justify-items: stretch;
+  }
+
+  .sidebar.mobile-open .nav-item,
+  .sidebar.mobile-open .nav-item.has-children {
+    width: 100%;
+    grid-template-columns: 30px minmax(0, 1fr) 18px;
+    justify-items: stretch;
+  }
+
+  .sidebar.mobile-open .nav-item:not(.has-children) {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .sidebar.mobile-open .nav-children {
+    display: grid;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
+  }
+
+  .modern-dashboard-layout,
+  .dashboard-layout.modern-dashboard-layout,
+  .dashboard-kpi-summary,
+  .bottom-layout,
+  .modern-bottom-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .section-page,
+  .documents-page,
+  .boss-kpi-page,
+  .inspection-page,
+  .mountain-pc-page,
+  .password-index-page,
+  .quick-notes-page,
+  .work-management-page,
+  .incident-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
