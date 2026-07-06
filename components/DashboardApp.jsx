@@ -136,26 +136,30 @@ function getMonthKey(date) {
   return `${date.getFullYear()} / ${String(date.getMonth() + 1).padStart(2, "0")}`;
 }
 
-function buildSeedCalendarEvents(baseDate = new Date()) {
-  const year = baseDate.getFullYear();
-  const month = baseDate.getMonth();
-  return {
-    [getLocalDateKey(year, month, 11)]: [{ id: "seed-11", title: "維護作業", type: "維護" }],
-    [getLocalDateKey(year, month, 13)]: [{ id: "seed-13", title: "保險調查", type: "任務" }],
-    [getLocalDateKey(year, month, 16)]: [{ id: "seed-16", title: "系統測試", type: "巡檢" }],
-    [getLocalDateKey(year, month, 17)]: [{ id: "seed-17", title: "設備檢測", type: "維護" }]
-  };
+function emptyCalendarEvents() {
+  return {};
+}
+
+function removeSeedCalendarEvents(events) {
+  if (!events || typeof events !== "object") return emptyCalendarEvents();
+  return Object.entries(events).reduce((nextEvents, [key, value]) => {
+    const cleanEvents = Array.isArray(value)
+      ? value.filter((event) => !String(event?.id || "").startsWith("seed-"))
+      : [];
+    if (cleanEvents.length) nextEvents[key] = cleanEvents;
+    return nextEvents;
+  }, {});
 }
 
 function loadStoredCalendarEvents() {
-  if (typeof window === "undefined") return buildSeedCalendarEvents();
+  if (typeof window === "undefined") return emptyCalendarEvents();
   try {
     const stored = window.localStorage.getItem(CALENDAR_EVENTS_STORAGE_KEY);
-    if (!stored) return buildSeedCalendarEvents();
+    if (!stored) return emptyCalendarEvents();
     const parsed = JSON.parse(stored);
-    return parsed && typeof parsed === "object" ? parsed : buildSeedCalendarEvents();
+    return removeSeedCalendarEvents(parsed);
   } catch {
-    return buildSeedCalendarEvents();
+    return emptyCalendarEvents();
   }
 }
 
