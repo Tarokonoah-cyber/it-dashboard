@@ -3,7 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "./AppShell";
+import CompletionSummaryItem from "./dashboard/CompletionSummaryItem";
+import DashboardToast from "./dashboard/DashboardToast";
+import KpiSummaryItem from "./dashboard/KpiSummaryItem";
 import { getSectionHref } from "./navigation";
+import {
+  dateKey,
+  formatDate,
+  formatRelativeDate,
+  getLocalDateKey,
+  getTodayKey,
+  normalizeTodoPriority,
+  parseDelta
+} from "../lib/dashboard-formatters";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
@@ -26,71 +38,8 @@ async function api(path, options) {
   return data.data;
 }
 
-function dateKey(value) {
-  return value ? String(value).slice(0, 10) : "";
-}
-
-function formatDate(value) {
-  return dateKey(value) || "-";
-}
-
 function isDoneStatus(status) {
   return DONE_STATUSES.has(String(status || "").trim());
-}
-
-function parseDelta(value) {
-  const numeric = Number(String(value ?? "0").replace(/[^\d.-]/g, ""));
-  if (!Number.isFinite(numeric) || numeric === 0) {
-    return { text: "0", direction: "flat" };
-  }
-  return {
-    text: `${numeric > 0 ? "+" : "-"}${Math.abs(numeric)}`,
-    direction: numeric > 0 ? "up" : "down"
-  };
-}
-
-function KpiSummaryItem({ label, value, unit = "", delta, deltaLabel = "", detail = "", tone = "neutral", deltaImpact = "neutral" }) {
-  const parsedDelta = parseDelta(delta);
-  const deltaTone = parsedDelta.direction === "flat" ? "flat" : deltaImpact;
-
-  return (
-    <article className={`kpi-summary-item ${tone}`}>
-      <div className="kpi-summary-label">{label}</div>
-      <div className="kpi-summary-main">
-        <strong>{value}<small>{unit}</small></strong>
-      </div>
-      <div className="kpi-summary-meta">
-        {deltaLabel ? (
-          <span className={`kpi-delta ${deltaTone}`}>
-            {parsedDelta.text}
-            <small>{deltaLabel}</small>
-          </span>
-        ) : null}
-        {detail ? <span>{detail}</span> : null}
-      </div>
-    </article>
-  );
-}
-
-function CompletionSummaryItem({ rate, completed, total, pending }) {
-  const normalized = Math.max(0, Math.min(100, Number(rate) || 0));
-  const remaining = Math.max(0, Number(pending) || 0);
-  const tone = normalized < 50 ? "warn" : normalized < 80 ? "neutral" : "good";
-
-  return (
-    <article className={`kpi-summary-item completion-summary ${tone}`}>
-      <div className="kpi-summary-label">完成率</div>
-      <div className="completion-summary-main">
-        <div className="kpi-donut" style={{ "--progress": `${normalized}%` }} aria-hidden="true">
-          <span>{normalized}%</span>
-        </div>
-        <div className="completion-summary-copy">
-          <span className="completion-count-line">{completed} / {total} 件</span>
-          <span className="completion-pending-line">尚餘 {remaining} 件</span>
-        </div>
-      </div>
-    </article>
-  );
 }
 
 function formatWorkTitle(work) {
@@ -100,31 +49,8 @@ function formatWorkTitle(work) {
   return title || description || "未命名工作";
 }
 
-function formatRelativeDate(value) {
-  const key = dateKey(value);
-  if (!key) return "-";
-  const date = new Date(`${key}T00:00:00`);
-  if (Number.isNaN(date.getTime())) return key;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diffDays = Math.round((today.getTime() - date.getTime()) / 86400000);
-  if (diffDays === 0) return "今天";
-  if (diffDays === 1) return "昨天";
-  if (diffDays > 1 && diffDays <= 7) return `${diffDays} 天前`;
-  return key.slice(5).replace("-", "/");
-}
-
 function formatCalendarDate(dateKeyValue) {
   return dateKeyValue ? dateKeyValue.replaceAll("-", "/") : "";
-}
-
-function getLocalDateKey(year, month, day) {
-  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-}
-
-function getTodayKey() {
-  const now = new Date();
-  return getLocalDateKey(now.getFullYear(), now.getMonth(), now.getDate());
 }
 
 function getMonthLabel(date) {
@@ -147,14 +73,6 @@ const TODO_PRIORITY_OPTIONS = [
   { value: "重要", label: "重要", tone: "medium" },
   { value: "緊急", label: "緊急", tone: "urgent" }
 ];
-
-function normalizeTodoPriority(value) {
-  const text = String(value || "").trim();
-  const key = text.toLowerCase ? text.toLowerCase() : text;
-  if (["緊急", "急", "urgent", "critical", "high", "高"].includes(key)) return "urgent";
-  if (["重要", "中", "medium"].includes(key)) return "medium";
-  return "normal";
-}
 
 function mergeTodoOrder(savedOrder, rows) {
   const ids = (rows || []).map((row) => String(row.id || "")).filter(Boolean);
@@ -193,16 +111,6 @@ function updateDashboardTodosState(dashboard, updater, countDelta = 0, completed
       pending: `${pendingCount}`
     }
   };
-}
-
-function DashboardToast({ toast }) {
-  if (!toast) return null;
-  return (
-    <div className={`dashboard-toast ${toast.tone || "success"}`} role="status" aria-live="polite">
-      <span aria-hidden="true" />
-      <p>{toast.message}</p>
-    </div>
-  );
 }
 
 function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify, onDashboardChange }) {
