@@ -11,15 +11,29 @@ import {
 const MAX_TODO_TITLE_LENGTH = 120;
 const MAX_TODO_TEXT_LENGTH = 1000;
 
+function isMissingSortOrderColumn(error) {
+  const message = String(error?.message || "");
+  return /sort_order/i.test(message) && /(schema cache|could not find|does not exist|PGRST204|PGRST205)/i.test(message);
+}
+
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
   if (authError) return authError;
 
   try {
-    const rows = await supabaseRequest(
-      "todo_logs",
-      "select=*&order=created_at.desc&limit=100"
-    );
+    let rows;
+    try {
+      rows = await supabaseRequest(
+        "todo_logs",
+        "select=*&order=sort_order.asc.nullslast,created_at.desc&limit=100"
+      );
+    } catch (error) {
+      if (!isMissingSortOrderColumn(error)) throw error;
+      rows = await supabaseRequest(
+        "todo_logs",
+        "select=*&order=created_at.desc&limit=100"
+      );
+    }
     const todos = rows.map(normalizeTodo).filter((row) => !isTodoDone(row));
     return ok(todos);
   } catch (error) {

@@ -8,6 +8,7 @@ import { getSectionHref } from "./navigation";
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
+const TODO_ORDER_STORAGE_KEY = "dashboard-todo-order-v1";
 const FOLLOW_UP_STATUSES = ["等待回覆", "處理中", "待確認", "已完成"];
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -83,11 +84,9 @@ function CompletionSummaryItem({ rate, completed, total, pending }) {
         <div className="kpi-donut" style={{ "--progress": `${normalized}%` }} aria-hidden="true">
           <span>{normalized}%</span>
         </div>
-        <div>
-          <strong>{completed}<small> / {total} 件</small></strong>
-          <div className="kpi-summary-meta">
-            <span>尚餘 {remaining} 件</span>
-          </div>
+        <div className="completion-summary-copy">
+          <span className="completion-count-line">{completed} / {total} 件</span>
+          <span className="completion-pending-line">尚餘 {remaining} 件</span>
         </div>
       </div>
     </article>
@@ -157,6 +156,45 @@ function normalizeTodoPriority(value) {
   return "normal";
 }
 
+function mergeTodoOrder(savedOrder, rows) {
+  const ids = (rows || []).map((row) => String(row.id || "")).filter(Boolean);
+  const idSet = new Set(ids);
+  const kept = (Array.isArray(savedOrder) ? savedOrder : []).map(String).filter((id) => idSet.has(id));
+  const keptSet = new Set(kept);
+  return [...kept, ...ids.filter((id) => !keptSet.has(id))];
+}
+
+function orderTodos(rows, order) {
+  const list = Array.isArray(rows) ? rows : [];
+  if (!order?.length) return list;
+  const orderMap = new Map(order.map((id, index) => [id, index]));
+  return [...list].sort((left, right) => {
+    const leftOrder = orderMap.has(left.id) ? orderMap.get(left.id) : Number.MAX_SAFE_INTEGER;
+    const rightOrder = orderMap.has(right.id) ? orderMap.get(right.id) : Number.MAX_SAFE_INTEGER;
+    if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+    return 0;
+  });
+}
+
+function updateDashboardTodosState(dashboard, updater, countDelta = 0, completedDelta = 0) {
+  if (!dashboard) return dashboard;
+  const openTodos = Array.isArray(dashboard.openTodos) ? dashboard.openTodos : [];
+  const nextTodos = updater(openTodos);
+  const pendingCount = nextTodos.length;
+  return {
+    ...dashboard,
+    openTodos: nextTodos,
+    pendingCount,
+    completedCount: Math.max(0, Number(dashboard.completedCount || 0) + completedDelta),
+    todayWorkCount: Math.max(0, Number(dashboard.todayWorkCount || 0) + countDelta),
+    monthWorkCount: Math.max(0, Number(dashboard.monthWorkCount || 0) + countDelta),
+    deltas: {
+      ...(dashboard.deltas || {}),
+      pending: `${pendingCount}`
+    }
+  };
+}
+
 function DashboardToast({ toast }) {
   if (!toast) return null;
   return (
@@ -167,13 +205,18 @@ function DashboardToast({ toast }) {
   );
 }
 
-function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) {
+function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify, onDashboardChange }) {
   const todayKey = getTodayKey();
+  const todoRows = Array.isArray(todos) ? todos : [];
+  const followUpRows = Array.isArray(followUps) ? followUps : [];
   const [activeTab, setActiveTab] = useState("todos");
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState("");
+  const [localTodoOrder, setLocalTodoOrder] = useState([]);
+  const [draggedTodoId, setDraggedTodoId] = useState("");
+  const [dropTargetTodoId, setDropTargetTodoId] = useState("");
   const [editingTodoId, setEditingTodoId] = useState("");
   const [editTitle, setEditTitle] = useState("");
   const [editPriority, setEditPriority] = useState("一般");
@@ -188,8 +231,29 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
     note: ""
   });
   const todoInputRef = useRef(null);
-  const visibleTodos = (todos || []).slice(0, 6);
-  const visibleFollowUps = (followUps || []).slice(0, 5);
+  const todoIdsKey = todoRows.map((todo) => todo.id).join("|");
+  const visibleTodos = orderTodos(todoRows, localTodoOrder);
+  const visibleFollowUps = followUpRows;
+  const todoSourceIds = todoRows.map((todo) => todo.id).filter(Boolean).join(",");
+  const todoWorkHref = todoSourceIds
+    ? `/work?source=todo_logs&sourceIds=${encodeURIComponent(todoSourceIds)}`
+    : "/work?source=todo_logs";
+
+  useEffect(() => {
+    let savedOrder = [];
+    try {
+      savedOrder = JSON.parse(window.localStorage.getItem(TODO_ORDER_STORAGE_KEY) || "[]");
+    } catch {
+      savedOrder = [];
+    }
+    const merged = mergeTodoOrder(savedOrder, todoRows);
+    setLocalTodoOrder(merged);
+    try {
+      window.localStorage.setItem(TODO_ORDER_STORAGE_KEY, JSON.stringify(merged));
+    } catch {
+      // Local storage is optional; database persistence still handles shared order.
+    }
+  }, [todoIdsKey]);
 
   function addTodoState(setter, id) {
     setter((current) => {
@@ -215,17 +279,40 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
       window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
       return;
     }
+    const tempId = `temp-todo-${Date.now()}`;
+    const optimisticTodo = {
+      id: tempId,
+      title: value,
+      priority: "一般",
+      status: "待辦",
+      due_date: todayKey,
+      created_at: new Date().toISOString()
+    };
+    setTitle("");
+    setIsAdding(false);
+    onDashboardChange?.((current) => updateDashboardTodosState(
+      current,
+      (rows) => [optimisticTodo, ...rows],
+      1
+    ));
     setSaving(true);
     setError("");
     try {
-      await api("/api/todos", {
+      const nextTodo = await api("/api/todos", {
         method: "POST",
         body: JSON.stringify({ title: value })
       });
-      setTitle("");
-      await onReload();
-      setIsAdding(false);
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => rows.map((todo) => todo.id === tempId ? { ...optimisticTodo, ...nextTodo } : todo)
+      ));
+      notify?.({ tone: "success", message: `已新增：${value}` });
     } catch (err) {
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => rows.filter((todo) => todo.id !== tempId),
+        -1
+      ));
       setError(err.message || "Todo 新增失敗");
     } finally {
       setSaving(false);
@@ -261,30 +348,25 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
     setError("");
     setCompletionTodo(null);
     setIsConverting(false);
-    addTodoState(setProcessingTodoIds, id);
+    onDashboardChange?.((current) => updateDashboardTodosState(
+      current,
+      (rows) => rows.filter((row) => row.id !== id),
+      -1,
+      1
+    ));
     try {
       await api("/api/todos", {
         method: "PATCH",
         body: JSON.stringify({ id, status: "已完成" })
       });
-      removeTodoState(setProcessingTodoIds, id);
-      addTodoState(setCompletedTodoIds, id);
       notify?.({ tone: "success", message: `已完成：${todo.title || "未命名待辦"}` });
-      window.setTimeout(() => {
-        addTodoState(setFadingTodoIds, id);
-        window.setTimeout(async () => {
-          try {
-            await onReload();
-          } finally {
-            removeTodoState(setCompletedTodoIds, id);
-            removeTodoState(setFadingTodoIds, id);
-          }
-        }, TODO_COMPLETE_EXIT_MS);
-      }, TODO_COMPLETE_EXIT_MS);
     } catch (err) {
-      removeTodoState(setProcessingTodoIds, id);
-      removeTodoState(setCompletedTodoIds, id);
-      removeTodoState(setFadingTodoIds, id);
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => [todo, ...rows],
+        1,
+        -1
+      ));
       setError(err.message || "Todo 更新失敗");
       notify?.({ tone: "error", message: "更新失敗，請稍後再試" });
     }
@@ -344,29 +426,88 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
     }
     setError("");
     setSaving(true);
+    const originalTodo = row;
+    onDashboardChange?.((current) => updateDashboardTodosState(
+      current,
+      (rows) => rows.map((todo) => todo.id === row.id ? { ...todo, title: nextTitle, priority: editPriority } : todo)
+    ));
+    cancelEditTodo();
     try {
-      await api("/api/todos", {
+      const nextTodo = await api("/api/todos", {
         method: "PATCH",
         body: JSON.stringify({ id: row.id, title: nextTitle, priority: editPriority })
       });
-      cancelEditTodo();
-      await onReload();
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => rows.map((todo) => todo.id === row.id ? { ...todo, ...nextTodo } : todo)
+      ));
+      notify?.({ tone: "success", message: `已更新：${nextTitle}` });
     } catch (err) {
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => rows.map((todo) => todo.id === row.id ? originalTodo : todo)
+      ));
       setError(err.message || "Todo 更新失敗");
     } finally {
       setSaving(false);
     }
   }
 
-  async function deleteTodo(id) {
+  async function deleteTodo(todo) {
+    const id = todo?.id;
+    if (!id) return;
     if (!window.confirm("確定要刪除這筆待辦？")) return;
     setError("");
+    onDashboardChange?.((current) => updateDashboardTodosState(
+      current,
+      (rows) => rows.filter((row) => row.id !== id),
+      -1
+    ));
     try {
       await api(`/api/todos?id=${encodeURIComponent(id)}`, { method: "DELETE" });
-      await onReload();
+      notify?.({ tone: "success", message: `已刪除：${todo.title || "未命名待辦"}` });
     } catch (err) {
+      onDashboardChange?.((current) => updateDashboardTodosState(
+        current,
+        (rows) => [todo, ...rows],
+        1
+      ));
       setError(err.message || "Todo 刪除失敗");
     }
+  }
+
+  function saveLocalTodoOrder(nextOrder) {
+    setLocalTodoOrder(nextOrder);
+    try {
+      window.localStorage.setItem(TODO_ORDER_STORAGE_KEY, JSON.stringify(nextOrder));
+    } catch {
+      // Ignore local storage failures; the server reorder call below is the source of truth.
+    }
+  }
+
+  async function persistTodoOrder(nextOrder) {
+    try {
+      await api("/api/todos/reorder", {
+        method: "POST",
+        body: JSON.stringify({ ids: nextOrder })
+      });
+      notify?.({ tone: "success", message: "待辦順序已更新" });
+    } catch (err) {
+      setError(err.message || "Todo 排序儲存失敗");
+      notify?.({ tone: "error", message: "排序已先套用在此瀏覽器，資料庫欄位建立後即可同步保存。" });
+    }
+  }
+
+  function reorderTodo(sourceId, targetId) {
+    if (!sourceId || !targetId || sourceId === targetId) return;
+    const currentOrder = mergeTodoOrder(localTodoOrder, todoRows);
+    const nextOrder = currentOrder.filter((id) => id !== sourceId);
+    const targetIndex = nextOrder.indexOf(targetId);
+    nextOrder.splice(targetIndex >= 0 ? targetIndex : nextOrder.length, 0, sourceId);
+    saveLocalTodoOrder(nextOrder);
+    setDraggedTodoId("");
+    setDropTargetTodoId("");
+    persistTodoOrder(nextOrder);
   }
 
   return (
@@ -391,7 +532,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
           onClick={() => setActiveTab("todos")}
         >
           <span>待辦事項</span>
-          <b>{todos.length}</b>
+          <b>{todoRows.length}</b>
         </button>
         <button
           type="button"
@@ -399,7 +540,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
           onClick={() => setActiveTab("follow-ups")}
         >
           <span>待追蹤</span>
-          <b>{(followUps || []).length}</b>
+          <b>{followUpRows.length}</b>
         </button>
       </div>
       {isAdding && activeTab === "todos" ? (
@@ -426,7 +567,7 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
       {activeTab === "todos" ? (
         <>
           <div className="dashboard-todo-list">
-            {todos.length === 0 ? (
+            {todoRows.length === 0 ? (
               <div className="empty">目前沒有待辦項目</div>
             ) : (
               visibleTodos.map((todo) => (
@@ -445,15 +586,41 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
                   onEdit={() => startEditTodo(todo)}
                   onCancelEdit={cancelEditTodo}
                   onSaveEdit={() => saveEditTodo(todo)}
-                  onDelete={() => deleteTodo(todo.id)}
+                  onEditKeyDown={(event) => {
+                    if (event.key === "Enter") saveEditTodo(todo);
+                    if (event.key === "Escape") cancelEditTodo();
+                  }}
+                  onDelete={() => deleteTodo(todo)}
                   isSaving={saving}
+                  isDragging={draggedTodoId === todo.id}
+                  isDropTarget={dropTargetTodoId === todo.id && draggedTodoId !== todo.id}
+                  onDragStart={(event) => {
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", todo.id);
+                    setDraggedTodoId(todo.id);
+                    setDropTargetTodoId("");
+                  }}
+                  onDragEnter={() => draggedTodoId && setDropTargetTodoId(todo.id)}
+                  onDragOver={(event) => {
+                    if (!draggedTodoId || draggedTodoId === todo.id) return;
+                    event.preventDefault();
+                    setDropTargetTodoId(todo.id);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    reorderTodo(draggedTodoId, todo.id);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedTodoId("");
+                    setDropTargetTodoId("");
+                  }}
                 />
               ))
             )}
           </div>
-          {todos.length > 0 ? (
-            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work")}>
-              查看全部 {todos.length} 筆 →
+          {todoRows.length > 0 ? (
+            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work", { href: todoWorkHref })}>
+              查看全部 {todoRows.length} 筆 →
             </button>
           ) : null}
         </>
@@ -466,9 +633,9 @@ function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify }) 
               visibleFollowUps.map((item) => <FollowUpCompactRow key={item.id} item={item} />)
             )}
           </div>
-          {(followUps || []).length > 0 ? (
+          {followUpRows.length > 0 ? (
             <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("follow-ups")}>
-              查看全部 {(followUps || []).length} 筆 →
+              查看全部 {followUpRows.length} 筆 →
             </button>
           ) : null}
         </>
@@ -559,14 +726,37 @@ function TodoRow({
   onEdit,
   onCancelEdit,
   onSaveEdit,
+  onEditKeyDown,
   onDelete,
-  isSaving
+  isSaving,
+  isDragging,
+  isDropTarget,
+  onDragStart,
+  onDragEnter,
+  onDragOver,
+  onDrop,
+  onDragEnd
 }) {
   const disabled = isProcessing || isCompleted || isFading;
   const priorityTone = normalizeTodoPriority(todo.priority);
+  const priorityLabel = priorityTone === "urgent" ? "緊急" : priorityTone === "medium" ? "重要" : "一般";
 
   return (
-    <article className={`dashboard-todo-row priority-${priorityTone} ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""}`}>
+    <article
+      className={`dashboard-todo-row priority-${priorityTone} ${isEditing ? "is-editing" : ""} ${isProcessing ? "is-processing" : ""} ${isCompleted ? "is-completed" : ""} ${isFading ? "is-fading" : ""} ${isDragging ? "is-dragging" : ""} ${isDropTarget ? "is-drop-target" : ""}`}
+      onDragEnter={onDragEnter}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <span
+        className="todo-priority-drag-strip"
+        role="button"
+        tabIndex={0}
+        draggable={!disabled && !isEditing}
+        aria-label="拖曳調整待辦順序"
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+      />
       <button
         className={`circle todo-check ${isProcessing ? "is-loading" : ""} ${isCompleted ? "is-done" : ""}`}
         onClick={onComplete}
@@ -579,6 +769,7 @@ function TodoRow({
             <input
               value={editTitle}
               onChange={(event) => onEditTitleChange(event.target.value)}
+              onKeyDown={onEditKeyDown}
               maxLength={MAX_TODO_TITLE_LENGTH}
               aria-label="修改待辦內容"
               autoFocus
@@ -586,6 +777,7 @@ function TodoRow({
             <select
               value={editPriority}
               onChange={(event) => onEditPriorityChange(event.target.value)}
+              onKeyDown={onEditKeyDown}
               aria-label="調整緊急程度"
             >
               {TODO_PRIORITY_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
@@ -595,17 +787,21 @@ function TodoRow({
           <strong>{todo.title || "未命名待辦"}</strong>
         )}
       </div>
+      {!isEditing ? <span className={`todo-priority-chip tone-${priorityTone}`}>{priorityLabel}</span> : null}
       <div className="row-actions">
         {isEditing ? (
-          <>
-            <button onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()} aria-label="儲存待辦">✓</button>
-            <button onClick={onCancelEdit} disabled={isSaving} aria-label="取消修改" title="取消">↩</button>
-            <button className="danger" onClick={onDelete} disabled={disabled} aria-label="刪除待辦" title="刪除">⌫</button>
-          </>
-        ) : (
-          <button className="icon-action" onClick={onEdit} disabled={disabled || isSaving} aria-label="修改待辦內容" title="修改">
-            ✎
+          <button className="todo-edit-done" onClick={onSaveEdit} disabled={isSaving || !editTitle.trim()} aria-label="儲存待辦" title="儲存">
+            完成
           </button>
+        ) : (
+          <>
+            <button className="icon-action" onClick={onEdit} disabled={disabled || isSaving} aria-label="修改待辦內容" title="修改">
+              ✎
+            </button>
+            <button className="icon-action danger" onClick={onDelete} disabled={disabled || isSaving} aria-label="刪除待辦" title="刪除">
+              ×
+            </button>
+          </>
         )}
       </div>
     </article>
@@ -644,44 +840,21 @@ function DashboardCalendarPanel({ dashboard, notify }) {
   const firstDay = new Date(year, month, 1).getDay();
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
   const [eventForm, setEventForm] = useState({
     title: "",
     date: todayKey,
-    time: "",
-    type: CALENDAR_EVENT_TYPES[0],
-    note: ""
+    type: CALENDAR_EVENT_TYPES[0]
   });
   const [calendarEvents, setCalendarEvents] = useState({});
   const [isCalendarLoading, setIsCalendarLoading] = useState(true);
+  const [calendarSetupMessage, setCalendarSetupMessage] = useState("");
   const [calendarSaving, setCalendarSaving] = useState(false);
   const [deletingEventIds, setDeletingEventIds] = useState(() => new Set());
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let day = 1; day <= daysInMonth; day++) cells.push(day);
   while (cells.length % 7 !== 0) cells.push(null);
-
-  const selectedEvents = calendarEvents[selectedDate] || [];
-
-  useEffect(() => {
-    let isMounted = true;
-    async function loadCalendarEvents() {
-      setIsCalendarLoading(true);
-      try {
-        const rows = await api("/api/calendar-events");
-        if (!isMounted) return;
-        setCalendarEvents(groupCalendarEvents(rows));
-      } catch (error) {
-        if (!isMounted) return;
-        notify?.({ tone: "error", message: error.message || "行事曆讀取失敗" });
-      } finally {
-        if (isMounted) setIsCalendarLoading(false);
-      }
-    }
-    loadCalendarEvents();
-    return () => {
-      isMounted = false;
-    };
-  }, [notify]);
 
   function groupCalendarEvents(rows) {
     return (Array.isArray(rows) ? rows : []).reduce((eventsByDate, event) => {
@@ -698,6 +871,44 @@ function DashboardCalendarPanel({ dashboard, notify }) {
       eventsByDate[eventDate] = [...(eventsByDate[eventDate] || []), nextEvent];
       return eventsByDate;
     }, {});
+  }
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadCalendarEvents() {
+      setIsCalendarLoading(true);
+      try {
+        const result = await api("/api/calendar-events");
+        if (!isMounted) return;
+        const rows = Array.isArray(result) ? result : result?.events || [];
+        setCalendarSetupMessage(result?.needsSetup ? result.message || "行事曆資料表尚未建立" : "");
+        setCalendarEvents(groupCalendarEvents(rows));
+      } catch (error) {
+        if (!isMounted) return;
+        setCalendarSetupMessage("");
+        notify?.({ tone: "error", message: error.message || "行事曆讀取失敗" });
+      } finally {
+        if (isMounted) setIsCalendarLoading(false);
+      }
+    }
+    loadCalendarEvents();
+    return () => {
+      isMounted = false;
+    };
+  }, [notify]);
+
+  function upsertCalendarEvent(current, event, previousDate = "") {
+    const eventDate = dateKey(event.event_date);
+    if (!eventDate) return current;
+    const nextEvents = { ...current };
+    if (previousDate && previousDate !== eventDate) {
+      const remaining = (nextEvents[previousDate] || []).filter((item) => item.id !== event.id);
+      if (remaining.length) nextEvents[previousDate] = remaining;
+      else delete nextEvents[previousDate];
+    }
+    const existingRows = (nextEvents[eventDate] || []).filter((item) => item.id !== event.id);
+    nextEvents[eventDate] = [...existingRows, event];
+    return nextEvents;
   }
 
   function selectMonth(nextMonth) {
@@ -717,54 +928,98 @@ function DashboardCalendarPanel({ dashboard, notify }) {
   }
 
   function openEventModal(dateValue = selectedDate) {
+    if (calendarSetupMessage) {
+      notify?.({ tone: "error", message: calendarSetupMessage });
+      return;
+    }
     setSelectedDate(dateValue);
+    setEditingEvent(null);
     setEventForm({
       title: "",
       date: dateValue,
-      time: "",
-      type: CALENDAR_EVENT_TYPES[0],
-      note: ""
+      type: CALENDAR_EVENT_TYPES[0]
+    });
+    setIsEventModalOpen(true);
+  }
+
+  function openEditEventModal(event) {
+    if (calendarSetupMessage || !event?.id) {
+      if (calendarSetupMessage) notify?.({ tone: "error", message: calendarSetupMessage });
+      return;
+    }
+    const eventDate = dateKey(event.event_date) || selectedDate;
+    setSelectedDate(eventDate);
+    setEditingEvent(event);
+    setEventForm({
+      title: event.title || "",
+      date: eventDate,
+      type: event.event_type || CALENDAR_EVENT_TYPES[0]
     });
     setIsEventModalOpen(true);
   }
 
   function closeEventModal() {
     setIsEventModalOpen(false);
+    setEditingEvent(null);
   }
 
   async function saveCalendarEvent(event) {
     event.preventDefault();
     const title = eventForm.title.trim();
     if (!title || calendarSaving) return;
+    const eventDate = dateKey(eventForm.date);
+    const isEditingExistingEvent = Boolean(editingEvent?.id);
+    const originalEvent = editingEvent;
+    const originalDate = dateKey(originalEvent?.event_date);
+    const tempId = `temp-calendar-${Date.now()}`;
+    const optimisticEvent = {
+      id: isEditingExistingEvent ? originalEvent.id : tempId,
+      event_date: eventDate,
+      event_time: "",
+      title,
+      event_type: eventForm.type,
+      note: ""
+    };
     setCalendarSaving(true);
+    setSelectedDate(eventDate);
+    setIsEventModalOpen(false);
+    setEditingEvent(null);
+    setCalendarEvents((current) => ({
+      ...upsertCalendarEvent(current, optimisticEvent, isEditingExistingEvent ? originalDate : "")
+    }));
     try {
       const nextEvent = await api("/api/calendar-events", {
-        method: "POST",
+        method: isEditingExistingEvent ? "PATCH" : "POST",
         body: JSON.stringify({
+          id: isEditingExistingEvent ? originalEvent.id : undefined,
           event_date: eventForm.date,
-          event_time: eventForm.time || null,
+          event_time: null,
           title,
           event_type: eventForm.type,
-          note: eventForm.note.trim()
+          note: null
         })
       });
-      const eventDate = dateKey(nextEvent.event_date);
       setCalendarEvents((current) => ({
-        ...current,
-        [eventDate]: [...(current[eventDate] || []), {
+        ...upsertCalendarEvent(current, {
           id: nextEvent.id,
           event_date: eventDate,
-          event_time: nextEvent.event_time || "",
+          event_time: "",
           title: nextEvent.title || title,
           event_type: nextEvent.event_type || eventForm.type,
-          note: nextEvent.note || ""
-        }]
+          note: ""
+        }, isEditingExistingEvent ? originalDate : "")
       }));
-      setSelectedDate(eventDate);
-      setIsEventModalOpen(false);
-      notify?.({ tone: "success", message: `已新增到 ${formatCalendarDate(eventDate)}` });
+      notify?.({ tone: "success", message: isEditingExistingEvent ? "行程已更新" : `已新增到 ${formatCalendarDate(eventDate)}` });
     } catch (error) {
-      notify?.({ tone: "error", message: error.message || "行程新增失敗" });
+      setCalendarEvents((current) => {
+        if (isEditingExistingEvent && originalEvent) return upsertCalendarEvent(current, originalEvent, eventDate);
+        const nextEvents = { ...current };
+        const remaining = (nextEvents[eventDate] || []).filter((item) => item.id !== tempId);
+        if (remaining.length) nextEvents[eventDate] = remaining;
+        else delete nextEvents[eventDate];
+        return nextEvents;
+      });
+      notify?.({ tone: "error", message: error.message || (isEditingExistingEvent ? "行程更新失敗" : "行程新增失敗") });
     } finally {
       setCalendarSaving(false);
     }
@@ -810,7 +1065,7 @@ function DashboardCalendarPanel({ dashboard, notify }) {
           >
             🏆
           </button>
-          <button className="calendar-add-main" type="button" onClick={() => openEventModal(selectedDate)} aria-label="新增行程" title="新增行程">
+          <button className="calendar-add-main" type="button" onClick={() => openEventModal(selectedDate)} disabled={Boolean(calendarSetupMessage)} aria-label="新增行程" title="新增行程">
             ＋
           </button>
           <button type="button" aria-label="上一月" onClick={() => shiftMonth(-1)}>‹</button>
@@ -826,18 +1081,21 @@ function DashboardCalendarPanel({ dashboard, notify }) {
         {cells.map((day, index) => {
           const cellDate = day ? getLocalDateKey(year, month, day) : "";
           const dayEvents = cellDate ? calendarEvents[cellDate] || [] : [];
+          const visibleDayEvents = dayEvents.slice(0, 2);
+          const hiddenEventCount = Math.max(0, dayEvents.length - visibleDayEvents.length);
           return (
             <div
               key={`${day || "blank"}-${index}`}
               className={`day-cell dashboard-day-cell ${cellDate === selectedDate ? "is-selected" : ""}`}
-              onClick={() => day && setSelectedDate(cellDate)}
-              onDoubleClick={() => day && openEventModal(cellDate)}
+      onClick={() => day && setSelectedDate(cellDate)}
+      onDoubleClick={() => day && openEventModal(cellDate)}
             >
               {day ? (
               <>
                 <button
                   className="calendar-cell-add"
                   type="button"
+                  disabled={Boolean(calendarSetupMessage)}
                   aria-label={`新增到 ${formatCalendarDate(cellDate)}`}
                   onClick={(event) => {
                     event.stopPropagation();
@@ -847,46 +1105,37 @@ function DashboardCalendarPanel({ dashboard, notify }) {
                   +
                 </button>
                 <span className={isCurrentMonth && day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
-                {dayEvents.map((event) => <em key={event.id}>{event.event_time ? `${event.event_time} ` : ""}{event.title}</em>)}
+                {visibleDayEvents.map((event) => (
+                  <em
+                    key={event.id}
+                    role="button"
+                    tabIndex={0}
+                    title="雙擊編輯"
+                    onDoubleClick={(mouseEvent) => {
+                      mouseEvent.stopPropagation();
+                      openEditEventModal(event);
+                    }}
+                    onKeyDown={(keyboardEvent) => {
+                      if (keyboardEvent.key === "Enter") openEditEventModal(event);
+                    }}
+                  >
+                    {event.title}
+                  </em>
+                ))}
+                {hiddenEventCount ? <em className="calendar-more-events">+{hiddenEventCount} 筆</em> : null}
               </>
               ) : null}
             </div>
           );
         })}
       </div>
-      <div className="calendar-day-detail">
-        <div>
-          <b>{formatCalendarDate(selectedDate)}</b>
-          <span>{isCalendarLoading ? "讀取中" : selectedEvents.length ? `${selectedEvents.length} 筆行程` : "目前沒有行程"}</span>
-        </div>
-        {selectedEvents.length ? (
-          <ul>
-            {selectedEvents.map((event) => (
-              <li key={event.id}>
-                <div>
-                  <strong>{event.title}</strong>
-                  <span>{event.event_time || "全天"} · {event.event_type}</span>
-                </div>
-                <button
-                  className="calendar-event-delete"
-                  type="button"
-                  onClick={() => deleteCalendarEvent(event.id, event.event_date)}
-                  disabled={deletingEventIds.has(event.id)}
-                >
-                  刪除
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-        <button type="button" onClick={() => openEventModal(selectedDate)}>+ 新增到此日期</button>
-      </div>
+      {calendarSetupMessage ? <p className="calendar-setup-message">{calendarSetupMessage}</p> : null}
       {isEventModalOpen ? (
         <div className="calendar-modal-backdrop" role="presentation" onMouseDown={closeEventModal}>
           <form className="calendar-modal" onSubmit={saveCalendarEvent} onMouseDown={(event) => event.stopPropagation()}>
             <header>
               <div>
-                <h3>新增行程</h3>
+                <h3>{editingEvent ? "編輯行程" : "新增行程"}</h3>
                 <span>{formatCalendarDate(eventForm.date)}</span>
               </div>
               <button type="button" aria-label="關閉新增行程" onClick={closeEventModal}>×</button>
@@ -901,41 +1150,36 @@ function DashboardCalendarPanel({ dashboard, notify }) {
                 autoFocus
               />
             </label>
-            <div className="calendar-modal-grid">
-              <label>
-                日期
-                <input
-                  type="date"
-                  value={eventForm.date}
-                  onChange={(event) => setEventForm((current) => ({ ...current, date: event.target.value }))}
-                  required
-                />
-              </label>
-              <label>
-                時間
-                <input
-                  type="time"
-                  value={eventForm.time}
-                  onChange={(event) => setEventForm((current) => ({ ...current, time: event.target.value }))}
-                />
-              </label>
-            </div>
+            <label>
+              日期
+              <input
+                type="date"
+                value={eventForm.date}
+                onChange={(event) => setEventForm((current) => ({ ...current, date: event.target.value }))}
+                required
+              />
+            </label>
             <label>
               類型
               <select value={eventForm.type} onChange={(event) => setEventForm((current) => ({ ...current, type: event.target.value }))}>
                 {CALENDAR_EVENT_TYPES.map((type) => <option key={type}>{type}</option>)}
               </select>
             </label>
-            <label>
-              備註
-              <textarea
-                value={eventForm.note}
-                onChange={(event) => setEventForm((current) => ({ ...current, note: event.target.value }))}
-                placeholder="補充說明，可留空"
-                rows={3}
-              />
-            </label>
             <footer>
+              {editingEvent ? (
+                <button
+                  className="danger"
+                  type="button"
+                  onClick={() => {
+                    const eventToDelete = editingEvent;
+                    closeEventModal();
+                    deleteCalendarEvent(eventToDelete.id, dateKey(eventToDelete.event_date));
+                  }}
+                  disabled={calendarSaving || deletingEventIds.has(editingEvent.id)}
+                >
+                  刪除
+                </button>
+              ) : null}
               <button type="button" onClick={closeEventModal}>取消</button>
               <button className="primary-action" type="submit" disabled={calendarSaving}>{calendarSaving ? "儲存中" : "儲存"}</button>
             </footer>
@@ -1025,7 +1269,7 @@ function DashboardTrendPanel({ trend }) {
   );
 }
 
-function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify }) {
+function ModernDashboardPage({ dashboard, onReload, onDashboardChange, error, onNavigate, notify }) {
   const todos = dashboard?.openTodos || [];
   const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
@@ -1067,7 +1311,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
             label="緊急任務"
             value={urgentTodoCount}
             unit="件"
-            detail={urgentTodoCount > 0 ? `優先處理 ${urgentTodoCount} 件` : "目前無緊急"}
+            detail=""
             tone={urgentTodoCount > 0 ? "bad" : "good"}
           />
           <CompletionSummaryItem
@@ -1081,7 +1325,7 @@ function ModernDashboardPage({ dashboard, onReload, error, onNavigate, notify })
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} />
+        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} onDashboardChange={onDashboardChange} />
         <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
       </section>
     </>
@@ -1130,14 +1374,14 @@ export default function Page() {
     if (href !== "/") window.location.replace(href);
   }, []);
 
-  function handleNavigate(sectionKey) {
-    router.push(sectionKey === "kpi" ? "/boss-kpi" : getSectionHref(sectionKey));
+  function handleNavigate(sectionKey, item) {
+    router.push(item?.href || (sectionKey === "kpi" ? "/boss-kpi" : getSectionHref(sectionKey)));
   }
 
   return (
     <AppShell activeSection="dashboard" title="儀表板" onNavigate={handleNavigate}>
       <DashboardToast toast={toast} />
-      <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
+      <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} onDashboardChange={setDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
     </AppShell>
   );
 }

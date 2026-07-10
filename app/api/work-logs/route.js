@@ -45,10 +45,18 @@ export async function GET(request) {
     const date = cleanText(searchParams.get("date"));
     const status = cleanText(searchParams.get("status"));
     const category = cleanText(searchParams.get("category"));
+    const source = cleanText(searchParams.get("source"));
+    const sourceIds = cleanText(searchParams.get("sourceIds"))
+      .split(",")
+      .map(cleanText)
+      .filter(Boolean)
+      .slice(0, 100);
 
     if (date) query.push(`date=eq.${encodeURIComponent(date)}`);
     if (status) query.push(`status=eq.${encodeURIComponent(status)}`);
     if (category) query.push(`category=eq.${encodeURIComponent(category)}`);
+    if (source) query.push(`source=eq.${encodeURIComponent(source)}`);
+    if (sourceIds.length) query.push(`source_id=in.(${sourceIds.map(encodeURIComponent).join(",")})`);
 
     const rows = await supabaseRequest("work_logs", query.join("&"));
     return ok({ rows: rows.map(normalizeWork) });

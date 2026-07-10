@@ -11,6 +11,11 @@ function isWorkDone(row) {
   return ["已完成", "完成", "Done", "done"].includes(String(row?.status || "").trim());
 }
 
+function isMissingSortOrderColumn(error) {
+  const message = String(error?.message || "");
+  return /sort_order/i.test(message) && /(schema cache|could not find|does not exist|PGRST204|PGRST205)/i.test(message);
+}
+
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
   if (authError) return authError;
@@ -20,10 +25,19 @@ export async function GET(request) {
     let todoRows;
     let workRows;
     try {
-      [todoRows, workRows] = await Promise.all([
-        supabaseRequest("todo_logs", "select=*&order=created_at.desc&limit=500"),
-        supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=500")
-      ]);
+      const workRowsPromise = supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=500");
+      try {
+        [todoRows, workRows] = await Promise.all([
+          supabaseRequest("todo_logs", "select=*&order=sort_order.asc.nullslast,created_at.desc&limit=500"),
+          workRowsPromise
+        ]);
+      } catch (error) {
+        if (!isMissingSortOrderColumn(error)) throw error;
+        [todoRows, workRows] = await Promise.all([
+          supabaseRequest("todo_logs", "select=*&order=created_at.desc&limit=500"),
+          workRowsPromise
+        ]);
+      }
     } catch (error) {
       console.error("[dashboard critical query error]", error);
       return fail(new Error("Dashboard data failed to load"));
