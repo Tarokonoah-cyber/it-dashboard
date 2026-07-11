@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import AiCommandAssistant from "./AiCommandAssistant";
 import {
   APP_SECTIONS,
   SIDEBAR_STORAGE_KEY,
@@ -10,6 +10,14 @@ import {
   getParentSectionKey,
   getSectionHref
 } from "./navigation";
+
+const AiCommandAssistant = dynamic(
+  () => import("./AiCommandAssistant"),
+  {
+    ssr: false,
+    loading: () => null
+  }
+);
 
 function navigateTo(item, onNavigate, router) {
   if (!item) return;
