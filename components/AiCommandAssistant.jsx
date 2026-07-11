@@ -72,7 +72,13 @@ export default function AiCommandAssistant() {
       setMessages((current) => [...current, { role: "assistant", text: data.reply || "" }]);
       setAction(data.action || null);
       if (data.action?.type === "create_todo" && data.action.status === "created") {
-        window.dispatchEvent(new Event("dashboard-data-changed"));
+        window.dispatchEvent(new CustomEvent("dashboard-data-changed", {
+          detail: {
+            type: "todo-created",
+            todo: data.action.todo,
+            workLogCreated: Boolean(data.action.workLogId)
+          }
+        }));
       }
     } catch (err) {
       setError(err.message || TEXT.failed);

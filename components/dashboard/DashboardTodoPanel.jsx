@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../../lib/dashboard-api";
 import { formatDate, getTodayKey, normalizeTodoPriority } from "../../lib/dashboard-formatters";
+import { applyTodoConvertedToFollowUp } from "../../lib/dashboard-state";
 
 const MAX_TODO_TITLE_LENGTH = 120;
 const TODO_COMPLETE_EXIT_MS = 600;
@@ -54,7 +55,7 @@ function updateDashboardTodosState(dashboard, updater, countDelta = 0, completed
   };
 }
 
-export default function DashboardTodoPanel({ todos, followUps, onReload, onNavigate, notify, onDashboardChange }) {
+export default function DashboardTodoPanel({ todos, followUps, onNavigate, notify, onDashboardChange }) {
   const todayKey = getTodayKey();
   const todoRows = Array.isArray(todos) ? todos : [];
   const followUpRows = Array.isArray(followUps) ? followUps : [];
@@ -229,7 +230,7 @@ export default function DashboardTodoPanel({ todos, followUps, onReload, onNavig
     setError("");
     addTodoState(setProcessingTodoIds, todo.id);
     try {
-      await api("/api/follow-ups", {
+      const result = await api("/api/follow-ups", {
         method: "POST",
         body: JSON.stringify({
           source_todo_id: todo.id,
@@ -239,11 +240,11 @@ export default function DashboardTodoPanel({ todos, followUps, onReload, onNavig
           note: followForm.note
         })
       });
+      onDashboardChange?.((current) => applyTodoConvertedToFollowUp(current, todo, result));
       notify?.({ tone: "success", message: `已轉為待追蹤：${todo.title || "未命名待辦"}` });
       setCompletionTodo(null);
       setIsConverting(false);
       setActiveTab("follow-ups");
-      await onReload();
     } catch (err) {
       setError(err.message || "轉為待追蹤失敗");
       notify?.({ tone: "error", message: "轉為待追蹤失敗，請稍後再試" });

@@ -10,6 +10,7 @@ import DashboardTodoPanel from "./dashboard/DashboardTodoPanel";
 import KpiSummaryItem from "./dashboard/KpiSummaryItem";
 import { getSectionHref } from "./navigation";
 import { api } from "../lib/dashboard-api";
+import { applyAiTodoCreated, isDashboardTodoPayload } from "../lib/dashboard-state";
 import {
   formatDate,
   formatRelativeDate,
@@ -108,7 +109,7 @@ function DashboardTrendPanel({ trend }) {
   );
 }
 
-function ModernDashboardPage({ dashboard, onReload, onDashboardChange, error, onNavigate, notify }) {
+function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, notify }) {
   const todos = dashboard?.openTodos || [];
   const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
@@ -164,7 +165,7 @@ function ModernDashboardPage({ dashboard, onReload, onDashboardChange, error, on
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onReload={onReload} onNavigate={onNavigate} notify={notify} onDashboardChange={onDashboardChange} />
+        <DashboardTodoPanel todos={todos} followUps={followUps} onNavigate={onNavigate} notify={notify} onDashboardChange={onDashboardChange} />
         <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
       </section>
     </>
@@ -202,8 +203,16 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("dashboard-data-changed", loadDashboard);
-    return () => window.removeEventListener("dashboard-data-changed", loadDashboard);
+    function handleDashboardDataChanged(event) {
+      const detail = event?.detail;
+      if (detail?.type === "todo-created" && isDashboardTodoPayload(detail.todo)) {
+        setDashboard((current) => applyAiTodoCreated(current, detail.todo, detail.workLogCreated));
+        return;
+      }
+      loadDashboard();
+    }
+    window.addEventListener("dashboard-data-changed", handleDashboardDataChanged);
+    return () => window.removeEventListener("dashboard-data-changed", handleDashboardDataChanged);
   }, []);
 
   useEffect(() => {
@@ -220,7 +229,7 @@ export default function Page() {
   return (
     <AppShell activeSection="dashboard" title="儀表板" onNavigate={handleNavigate}>
       <DashboardToast toast={toast} />
-      <ModernDashboardPage dashboard={dashboard} onReload={loadDashboard} onDashboardChange={setDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
+      <ModernDashboardPage dashboard={dashboard} onDashboardChange={setDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
     </AppShell>
   );
 }

@@ -131,6 +131,18 @@ async function createTodo(action) {
         status: "created",
         title: todo.title,
         id: todo.id || null,
+        todo: {
+          id: todo.id || null,
+          title: todo.title || "",
+          priority: todo.priority || "",
+          status: todo.status || "",
+          due_date: todo.due_date || null,
+          owner: todo.owner || "",
+          source: todo.source || "",
+          note: todo.note || "",
+          created_at: todo.created_at || null,
+          updated_at: todo.updated_at || null
+        },
         workLogId: workLog?.id || null
       }
     };
