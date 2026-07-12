@@ -8490,6 +8490,25 @@ textarea:disabled {
   display: none;
 }
 
+.data-edit-toolbar-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  margin-left: auto;
+  min-width: max-content;
+}
+
+.records-toolbar .data-edit-toolbar-actions button,
+.asset-toolbar .data-edit-toolbar-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
 .dashboard-calendar-panel .calendar-day-detail {
   display: block;
 }

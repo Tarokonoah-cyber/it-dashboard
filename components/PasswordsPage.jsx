@@ -212,19 +212,6 @@ export default function PasswordsPage() {
         <div>
           <h1>密碼管理</h1>
         </div>
-        <div className="section-actions">
-          {editMode ? (
-            <>
-              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
-              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
-            </>
-          ) : (
-            <>
-              <button type="button" onClick={load}>重新整理</button>
-              <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
-            </>
-          )}
-        </div>
       </header>
 
       <div className="security-notice">
@@ -240,7 +227,20 @@ export default function PasswordsPage() {
           placeholder="搜尋分類、系統名稱、登入網址、帳號、Bitwarden 項目或備註..."
         />
         <span>{loading ? "讀取中..." : `${filteredEntries.length.toLocaleString("en-US")} 筆`}</span>
-        {editMode ? <button type="button" onClick={addDraftEntry}>＋ 新增資料</button> : null}
+        <div className="data-edit-toolbar-actions">
+          {editMode ? (
+            <>
+              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+              <button type="button" onClick={addDraftEntry}>＋ 新增資料</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={load}>重新整理</button>
+              <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
+            </>
+          )}
+        </div>
       </div>
 
       {loading ? (

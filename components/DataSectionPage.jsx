@@ -611,19 +611,9 @@ export default function DataSectionPage({ sectionKey }) {
         <div>
           <h1>{config.title}</h1>
         </div>
-        {editMode || canEdit || !isAssetSection ? (
+        {!canEdit && !isAssetSection ? (
           <div className="section-actions">
-            {editMode ? (
-              <>
-                <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
-                <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
-              </>
-            ) : (
-              <>
-                {!isAssetSection ? <button onClick={load}>重新整理</button> : null}
-                {canEdit ? <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button> : null}
-              </>
-            )}
+            <button onClick={load}>重新整理</button>
           </div>
         ) : null}
       </header>
@@ -640,8 +630,22 @@ export default function DataSectionPage({ sectionKey }) {
             <>
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋關鍵字..." />
               <span className="records-summary">{loading ? "讀取中..." : `${filteredRows.length.toLocaleString("en-US")} 筆`}</span>
-              {isAssetSection ? <button onClick={load}>重新整理</button> : null}
-              {editMode ? <button type="button" onClick={addDraftRow}>＋ 新增資料</button> : null}
+              {canEdit ? (
+                <div className="data-edit-toolbar-actions">
+                  {editMode ? (
+                    <>
+                      <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+                      <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+                      <button type="button" onClick={addDraftRow}>＋ 新增資料</button>
+                    </>
+                  ) : (
+                    <>
+                      <button type="button" onClick={load}>重新整理</button>
+                      <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
+                    </>
+                  )}
+                </div>
+              ) : isAssetSection ? <button onClick={load}>重新整理</button> : null}
             </>
           )}
         </div>

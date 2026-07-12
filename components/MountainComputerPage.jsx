@@ -294,16 +294,6 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
         <div>
           <h1>{config.title}</h1>
         </div>
-        <div className="section-actions">
-          {editMode ? (
-            <>
-              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
-              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
-            </>
-          ) : (
-            <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
-          )}
-        </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
       {saveNotice ? <div className="error-box">{saveNotice}</div> : null}
@@ -335,8 +325,20 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
         </div>
         <button className="plain-reset" onClick={resetFilters}>重設</button>
         <span className="count-badge">{loading ? "讀取中" : `${filteredRows.length.toLocaleString("en-US")} / ${rows.length.toLocaleString("en-US")} 筆`}</span>
-        <button onClick={load}>重新整理</button>
-        {editMode ? <button type="button" onClick={addDraftRow}>＋ 新增資料</button> : null}
+        <div className="data-edit-toolbar-actions">
+          {editMode ? (
+            <>
+              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+              <button type="button" onClick={addDraftRow}>＋ 新增資料</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={load}>重新整理</button>
+              <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="asset-table-wrap">
