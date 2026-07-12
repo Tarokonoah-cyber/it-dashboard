@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const EMPTY_ARTICLE = {
   title: "",
@@ -51,6 +51,18 @@ function splitKeywords(value) {
     .filter(Boolean);
 }
 
+function hasMeaningfulContent(value) {
+  if (value === null || value === undefined) return false;
+  const text = String(value).trim();
+  return Boolean(text && text !== "-" && text !== "—");
+}
+
+function safeErrorMessage(error, fallback = "操作失敗，請稍後再試") {
+  const message = String(error?.message || "").trim();
+  const looksSensitive = /https?:\/\/|signed|storage_path|service_role|select\s|insert\s|update\s|delete\s|sql/i.test(message);
+  return message && !looksSensitive ? message.slice(0, 120) : fallback;
+}
+
 async function readApi(response) {
   const body = await response.json().catch(() => ({}));
   if (!response.ok || body.success === false) throw new Error(body.message || `HTTP ${response.status}`);
@@ -91,11 +103,139 @@ function ArticleStatus({ status }) {
   return <span className={`knowledge-status is-${status}`}>{STATUS_LABELS[status] || status}</span>;
 }
 
-function ArticleList({ rows, selectedId, onSelect }) {
+function KnowledgeToast({ toast, onClose }) {
+  if (!toast) return null;
+  return (
+    <div className={`knowledge-toast is-${toast.type}`} role={toast.type === "error" ? "alert" : "status"} aria-live="polite">
+      <span aria-hidden="true">{toast.type === "error" ? "!" : "✓"}</span>
+      <p>{toast.text}</p>
+      {toast.type === "error" ? <button type="button" onClick={onClose} aria-label="關閉提示">×</button> : null}
+    </div>
+  );
+}
+
+function KnowledgeLightbox({ asset, onClose }) {
+  useEffect(() => {
+    if (!asset) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [asset, onClose]);
+
+  if (!asset) return null;
+  const alt = asset.alt_text || asset.original_filename || "教學圖片";
+  return (
+    <div className="knowledge-lightbox" role="dialog" aria-modal="true" aria-label="圖片預覽" onMouseDown={(event) => {
+      if (event.target === event.currentTarget) onClose();
+    }}>
+      <div className="knowledge-lightbox-content">
+        <button type="button" className="knowledge-lightbox-close" onClick={onClose} aria-label="關閉圖片預覽">×</button>
+        <img src={asset.signed_url} alt={alt} />
+        {hasMeaningfulContent(asset.alt_text) ? <p>{asset.alt_text}</p> : null}
+      </div>
+    </div>
+  );
+}
+
+function KnowledgeImage({ asset, fallbackAlt, onOpen }) {
+  const hasImageUrl = hasMeaningfulContent(asset.signed_url);
+  const [failed, setFailed] = useState(!hasImageUrl);
+  const [retryCount, setRetryCount] = useState(0);
+  const alt = asset.alt_text || asset.original_filename || fallbackAlt || "教學圖片";
+
+  if (failed) {
+    return (
+      <div className="knowledge-image-error" role="status">
+        <span>圖片暫時無法載入</span>
+        {hasImageUrl ? (
+          <button type="button" onClick={() => {
+            setFailed(false);
+            setRetryCount((count) => count + 1);
+          }}>重試</button>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <button className="knowledge-image-button" type="button" onClick={() => onOpen(asset)} aria-label={`放大圖片：${alt}`}>
+      <img key={retryCount} loading="lazy" src={asset.signed_url} alt={alt} onError={() => setFailed(true)} />
+    </button>
+  );
+}
+
+function KnowledgeOverflowMenu({ article, onArchive, onDelete }) {
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handlePointerDown = (event) => {
+      if (!menuRef.current?.contains(event.target)) setOpen(false);
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div className="knowledge-overflow" ref={menuRef}>
+      <button type="button" className="knowledge-overflow-trigger" onClick={() => setOpen((value) => !value)} aria-label="更多管理操作" aria-expanded={open}>⋯</button>
+      {open ? (
+        <div className="knowledge-overflow-menu" role="menu">
+          {article.status !== "archived" ? <button type="button" role="menuitem" onClick={() => { setOpen(false); onArchive(); }}>封存文章</button> : null}
+          <button type="button" role="menuitem" className="danger" onClick={() => { setOpen(false); onDelete(); }}>刪除文章</button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function DeleteArticleDialog({ article, deleting, onCancel, onConfirm }) {
+  useEffect(() => {
+    if (!article) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && !deleting) onCancel();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [article, deleting, onCancel]);
+
+  if (!article) return null;
+  return (
+    <div className="knowledge-confirm-backdrop" role="presentation" onMouseDown={(event) => {
+      if (event.target === event.currentTarget && !deleting) onCancel();
+    }}>
+      <div className="knowledge-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="knowledge-delete-title" aria-describedby="knowledge-delete-description">
+        <h2 id="knowledge-delete-title">刪除教學文章？</h2>
+        <p id="knowledge-delete-description">即將刪除「{article.title}」。文章、相關步驟與圖片都會一併刪除，且無法復原。</p>
+        <div>
+          <button type="button" onClick={onCancel} disabled={deleting}>取消</button>
+          <button type="button" className="danger" onClick={onConfirm} disabled={deleting}>{deleting ? "刪除中..." : "確認刪除"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ArticleList({ rows, selectedId, onSelect, listRef }) {
   if (!rows.length) return <div className="knowledge-empty">目前沒有符合條件的教學資料。</div>;
 
   return (
-    <div className="knowledge-list" role="list">
+    <div className="knowledge-list" role="list" ref={listRef}>
       {rows.map((article) => (
         <button
           className={`knowledge-list-row ${selectedId === article.id ? "active" : ""}`}
@@ -106,6 +246,7 @@ function ArticleList({ rows, selectedId, onSelect }) {
           <span>
             <b>{article.title}</b>
             <small>{article.category || "未分類"} · {article.system_name || "未指定系統"}</small>
+            <small>更新於 {formatDateTime(article.updated_at)}</small>
           </span>
           <ArticleStatus status={article.status} />
         </button>
@@ -114,13 +255,20 @@ function ArticleList({ rows, selectedId, onSelect }) {
   );
 }
 
-function ArticleViewer({ article, adminMode, onEdit, onDelete, onStatus }) {
+function ArticleViewer({ article, adminMode, onBack, onEdit, onDelete, onStatus, onOpenImage }) {
   if (!article) return <div className="knowledge-reader knowledge-empty">請從左側選擇一篇教學。</div>;
+
+  const hasSymptom = hasMeaningfulContent(article.symptom);
+  const hasCause = hasMeaningfulContent(article.possible_cause);
+  const visibleSteps = (article.steps || []).filter((step) =>
+    hasMeaningfulContent(step.title) || hasMeaningfulContent(step.body) || Boolean(step.assets?.length)
+  );
 
   return (
     <article className="knowledge-reader">
+      <button className="knowledge-mobile-back" type="button" onClick={onBack}>← 返回教學列表</button>
       <header className="knowledge-reader-head">
-        <div>
+        <div className="knowledge-reader-title">
           <div className="knowledge-meta-line">
             <span>{TYPE_LABELS[article.article_type] || article.article_type}</span>
             <span>{article.category || "未分類"}</span>
@@ -136,41 +284,50 @@ function ArticleViewer({ article, adminMode, onEdit, onDelete, onStatus }) {
           <div className="knowledge-actions">
             <button type="button" onClick={onEdit}>編輯</button>
             {article.status !== "published" ? <button className="primary" type="button" onClick={() => onStatus("published")}>發布</button> : null}
-            {article.status !== "archived" ? <button type="button" onClick={() => onStatus("archived")}>封存</button> : null}
-            <button className="danger" type="button" onClick={onDelete}>刪除</button>
+            <KnowledgeOverflowMenu article={article} onArchive={() => onStatus("archived")} onDelete={onDelete} />
           </div>
         ) : null}
       </header>
 
-      <div className="knowledge-summary-grid">
-        <section>
-          <h3>問題現象</h3>
-          <p>{article.symptom || "-"}</p>
-        </section>
-        <section>
-          <h3>可能原因</h3>
-          <p>{article.possible_cause || "-"}</p>
-        </section>
-      </div>
+      {hasSymptom || hasCause ? (
+        <div className={`knowledge-summary-grid ${hasSymptom && hasCause ? "" : "is-single"}`}>
+          {hasSymptom ? (
+            <section>
+              <h3>問題現象</h3>
+              <p>{article.symptom}</p>
+            </section>
+          ) : null}
+          {hasCause ? (
+            <section>
+              <h3>可能原因</h3>
+              <p>{article.possible_cause}</p>
+            </section>
+          ) : null}
+        </div>
+      ) : null}
 
-      <section className="knowledge-block">
-        <h3>摘要</h3>
-        <p>{article.summary || "-"}</p>
-      </section>
+      {hasMeaningfulContent(article.summary) ? (
+        <section className="knowledge-block knowledge-summary-block">
+          <h3>摘要</h3>
+          <p>{article.summary}</p>
+        </section>
+      ) : null}
 
       <section className="knowledge-steps">
         <h3>處理步驟</h3>
-        {(article.steps || []).length ? article.steps.map((step) => (
+        {visibleSteps.length ? visibleSteps.map((step) => (
           <div className="knowledge-step" key={step.id}>
-            <span className="knowledge-step-number">{step.step_order}</span>
-            <div>
-              <h4>{step.title || `步驟 ${step.step_order}`}</h4>
-              <p>{step.body || "-"}</p>
+            <div className="knowledge-step-marker" aria-hidden="true">
+              <span className="knowledge-step-number">{step.step_order}</span>
+            </div>
+            <div className="knowledge-step-content">
+              {hasMeaningfulContent(step.title) ? <h4>{step.title}</h4> : null}
+              {hasMeaningfulContent(step.body) ? <p>{step.body}</p> : null}
               {step.assets?.length ? (
                 <div className="knowledge-image-grid">
                   {step.assets.map((asset) => (
                     <figure key={asset.id}>
-                      <img loading="lazy" src={asset.signed_url} alt={asset.alt_text || asset.original_filename || step.title || "教學圖片"} />
+                      <KnowledgeImage asset={asset} fallbackAlt={step.title} onOpen={onOpenImage} />
                       {asset.alt_text ? <figcaption>{asset.alt_text}</figcaption> : null}
                     </figure>
                   ))}
@@ -340,10 +497,22 @@ export default function IncidentRecordsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingId, setUploadingId] = useState("");
-  const [message, setMessage] = useState("");
+  const [toast, setToast] = useState(null);
+  const [lightboxAsset, setLightboxAsset] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [mobileView, setMobileView] = useState("list");
+  const listRef = useRef(null);
+  const listScrollTop = useRef(0);
 
   const categories = useMemo(() => uniqueOptions(articles, "category"), [articles]);
   const systems = useMemo(() => uniqueOptions(articles, "system_name"), [articles]);
+
+  useEffect(() => {
+    if (!toast) return undefined;
+    const timer = window.setTimeout(() => setToast(null), toast.type === "error" ? 5000 : 2600);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
   async function loadArticles(nextAdmin = adminMode) {
     setLoading(true);
@@ -359,7 +528,7 @@ export default function IncidentRecordsPage() {
       if (!rows.some((row) => row.id === selectedId)) setSelectedId(rows[0]?.id || "");
     } catch (error) {
       if (nextAdmin) setAdminMode(false);
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "教學列表讀取失敗") });
       setArticles([]);
     } finally {
       setLoading(false);
@@ -375,7 +544,7 @@ export default function IncidentRecordsPage() {
       const params = nextAdmin ? "?includeDrafts=1" : "";
       setSelectedArticle(await readApi(await fetch(`/api/knowledge/${id}${params}`, { cache: "no-store" })));
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "教學內容讀取失敗") });
       setSelectedArticle(null);
     }
   }
@@ -390,6 +559,19 @@ export default function IncidentRecordsPage() {
 
   function updateFilter(key, value) {
     setFilters((current) => ({ ...current, [key]: value }));
+  }
+
+  function selectArticle(id) {
+    listScrollTop.current = listRef.current?.scrollTop || 0;
+    setSelectedId(id);
+    setMobileView("reader");
+  }
+
+  function returnToList() {
+    setMobileView("list");
+    window.requestAnimationFrame(() => {
+      if (listRef.current) listRef.current.scrollTop = listScrollTop.current;
+    });
   }
 
   function openCreate() {
@@ -416,7 +598,7 @@ export default function IncidentRecordsPage() {
   async function saveArticle(event) {
     event.preventDefault();
     setSaving(true);
-    setMessage("");
+    setToast(null);
     try {
       const method = draft.id ? "PATCH" : "POST";
       const url = draft.id ? `/api/knowledge/${draft.id}` : "/api/knowledge";
@@ -429,10 +611,10 @@ export default function IncidentRecordsPage() {
       setSelectedId(saved.id);
       setSelectedArticle(saved);
       setAdminMode(true);
-      setMessage("已儲存");
+      setToast({ type: "success", text: "教學已儲存" });
       await loadArticles(true);
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "教學儲存失敗") });
     } finally {
       setSaving(false);
     }
@@ -448,21 +630,27 @@ export default function IncidentRecordsPage() {
       }));
       setSelectedArticle(saved);
       await loadArticles(true);
+      setToast({ type: "success", text: status === "published" ? "教學已發布" : "教學已封存" });
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "狀態更新失敗") });
     }
   }
 
   async function deleteArticle() {
-    if (!selectedArticle) return;
-    if (!window.confirm(`確定刪除「${selectedArticle.title}」？圖片也會一併清除。`)) return;
+    if (!deleteTarget) return;
+    setDeleting(true);
     try {
-      await readApi(await fetch(`/api/knowledge/${selectedArticle.id}`, { method: "DELETE" }));
+      await readApi(await fetch(`/api/knowledge/${deleteTarget.id}`, { method: "DELETE" }));
       setSelectedId("");
       setSelectedArticle(null);
+      setDeleteTarget(null);
+      setMobileView("list");
       await loadArticles(true);
+      setToast({ type: "success", text: "教學與相關圖片已刪除" });
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "教學刪除失敗") });
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -471,7 +659,7 @@ export default function IncidentRecordsPage() {
     event.target.value = "";
     if (!file || !draft?.id) return;
     setUploadingId(stepId);
-    setMessage("");
+    setToast(null);
     try {
       const compressed = await compressKnowledgeImage(file);
       const formData = new FormData();
@@ -482,9 +670,9 @@ export default function IncidentRecordsPage() {
       const fresh = await readApi(await fetch(`/api/knowledge/${draft.id}?includeDrafts=1`, { cache: "no-store" }));
       setDraft(JSON.parse(JSON.stringify(fresh)));
       setSelectedArticle(fresh);
-      setMessage("圖片已上傳");
+      setToast({ type: "success", text: "圖片已上傳" });
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "圖片上傳失敗") });
     } finally {
       setUploadingId("");
     }
@@ -497,8 +685,9 @@ export default function IncidentRecordsPage() {
       const fresh = await readApi(await fetch(`/api/knowledge/${draft.id}?includeDrafts=1`, { cache: "no-store" }));
       setDraft(JSON.parse(JSON.stringify(fresh)));
       setSelectedArticle(fresh);
+      setToast({ type: "success", text: "圖片已刪除" });
     } catch (error) {
-      setMessage(error.message);
+      setToast({ type: "error", text: safeErrorMessage(error, "圖片刪除失敗") });
     }
   }
 
@@ -518,7 +707,7 @@ export default function IncidentRecordsPage() {
         </div>
       </header>
 
-      <div className="incident-filter-panel knowledge-filter-panel">
+      <div className={`incident-filter-panel knowledge-filter-panel ${adminMode ? "has-status" : "without-status"}`}>
         <input value={filters.query} onChange={(event) => updateFilter("query", event.target.value)} placeholder="搜尋標題、現象、原因、摘要或關鍵字" />
         <select value={filters.category} onChange={(event) => updateFilter("category", event.target.value)}>
           <option value="">全部分類</option>
@@ -539,16 +728,16 @@ export default function IncidentRecordsPage() {
         <span>{loading ? "讀取中..." : `${articles.length.toLocaleString("en-US")} 篇`}</span>
       </div>
 
-      {message ? <div className="knowledge-notice">{message}</div> : null}
-
-      <div className="knowledge-layout">
-        <ArticleList rows={articles} selectedId={selectedId} onSelect={setSelectedId} />
+      <div className={`knowledge-layout is-${mobileView}-view`}>
+        <ArticleList rows={articles} selectedId={selectedId} onSelect={selectArticle} listRef={listRef} />
         <ArticleViewer
           article={selectedArticle}
           adminMode={adminMode}
+          onBack={returnToList}
           onEdit={openEdit}
-          onDelete={deleteArticle}
+          onDelete={() => setDeleteTarget(selectedArticle)}
           onStatus={quickStatus}
+          onOpenImage={setLightboxAsset}
         />
       </div>
 
@@ -565,6 +754,14 @@ export default function IncidentRecordsPage() {
           onMoveStep={moveStep}
         />
       ) : null}
+      <KnowledgeToast toast={toast} onClose={() => setToast(null)} />
+      <KnowledgeLightbox asset={lightboxAsset} onClose={() => setLightboxAsset(null)} />
+      <DeleteArticleDialog
+        article={deleteTarget}
+        deleting={deleting}
+        onCancel={() => setDeleteTarget(null)}
+        onConfirm={deleteArticle}
+      />
     </section>
   );
 }
