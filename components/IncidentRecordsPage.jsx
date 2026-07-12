@@ -2,595 +2,568 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "taroko-it-incident-records";
+const EMPTY_ARTICLE = {
+  title: "",
+  article_type: "troubleshooting",
+  category: "",
+  system_name: "",
+  symptom: "",
+  possible_cause: "",
+  summary: "",
+  keywords: "",
+  status: "draft",
+  sort_order: 0,
+  steps: []
+};
 
-const DEPARTMENTS = ["房務", "櫃檯", "餐飲", "財務", "業務", "人資", "工務", "管理部", "資訊部", "其他"];
-const INCIDENT_TYPES = ["網路", "硬體", "軟體", "系統", "帳號", "印表機", "Wi-Fi", "電話", "監視器", "NAS / 備份", "PMS", "POS", "門鎖系統", "廠商系統", "其他"];
-const IMPACT_SCOPES = ["單一人員", "單一部門", "多部門", "全館", "客人受影響", "其他"];
-const PRIORITIES = ["低", "中", "高", "緊急"];
-const STATUSES = ["未處理", "處理中", "待廠商", "已完成", "已結案"];
-const RECURRING_OPTIONS = ["全部", "是", "否"];
-const ALL_VALUE = "全部";
+const STATUS_LABELS = {
+  draft: "草稿",
+  published: "已發布",
+  archived: "已封存"
+};
 
-const MOCK_INCIDENTS = [
-  {
-    id: "mock-1",
-    incidentNo: "IT-20260615-001",
-    occurredAt: "2026-06-15T09:20",
-    reportedAt: "2026-06-15T09:30",
-    department: "櫃檯",
-    reporter: "王小姐",
-    type: "PMS",
-    impactScope: "單一部門",
-    priority: "高",
-    description: "櫃檯 PMS 無法登入，影響入住作業。",
-    assignee: "IT",
-    status: "處理中",
-    resolution: "",
-    completedAt: "",
-    isRecurring: false,
-    relatedDevice: "",
-    relatedVendor: "PMS 廠商",
-    attachments: []
-  },
-  {
-    id: "mock-2",
-    incidentNo: "IT-20260615-002",
-    occurredAt: "2026-06-15T10:10",
-    reportedAt: "2026-06-15T10:15",
-    department: "房務",
-    reporter: "林小姐",
-    type: "Wi-Fi",
-    impactScope: "客人受影響",
-    priority: "中",
-    description: "客房反映 Wi-Fi 連線不穩。",
-    assignee: "IT",
-    status: "已完成",
-    resolution: "重啟樓層 AP 後恢復正常。",
-    completedAt: "2026-06-15T10:45",
-    isRecurring: false,
-    relatedDevice: "3F AP",
-    relatedVendor: "",
-    attachments: []
-  },
-  {
-    id: "mock-3",
-    incidentNo: "IT-20260615-003",
-    occurredAt: "2026-06-15T11:00",
-    reportedAt: "2026-06-15T11:05",
-    department: "財務",
-    reporter: "陳先生",
-    type: "印表機",
-    impactScope: "單一部門",
-    priority: "低",
-    description: "財務部印表機無法列印。",
-    assignee: "IT",
-    status: "待廠商",
-    resolution: "初步判斷為定著器異常，已通知廠商。",
-    completedAt: "",
-    isRecurring: true,
-    relatedDevice: "財務部印表機",
-    relatedVendor: "影印機廠商",
-    attachments: []
-  }
-];
+const TYPE_LABELS = {
+  troubleshooting: "故障排除",
+  guide: "教學手冊"
+};
 
-function pad(value) {
-  return String(value).padStart(2, "0");
-}
-
-function toLocalInputValue(date = new Date()) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function dateKeyFromValue(value) {
-  return String(value || toLocalInputValue()).slice(0, 10).replaceAll("-", "");
-}
-
-function parseDateTime(value) {
-  if (!value) return null;
-  const date = new Date(String(value).replace(" ", "T"));
-  return Number.isNaN(date.getTime()) ? null : date;
+function createBlankStep() {
+  return { id: "", step_order: 1, title: "", body: "", assets: [] };
 }
 
 function formatDateTime(value) {
-  const date = parseDateTime(value);
-  if (!date) return "-";
-  return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return new Intl.DateTimeFormat("zh-TW", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(date);
 }
 
-function formatDurationMinutes(totalMinutes) {
-  if (!Number.isFinite(totalMinutes) || totalMinutes < 0) return "-";
-  const minutes = Math.max(0, Math.round(totalMinutes));
-  if (minutes < 60) return `${minutes} 分鐘`;
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  if (hours < 24) return `${hours} 小時 ${remainingMinutes} 分鐘`;
-  const days = Math.floor(hours / 24);
-  const remainingHours = hours % 24;
-  return `${days} 天 ${remainingHours} 小時`;
+function splitKeywords(value) {
+  return String(value || "")
+    .split(/[,，\s]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
-function getDurationMinutes(record) {
-  const start = parseDateTime(record.reportedAt);
-  const end = parseDateTime(record.completedAt);
-  if (!start || !end) return null;
-  return (end.getTime() - start.getTime()) / 60000;
+async function readApi(response) {
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok || body.success === false) throw new Error(body.message || `HTTP ${response.status}`);
+  return body.data;
 }
 
-function getDurationLabel(record) {
-  const minutes = getDurationMinutes(record);
-  return minutes === null ? "尚未完成" : formatDurationMinutes(minutes);
+function uniqueOptions(rows, key) {
+  return Array.from(new Set((rows || []).map((row) => row[key]).filter(Boolean))).sort((a, b) => a.localeCompare(b, "zh-Hant"));
 }
 
-function generateIncidentNo(records, reportedAt) {
-  const dateKey = dateKeyFromValue(reportedAt);
-  const prefix = `IT-${dateKey}-`;
-  const maxSequence = records.reduce((max, record) => {
-    if (!String(record.incidentNo || "").startsWith(prefix)) return max;
-    const sequence = Number(String(record.incidentNo).slice(prefix.length));
-    return Number.isFinite(sequence) ? Math.max(max, sequence) : max;
-  }, 0);
-  return `${prefix}${String(maxSequence + 1).padStart(3, "0")}`;
+async function compressKnowledgeImage(file) {
+  const allowed = new Set(["image/jpeg", "image/png", "image/webp"]);
+  if (!allowed.has(file.type)) throw new Error("僅允許 JPEG、PNG、WebP 圖片");
+
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext("2d", { alpha: true }).drawImage(bitmap, 0, 0, width, height);
+  bitmap.close?.();
+
+  const toBlob = (type, quality) => new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+  let blob = await toBlob("image/webp", 0.78);
+  if (!blob) blob = await toBlob(file.type === "image/png" ? "image/png" : "image/jpeg", 0.78);
+  if (blob && blob.size > 500 * 1024) blob = await toBlob("image/webp", 0.68);
+  if (blob && blob.size > 500 * 1024) blob = await toBlob("image/webp", 0.58);
+  if (!blob) throw new Error("圖片壓縮失敗");
+  if (blob.size > 500 * 1024) throw new Error("圖片壓縮後仍超過 500KB，請裁切或改用較小圖片");
+
+  const safeBase = String(file.name || "knowledge-image").replace(/\.[^.]+$/, "").slice(0, 80) || "knowledge-image";
+  return new File([blob], `${safeBase}.webp`, { type: blob.type || "image/webp" });
 }
 
-function createBlankIncident(records) {
-  const now = toLocalInputValue();
-  return {
-    id: "",
-    incidentNo: generateIncidentNo(records, now),
-    occurredAt: now,
-    reportedAt: now,
-    department: "",
-    reporter: "",
-    type: "",
-    impactScope: "",
-    priority: "中",
-    description: "",
-    assignee: "",
-    status: "未處理",
-    resolution: "",
-    completedAt: "",
-    isRecurring: false,
-    relatedDevice: "",
-    relatedVendor: "",
-    attachments: []
-  };
+function ArticleStatus({ status }) {
+  return <span className={`knowledge-status is-${status}`}>{STATUS_LABELS[status] || status}</span>;
 }
 
-function priorityTone(priority) {
-  return {
-    低: "low",
-    中: "medium",
-    高: "high",
-    緊急: "critical"
-  }[priority] || "medium";
-}
+function ArticleList({ rows, selectedId, onSelect }) {
+  if (!rows.length) return <div className="knowledge-empty">目前沒有符合條件的教學資料。</div>;
 
-function statusTone(status) {
-  return {
-    未處理: "todo",
-    處理中: "active",
-    待廠商: "vendor",
-    已完成: "done",
-    已結案: "closed"
-  }[status] || "todo";
-}
-
-function validateIncident(form) {
-  const errors = [];
-  const requiredFields = [
-    ["occurredAt", "發生時間"],
-    ["reportedAt", "通報時間"],
-    ["department", "通報單位"],
-    ["reporter", "通報人"],
-    ["type", "故障類型"],
-    ["impactScope", "影響範圍"],
-    ["priority", "緊急程度"],
-    ["description", "問題描述"],
-    ["status", "處理狀態"]
-  ];
-
-  requiredFields.forEach(([key, label]) => {
-    if (!String(form[key] || "").trim()) errors.push(`${label}必填`);
-  });
-
-  const occurredAt = parseDateTime(form.occurredAt);
-  const reportedAt = parseDateTime(form.reportedAt);
-  const completedAt = parseDateTime(form.completedAt);
-  if (completedAt && occurredAt && completedAt < occurredAt) errors.push("完成時間不可早於發生時間");
-  if (completedAt && reportedAt && completedAt < reportedAt) errors.push("完成時間不可早於通報時間");
-
-  if (["已完成", "已結案"].includes(form.status)) {
-    if (!String(form.resolution || "").trim()) errors.push("已完成或已結案案件需填寫解決方式");
-    if (!form.completedAt) errors.push("已完成或已結案案件需填寫完成時間");
-  }
-
-  return errors;
-}
-
-function matchesDateRange(record, dateField, startDate, endDate) {
-  const rawValue = record[dateField];
-  if (!rawValue) return false;
-  const day = String(rawValue).slice(0, 10);
-  if (startDate && day < startDate) return false;
-  if (endDate && day > endDate) return false;
-  return true;
-}
-
-function OptionSelect({ value, onChange, options, placeholder, disabled = false, required = false }) {
   return (
-    <select value={value} onChange={(event) => onChange(event.target.value)} disabled={disabled} required={required}>
-      {placeholder ? <option value="">{placeholder}</option> : null}
-      {options.map((item) => (
-        <option key={item} value={item}>
-          {item}
-        </option>
+    <div className="knowledge-list" role="list">
+      {rows.map((article) => (
+        <button
+          className={`knowledge-list-row ${selectedId === article.id ? "active" : ""}`}
+          key={article.id}
+          type="button"
+          onClick={() => onSelect(article.id)}
+        >
+          <span>
+            <b>{article.title}</b>
+            <small>{article.category || "未分類"} · {article.system_name || "未指定系統"}</small>
+          </span>
+          <ArticleStatus status={article.status} />
+        </button>
       ))}
-    </select>
+    </div>
   );
 }
 
-function Field({ label, children, required = false, wide = false }) {
-  return (
-    <label className={`incident-field ${wide ? "wide" : ""}`}>
-      <span>
-        {label}
-        {required ? <b aria-hidden="true">*</b> : null}
-      </span>
-      {children}
-    </label>
-  );
-}
-
-function IncidentBadge({ type, value }) {
-  const tone = type === "priority" ? priorityTone(value) : statusTone(value);
-  return <span className={`incident-badge ${type}-${tone}`}>{value}</span>;
-}
-
-function IncidentFormModal({ mode, form, onChange, onClose, onSubmit, errors }) {
-  const readonly = mode === "view";
-  const isEdit = mode === "edit";
-  const title = mode === "create" ? "新增故障案件" : isEdit ? "編輯故障案件" : "查看故障案件";
-
-  function setValue(key, value) {
-    onChange({ ...form, [key]: value });
-  }
+function ArticleViewer({ article, adminMode, onEdit, onDelete, onStatus }) {
+  if (!article) return <div className="knowledge-reader knowledge-empty">請從左側選擇一篇教學。</div>;
 
   return (
-    <div className="incident-modal-backdrop" role="presentation">
-      <form className="incident-modal" onSubmit={onSubmit}>
-        <header>
-          <div>
-            <h2>{title}</h2>
-            <p>{form.incidentNo}</p>
+    <article className="knowledge-reader">
+      <header className="knowledge-reader-head">
+        <div>
+          <div className="knowledge-meta-line">
+            <span>{TYPE_LABELS[article.article_type] || article.article_type}</span>
+            <span>{article.category || "未分類"}</span>
+            <span>{article.system_name || "未指定系統"}</span>
           </div>
-          <button type="button" aria-label="關閉" onClick={onClose}>
-            x
-          </button>
-        </header>
-
-        {errors.length ? (
-          <div className="incident-form-errors">
-            {errors.map((error) => (
-              <span key={error}>{error}</span>
-            ))}
+          <h2>{article.title}</h2>
+          <div className="knowledge-meta-line">
+            <ArticleStatus status={article.status} />
+            <span>最後更新 {formatDateTime(article.updated_at)}</span>
+          </div>
+        </div>
+        {adminMode ? (
+          <div className="knowledge-actions">
+            <button type="button" onClick={onEdit}>編輯</button>
+            {article.status !== "published" ? <button className="primary" type="button" onClick={() => onStatus("published")}>發布</button> : null}
+            {article.status !== "archived" ? <button type="button" onClick={() => onStatus("archived")}>封存</button> : null}
+            <button className="danger" type="button" onClick={onDelete}>刪除</button>
           </div>
         ) : null}
+      </header>
 
-        <div className="incident-form-grid">
-          <Field label="案件編號">
-            <input value={form.incidentNo} readOnly />
-          </Field>
-          <Field label="發生時間" required>
-            <input type="datetime-local" value={form.occurredAt} onChange={(event) => setValue("occurredAt", event.target.value)} disabled={readonly} required />
-          </Field>
-          <Field label="通報時間" required>
-            <input type="datetime-local" value={form.reportedAt} onChange={(event) => setValue("reportedAt", event.target.value)} disabled={readonly} required />
-          </Field>
-          <Field label="通報單位" required>
-            <OptionSelect value={form.department} onChange={(value) => setValue("department", value)} options={DEPARTMENTS} placeholder="請選擇" disabled={readonly} required />
-          </Field>
-          <Field label="通報人" required>
-            <input value={form.reporter} onChange={(event) => setValue("reporter", event.target.value)} disabled={readonly} required />
-          </Field>
-          <Field label="故障類型" required>
-            <OptionSelect value={form.type} onChange={(value) => setValue("type", value)} options={INCIDENT_TYPES} placeholder="請選擇" disabled={readonly} required />
-          </Field>
-          <Field label="影響範圍" required>
-            <OptionSelect value={form.impactScope} onChange={(value) => setValue("impactScope", value)} options={IMPACT_SCOPES} placeholder="請選擇" disabled={readonly} required />
-          </Field>
-          <Field label="緊急程度" required>
-            <OptionSelect value={form.priority} onChange={(value) => setValue("priority", value)} options={PRIORITIES} disabled={readonly} required />
-          </Field>
-          <Field label="處理人員">
-            <input value={form.assignee} onChange={(event) => setValue("assignee", event.target.value)} disabled={readonly} />
-          </Field>
-          <Field label="處理狀態" required>
-            <OptionSelect value={form.status} onChange={(value) => setValue("status", value)} options={STATUSES} disabled={readonly} required />
-          </Field>
-          <Field label="完成時間">
-            <input type="datetime-local" value={form.completedAt} onChange={(event) => setValue("completedAt", event.target.value)} disabled={readonly} />
-          </Field>
-          <Field label="是否重複發生">
-            <select value={form.isRecurring ? "是" : "否"} onChange={(event) => setValue("isRecurring", event.target.value === "是")} disabled={readonly}>
-              <option value="否">否</option>
-              <option value="是">是</option>
+      <div className="knowledge-summary-grid">
+        <section>
+          <h3>問題現象</h3>
+          <p>{article.symptom || "-"}</p>
+        </section>
+        <section>
+          <h3>可能原因</h3>
+          <p>{article.possible_cause || "-"}</p>
+        </section>
+      </div>
+
+      <section className="knowledge-block">
+        <h3>摘要</h3>
+        <p>{article.summary || "-"}</p>
+      </section>
+
+      <section className="knowledge-steps">
+        <h3>處理步驟</h3>
+        {(article.steps || []).length ? article.steps.map((step) => (
+          <div className="knowledge-step" key={step.id}>
+            <span className="knowledge-step-number">{step.step_order}</span>
+            <div>
+              <h4>{step.title || `步驟 ${step.step_order}`}</h4>
+              <p>{step.body || "-"}</p>
+              {step.assets?.length ? (
+                <div className="knowledge-image-grid">
+                  {step.assets.map((asset) => (
+                    <figure key={asset.id}>
+                      <img loading="lazy" src={asset.signed_url} alt={asset.alt_text || asset.original_filename || step.title || "教學圖片"} />
+                      {asset.alt_text ? <figcaption>{asset.alt_text}</figcaption> : null}
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        )) : <p>尚未建立步驟。</p>}
+      </section>
+
+      {splitKeywords(article.keywords).length ? (
+        <div className="knowledge-keywords">
+          {splitKeywords(article.keywords).map((keyword) => <span key={keyword}>{keyword}</span>)}
+        </div>
+      ) : null}
+    </article>
+  );
+}
+
+function ArticleEditor({ draft, setDraft, saving, uploadingId, onClose, onSave, onUpload, onDeleteAsset, onMoveStep }) {
+  function setField(key, value) {
+    setDraft((current) => ({ ...current, [key]: value }));
+  }
+
+  function setStep(index, patch) {
+    setDraft((current) => ({
+      ...current,
+      steps: current.steps.map((step, stepIndex) => stepIndex === index ? { ...step, ...patch } : step)
+    }));
+  }
+
+  function addStep() {
+    setDraft((current) => ({
+      ...current,
+      steps: [...(current.steps || []), { ...createBlankStep(), step_order: (current.steps || []).length + 1 }]
+    }));
+  }
+
+  function removeStep(index) {
+    setDraft((current) => ({
+      ...current,
+      steps: current.steps.filter((_, stepIndex) => stepIndex !== index).map((step, stepIndex) => ({ ...step, step_order: stepIndex + 1 }))
+    }));
+  }
+
+  return (
+    <div className="knowledge-editor-backdrop" role="presentation">
+      <form className="knowledge-editor" onSubmit={onSave}>
+        <header>
+          <div>
+            <h2>{draft.id ? "編輯教學" : "新增教學"}</h2>
+            <p>圖片會先在瀏覽器壓縮為 WebP，並由伺服器上傳到 private Storage。</p>
+          </div>
+          <button type="button" onClick={onClose}>x</button>
+        </header>
+
+        <div className="knowledge-editor-grid">
+          <label className="wide">
+            <span>標題</span>
+            <input value={draft.title} onChange={(event) => setField("title", event.target.value)} required maxLength={180} />
+          </label>
+          <label>
+            <span>類型</span>
+            <select value={draft.article_type} onChange={(event) => setField("article_type", event.target.value)}>
+              <option value="troubleshooting">故障排除</option>
+              <option value="guide">教學手冊</option>
             </select>
-          </Field>
-          {/* Device and vendor fields can become relation selects when those APIs are ready. */}
-          <Field label="關聯設備">
-            <input value={form.relatedDevice} onChange={(event) => setValue("relatedDevice", event.target.value)} disabled={readonly} placeholder="可先輸入設備名稱" />
-          </Field>
-          <Field label="關聯廠商">
-            <input value={form.relatedVendor} onChange={(event) => setValue("relatedVendor", event.target.value)} disabled={readonly} placeholder="可先輸入廠商名稱" />
-          </Field>
-          <Field label="附件">
-            <input value="目前先預留欄位，尚未實作附件上傳" readOnly disabled />
-          </Field>
-          <Field label="耗時">
-            <input value={getDurationLabel(form)} readOnly />
-          </Field>
-          <Field label="問題描述" required wide>
-            <textarea value={form.description} onChange={(event) => setValue("description", event.target.value)} disabled={readonly} required rows={4} />
-          </Field>
-          <Field label="解決方式" wide>
-            <textarea value={form.resolution} onChange={(event) => setValue("resolution", event.target.value)} disabled={readonly} rows={4} />
-          </Field>
+          </label>
+          <label>
+            <span>狀態</span>
+            <select value={draft.status} onChange={(event) => setField("status", event.target.value)}>
+              <option value="draft">草稿</option>
+              <option value="published">發布</option>
+              <option value="archived">封存</option>
+            </select>
+          </label>
+          <label>
+            <span>分類</span>
+            <input value={draft.category || ""} onChange={(event) => setField("category", event.target.value)} />
+          </label>
+          <label>
+            <span>系統</span>
+            <input value={draft.system_name || ""} onChange={(event) => setField("system_name", event.target.value)} />
+          </label>
+          <label className="wide">
+            <span>問題現象</span>
+            <textarea value={draft.symptom || ""} onChange={(event) => setField("symptom", event.target.value)} rows={3} />
+          </label>
+          <label className="wide">
+            <span>可能原因</span>
+            <textarea value={draft.possible_cause || ""} onChange={(event) => setField("possible_cause", event.target.value)} rows={3} />
+          </label>
+          <label className="wide">
+            <span>摘要</span>
+            <textarea value={draft.summary || ""} onChange={(event) => setField("summary", event.target.value)} rows={3} />
+          </label>
+          <label className="wide">
+            <span>關鍵字</span>
+            <input value={draft.keywords || ""} onChange={(event) => setField("keywords", event.target.value)} placeholder="以逗號或空白分隔" />
+          </label>
         </div>
 
+        <section className="knowledge-editor-steps">
+          <div className="knowledge-editor-section-head">
+            <h3>處理步驟</h3>
+            <button type="button" onClick={addStep}>新增步驟</button>
+          </div>
+          {(draft.steps || []).map((step, index) => (
+            <div className="knowledge-editor-step" key={step.id || `new-${index}`}>
+              <div className="knowledge-step-toolbar">
+                <strong>步驟 {index + 1}</strong>
+                <div>
+                  <button type="button" onClick={() => onMoveStep(index, -1)} disabled={index === 0}>上移</button>
+                  <button type="button" onClick={() => onMoveStep(index, 1)} disabled={index === draft.steps.length - 1}>下移</button>
+                  <button className="danger" type="button" onClick={() => removeStep(index)}>刪除</button>
+                </div>
+              </div>
+              <input value={step.title || ""} onChange={(event) => setStep(index, { title: event.target.value })} placeholder="步驟標題" />
+              <textarea value={step.body || ""} onChange={(event) => setStep(index, { body: event.target.value })} rows={4} placeholder="步驟內容" />
+              {draft.id && step.id ? (
+                <label className="knowledge-upload-line">
+                  <span>{uploadingId === step.id ? "上傳中..." : "新增圖片"}</span>
+                  <input type="file" accept="image/jpeg,image/png,image/webp" disabled={uploadingId === step.id} onChange={(event) => onUpload(event, step.id)} />
+                </label>
+              ) : (
+                <p className="knowledge-muted">先儲存文章後即可上傳圖片。</p>
+              )}
+              {step.assets?.length ? (
+                <div className="knowledge-asset-editor-grid">
+                  {step.assets.map((asset) => (
+                    <figure key={asset.id}>
+                      <img loading="lazy" src={asset.signed_url} alt={asset.alt_text || asset.original_filename || "教學圖片"} />
+                      <input
+                        value={asset.alt_text || ""}
+                        onChange={(event) => {
+                          const nextAssets = step.assets.map((item) => item.id === asset.id ? { ...item, alt_text: event.target.value } : item);
+                          setStep(index, { assets: nextAssets });
+                        }}
+                        placeholder="圖片說明"
+                      />
+                      <button className="danger" type="button" onClick={() => onDeleteAsset(asset.id)}>刪除圖片</button>
+                    </figure>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </section>
+
         <footer>
-          <button type="button" onClick={onClose}>
-            {readonly ? "關閉" : "取消"}
-          </button>
-          {!readonly ? (
-            <button className="primary" type="submit">
-              儲存
-            </button>
-          ) : null}
+          <button type="button" onClick={onClose}>取消</button>
+          <button className="primary" type="submit" disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
         </footer>
       </form>
     </div>
   );
 }
 
-function getStats(records) {
-  const now = new Date();
-  const monthKey = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
-  const completedDurations = records.map(getDurationMinutes).filter((value) => value !== null && value >= 0);
-  const averageMinutes = completedDurations.length
-    ? completedDurations.reduce((sum, value) => sum + value, 0) / completedDurations.length
-    : null;
-
-  return [
-    { label: "本月案件數", value: records.filter((record) => String(record.reportedAt).startsWith(monthKey)).length, helper: "依通報時間計算" },
-    { label: "未處理案件數", value: records.filter((record) => record.status === "未處理").length, helper: "需要優先分派" },
-    { label: "處理中案件數", value: records.filter((record) => record.status === "處理中").length, helper: "IT 正在處理" },
-    { label: "待廠商案件數", value: records.filter((record) => record.status === "待廠商").length, helper: "需外部支援" },
-    { label: "緊急案件數", value: records.filter((record) => record.priority === "緊急").length, helper: "紅色優先追蹤", tone: "danger" },
-    { label: "平均處理時間", value: averageMinutes === null ? "-" : formatDurationMinutes(averageMinutes), helper: "已完成案件平均" }
-  ];
-}
-
 export default function IncidentRecordsPage() {
-  const [records, setRecords] = useState(MOCK_INCIDENTS);
-  const [filters, setFilters] = useState({
-    query: "",
-    type: ALL_VALUE,
-    status: ALL_VALUE,
-    priority: ALL_VALUE,
-    department: ALL_VALUE,
-    recurring: ALL_VALUE,
-    dateField: "occurredAt",
-    startDate: "",
-    endDate: ""
-  });
-  const [modalMode, setModalMode] = useState("");
-  const [form, setForm] = useState(null);
-  const [errors, setErrors] = useState([]);
+  const [articles, setArticles] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [filters, setFilters] = useState({ query: "", category: "", system: "", status: "published" });
+  const [adminMode, setAdminMode] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [draft, setDraft] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [uploadingId, setUploadingId] = useState("");
+  const [message, setMessage] = useState("");
 
-  useEffect(() => {
+  const categories = useMemo(() => uniqueOptions(articles, "category"), [articles]);
+  const systems = useMemo(() => uniqueOptions(articles, "system_name"), [articles]);
+
+  async function loadArticles(nextAdmin = adminMode) {
+    setLoading(true);
     try {
-      const stored = window.localStorage.getItem(STORAGE_KEY);
-      if (stored) setRecords(JSON.parse(stored));
-    } catch {
-      setRecords(MOCK_INCIDENTS);
+      const params = new URLSearchParams();
+      if (nextAdmin) params.set("includeDrafts", "1");
+      if (filters.query) params.set("q", filters.query);
+      if (filters.category) params.set("category", filters.category);
+      if (filters.system) params.set("system", filters.system);
+      if (nextAdmin && filters.status) params.set("status", filters.status);
+      const rows = await readApi(await fetch(`/api/knowledge?${params.toString()}`, { cache: "no-store" }));
+      setArticles(rows);
+      if (!rows.some((row) => row.id === selectedId)) setSelectedId(rows[0]?.id || "");
+    } catch (error) {
+      if (nextAdmin) setAdminMode(false);
+      setMessage(error.message);
+      setArticles([]);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }
+
+  async function loadDetail(id = selectedId, nextAdmin = adminMode) {
+    if (!id) {
+      setSelectedArticle(null);
+      return;
+    }
+    try {
+      const params = nextAdmin ? "?includeDrafts=1" : "";
+      setSelectedArticle(await readApi(await fetch(`/api/knowledge/${id}${params}`, { cache: "no-store" })));
+    } catch (error) {
+      setMessage(error.message);
+      setSelectedArticle(null);
+    }
+  }
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-  }, [records]);
+    loadArticles(adminMode);
+  }, [filters.query, filters.category, filters.system, filters.status, adminMode]);
 
-  const stats = useMemo(() => getStats(records), [records]);
-
-  const filteredRecords = useMemo(() => {
-    const keyword = filters.query.trim().toLowerCase();
-    return records.filter((record) => {
-      const searchable = [record.incidentNo, record.description, record.reporter, record.assignee].join(" ").toLowerCase();
-      const matchKeyword = !keyword || searchable.includes(keyword);
-      const matchType = filters.type === ALL_VALUE || record.type === filters.type;
-      const matchStatus = filters.status === ALL_VALUE || record.status === filters.status;
-      const matchPriority = filters.priority === ALL_VALUE || record.priority === filters.priority;
-      const matchDepartment = filters.department === ALL_VALUE || record.department === filters.department;
-      const matchRecurring =
-        filters.recurring === ALL_VALUE ||
-        (filters.recurring === "是" && record.isRecurring) ||
-        (filters.recurring === "否" && !record.isRecurring);
-      const hasDateFilter = filters.startDate || filters.endDate;
-      const matchDate = !hasDateFilter || matchesDateRange(record, filters.dateField, filters.startDate, filters.endDate);
-      return matchKeyword && matchType && matchStatus && matchPriority && matchDepartment && matchRecurring && matchDate;
-    });
-  }, [records, filters]);
+  useEffect(() => {
+    loadDetail(selectedId, adminMode);
+  }, [selectedId, adminMode]);
 
   function updateFilter(key, value) {
     setFilters((current) => ({ ...current, [key]: value }));
   }
 
-  function resetFilters() {
-    setFilters({
-      query: "",
-      type: ALL_VALUE,
-      status: ALL_VALUE,
-      priority: ALL_VALUE,
-      department: ALL_VALUE,
-      recurring: ALL_VALUE,
-      dateField: "occurredAt",
-      startDate: "",
-      endDate: ""
+  function openCreate() {
+    setDraft({ ...EMPTY_ARTICLE, steps: [createBlankStep()] });
+    setEditorOpen(true);
+  }
+
+  function openEdit() {
+    if (!selectedArticle) return;
+    setDraft(JSON.parse(JSON.stringify(selectedArticle)));
+    setEditorOpen(true);
+  }
+
+  function moveStep(index, delta) {
+    setDraft((current) => {
+      const steps = [...(current.steps || [])];
+      const target = index + delta;
+      if (target < 0 || target >= steps.length) return current;
+      [steps[index], steps[target]] = [steps[target], steps[index]];
+      return { ...current, steps: steps.map((step, stepIndex) => ({ ...step, step_order: stepIndex + 1 })) };
     });
   }
 
-  function openCreate() {
-    setErrors([]);
-    setForm(createBlankIncident(records));
-    setModalMode("create");
-  }
-
-  function openRecord(record, mode) {
-    setErrors([]);
-    setForm({ ...record });
-    setModalMode(mode);
-  }
-
-  function closeModal() {
-    setModalMode("");
-    setForm(null);
-    setErrors([]);
-  }
-
-  function handleSubmit(event) {
+  async function saveArticle(event) {
     event.preventDefault();
-    const nextErrors = validateIncident(form);
-    if (nextErrors.length) {
-      setErrors(nextErrors);
-      return;
+    setSaving(true);
+    setMessage("");
+    try {
+      const method = draft.id ? "PATCH" : "POST";
+      const url = draft.id ? `/api/knowledge/${draft.id}` : "/api/knowledge";
+      const saved = await readApi(await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(draft)
+      }));
+      setDraft(JSON.parse(JSON.stringify(saved)));
+      setSelectedId(saved.id);
+      setSelectedArticle(saved);
+      setAdminMode(true);
+      setMessage("已儲存");
+      await loadArticles(true);
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setSaving(false);
     }
-
-    if (modalMode === "create") {
-      const incident = {
-        ...form,
-        id: `incident-${Date.now()}`,
-        incidentNo: generateIncidentNo(records, form.reportedAt),
-        attachments: []
-      };
-      setRecords((current) => [incident, ...current]);
-    } else if (modalMode === "edit") {
-      setRecords((current) => current.map((record) => (record.id === form.id ? { ...form, attachments: form.attachments || [] } : record)));
-    }
-    closeModal();
   }
 
-  function deleteRecord(record) {
-    const confirmed = window.confirm(`確定要刪除 ${record.incidentNo} 嗎？`);
-    if (!confirmed) return;
-    setRecords((current) => current.filter((item) => item.id !== record.id));
+  async function quickStatus(status) {
+    if (!selectedArticle) return;
+    try {
+      const saved = await readApi(await fetch(`/api/knowledge/${selectedArticle.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...selectedArticle, status })
+      }));
+      setSelectedArticle(saved);
+      await loadArticles(true);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
+  async function deleteArticle() {
+    if (!selectedArticle) return;
+    if (!window.confirm(`確定刪除「${selectedArticle.title}」？圖片也會一併清除。`)) return;
+    try {
+      await readApi(await fetch(`/api/knowledge/${selectedArticle.id}`, { method: "DELETE" }));
+      setSelectedId("");
+      setSelectedArticle(null);
+      await loadArticles(true);
+    } catch (error) {
+      setMessage(error.message);
+    }
+  }
+
+  async function uploadImage(event, stepId) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file || !draft?.id) return;
+    setUploadingId(stepId);
+    setMessage("");
+    try {
+      const compressed = await compressKnowledgeImage(file);
+      const formData = new FormData();
+      formData.set("file", compressed);
+      formData.set("step_id", stepId);
+      formData.set("alt_text", file.name.replace(/\.[^.]+$/, ""));
+      await readApi(await fetch(`/api/knowledge/${draft.id}/assets`, { method: "POST", body: formData }));
+      const fresh = await readApi(await fetch(`/api/knowledge/${draft.id}?includeDrafts=1`, { cache: "no-store" }));
+      setDraft(JSON.parse(JSON.stringify(fresh)));
+      setSelectedArticle(fresh);
+      setMessage("圖片已上傳");
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setUploadingId("");
+    }
+  }
+
+  async function deleteAsset(assetId) {
+    if (!draft?.id) return;
+    try {
+      await readApi(await fetch(`/api/knowledge/${draft.id}/assets?assetId=${encodeURIComponent(assetId)}`, { method: "DELETE" }));
+      const fresh = await readApi(await fetch(`/api/knowledge/${draft.id}?includeDrafts=1`, { cache: "no-store" }));
+      setDraft(JSON.parse(JSON.stringify(fresh)));
+      setSelectedArticle(fresh);
+    } catch (error) {
+      setMessage(error.message);
+    }
   }
 
   return (
-    <section className="section-page incident-page">
-      <header className="incident-page-head">
+    <section className="section-page incident-page knowledge-page">
+      <header className="incident-page-head knowledge-page-head">
         <div>
-          <div className="breadcrumb">IT 管理 / 故障總表</div>
-          <h1>故障總表 / 異常事件紀錄</h1>
+          <div className="breadcrumb">IT 管理 / 故障知識庫</div>
+          <h1>故障知識庫 / 教學手冊</h1>
+          <p>集中管理故障排除與內部系統教學，圖片以短效 signed URL 顯示。</p>
         </div>
-        <button className="primary-action" type="button" onClick={openCreate}>
-          新增故障案件
-        </button>
+        <div className="knowledge-actions">
+          <button type="button" onClick={() => setAdminMode((value) => !value)}>
+            {adminMode ? "一般閱讀" : "管理模式"}
+          </button>
+          {adminMode ? <button className="primary-action" type="button" onClick={openCreate}>新增教學</button> : null}
+        </div>
       </header>
 
-      <div className="incident-stats-grid">
-        {stats.map((card) => (
-          <article className={`incident-stat-card ${card.tone === "danger" ? "is-danger" : ""}`} key={card.label}>
-            <span>{card.label}</span>
-            <strong>{card.value}</strong>
-            <p>{card.helper}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="incident-filter-panel">
-        <input value={filters.query} onChange={(event) => updateFilter("query", event.target.value)} placeholder="搜尋案件編號、問題描述、通報人、處理人員" />
-        <OptionSelect value={filters.type} onChange={(value) => updateFilter("type", value)} options={[ALL_VALUE, ...INCIDENT_TYPES]} />
-        <OptionSelect value={filters.status} onChange={(value) => updateFilter("status", value)} options={[ALL_VALUE, ...STATUSES]} />
-        <OptionSelect value={filters.priority} onChange={(value) => updateFilter("priority", value)} options={[ALL_VALUE, ...PRIORITIES]} />
-        <OptionSelect value={filters.department} onChange={(value) => updateFilter("department", value)} options={[ALL_VALUE, ...DEPARTMENTS]} />
-        <OptionSelect value={filters.recurring} onChange={(value) => updateFilter("recurring", value)} options={RECURRING_OPTIONS} />
-        <select value={filters.dateField} onChange={(event) => updateFilter("dateField", event.target.value)}>
-          <option value="occurredAt">依發生時間</option>
-          <option value="reportedAt">依通報時間</option>
+      <div className="incident-filter-panel knowledge-filter-panel">
+        <input value={filters.query} onChange={(event) => updateFilter("query", event.target.value)} placeholder="搜尋標題、現象、原因、摘要或關鍵字" />
+        <select value={filters.category} onChange={(event) => updateFilter("category", event.target.value)}>
+          <option value="">全部分類</option>
+          {categories.map((category) => <option key={category} value={category}>{category}</option>)}
         </select>
-        <input type="date" value={filters.startDate} onChange={(event) => updateFilter("startDate", event.target.value)} aria-label="開始日期" />
-        <input type="date" value={filters.endDate} onChange={(event) => updateFilter("endDate", event.target.value)} aria-label="結束日期" />
-        <button className="plain-reset" type="button" onClick={resetFilters}>
-          重設
-        </button>
-        <span>{filteredRecords.length.toLocaleString("en-US")} 筆</span>
+        <select value={filters.system} onChange={(event) => updateFilter("system", event.target.value)}>
+          <option value="">全部系統</option>
+          {systems.map((system) => <option key={system} value={system}>{system}</option>)}
+        </select>
+        {adminMode ? (
+          <select value={filters.status} onChange={(event) => updateFilter("status", event.target.value)}>
+            <option value="">全部狀態</option>
+            <option value="draft">草稿</option>
+            <option value="published">已發布</option>
+            <option value="archived">已封存</option>
+          </select>
+        ) : null}
+        <span>{loading ? "讀取中..." : `${articles.length.toLocaleString("en-US")} 篇`}</span>
       </div>
 
-      <div className="incident-table-wrap">
-        <table className="incident-table">
-          <thead>
-            <tr>
-              <th>案件編號</th>
-              <th>發生時間</th>
-              <th>通報單位</th>
-              <th>故障類型</th>
-              <th>影響範圍</th>
-              <th>緊急程度</th>
-              <th>處理狀態</th>
-              <th>處理人員</th>
-              <th>完成時間</th>
-              <th>耗時</th>
-              <th>重複</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRecords.length ? (
-              filteredRecords.map((record) => (
-                <tr key={record.id} className={record.status === "已結案" ? "is-closed" : record.priority === "緊急" || record.status === "未處理" ? "needs-attention" : ""}>
-                  <td className="incident-no">{record.incidentNo}</td>
-                  <td>{formatDateTime(record.occurredAt)}</td>
-                  <td>{record.department}</td>
-                  <td>{record.type}</td>
-                  <td>{record.impactScope}</td>
-                  <td>
-                    <IncidentBadge type="priority" value={record.priority} />
-                  </td>
-                  <td>
-                    <IncidentBadge type="status" value={record.status} />
-                  </td>
-                  <td>{record.assignee || "-"}</td>
-                  <td>{formatDateTime(record.completedAt)}</td>
-                  <td>{getDurationLabel(record)}</td>
-                  <td>{record.isRecurring ? "是" : "否"}</td>
-                  <td>
-                    <div className="incident-row-actions">
-                      <button type="button" onClick={() => openRecord(record, "view")}>
-                        查看
-                      </button>
-                      <button type="button" onClick={() => openRecord(record, "edit")}>
-                        編輯
-                      </button>
-                      <button className="danger" type="button" onClick={() => deleteRecord(record)}>
-                        刪除
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={12}>目前沒有符合條件的故障案件</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {message ? <div className="knowledge-notice">{message}</div> : null}
+
+      <div className="knowledge-layout">
+        <ArticleList rows={articles} selectedId={selectedId} onSelect={setSelectedId} />
+        <ArticleViewer
+          article={selectedArticle}
+          adminMode={adminMode}
+          onEdit={openEdit}
+          onDelete={deleteArticle}
+          onStatus={quickStatus}
+        />
       </div>
 
-      {form ? (
-        <IncidentFormModal mode={modalMode} form={form} onChange={setForm} onClose={closeModal} onSubmit={handleSubmit} errors={errors} />
+      {editorOpen && draft ? (
+        <ArticleEditor
+          draft={draft}
+          setDraft={setDraft}
+          saving={saving}
+          uploadingId={uploadingId}
+          onClose={() => setEditorOpen(false)}
+          onSave={saveArticle}
+          onUpload={uploadImage}
+          onDeleteAsset={deleteAsset}
+          onMoveStep={moveStep}
+        />
       ) : null}
     </section>
   );

@@ -5,7 +5,7 @@ import IncidentRecordsPage from "../../components/IncidentRecordsPage";
 
 export default function IncidentRecordsRoutePage() {
   return (
-    <AppShell activeSection="it_incidents" title="故障總表 / 異常事件紀錄">
+    <AppShell activeSection="it_incidents" title="故障知識庫 / 教學手冊">
       <IncidentRecordsPage />
     </AppShell>
   );
