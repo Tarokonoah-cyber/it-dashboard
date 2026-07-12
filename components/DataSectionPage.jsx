@@ -1,6 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  blankDraftRow,
+  changedRows,
+  cloneRows,
+  fieldKeyForColumn,
+  getDraftValue,
+  hasDraftChanges,
+  inputTypeForColumn,
+  isEditableColumn,
+  isSelectColumn,
+  isTextareaColumn,
+  normalizeDateInput,
+  optionsForColumn,
+  rowIdentity,
+  setDraftValue,
+  useUnsavedChangesWarning
+} from "./dataEditMode";
 
 const SOC_SOP_PUBLIC_URL =
   "https://oidfglrsqrtiimqjfriw.supabase.co/storage/v1/object/public/sop-files/soc/soc-mis-checklist-official.xlsx";
@@ -144,6 +161,15 @@ const RECORD_COLUMN_CONFIGS = {
   assets_iptv: IPTV_COLUMNS
 };
 
+const EDITABLE_DATA_SOURCES = new Set([
+  "anydesk",
+  "assets_downhill_pc",
+  "assets_printer",
+  "assets_north_ya",
+  "contracts_software",
+  "contracts_mobile"
+]);
+
 async function api(path, options) {
   const response = await fetch(path, {
     ...options,
@@ -208,6 +234,41 @@ function RecordValue({ value, column }) {
   if (["狀態", "盤點狀態", "資產狀態"].includes(column?.label)) return <StatusBadge value={value} />;
   const text = formatDisplayValue(value);
   return text === "-" ? <span className="muted">-</span> : <span title={text}>{text}</span>;
+}
+
+function EditableRecordValue({ row, column, rows, onChange }) {
+  const value = getDraftValue(row, column);
+  const fieldKey = fieldKeyForColumn(row, column);
+  const options = optionsForColumn(rows, column);
+  if (isTextareaColumn(column)) {
+    return (
+      <textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        aria-label={column.label}
+        rows={2}
+      />
+    );
+  }
+  if (isSelectColumn(column) && options.length) {
+    return (
+      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={column.label}>
+        <option value=""></option>
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    );
+  }
+  return (
+    <input
+      value={inputTypeForColumn(column) === "date" ? normalizeDateInput(value) : value}
+      onChange={(event) => onChange(event.target.value)}
+      type={inputTypeForColumn(column)}
+      inputMode={column.label === "金額" ? "decimal" : undefined}
+      aria-label={column.label || fieldKey}
+    />
+  );
 }
 
 function parseMoneyValue(value) {
@@ -417,11 +478,19 @@ export default function DataSectionPage({ sectionKey }) {
   const isSocDocs = sectionKey === "soc_docs";
   const isContacts = config?.source === "contacts";
   const isAssetSection = config?.source === "assets" || config?.source?.startsWith("assets_");
+  const canEdit = EDITABLE_DATA_SOURCES.has(config?.source);
   const [rows, setRows] = useState([]);
+  const [draftRows, setDraftRows] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
+  const [saveNotice, setSaveNotice] = useState("");
   const [department, setDepartment] = useState("全部");
+  const hasUnsavedChanges = editMode && hasDraftChanges(rows, draftRows);
+
+  useUnsavedChangesWarning(hasUnsavedChanges);
 
   async function load() {
     if (!config) return;
@@ -431,6 +500,7 @@ export default function DataSectionPage({ sectionKey }) {
       const source = isSocDocs ? "soc_docs" : config.source;
       const data = await api(`/api/records?source=${encodeURIComponent(source)}`);
       setRows(data.rows || []);
+      if (editMode) setDraftRows(cloneRows(data.rows || []));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -444,6 +514,8 @@ export default function DataSectionPage({ sectionKey }) {
     load();
   }, [config?.source, config?.presetKeyword, isSocDocs]);
 
+  const activeRows = editMode ? draftRows : rows;
+
   const departments = useMemo(() => {
     if (config?.source !== "contacts") return [];
     const values = rows
@@ -454,7 +526,7 @@ export default function DataSectionPage({ sectionKey }) {
 
   const filteredRows = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    return rows.filter((row) => {
+    return activeRows.filter((row) => {
       const matchDepartment =
         config?.source !== "contacts" ||
         department === "全部" ||
@@ -462,13 +534,68 @@ export default function DataSectionPage({ sectionKey }) {
       const matchKeyword = !keyword || JSON.stringify(row.data || {}).toLowerCase().includes(keyword);
       return matchDepartment && matchKeyword;
     });
-  }, [rows, query, department, config?.source]);
+  }, [activeRows, query, department, config?.source]);
 
   const columns = useMemo(() => {
     const baseColumns = RECORD_COLUMN_CONFIGS[config?.source] || [];
     if (config?.source !== "contracts_software") return baseColumns;
     return baseColumns.filter((column) => !(column.keys || []).includes("owner"));
   }, [config?.source]);
+
+  function startEdit() {
+    setSaveNotice("");
+    setError("");
+    setDraftRows(cloneRows(rows));
+    setEditMode(true);
+  }
+
+  function cancelEdit() {
+    setDraftRows([]);
+    setEditMode(false);
+    setSaving(false);
+    setSaveNotice("");
+    setError("");
+  }
+
+  function addDraftRow() {
+    setQuery("");
+    setDraftRows((current) => [blankDraftRow(columns, config.source), ...current]);
+  }
+
+  function updateDraftCell(rowKey, column, value) {
+    setDraftRows((current) => setDraftValue(current, rowKey, column, value));
+  }
+
+  async function saveEdits() {
+    const changes = changedRows(rows, draftRows);
+    if (!changes.length) {
+      cancelEdit();
+      return;
+    }
+    setSaving(true);
+    setError("");
+    setSaveNotice("");
+    try {
+      for (const row of changes) {
+        await api("/api/records", {
+          method: row.__isNew ? "POST" : "PATCH",
+          body: JSON.stringify({
+            source: config.source,
+            id: row.id,
+            data: row.data || {}
+          })
+        });
+      }
+      await load();
+      setDraftRows([]);
+      setEditMode(false);
+      setSaveNotice("已儲存");
+    } catch (err) {
+      setError(err.message || "儲存失敗");
+    } finally {
+      setSaving(false);
+    }
+  }
 
   if (!config) {
     return (
@@ -484,13 +611,24 @@ export default function DataSectionPage({ sectionKey }) {
         <div>
           <h1>{config.title}</h1>
         </div>
-        {!isAssetSection ? (
+        {editMode || canEdit || !isAssetSection ? (
           <div className="section-actions">
-            <button onClick={load}>重新整理</button>
+            {editMode ? (
+              <>
+                <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+                <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+              </>
+            ) : (
+              <>
+                {!isAssetSection ? <button onClick={load}>重新整理</button> : null}
+                {canEdit ? <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button> : null}
+              </>
+            )}
           </div>
         ) : null}
       </header>
       {error ? <div className="error-box">{error}</div> : null}
+      {saveNotice ? <div className="error-box">{saveNotice}</div> : null}
       {config.source === "contracts_software" ? <SoftwareContractSummary rows={rows} loading={loading} /> : null}
       {!isSocDocs ? (
         <div className={`records-toolbar ${isContacts ? "contact-records-toolbar" : ""} ${isAssetSection ? "asset-records-toolbar" : ""}`}>
@@ -503,6 +641,7 @@ export default function DataSectionPage({ sectionKey }) {
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋關鍵字..." />
               <span className="records-summary">{loading ? "讀取中..." : `${filteredRows.length.toLocaleString("en-US")} 筆`}</span>
               {isAssetSection ? <button onClick={load}>重新整理</button> : null}
+              {editMode ? <button type="button" onClick={addDraftRow}>＋ 新增資料</button> : null}
             </>
           )}
         </div>
@@ -537,9 +676,19 @@ export default function DataSectionPage({ sectionKey }) {
                 {columns.map((column) => <span key={column.label}>{column.label}</span>)}
               </div>
               {filteredRows.map((row) => (
-                <div className={getRecordRowClass(config.source)} key={row.id || row.record_key}>
+                <div className={getRecordRowClass(config.source)} key={rowIdentity(row)}>
                   {columns.map((column) => (
-                    <RecordValue key={column.label} column={column} value={getRecordField(row, column)} />
+                    editMode && isEditableColumn(column) ? (
+                      <EditableRecordValue
+                        key={column.label}
+                        row={row}
+                        column={column}
+                        rows={draftRows}
+                        onChange={(value) => updateDraftCell(rowIdentity(row), column, value)}
+                      />
+                    ) : (
+                      <RecordValue key={column.label} column={column} value={getRecordField(row, column)} />
+                    )
                   ))}
                 </div>
               ))}

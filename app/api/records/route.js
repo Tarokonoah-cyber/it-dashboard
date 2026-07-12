@@ -2,6 +2,12 @@ import fs from "fs/promises";
 import path from "path";
 import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
+import {
+  buildRecordInsert,
+  buildRecordUpdate,
+  isEditableRecordSource,
+  recordTableForSource
+} from "../../../lib/data-record-mutators";
 
 const SOURCE_ALIASES = {
   documents: ["documents"],
@@ -438,6 +444,14 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const source = String(body.source || "").trim();
+    if (isEditableRecordSource(source)) {
+      const mutation = buildRecordInsert(source, body.data || {});
+      const rows = await supabaseRequest(recordTableForSource(source), mutation.query, {
+        method: "POST",
+        body: mutation.body
+      });
+      return ok({ row: rows[0] || null });
+    }
     if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄新增"), 400);
 
     const payload = documentPayload(body);
@@ -508,6 +522,15 @@ export async function PATCH(request) {
     const body = await request.json();
     const source = String(body.source || "").trim();
     const id = String(body.id || "").trim();
+    if (isEditableRecordSource(source)) {
+      const mutation = buildRecordUpdate(source, id, body.data || {});
+      const rows = await supabaseRequest(recordTableForSource(source), mutation.query, {
+        method: "PATCH",
+        body: mutation.body
+      });
+      if (!rows.length) return fail(new Error("找不到要更新的資料"), 404);
+      return ok({ row: rows[0] });
+    }
     if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄更新"), 400);
     if (!id) return fail(new Error("缺少單據 id"), 400);
 

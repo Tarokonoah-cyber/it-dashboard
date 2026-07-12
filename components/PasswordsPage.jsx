@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useUnsavedChangesWarning } from "./dataEditMode";
 
 const SEARCH_KEYS = [
   "category",
@@ -37,16 +38,18 @@ const FALLBACK_PASSWORD_ENTRIES = [
   }
 ];
 
-async function api(path) {
+async function api(path, options) {
   const response = await fetch(path, {
+    ...options,
     cache: "no-store",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      ...(options?.headers || {})
     }
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return Array.isArray(data.data) ? data.data : [];
+  return data.data;
 }
 
 function displayValue(value, fallback = "-") {
@@ -67,23 +70,34 @@ function notifyBitwardenPending() {
 
 export default function PasswordsPage() {
   const [entries, setEntries] = useState([]);
+  const [draftEntries, setDraftEntries] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState("");
+  const [fallbackMode, setFallbackMode] = useState(false);
+  const hasUnsavedChanges = editMode && (fallbackMode ? draftEntries.length > 0 : JSON.stringify(entries) !== JSON.stringify(draftEntries));
+
+  useUnsavedChangesWarning(hasUnsavedChanges);
 
   async function load() {
     setLoading(true);
     setNotice("");
     try {
       const rows = await api("/api/password-entries");
-      if (rows.length) {
-        setEntries(rows);
+      const safeRows = Array.isArray(rows) ? rows : [];
+      if (safeRows.length) {
+        setEntries(safeRows);
+        setFallbackMode(false);
         return;
       }
       setEntries(FALLBACK_PASSWORD_ENTRIES);
+      setFallbackMode(true);
       setNotice("目前沒有可顯示的密碼索引資料，以下為安全範例資料。");
     } catch {
       setEntries(FALLBACK_PASSWORD_ENTRIES);
+      setFallbackMode(true);
       setNotice("密碼索引資料暫時無法讀取，以下為安全範例資料。");
     } finally {
       setLoading(false);
@@ -94,13 +108,15 @@ export default function PasswordsPage() {
     load();
   }, []);
 
+  const activeEntries = editMode ? draftEntries : entries;
+
   const filteredEntries = useMemo(() => {
     const keyword = query.trim().toLowerCase();
-    if (!keyword) return entries;
-    return entries.filter((entry) =>
+    if (!keyword) return activeEntries;
+    return activeEntries.filter((entry) =>
       SEARCH_KEYS.some((key) => String(entry[key] || "").toLowerCase().includes(keyword))
     );
-  }, [entries, query]);
+  }, [activeEntries, query]);
 
   async function copyUsername(entry) {
     const username = String(entry.username || "").trim();
@@ -118,6 +134,78 @@ export default function PasswordsPage() {
     window.open("https://vault.bitwarden.com/", "_blank", "noopener,noreferrer");
   }
 
+  function startEdit() {
+    setNotice("");
+    setDraftEntries(fallbackMode ? [] : entries.map((entry) => ({ ...entry })));
+    setEditMode(true);
+  }
+
+  function cancelEdit() {
+    setDraftEntries([]);
+    setEditMode(false);
+    setSaving(false);
+    setNotice("");
+  }
+
+  function addDraftEntry() {
+    setQuery("");
+    setDraftEntries((current) => [
+      {
+        id: "",
+        __tempId: `password-${Date.now()}`,
+        __isNew: true,
+        category: "",
+        system_name: "",
+        login_url: "",
+        username: "",
+        password_item: "",
+        notes: "",
+        bitwarden_item_name: "",
+        bitwarden_item_id: ""
+      },
+      ...current
+    ]);
+  }
+
+  function updateDraftEntry(entryKey, key, value) {
+    setDraftEntries((current) =>
+      current.map((entry) => (entry.id || entry.__tempId) === entryKey ? { ...entry, [key]: value } : entry)
+    );
+  }
+
+  async function saveEdits() {
+    const baseById = new Map(entries.map((entry) => [entry.id, entry]));
+    const changes = draftEntries.filter((entry) => {
+      if (entry.__isNew) return true;
+      return JSON.stringify(baseById.get(entry.id) || {}) !== JSON.stringify(entry);
+    });
+    if (!changes.length) {
+      cancelEdit();
+      return;
+    }
+    setSaving(true);
+    setNotice("");
+    try {
+      for (const entry of changes) {
+        await api("/api/password-entries", {
+          method: entry.__isNew ? "POST" : "PATCH",
+          body: JSON.stringify({
+            id: entry.id,
+            data: entry
+          })
+        });
+      }
+      await load();
+      setDraftEntries([]);
+      setEditMode(false);
+      setNotice("已儲存");
+    } catch (err) {
+      setNotice(err.message || "儲存失敗");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <section className="section-page password-index-page">
       <header className="section-head">
@@ -125,7 +213,17 @@ export default function PasswordsPage() {
           <h1>密碼管理</h1>
         </div>
         <div className="section-actions">
-          <button type="button" onClick={load}>重新整理</button>
+          {editMode ? (
+            <>
+              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={load}>重新整理</button>
+              <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -142,6 +240,7 @@ export default function PasswordsPage() {
           placeholder="搜尋分類、系統名稱、登入網址、帳號、Bitwarden 項目或備註..."
         />
         <span>{loading ? "讀取中..." : `${filteredEntries.length.toLocaleString("en-US")} 筆`}</span>
+        {editMode ? <button type="button" onClick={addDraftEntry}>＋ 新增資料</button> : null}
       </div>
 
       {loading ? (
@@ -171,16 +270,34 @@ export default function PasswordsPage() {
                 const username = displayValue(entry.username);
                 const loginUrl = displayValue(entry.login_url);
                 const vaultItem = displayValue(entry.bitwarden_item_name || entry.password_item, "");
+                const entryKey = entry.id || entry.__tempId;
 
                 return (
-                  <tr key={entry.id}>
-                    <td>{displayValue(entry.category)}</td>
+                  <tr key={entryKey}>
                     <td>
-                      <strong>{displayValue(entry.system_name)}</strong>
-                      {vaultItem ? <small>Bitwarden: {vaultItem}</small> : null}
+                      {editMode ? (
+                        <input value={entry.category || ""} onChange={(event) => updateDraftEntry(entryKey, "category", event.target.value)} aria-label="分類" />
+                      ) : (
+                        displayValue(entry.category)
+                      )}
                     </td>
                     <td>
-                      {entry.login_url ? (
+                      {editMode ? (
+                        <>
+                          <input value={entry.system_name || ""} onChange={(event) => updateDraftEntry(entryKey, "system_name", event.target.value)} aria-label="系統名稱" />
+                          <input value={entry.bitwarden_item_name || ""} onChange={(event) => updateDraftEntry(entryKey, "bitwarden_item_name", event.target.value)} aria-label="Bitwarden 項目" />
+                        </>
+                      ) : (
+                        <>
+                          <strong>{displayValue(entry.system_name)}</strong>
+                          {vaultItem ? <small>Bitwarden: {vaultItem}</small> : null}
+                        </>
+                      )}
+                    </td>
+                    <td>
+                      {editMode ? (
+                        <input value={entry.login_url || ""} onChange={(event) => updateDraftEntry(entryKey, "login_url", event.target.value)} aria-label="登入網址" />
+                      ) : entry.login_url ? (
                         <button className="password-link-button" type="button" onClick={() => openLoginUrl(entry)}>
                           {loginUrl}
                         </button>
@@ -192,11 +309,25 @@ export default function PasswordsPage() {
                       <div className="password-credential-cell">
                         <div>
                           <span>帳號</span>
-                          <strong>{username}</strong>
+                          {editMode ? (
+                            <input value={entry.username || ""} onChange={(event) => updateDraftEntry(entryKey, "username", event.target.value)} aria-label="帳號" />
+                          ) : (
+                            <strong>{username}</strong>
+                          )}
                         </div>
                         <div>
                           <span>密碼</span>
-                          <strong aria-label="密碼已隱藏">••••••••</strong>
+                          {editMode ? (
+                            <input
+                              value={entry.password_item || ""}
+                              onChange={(event) => updateDraftEntry(entryKey, "password_item", event.target.value)}
+                              aria-label="密碼索引"
+                              type="password"
+                              autoComplete="off"
+                            />
+                          ) : (
+                            <strong aria-label="密碼已隱藏">••••••••</strong>
+                          )}
                         </div>
                         <div className="password-inline-actions">
                           <button type="button" onClick={notifyBitwardenPending}>顯示密碼</button>
@@ -204,7 +335,13 @@ export default function PasswordsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="password-notes-cell">{displayValue(entry.notes)}</td>
+                    <td className="password-notes-cell">
+                      {editMode ? (
+                        <textarea value={entry.notes || ""} onChange={(event) => updateDraftEntry(entryKey, "notes", event.target.value)} aria-label="備註" rows={2} />
+                      ) : (
+                        displayValue(entry.notes)
+                      )}
+                    </td>
                     <td>
                       <div className="password-actions">
                         <button type="button" onClick={() => copyUsername(entry)} disabled={!entry.username}>

@@ -2,6 +2,22 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getField } from "./DataSectionPage";
+import {
+  blankDraftRow,
+  changedRows,
+  cloneRows,
+  getDraftValue,
+  hasDraftChanges,
+  inputTypeForColumn,
+  isEditableColumn,
+  isSelectColumn,
+  isTextareaColumn,
+  normalizeDateInput,
+  optionsForColumn,
+  rowIdentity,
+  setDraftValue,
+  useUnsavedChangesWarning
+} from "./dataEditMode";
 
 const MOUNTAIN_PC_CONFIG = {
   title: "山上電腦",
@@ -119,14 +135,49 @@ function AssetCell({ column, value }) {
   return <RecordValue value={value} />;
 }
 
+function EditableAssetCell({ row, column, rows, onChange }) {
+  const value = getDraftValue(row, column);
+  const options = optionsForColumn(rows, column);
+  if (isTextareaColumn(column)) {
+    return (
+      <textarea value={value} onChange={(event) => onChange(event.target.value)} aria-label={column.label} rows={2} />
+    );
+  }
+  if (isSelectColumn(column) && options.length) {
+    return (
+      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={column.label}>
+        <option value=""></option>
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    );
+  }
+  return (
+    <input
+      value={inputTypeForColumn(column) === "date" ? normalizeDateInput(value) : value}
+      onChange={(event) => onChange(event.target.value)}
+      type={inputTypeForColumn(column)}
+      aria-label={column.label}
+    />
+  );
+}
+
 export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
   const [rows, setRows] = useState([]);
+  const [draftRows, setDraftRows] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [saveNotice, setSaveNotice] = useState("");
   const [query, setQuery] = useState("");
   const [department, setDepartment] = useState("全部部門");
   const [windowsFilter, setWindowsFilter] = useState("全部");
   const [ipSort, setIpSort] = useState("asc");
+  const hasUnsavedChanges = editMode && hasDraftChanges(rows, draftRows);
+
+  useUnsavedChangesWarning(hasUnsavedChanges);
 
   async function load() {
     setLoading(true);
@@ -134,6 +185,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
     try {
       const data = await api(`/api/records?source=${encodeURIComponent(config.source)}`);
       setRows(data.rows || []);
+      if (editMode) setDraftRows(cloneRows(data.rows || []));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -145,17 +197,19 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
     load();
   }, [config.source]);
 
+  const activeRows = editMode ? draftRows : rows;
+
   const departments = useMemo(() => {
-    const values = rows
+    const values = activeRows
       .map((row) => String(assetValue(row, { keys: ["部門", "department", "?券?", "é¨é"] }) || "").trim())
       .filter(Boolean);
     return ["全部部門", ...Array.from(new Set(values)).sort((a, b) => a.localeCompare(b, "zh-Hant"))];
-  }, [rows]);
+  }, [activeRows]);
 
   const filteredRows = useMemo(() => {
     const keyword = query.trim().toLowerCase();
     const direction = ipSort === "asc" ? 1 : -1;
-    return rows
+    return activeRows
       .filter((row) => {
         const data = row.data || {};
         const matchDepartment = department === "全部部門" || assetValue(row, { keys: ["部門", "department", "?券?", "é¨é"] }) === department;
@@ -169,7 +223,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
       .sort((left, right) =>
         compareIpValues(assetValue(left, { keys: ["IP", "IP 位址", "IP位置", "IP位址", "ip_address", "IP雿蔭", "IPä½ç½®"] }), assetValue(right, { keys: ["IP", "IP 位址", "IP位置", "IP位址", "ip_address", "IP雿蔭", "IPä½ç½®"] }), direction)
       );
-  }, [rows, query, department, windowsFilter, ipSort]);
+  }, [activeRows, query, department, windowsFilter, ipSort]);
 
   function resetFilters() {
     setQuery("");
@@ -178,14 +232,81 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
     setIpSort("asc");
   }
 
+  function startEdit() {
+    setSaveNotice("");
+    setError("");
+    setDraftRows(cloneRows(rows));
+    setEditMode(true);
+  }
+
+  function cancelEdit() {
+    setDraftRows([]);
+    setEditMode(false);
+    setSaving(false);
+    setSaveNotice("");
+    setError("");
+  }
+
+  function addDraftRow() {
+    setQuery("");
+    setDepartment("全部部門");
+    setDraftRows((current) => [blankDraftRow(MOUNTAIN_PC_COLUMNS, config.source), ...current]);
+  }
+
+  function updateDraftCell(rowKey, column, value) {
+    setDraftRows((current) => setDraftValue(current, rowKey, column, value));
+  }
+
+  async function saveEdits() {
+    const changes = changedRows(rows, draftRows);
+    if (!changes.length) {
+      cancelEdit();
+      return;
+    }
+    setSaving(true);
+    setError("");
+    setSaveNotice("");
+    try {
+      for (const row of changes) {
+        await api("/api/records", {
+          method: row.__isNew ? "POST" : "PATCH",
+          body: JSON.stringify({
+            source: config.source,
+            id: row.id,
+            data: row.data || {}
+          })
+        });
+      }
+      await load();
+      setDraftRows([]);
+      setEditMode(false);
+      setSaveNotice("已儲存");
+    } catch (err) {
+      setError(err.message || "儲存失敗");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <section className="section-page mountain-pc-page">
       <header className="section-head">
         <div>
           <h1>{config.title}</h1>
         </div>
+        <div className="section-actions">
+          {editMode ? (
+            <>
+              <button type="button" onClick={saveEdits} disabled={saving}>{saving ? "儲存中..." : "儲存"}</button>
+              <button type="button" onClick={cancelEdit} disabled={saving}>取消</button>
+            </>
+          ) : (
+            <button type="button" onClick={startEdit} aria-label="編輯">✎ 編輯</button>
+          )}
+        </div>
       </header>
       {error ? <div className="error-box">{error}</div> : null}
+      {saveNotice ? <div className="error-box">{saveNotice}</div> : null}
 
       <div className="asset-toolbar mountain-pc-toolbar">
         <input
@@ -215,6 +336,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
         <button className="plain-reset" onClick={resetFilters}>重設</button>
         <span className="count-badge">{loading ? "讀取中" : `${filteredRows.length.toLocaleString("en-US")} / ${rows.length.toLocaleString("en-US")} 筆`}</span>
         <button onClick={load}>重新整理</button>
+        {editMode ? <button type="button" onClick={addDraftRow}>＋ 新增資料</button> : null}
       </div>
 
       <div className="asset-table-wrap">
@@ -245,10 +367,19 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
               </tr>
             ) : (
               filteredRows.map((row) => (
-                <tr key={row.id || row.record_key}>
+                <tr key={rowIdentity(row)}>
                   {MOUNTAIN_PC_COLUMNS.map((column) => (
                     <td key={column.label}>
-                      <AssetCell column={column} value={assetValue(row, column)} />
+                      {editMode && isEditableColumn(column) ? (
+                        <EditableAssetCell
+                          row={row}
+                          column={column}
+                          rows={draftRows}
+                          onChange={(value) => updateDraftCell(rowIdentity(row), column, value)}
+                        />
+                      ) : (
+                        <AssetCell column={column} value={assetValue(row, column)} />
+                      )}
                     </td>
                   ))}
                 </tr>
