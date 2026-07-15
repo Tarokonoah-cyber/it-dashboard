@@ -6,16 +6,13 @@ import AppShell from "./AppShell";
 import CompletionSummaryItem from "./dashboard/CompletionSummaryItem";
 import DashboardCalendarPanel from "./dashboard/DashboardCalendarPanel";
 import DashboardToast from "./dashboard/DashboardToast";
-import DashboardTodoPanel from "./dashboard/DashboardTodoPanel";
+import DashboardWorkPanel from "./dashboard/DashboardWorkPanel";
 import KpiSummaryItem from "./dashboard/KpiSummaryItem";
 import { getSectionHref } from "./navigation";
 import { api } from "../lib/dashboard-api";
-import { applyAiTodoCreated, isDashboardTodoPayload } from "../lib/dashboard-state";
 import {
   formatDate,
-  formatRelativeDate,
-  normalizeTodoPriority,
-  parseDelta
+  formatRelativeDate
 } from "../lib/dashboard-formatters";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
@@ -110,19 +107,20 @@ function DashboardTrendPanel({ trend }) {
 }
 
 function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, notify }) {
-  const todos = dashboard?.openTodos || [];
+  const works = dashboard?.openWorks || [];
   const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const completionTotal = completedCount + pendingCount;
   const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
-  const urgentTodoCount = todos.filter((todo) => normalizeTodoPriority(todo.priority) === "urgent").length;
+  const urgentWorkCount = works.filter((work) => /異常|逾期|緊急|urgent|critical/i.test(`${work.status || ""} ${work.impact || ""}`)).length;
 
   return (
-    <>
+    <div className="modern-dashboard-page">
       <header className="section-head">
         <div>
           <h1>儀表板</h1>
+          <p className="mobile-dashboard-date">今天先處理最重要的工作</p>
         </div>
       </header>
       <section className="dashboard-kpi-strip">
@@ -131,11 +129,7 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
             label="今日待處理"
             value={pendingCount}
             unit="件"
-            delta={dashboard?.deltas?.pending || "0"}
-            deltaLabel="較昨日"
-            detail={`需追蹤 ${pendingCount} 件`}
             tone={pendingCount > 0 ? "warn" : "good"}
-            deltaImpact={parseDelta(dashboard?.deltas?.pending).direction === "down" ? "good" : "warn"}
           />
           <KpiSummaryItem
             label="本月工作"
@@ -149,26 +143,39 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
           />
           <KpiSummaryItem
             label="緊急任務"
-            value={urgentTodoCount}
+            value={urgentWorkCount}
             unit="件"
             detail=""
-            tone={urgentTodoCount > 0 ? "bad" : "good"}
+            tone={urgentWorkCount > 0 ? "bad" : "good"}
           />
           <CompletionSummaryItem
             rate={completionRate}
             completed={completedCount}
             total={completionTotal}
-            pending={pendingCount}
           />
         </section>
+        <details className="mobile-month-kpi">
+          <summary>查看本月工作統計</summary>
+          <div>
+            <span>本月累計</span>
+            <strong>{dashboard?.monthWorkCount ?? 0}<small>件</small></strong>
+            <em>{dashboard?.deltas?.monthWork || "+0"} 較上月</em>
+          </div>
+        </details>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onNavigate={onNavigate} notify={notify} onDashboardChange={onDashboardChange} />
+        <DashboardWorkPanel
+          works={works}
+          followUps={followUps}
+          onNavigate={onNavigate}
+          notify={notify}
+          onDashboardChange={onDashboardChange}
+        />
         <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
       </section>
-    </>
+    </div>
   );
 }
 
@@ -203,12 +210,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    function handleDashboardDataChanged(event) {
-      const detail = event?.detail;
-      if (detail?.type === "todo-created" && isDashboardTodoPayload(detail.todo)) {
-        setDashboard((current) => applyAiTodoCreated(current, detail.todo, detail.workLogCreated));
-        return;
-      }
+    function handleDashboardDataChanged() {
       loadDashboard();
     }
     window.addEventListener("dashboard-data-changed", handleDashboardDataChanged);
@@ -220,6 +222,18 @@ export default function Page() {
     if (!requestedSection) return;
     const href = requestedSection === "kpi" ? "/boss-kpi" : getSectionHref(requestedSection);
     if (href !== "/") window.location.replace(href);
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const mobileAction = url.searchParams.get("mobileAction");
+    if (!mobileAction) return undefined;
+    url.searchParams.delete("mobileAction");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    const timer = window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("dashboard-mobile-action", { detail: { action: mobileAction } }));
+    }, 80);
+    return () => window.clearTimeout(timer);
   }, []);
 
   function handleNavigate(sectionKey, item) {

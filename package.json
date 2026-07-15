@@ -18,7 +18,7 @@
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules --test scripts/data-edit-mode.test.mjs"
+    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/data-edit-mode.test.mjs scripts/room-number.test.mjs"
   },
   "dependencies": {
     "next": "16.2.9",

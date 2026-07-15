@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "../../lib/dashboard-api";
 import { dateKey, getLocalDateKey, getTodayKey } from "../../lib/dashboard-formatters";
+import { isThreeDigitRoomNumber } from "../../lib/room-number";
 
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -29,7 +30,7 @@ function getTodayPhoneTargets(date = new Date()) {
 function CalendarTodayTest({ networkRooms }) {
   const streamRooms = (networkRooms || [])
     .map((room) => String(room.room_no || room.room || "").trim())
-    .filter(Boolean);
+    .filter(isThreeDigitRoomNumber);
   const phoneTargets = getTodayPhoneTargets();
 
   return (
@@ -57,6 +58,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const [selectedDate, setSelectedDate] = useState(todayKey);
+  const [isDayDetailOpen, setIsDayDetailOpen] = useState(false);
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [eventForm, setEventForm] = useState({
@@ -115,6 +117,44 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
     };
   }, [notify]);
 
+  useEffect(() => {
+    if (!isDayDetailOpen && !isEventModalOpen) return undefined;
+    function handleEscape(event) {
+      if (event.key !== "Escape") return;
+      if (isEventModalOpen) closeEventModal();
+      else setIsDayDetailOpen(false);
+    }
+    document.body.classList.add("calendar-overlay-open");
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.classList.remove("calendar-overlay-open");
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isDayDetailOpen, isEventModalOpen]);
+
+  useEffect(() => {
+    function handleMobileAction(event) {
+      const action = event?.detail?.action;
+      if (action !== "calendar" && action !== "add-calendar") return;
+      document.getElementById("dashboard-calendar-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (action !== "add-calendar") return;
+      if (calendarSetupMessage) {
+        notify?.({ tone: "error", message: calendarSetupMessage });
+        return;
+      }
+      setIsDayDetailOpen(false);
+      setEditingEvent(null);
+      setEventForm({
+        title: "",
+        date: selectedDate,
+        type: CALENDAR_EVENT_TYPES[0]
+      });
+      setIsEventModalOpen(true);
+    }
+    window.addEventListener("dashboard-mobile-action", handleMobileAction);
+    return () => window.removeEventListener("dashboard-mobile-action", handleMobileAction);
+  }, [selectedDate, calendarSetupMessage, notify]);
+
   function upsertCalendarEvent(current, event, previousDate = "") {
     const eventDate = dateKey(event.event_date);
     if (!eventDate) return current;
@@ -151,6 +191,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
       return;
     }
     setSelectedDate(dateValue);
+    setIsDayDetailOpen(false);
     setEditingEvent(null);
     setEventForm({
       title: "",
@@ -167,6 +208,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
     }
     const eventDate = dateKey(event.event_date) || selectedDate;
     setSelectedDate(eventDate);
+    setIsDayDetailOpen(false);
     setEditingEvent(event);
     setEventForm({
       title: event.title || "",
@@ -179,6 +221,11 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   function closeEventModal() {
     setIsEventModalOpen(false);
     setEditingEvent(null);
+  }
+
+  function selectCalendarDay(dateValue) {
+    setSelectedDate(dateValue);
+    if (window.matchMedia("(max-width: 620px)").matches) setIsDayDetailOpen(true);
   }
 
   async function saveCalendarEvent(event) {
@@ -268,7 +315,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   }
 
   return (
-    <section className="panel dashboard-calendar-panel">
+    <section id="dashboard-calendar-panel" className="panel dashboard-calendar-panel">
       <header className="panel-title calendar-title">
         <div>
           <h2>行事曆 <b>{getMonthLabel(visibleMonth)}</b></h2>
@@ -305,7 +352,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
             <div
               key={`${day || "blank"}-${index}`}
               className={`day-cell dashboard-day-cell ${cellDate === selectedDate ? "is-selected" : ""}`}
-      onClick={() => day && setSelectedDate(cellDate)}
+      onClick={() => day && selectCalendarDay(cellDate)}
       onDoubleClick={() => day && openEventModal(cellDate)}
             >
               {day ? (
@@ -323,6 +370,14 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
                   +
                 </button>
                 <span className={isCurrentMonth && day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
+                {dayEvents.length ? (
+                  <span className="calendar-mobile-event-marker" aria-label={`${dayEvents.length} 個行程`}>
+                    <i aria-hidden="true" />
+                    {dayEvents.length > 1 ? <i aria-hidden="true" /> : null}
+                    {dayEvents.length > 2 ? <i aria-hidden="true" /> : null}
+                    <b>{dayEvents.length}</b>
+                  </span>
+                ) : null}
                 {visibleDayEvents.map((event) => (
                   <em
                     key={event.id}
@@ -347,10 +402,40 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
           );
         })}
       </div>
+      {isDayDetailOpen ? (
+        <div className="mobile-calendar-detail-backdrop" role="presentation" onMouseDown={() => setIsDayDetailOpen(false)}>
+          <section className="mobile-calendar-detail" role="dialog" aria-modal="true" aria-labelledby="mobile-calendar-detail-title" onMouseDown={(event) => event.stopPropagation()}>
+            <header>
+              <div>
+                <span>當日行程</span>
+                <h3 id="mobile-calendar-detail-title">{formatCalendarDate(selectedDate)}</h3>
+              </div>
+              <button type="button" aria-label="關閉當日行程" onClick={() => setIsDayDetailOpen(false)}>×</button>
+            </header>
+            <div className="mobile-calendar-event-list">
+              {(calendarEvents[selectedDate] || []).length ? (calendarEvents[selectedDate] || []).map((event) => (
+                <button type="button" key={event.id} onClick={() => openEditEventModal(event)}>
+                  <span>{event.event_type || "行程"}</span>
+                  <strong>{event.title}</strong>
+                  <small>點擊查看或編輯</small>
+                </button>
+              )) : (
+                <div className="mobile-calendar-empty">
+                  <strong>這天還沒有行程</strong>
+                  <span>可以直接建立新的工作安排。</span>
+                </div>
+              )}
+            </div>
+            <button className="mobile-calendar-add" type="button" onClick={() => openEventModal(selectedDate)} disabled={Boolean(calendarSetupMessage)}>
+              ＋ 新增這天的行程
+            </button>
+          </section>
+        </div>
+      ) : null}
       {calendarSetupMessage ? <p className="calendar-setup-message">{calendarSetupMessage}</p> : null}
       {isEventModalOpen ? (
         <div className="calendar-modal-backdrop" role="presentation" onMouseDown={closeEventModal}>
-          <form className="calendar-modal" onSubmit={saveCalendarEvent} onMouseDown={(event) => event.stopPropagation()}>
+          <form className="calendar-modal" role="dialog" aria-modal="true" onSubmit={saveCalendarEvent} onMouseDown={(event) => event.stopPropagation()}>
             <header>
               <div>
                 <h3>{editingEvent ? "編輯行程" : "新增行程"}</h3>

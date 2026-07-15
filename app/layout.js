@@ -1,4 +1,6 @@
 import "./styles.css";
+import "./mobile-dashboard.css";
+import "./dashboard-workspace.css";
 
 export const metadata = {
   title: "資訊管理平台",

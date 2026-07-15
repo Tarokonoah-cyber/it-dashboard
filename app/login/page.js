@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export default function LoginPage() {
-  const [user, setUser] = useState("taroko");
+  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
