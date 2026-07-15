@@ -1,0 +1,7 @@
+@media (max-width: 620px) {
+  .dashboard-calendar-panel .dashboard-calendar-grid {
+    width: 100%;
+    min-width: 0 !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}

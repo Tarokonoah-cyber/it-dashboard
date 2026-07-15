@@ -11,6 +11,14 @@ import {
   getSectionHref
 } from "./navigation";
 
+const MOBILE_DASHBOARD_EVENT = "dashboard-mobile-action";
+const MOBILE_SECTION_GROUPS = new Map([
+  ["dashboard", "每日工作"],
+  ["documents", "資產設備"],
+  ["passwords", "文件工具"],
+  ["settings", "系統設定"]
+]);
+
 const AiCommandAssistant = dynamic(
   () => import("./AiCommandAssistant"),
   {
@@ -96,6 +104,9 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
             const groupActive = isGroupActive(item);
             return (
               <div className="nav-group" key={item.key}>
+                {MOBILE_SECTION_GROUPS.has(item.key) ? (
+                  <p className="mobile-nav-group-label">{MOBILE_SECTION_GROUPS.get(item.key)}</p>
+                ) : null}
                 <button
                   type="button"
                   className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
@@ -147,6 +158,7 @@ export default function AppShell({
   const pageSidebarStorageKey = sidebarStorageScope ? `${SIDEBAR_STORAGE_KEY}:${sidebarStorageScope}` : "";
   const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -180,6 +192,31 @@ export default function AppShell({
     });
   }
 
+  useEffect(() => {
+    if (!mobileOpen && !quickAddOpen) return undefined;
+    function handleEscape(event) {
+      if (event.key !== "Escape") return;
+      setMobileOpen(false);
+      setQuickAddOpen(false);
+    }
+    document.body.classList.add("mobile-overlay-open");
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.classList.remove("mobile-overlay-open");
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [mobileOpen, quickAddOpen]);
+
+  function runDashboardAction(action) {
+    setQuickAddOpen(false);
+    setMobileOpen(false);
+    if (activeSection === "dashboard") {
+      window.dispatchEvent(new CustomEvent(MOBILE_DASHBOARD_EVENT, { detail: { action } }));
+      return;
+    }
+    router.push(`/?mobileAction=${encodeURIComponent(action)}`);
+  }
+
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
       <ShellSidebar
@@ -205,6 +242,62 @@ export default function AppShell({
         </button>
         {children}
       </section>
+      <nav className="mobile-bottom-nav" aria-label="手機快捷導覽">
+        <button type="button" className={activeSection === "dashboard" ? "active" : ""} onClick={() => router.push("/")}>
+          <span aria-hidden="true">⌂</span>
+          <b>首頁</b>
+        </button>
+        <button type="button" onClick={() => runDashboardAction("today")}>
+          <span aria-hidden="true">◎</span>
+          <b>今日</b>
+        </button>
+        <button className="mobile-bottom-add" type="button" aria-label="開啟快速新增" onClick={() => setQuickAddOpen(true)}>
+          <span aria-hidden="true">＋</span>
+          <b>新增</b>
+        </button>
+        <button type="button" onClick={() => runDashboardAction("calendar")}>
+          <span aria-hidden="true">▦</span>
+          <b>月曆</b>
+        </button>
+        <button type="button" aria-expanded={mobileOpen} onClick={() => {
+          setCollapsed(false);
+          setMobileOpen(true);
+        }}>
+          <span aria-hidden="true">☰</span>
+          <b>更多</b>
+        </button>
+      </nav>
+      {quickAddOpen ? (
+        <div className="mobile-quick-add-backdrop" role="presentation" onMouseDown={() => setQuickAddOpen(false)}>
+          <section className="mobile-quick-add-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-quick-add-title" onMouseDown={(event) => event.stopPropagation()}>
+            <header>
+              <div>
+                <span>快速建立</span>
+                <h2 id="mobile-quick-add-title">新增工作項目</h2>
+              </div>
+              <button type="button" aria-label="關閉快速新增" onClick={() => setQuickAddOpen(false)}>×</button>
+            </header>
+            <button type="button" onClick={() => runDashboardAction("add-todo")}>
+              <span aria-hidden="true">☑</span>
+              <strong>新增待辦</strong>
+              <small>建立今天要處理的工作</small>
+            </button>
+            <button type="button" onClick={() => runDashboardAction("add-calendar")}>
+              <span aria-hidden="true">▦</span>
+              <strong>新增行程</strong>
+              <small>加入指定日期的行事曆</small>
+            </button>
+            <button type="button" onClick={() => {
+              setQuickAddOpen(false);
+              router.push("/follow-ups");
+            }}>
+              <span aria-hidden="true">↗</span>
+              <strong>待追蹤</strong>
+              <small>前往待追蹤工作頁面</small>
+            </button>
+          </section>
+        </div>
+      ) : null}
       <AiCommandAssistant />
     </main>
   );

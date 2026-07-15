@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../lib/dashboard-api";
-import { formatDate, getTodayKey, normalizeTodoPriority } from "../../lib/dashboard-formatters";
+import { getTodayKey, normalizeTodoPriority } from "../../lib/dashboard-formatters";
 import { applyTodoConvertedToFollowUp } from "../../lib/dashboard-state";
 
 const MAX_TODO_TITLE_LENGTH = 120;
-const TODO_COMPLETE_EXIT_MS = 600;
 const TODO_ORDER_STORAGE_KEY = "dashboard-todo-order-v1";
 const FOLLOW_UP_STATUSES = ["等待回覆", "處理中", "待確認", "已完成"];
 
@@ -21,7 +20,8 @@ function mergeTodoOrder(savedOrder, rows) {
   const idSet = new Set(ids);
   const kept = (Array.isArray(savedOrder) ? savedOrder : []).map(String).filter((id) => idSet.has(id));
   const keptSet = new Set(kept);
-  return [...kept, ...ids.filter((id) => !keptSet.has(id))];
+  const newIds = ids.filter((id) => !keptSet.has(id));
+  return [...newIds, ...kept];
 }
 
 function orderTodos(rows, order) {
@@ -55,11 +55,14 @@ function updateDashboardTodosState(dashboard, updater, countDelta = 0, completed
   };
 }
 
-export default function DashboardTodoPanel({ todos, followUps, onNavigate, notify, onDashboardChange }) {
+export default function DashboardTodoPanel({
+  todos,
+  onNavigate,
+  notify,
+  onDashboardChange
+}) {
   const todayKey = getTodayKey();
-  const todoRows = Array.isArray(todos) ? todos : [];
-  const followUpRows = Array.isArray(followUps) ? followUps : [];
-  const [activeTab, setActiveTab] = useState("todos");
+  const todoRows = useMemo(() => Array.isArray(todos) ? todos : [], [todos]);
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -81,9 +84,9 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
     note: ""
   });
   const todoInputRef = useRef(null);
+  const optimisticTodoIdRef = useRef(0);
   const todoIdsKey = todoRows.map((todo) => todo.id).join("|");
   const visibleTodos = orderTodos(todoRows, localTodoOrder);
-  const visibleFollowUps = followUpRows;
   const todoSourceIds = todoRows.map((todo) => todo.id).filter(Boolean).join(",");
   const todoWorkHref = todoSourceIds
     ? `/work?source=todo_logs&sourceIds=${encodeURIComponent(todoSourceIds)}`
@@ -103,7 +106,18 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
     } catch {
       // Local storage is optional; database persistence still handles shared order.
     }
-  }, [todoIdsKey]);
+  }, [todoIdsKey, todoRows]);
+
+  useEffect(() => {
+    function handleMobileAction(event) {
+      const action = event?.detail?.action;
+      if (action !== "today" && action !== "focus" && action !== "add-todo") return;
+      setIsAdding(action === "add-todo");
+      document.getElementById("dashboard-today-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.addEventListener("dashboard-mobile-action", handleMobileAction);
+    return () => window.removeEventListener("dashboard-mobile-action", handleMobileAction);
+  }, []);
 
   function addTodoState(setter, id) {
     setter((current) => {
@@ -129,7 +143,8 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
       window.alert(`Todo title must be ${MAX_TODO_TITLE_LENGTH} characters or less`);
       return;
     }
-    const tempId = `temp-todo-${Date.now()}`;
+    optimisticTodoIdRef.current += 1;
+    const tempId = `temp-todo-${optimisticTodoIdRef.current}`;
     const optimisticTodo = {
       id: tempId,
       title: value,
@@ -244,7 +259,6 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
       notify?.({ tone: "success", message: `已轉為待追蹤：${todo.title || "未命名待辦"}` });
       setCompletionTodo(null);
       setIsConverting(false);
-      setActiveTab("follow-ups");
     } catch (err) {
       setError(err.message || "轉為待追蹤失敗");
       notify?.({ tone: "error", message: "轉為待追蹤失敗，請稍後再試" });
@@ -361,39 +375,27 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
   }
 
   return (
-    <section className="panel dashboard-todo-panel">
+    <section id="dashboard-today-workspace" className="panel dashboard-todo-panel dashboard-today-workspace">
       <header className="panel-title">
         <div>
-          <h2>Todo List</h2>
+          <h2>待辦清單</h2>
         </div>
         <button
-          onClick={() => (isAdding ? cancelAddTodo() : setIsAdding(true))}
-          disabled={saving || activeTab !== "todos"}
+          onClick={() => {
+            if (isAdding) {
+              cancelAddTodo();
+              return;
+            }
+            setIsAdding(true);
+          }}
+          disabled={saving}
           aria-label={isAdding ? "取消新增待辦" : "新增待辦"}
           title={isAdding ? "取消" : "新增"}
         >
           {isAdding ? "×" : "+"}
         </button>
       </header>
-      <div className="todo-card-tabs" role="tablist" aria-label="Todo List 分頁">
-        <button
-          type="button"
-          className={activeTab === "todos" ? "active" : ""}
-          onClick={() => setActiveTab("todos")}
-        >
-          <span>待辦事項</span>
-          <b>{todoRows.length}</b>
-        </button>
-        <button
-          type="button"
-          className={activeTab === "follow-ups" ? "active" : ""}
-          onClick={() => setActiveTab("follow-ups")}
-        >
-          <span>待追蹤</span>
-          <b>{followUpRows.length}</b>
-        </button>
-      </div>
-      {isAdding && activeTab === "todos" ? (
+      {isAdding ? (
         <div className="todo-quick-add dashboard-todo-input is-expanded">
           <input
             ref={todoInputRef}
@@ -414,82 +416,63 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
         </div>
       ) : null}
       {error ? <div className="error-box">{error}</div> : null}
-      {activeTab === "todos" ? (
-        <>
-          <div className="dashboard-todo-list">
-            {todoRows.length === 0 ? (
-              <div className="empty">目前沒有待辦項目</div>
-            ) : (
-              visibleTodos.map((todo) => (
-                <TodoRow
-                  key={todo.id}
-                  todo={todo}
-                  isProcessing={processingTodoIds.has(todo.id)}
-                  isCompleted={completedTodoIds.has(todo.id)}
-                  isFading={fadingTodoIds.has(todo.id)}
-                  isEditing={editingTodoId === todo.id}
-                  editTitle={editTitle}
-                  editPriority={editPriority}
-                  onEditTitleChange={setEditTitle}
-                  onEditPriorityChange={setEditPriority}
-                  onComplete={() => openCompleteChoice(todo)}
-                  onEdit={() => startEditTodo(todo)}
-                  onCancelEdit={cancelEditTodo}
-                  onSaveEdit={() => saveEditTodo(todo)}
-                  onEditKeyDown={(event) => {
-                    if (event.key === "Enter") saveEditTodo(todo);
-                    if (event.key === "Escape") cancelEditTodo();
-                  }}
-                  onDelete={() => deleteTodo(todo)}
-                  isSaving={saving}
-                  isDragging={draggedTodoId === todo.id}
-                  isDropTarget={dropTargetTodoId === todo.id && draggedTodoId !== todo.id}
-                  onDragStart={(event) => {
-                    event.dataTransfer.effectAllowed = "move";
-                    event.dataTransfer.setData("text/plain", todo.id);
-                    setDraggedTodoId(todo.id);
-                    setDropTargetTodoId("");
-                  }}
-                  onDragEnter={() => draggedTodoId && setDropTargetTodoId(todo.id)}
-                  onDragOver={(event) => {
-                    if (!draggedTodoId || draggedTodoId === todo.id) return;
-                    event.preventDefault();
-                    setDropTargetTodoId(todo.id);
-                  }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    reorderTodo(draggedTodoId, todo.id);
-                  }}
-                  onDragEnd={() => {
-                    setDraggedTodoId("");
-                    setDropTargetTodoId("");
-                  }}
-                />
-              ))
-            )}
-          </div>
-          {todoRows.length > 0 ? (
-            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work", { href: todoWorkHref })}>
-              查看全部 {todoRows.length} 筆 →
-            </button>
-          ) : null}
-        </>
-      ) : (
-        <>
-          <div className="dashboard-follow-list">
-            {visibleFollowUps.length === 0 ? (
-              <div className="empty">目前沒有待追蹤項目</div>
-            ) : (
-              visibleFollowUps.map((item) => <FollowUpCompactRow key={item.id} item={item} />)
-            )}
-          </div>
-          {followUpRows.length > 0 ? (
-            <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("follow-ups")}>
-              查看全部 {followUpRows.length} 筆 →
-            </button>
-          ) : null}
-        </>
-      )}
+      <div className="dashboard-todo-list">
+        {todoRows.length === 0 ? (
+          <div className="empty">目前沒有待辦項目</div>
+        ) : (
+          visibleTodos.map((todo) => (
+            <TodoRow
+              key={todo.id}
+              todo={todo}
+              isProcessing={processingTodoIds.has(todo.id)}
+              isCompleted={completedTodoIds.has(todo.id)}
+              isFading={fadingTodoIds.has(todo.id)}
+              isEditing={editingTodoId === todo.id}
+              editTitle={editTitle}
+              editPriority={editPriority}
+              onEditTitleChange={setEditTitle}
+              onEditPriorityChange={setEditPriority}
+              onComplete={() => openCompleteChoice(todo)}
+              onEdit={() => startEditTodo(todo)}
+              onCancelEdit={cancelEditTodo}
+              onSaveEdit={() => saveEditTodo(todo)}
+              onEditKeyDown={(event) => {
+                if (event.key === "Enter") saveEditTodo(todo);
+                if (event.key === "Escape") cancelEditTodo();
+              }}
+              onDelete={() => deleteTodo(todo)}
+              isSaving={saving}
+              isDragging={draggedTodoId === todo.id}
+              isDropTarget={dropTargetTodoId === todo.id && draggedTodoId !== todo.id}
+              onDragStart={(event) => {
+                event.dataTransfer.effectAllowed = "move";
+                event.dataTransfer.setData("text/plain", todo.id);
+                setDraggedTodoId(todo.id);
+                setDropTargetTodoId("");
+              }}
+              onDragEnter={() => draggedTodoId && setDropTargetTodoId(todo.id)}
+              onDragOver={(event) => {
+                if (!draggedTodoId || draggedTodoId === todo.id) return;
+                event.preventDefault();
+                setDropTargetTodoId(todo.id);
+              }}
+              onDrop={(event) => {
+                event.preventDefault();
+                reorderTodo(draggedTodoId, todo.id);
+              }}
+              onDragEnd={() => {
+                setDraggedTodoId("");
+                setDropTargetTodoId("");
+              }}
+            />
+          ))
+        )}
+      </div>
+      {todoRows.length > 0 ? (
+        <button className="panel-link todo-view-all" type="button" onClick={() => onNavigate?.("work", { href: todoWorkHref })}>
+          查看全部 {todoRows.length} 筆 →
+        </button>
+      ) : null}
       {completionTodo ? (
         <div className="todo-complete-backdrop" role="presentation" onMouseDown={closeCompleteChoice}>
           <div className="todo-complete-dialog" role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
@@ -549,16 +532,6 @@ export default function DashboardTodoPanel({ todos, followUps, onNavigate, notif
         </div>
       ) : null}
     </section>
-  );
-}
-
-function FollowUpCompactRow({ item }) {
-  return (
-    <article className="dashboard-follow-row">
-      <strong>{item.title || "未命名追蹤事項"}</strong>
-      <span>{item.current_status || "等待回覆"}</span>
-      <time>{formatDate(item.next_follow_date)}</time>
-    </article>
   );
 }
 

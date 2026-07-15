@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import {
+  createDashboardSessionToken,
   DASHBOARD_SESSION_COOKIE,
-  getDashboardSessionToken,
+  DASHBOARD_SESSION_TTL_SECONDS,
+  dashboardAuthConfigured,
   verifyDashboardCredentials
 } from "../../../lib/auth";
 
@@ -9,6 +11,13 @@ export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const user = String(body.user || "").trim();
   const password = String(body.password || "");
+
+  if (!dashboardAuthConfigured()) {
+    return NextResponse.json(
+      { success: false, message: "登入服務尚未完成安全設定" },
+      { status: 503 }
+    );
+  }
 
   if (!verifyDashboardCredentials(user, password)) {
     return NextResponse.json(
@@ -18,12 +27,12 @@ export async function POST(request) {
   }
 
   const response = NextResponse.json({ success: true });
-  response.cookies.set(DASHBOARD_SESSION_COOKIE, getDashboardSessionToken(), {
+  response.cookies.set(DASHBOARD_SESSION_COOKIE, createDashboardSessionToken(), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 14
+    maxAge: DASHBOARD_SESSION_TTL_SECONDS
   });
   return response;
 }

@@ -14,8 +14,7 @@ import { applyAiTodoCreated, isDashboardTodoPayload } from "../lib/dashboard-sta
 import {
   formatDate,
   formatRelativeDate,
-  normalizeTodoPriority,
-  parseDelta
+  normalizeTodoPriority
 } from "../lib/dashboard-formatters";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
@@ -111,7 +110,6 @@ function DashboardTrendPanel({ trend }) {
 
 function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, notify }) {
   const todos = dashboard?.openTodos || [];
-  const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const completionTotal = completedCount + pendingCount;
@@ -119,10 +117,11 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
   const urgentTodoCount = todos.filter((todo) => normalizeTodoPriority(todo.priority) === "urgent").length;
 
   return (
-    <>
+    <div className="modern-dashboard-page">
       <header className="section-head">
         <div>
           <h1>儀表板</h1>
+          <p className="mobile-dashboard-date">今天先處理最重要的工作</p>
         </div>
       </header>
       <section className="dashboard-kpi-strip">
@@ -131,11 +130,7 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
             label="今日待處理"
             value={pendingCount}
             unit="件"
-            delta={dashboard?.deltas?.pending || "0"}
-            deltaLabel="較昨日"
-            detail={`需追蹤 ${pendingCount} 件`}
             tone={pendingCount > 0 ? "warn" : "good"}
-            deltaImpact={parseDelta(dashboard?.deltas?.pending).direction === "down" ? "good" : "warn"}
           />
           <KpiSummaryItem
             label="本月工作"
@@ -158,17 +153,29 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
             rate={completionRate}
             completed={completedCount}
             total={completionTotal}
-            pending={pendingCount}
           />
         </section>
+        <details className="mobile-month-kpi">
+          <summary>查看本月工作統計</summary>
+          <div>
+            <span>本月累計</span>
+            <strong>{dashboard?.monthWorkCount ?? 0}<small>件</small></strong>
+            <em>{dashboard?.deltas?.monthWork || "+0"} 較上月</em>
+          </div>
+        </details>
       </section>
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel todos={todos} followUps={followUps} onNavigate={onNavigate} notify={notify} onDashboardChange={onDashboardChange} />
+        <DashboardTodoPanel
+          todos={todos}
+          onNavigate={onNavigate}
+          notify={notify}
+          onDashboardChange={onDashboardChange}
+        />
         <DashboardCalendarPanel dashboard={dashboard} notify={notify} />
       </section>
-    </>
+    </div>
   );
 }
 
@@ -220,6 +227,18 @@ export default function Page() {
     if (!requestedSection) return;
     const href = requestedSection === "kpi" ? "/boss-kpi" : getSectionHref(requestedSection);
     if (href !== "/") window.location.replace(href);
+  }, []);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const mobileAction = url.searchParams.get("mobileAction");
+    if (!mobileAction) return undefined;
+    url.searchParams.delete("mobileAction");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    const timer = window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("dashboard-mobile-action", { detail: { action: mobileAction } }));
+    }, 80);
+    return () => window.clearTimeout(timer);
   }, []);
 
   function handleNavigate(sectionKey, item) {
