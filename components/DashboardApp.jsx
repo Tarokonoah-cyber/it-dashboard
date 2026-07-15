@@ -6,15 +6,13 @@ import AppShell from "./AppShell";
 import CompletionSummaryItem from "./dashboard/CompletionSummaryItem";
 import DashboardCalendarPanel from "./dashboard/DashboardCalendarPanel";
 import DashboardToast from "./dashboard/DashboardToast";
-import DashboardTodoPanel from "./dashboard/DashboardTodoPanel";
+import DashboardWorkPanel from "./dashboard/DashboardWorkPanel";
 import KpiSummaryItem from "./dashboard/KpiSummaryItem";
 import { getSectionHref } from "./navigation";
 import { api } from "../lib/dashboard-api";
-import { applyAiTodoCreated, isDashboardTodoPayload } from "../lib/dashboard-state";
 import {
   formatDate,
-  formatRelativeDate,
-  normalizeTodoPriority
+  formatRelativeDate
 } from "../lib/dashboard-formatters";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
@@ -109,12 +107,13 @@ function DashboardTrendPanel({ trend }) {
 }
 
 function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, notify }) {
-  const todos = dashboard?.openTodos || [];
+  const works = dashboard?.openWorks || [];
+  const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
   const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
   const completionTotal = completedCount + pendingCount;
   const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
-  const urgentTodoCount = todos.filter((todo) => normalizeTodoPriority(todo.priority) === "urgent").length;
+  const urgentWorkCount = works.filter((work) => /異常|逾期|緊急|urgent|critical/i.test(`${work.status || ""} ${work.impact || ""}`)).length;
 
   return (
     <div className="modern-dashboard-page">
@@ -144,10 +143,10 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
           />
           <KpiSummaryItem
             label="緊急任務"
-            value={urgentTodoCount}
+            value={urgentWorkCount}
             unit="件"
             detail=""
-            tone={urgentTodoCount > 0 ? "bad" : "good"}
+            tone={urgentWorkCount > 0 ? "bad" : "good"}
           />
           <CompletionSummaryItem
             rate={completionRate}
@@ -167,8 +166,9 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
       {error ? <div className="error-box">{error}</div> : null}
 
       <section className="dashboard-layout modern-dashboard-layout">
-        <DashboardTodoPanel
-          todos={todos}
+        <DashboardWorkPanel
+          works={works}
+          followUps={followUps}
           onNavigate={onNavigate}
           notify={notify}
           onDashboardChange={onDashboardChange}
@@ -210,12 +210,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    function handleDashboardDataChanged(event) {
-      const detail = event?.detail;
-      if (detail?.type === "todo-created" && isDashboardTodoPayload(detail.todo)) {
-        setDashboard((current) => applyAiTodoCreated(current, detail.todo, detail.workLogCreated));
-        return;
-      }
+    function handleDashboardDataChanged() {
       loadDashboard();
     }
     window.addEventListener("dashboard-data-changed", handleDashboardDataChanged);

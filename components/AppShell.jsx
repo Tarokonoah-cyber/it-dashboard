@@ -277,10 +277,10 @@ export default function AppShell({
               </div>
               <button type="button" aria-label="關閉快速新增" onClick={() => setQuickAddOpen(false)}>×</button>
             </header>
-            <button type="button" onClick={() => runDashboardAction("add-todo")}>
+            <button type="button" onClick={() => runDashboardAction("add-work")}>
               <span aria-hidden="true">☑</span>
-              <strong>新增待辦</strong>
-              <small>建立今天要處理的工作</small>
+              <strong>新增任務</strong>
+              <small>直接加入工作中心並顯示在首頁</small>
             </button>
             <button type="button" onClick={() => runDashboardAction("add-calendar")}>
               <span aria-hidden="true">▦</span>

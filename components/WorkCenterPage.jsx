@@ -5,11 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const WORK_CATEGORIES = ["一般", "設備維護", "系統更新", "網路", "SOP", "設備", "合約", "系統", "其他"];
 const WORK_STATUSES = ["待處理", "進行中", "已完成", "暫緩", "異常"];
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
-const WORK_SOURCE_OPTIONS = [
-  { value: "", label: "全部來源" },
-  { value: "todo_logs", label: "Todo List" },
-  { value: "vercel-dashboard", label: "工作中心" }
-];
 
 async function api(path, options) {
   const response = await fetch(path, {
@@ -55,13 +50,6 @@ function isDoneStatus(status) {
   return normalizeStatus(status) === "已完成";
 }
 
-function sourceLabel(value) {
-  const text = String(value || "").trim();
-  if (text === "todo_logs") return "Todo List";
-  if (text === "vercel-dashboard") return "工作中心";
-  return text || "其他來源";
-}
-
 function getInitialQueryParam(key) {
   if (typeof window === "undefined") return "";
   return String(new URLSearchParams(window.location.search).get(key) || "").trim();
@@ -84,9 +72,7 @@ export default function WorkCenterPage() {
   const [filters, setFilters] = useState(() => ({
     date: "",
     status: "",
-    category: "",
-    source: getInitialQueryParam("source") === "todo_logs" ? "todo_logs" : "",
-    sourceIds: getInitialQueryParam("sourceIds")
+    category: ""
   }));
   const [searchText, setSearchText] = useState(() => getInitialQueryParam("q"));
   const [form, setForm] = useState({
@@ -96,17 +82,11 @@ export default function WorkCenterPage() {
     status: WORK_STATUSES[0],
     note: ""
   });
-  const hasFilters = Boolean(filters.date || filters.status || filters.category || filters.source || searchText.trim());
+  const hasFilters = Boolean(filters.date || filters.status || filters.category || searchText.trim());
   const isEditing = Boolean(editingId);
-  const isTodoScope = filters.source === "todo_logs";
 
   useEffect(() => {
-    const source = getInitialQueryParam("source") === "todo_logs" ? "todo_logs" : "";
-    const sourceIds = getInitialQueryParam("sourceIds");
     const query = getInitialQueryParam("q");
-    if (source || sourceIds) {
-      setFilters((current) => ({ ...current, source, sourceIds }));
-    }
     if (query) setSearchText(query);
   }, []);
 
@@ -136,8 +116,7 @@ export default function WorkCenterPage() {
     const unique = (key) => Array.from(new Set(works.map((work) => String(work[key] || "").trim()).filter(Boolean)));
     return {
       status: unique("status"),
-      category: unique("category"),
-      source: unique("source")
+      category: unique("category")
     };
   }, [works]);
 
@@ -164,7 +143,7 @@ export default function WorkCenterPage() {
         body: JSON.stringify(isEditing ? { id: editingId, ...payload } : payload)
       });
       resetForm();
-      setFilters({ date: "", status: "", category: "", source: "", sourceIds: "" });
+      setFilters({ date: "", status: "", category: "" });
       setSearchText("");
       setWorks((current) => [saved, ...current.filter((work) => work.id !== saved.id)]);
     } catch (err) {
@@ -216,7 +195,7 @@ export default function WorkCenterPage() {
   }
 
   function clearFilters() {
-    setFilters({ date: "", status: "", category: "", source: "", sourceIds: "" });
+    setFilters({ date: "", status: "", category: "" });
     setSearchText("");
   }
 
@@ -302,13 +281,6 @@ export default function WorkCenterPage() {
             <span>{loading ? "讀取中..." : `${visibleWorks.length} / ${works.length} 筆`}</span>
           </div>
         </header>
-        {isTodoScope ? (
-          <div className="work-scope-banner">
-            <strong>Todo List 檢視</strong>
-            <span>目前只顯示從儀表板 Todo List 同步過來的工作紀錄，可用搜尋快速找內容或備註。</span>
-            <button type="button" onClick={clearFilters}>顯示全部工作</button>
-          </div>
-        ) : null}
         <div className="work-filters">
           <label className="work-search-field">
             搜尋
@@ -335,15 +307,6 @@ export default function WorkCenterPage() {
             <select value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
               <option value="">全部</option>
               {options.category.map((item) => <option key={item}>{item}</option>)}
-            </select>
-          </label>
-          <label>
-            來源
-            <select value={filters.source} onChange={(event) => setFilters((current) => ({ ...current, source: event.target.value, sourceIds: "" }))}>
-              {WORK_SOURCE_OPTIONS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-              {options.source
-                .filter((item) => !WORK_SOURCE_OPTIONS.some((option) => option.value === item))
-                .map((item) => <option key={item} value={item}>{sourceLabel(item)}</option>)}
             </select>
           </label>
           {hasFilters ? <button className="work-clear-filters" onClick={clearFilters} type="button">清除篩選</button> : null}
