@@ -111,7 +111,7 @@ export async function GET(request) {
     let followUpRows = [];
     let contractRows = [];
     let mobileContractRows = [];
-    const contractReminderEndDate = addDateDays(today, 50);
+    const contractReminderEndDate = addDateDays(today, 30);
     const [workResult, networkResult, followUpResult, contractResult, mobileContractResult] = await Promise.allSettled([
       loadWorkRows(),
       supabaseRequest(
@@ -208,7 +208,7 @@ export async function GET(request) {
       monthCompletionTotal: monthCompletion.total,
       monthCompletionRate: monthCompletion.rate,
       openWorks,
-      contractReminders: selectUpcomingContractReminders(contractRows, mobileContractRows, today, 50),
+      contractReminders: selectUpcomingContractReminders(contractRows, mobileContractRows, today, 30),
       followUps,
       networkRooms,
       networkSummary: {

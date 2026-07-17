@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
-import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
+import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
+import { getContractLifecycleStatus } from "../../../lib/contractStatus";
 import {
   buildRecordInsert,
   buildRecordUpdate,
@@ -106,7 +107,7 @@ const NORMALIZED_SOURCES = {
       end_date: row.end_date,
       amount: row.amount,
       owner: row.owner,
-      status: row.status,
+      status: getContractLifecycleStatus(row, todayTaipei(), 30),
       note: row.note
     })
   },

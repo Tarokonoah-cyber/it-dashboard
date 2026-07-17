@@ -351,7 +351,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
         <div className="calendar-actions">
           <div className="calendar-reminder-legend" aria-label="行事曆提醒圖例">
             <span><i className="tone-todo" aria-hidden="true" />今日待追蹤</span>
-            <span><i className="tone-contract" aria-hidden="true" />50 天內到期</span>
+            <span><i className="tone-contract" aria-hidden="true" />30 天內即期</span>
           </div>
           <button
             type="button"

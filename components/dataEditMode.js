@@ -72,7 +72,7 @@ export function changedRows(baseRows, draftRows) {
 export function blankDraftRow(columns, source) {
   const data = {};
   columns.filter(isEditableColumn).forEach((column) => {
-    data[fieldKeyForColumn({ data: {} }, column)] = "";
+    data[fieldKeyForColumn({ data: {} }, column)] = column.defaultValue || "";
   });
   return {
     id: "",
@@ -106,6 +106,7 @@ export function normalizeDateInput(value) {
 }
 
 export function optionsForColumn(rows, column) {
+  if (Array.isArray(column?.options) && column.options.length) return column.options;
   const values = (rows || [])
     .map((row) => String(getDraftValue(row, column) || "").trim())
     .filter(Boolean);

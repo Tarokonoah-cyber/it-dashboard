@@ -44,6 +44,17 @@ test("record validation rejects invalid IP and amount values", async () => {
   );
 });
 
+test("software contract writes only canonical editable statuses", async () => {
+  const { buildRecordInsert } = await loadEsmModule("../lib/data-record-mutators.js");
+  const active = buildRecordInsert("contracts_software", { contract_name: "License", status: "使用中" });
+  const expiring = buildRecordInsert("contracts_software", { contract_name: "Renewal", status: "即期" });
+  const terminated = buildRecordInsert("contracts_software", { contract_name: "Old License", status: "中止" });
+
+  assert.equal(active.body.status, "有效");
+  assert.equal(expiring.body.status, "即期");
+  assert.equal(terminated.body.status, "中止");
+});
+
 test("password entry payload stores metadata only fields", async () => {
   const { buildPasswordEntryPayload } = await loadEsmModule("../lib/password-entry-mutators.js");
   const payload = buildPasswordEntryPayload({

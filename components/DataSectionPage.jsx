@@ -18,6 +18,7 @@ import {
   setDraftValue,
   useUnsavedChangesWarning
 } from "./dataEditMode";
+import { getContractLifecycleStatus, isContractExpiringWithin } from "../lib/contractStatus";
 
 const SOC_SOP_PUBLIC_URL =
   "https://oidfglrsqrtiimqjfriw.supabase.co/storage/v1/object/public/sop-files/soc/soc-mis-checklist-official.xlsx";
@@ -117,7 +118,7 @@ const RECORD_COLUMN_CONFIGS = {
     { label: "到期日", keys: ["end_date", "到期日"] },
     { label: "金額", keys: ["amount", "金額"] },
     { label: "負責人", keys: ["owner", "負責人"] },
-    { label: "狀態", keys: ["status", "狀態"] },
+    { label: "狀態", keys: ["status", "狀態"], options: ["有效", "即期", "中止"], defaultValue: "有效" },
     { label: "備註", keys: ["note", "備註"] }
   ],
   contracts_software: [
@@ -218,9 +219,9 @@ function getStatusTone(value) {
   const text = String(value || "").trim().toLowerCase();
   if (!text) return "pending";
   if (text.includes("完成") || text.includes("正常") || text.includes("✅") || text.includes("done") || text.includes("有效") || text.includes("active") || text.includes("valid")) return "done";
-  if (text.includes("異常") || text.includes("逾期") || text.includes("error") || text.includes("失效")) return "danger";
+  if (text.includes("異常") || text.includes("逾期") || text.includes("error") || text.includes("失效") || text.includes("中止")) return "danger";
   if (text.includes("進行") || text.includes("處理")) return "active";
-  if (text.includes("需") || text.includes("⚠")) return "pending";
+  if (text.includes("需") || text.includes("⚠") || text.includes("即期")) return "pending";
   return "pending";
 }
 
@@ -283,43 +284,23 @@ function formatNtAmount(value) {
   return `NT$${Math.round(value).toLocaleString("en-US")}`;
 }
 
-function parseRecordDate(value) {
-  if (!value) return null;
-  const text = String(value).trim();
-  const match = text.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
-  if (!match) return null;
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function isActiveContractStatus(value) {
-  const status = String(value || "").trim().toLowerCase();
-  return ["active", "valid", "啟用", "有效", "正常", "使用中"].some((item) => status.includes(item.toLowerCase()));
-}
-
 function getSoftwareContractSummary(rows) {
   const vendorSet = new Set();
   let annualTotal = 0;
   let expiringSoon = 0;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const ninetyDaysLater = new Date(today);
-  ninetyDaysLater.setDate(today.getDate() + 90);
 
   rows.forEach((row) => {
     const vendor = String(getField(row, ["vendor", "廠商"]) || "").trim();
     if (vendor && vendor !== "-") vendorSet.add(vendor);
     annualTotal += parseMoneyValue(getField(row, ["amount", "金額"]));
-    const endDate = parseRecordDate(getField(row, ["end_date", "到期日"]));
-    const status = getField(row, ["status", "狀態"]);
-    if (endDate && endDate >= today && endDate <= ninetyDaysLater && isActiveContractStatus(status)) expiringSoon += 1;
+    if (isContractExpiringWithin(row?.data || row, undefined, 30)) expiringSoon += 1;
   });
 
   return [
     { title: "廠商數", value: vendorSet.size.toLocaleString("en-US"), helper: "合作廠商" },
     { title: "合約數", value: rows.length.toLocaleString("en-US"), helper: "軟體合約" },
     { title: "年度金額", value: formatNtAmount(annualTotal), helper: "合約金額合計" },
-    { title: "90 天內到期", value: expiringSoon.toLocaleString("en-US"), helper: "需提前追蹤", tone: "warning" }
+    { title: "30 天內即期", value: expiringSoon.toLocaleString("en-US"), helper: "行事曆橘點提醒", tone: "warning" }
   ];
 }
 
@@ -336,6 +317,95 @@ function SoftwareContractSummary({ rows, loading }) {
           <p>{card.helper}</p>
         </article>
       ))}
+    </div>
+  );
+}
+
+function formatContractAmount(value) {
+  if (value === null || value === undefined || value === "") return "-";
+  return formatNtAmount(parseMoneyValue(value));
+}
+
+function ContractDetailModal({ fallbackRow, detail, loading, error, onClose }) {
+  const fallback = fallbackRow?.data || fallbackRow || {};
+  const contract = detail?.contract || fallback;
+  const history = Array.isArray(detail?.history) ? detail.history : [];
+  const name = getField(contract, ["contract_name", "合約名稱"], "未命名合約");
+  const status = getContractLifecycleStatus(contract, undefined, 30);
+  const fields = [
+    ["合約編號", getField(contract, ["id", "編號"], fallbackRow?.id || "-")],
+    ["廠商", getField(contract, ["vendor", "廠商"], "-")],
+    ["開始日", getField(contract, ["start_date", "開始日"], "-")],
+    ["到期日", getField(contract, ["end_date", "到期日"], "-")],
+    ["目前價格", formatContractAmount(getField(contract, ["amount", "金額"], ""))],
+    ["負責人", getField(contract, ["owner", "負責人"], "-")]
+  ];
+
+  return (
+    <div className="contract-detail-backdrop" role="presentation" onMouseDown={onClose}>
+      <section
+        className="contract-detail-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="contract-detail-title"
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <header className="contract-detail-head">
+          <div>
+            <span>軟體合約詳細資料</span>
+            <h2 id="contract-detail-title">{name}</h2>
+          </div>
+          <div className="contract-detail-head-actions">
+            <StatusBadge value={status} />
+            <button type="button" onClick={onClose} aria-label="關閉合約詳細資料">×</button>
+          </div>
+        </header>
+
+        <dl className="contract-detail-grid">
+          {fields.map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{formatDisplayValue(value)}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div className="contract-detail-note">
+          <span>備註</span>
+          <p>{getField(contract, ["note", "備註"], "目前沒有備註")}</p>
+        </div>
+
+        <section className="contract-price-history" aria-label="價格沿革">
+          <header>
+            <div>
+              <h3>價格沿革</h3>
+              <p>每次修改合約金額都會自動留下紀錄</p>
+            </div>
+            {!loading && !error ? <b>{history.length} 筆</b> : null}
+          </header>
+          {loading ? (
+            <div className="contract-history-state">讀取價格紀錄中...</div>
+          ) : error ? (
+            <div className="contract-history-state is-error">{error}</div>
+          ) : history.length ? (
+            <div className="contract-price-timeline">
+              {history.map((entry, index) => (
+                <article key={entry.id || `${entry.effective_date}-${index}`}>
+                  <i aria-hidden="true" />
+                  <div>
+                    <span>{entry.effective_date || "未設定日期"}</span>
+                    <strong>{formatContractAmount(entry.amount)}</strong>
+                    <small>{entry.note || (index === 0 ? "目前價格" : "價格調整")}</small>
+                  </div>
+                  {index === 0 ? <b>目前</b> : null}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="contract-history-state">目前尚無價格紀錄</div>
+          )}
+        </section>
+      </section>
     </div>
   );
 }
@@ -488,6 +558,10 @@ export default function DataSectionPage({ sectionKey }) {
   const [error, setError] = useState("");
   const [saveNotice, setSaveNotice] = useState("");
   const [department, setDepartment] = useState("全部");
+  const [selectedContract, setSelectedContract] = useState(null);
+  const [contractDetail, setContractDetail] = useState(null);
+  const [contractDetailLoading, setContractDetailLoading] = useState(false);
+  const [contractDetailError, setContractDetailError] = useState("");
   const hasUnsavedChanges = editMode && hasDraftChanges(rows, draftRows);
 
   useUnsavedChangesWarning(hasUnsavedChanges);
@@ -513,6 +587,19 @@ export default function DataSectionPage({ sectionKey }) {
     setDepartment("全部");
     load();
   }, [config?.source, config?.presetKeyword, isSocDocs]);
+
+  useEffect(() => {
+    if (!selectedContract) return undefined;
+    function handleEscape(event) {
+      if (event.key === "Escape") setSelectedContract(null);
+    }
+    document.body.classList.add("contract-detail-open");
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.classList.remove("contract-detail-open");
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [selectedContract]);
 
   const activeRows = editMode ? draftRows : rows;
 
@@ -564,6 +651,30 @@ export default function DataSectionPage({ sectionKey }) {
 
   function updateDraftCell(rowKey, column, value) {
     setDraftRows((current) => setDraftValue(current, rowKey, column, value));
+  }
+
+  async function openContractDetail(row) {
+    const id = String(row?.id || getField(row, ["id", "編號"], "")).trim();
+    if (!id) return;
+    setSelectedContract(row);
+    setContractDetail(null);
+    setContractDetailError("");
+    setContractDetailLoading(true);
+    try {
+      const data = await api(`/api/contracts/${encodeURIComponent(id)}/history`);
+      setContractDetail(data);
+    } catch (err) {
+      setContractDetailError(err.message || "價格紀錄讀取失敗");
+    } finally {
+      setContractDetailLoading(false);
+    }
+  }
+
+  function closeContractDetail() {
+    setSelectedContract(null);
+    setContractDetail(null);
+    setContractDetailError("");
+    setContractDetailLoading(false);
   }
 
   async function saveEdits() {
@@ -681,25 +792,49 @@ export default function DataSectionPage({ sectionKey }) {
               </div>
               {filteredRows.map((row) => (
                 <div className={getRecordRowClass(config.source)} key={rowIdentity(row)}>
-                  {columns.map((column) => (
-                    editMode && isEditableColumn(column) ? (
-                      <EditableRecordValue
-                        key={column.label}
-                        row={row}
-                        column={column}
-                        rows={draftRows}
-                        onChange={(value) => updateDraftCell(rowIdentity(row), column, value)}
-                      />
-                    ) : (
-                      <RecordValue key={column.label} column={column} value={getRecordField(row, column)} />
-                    )
-                  ))}
+                  {columns.map((column) => {
+                    if (editMode && isEditableColumn(column)) {
+                      return (
+                        <EditableRecordValue
+                          key={column.label}
+                          row={row}
+                          column={column}
+                          rows={draftRows}
+                          onChange={(value) => updateDraftCell(rowIdentity(row), column, value)}
+                        />
+                      );
+                    }
+                    if (config.source === "contracts_software" && column.label === "合約名稱") {
+                      const name = getRecordField(row, column) || "未命名合約";
+                      return (
+                        <button
+                          className="contract-name-button"
+                          type="button"
+                          key={column.label}
+                          onClick={() => openContractDetail(row)}
+                          title={`查看 ${name} 詳細資料與價格沿革`}
+                        >
+                          {name}
+                        </button>
+                      );
+                    }
+                    return <RecordValue key={column.label} column={column} value={getRecordField(row, column)} />;
+                  })}
                 </div>
               ))}
             </>
           )}
         </div>
       )}
+      {selectedContract ? (
+        <ContractDetailModal
+          fallbackRow={selectedContract}
+          detail={contractDetail}
+          loading={contractDetailLoading}
+          error={contractDetailError}
+          onClose={closeContractDetail}
+        />
+      ) : null}
     </section>
   );
 }
