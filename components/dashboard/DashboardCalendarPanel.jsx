@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "../../lib/dashboard-api";
 import { dateKey, getLocalDateKey, getTodayKey } from "../../lib/dashboard-formatters";
 import { isThreeDigitRoomNumber } from "../../lib/room-number";
+import { selectActionableTodayWorks } from "../../lib/calendarReminders";
 
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -14,6 +15,13 @@ function formatCalendarDate(dateKeyValue) {
 
 function getMonthLabel(date) {
   return `${date.getMonth() + 1}月`;
+}
+
+function reminderSummary(label, rows, titleKey = "title") {
+  const list = Array.isArray(rows) ? rows : [];
+  const titles = list.slice(0, 3).map((item) => String(item?.[titleKey] || "未命名事項").trim()).filter(Boolean);
+  const remaining = Math.max(0, list.length - titles.length);
+  return `${label} ${list.length} 件${titles.length ? `：${titles.join("、")}${remaining ? `，另 ${remaining} 件` : ""}` : ""}`;
 }
 
 function getTodayPhoneTargets(date = new Date()) {
@@ -50,6 +58,15 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   const router = useRouter();
   const todayKey = getTodayKey();
   const networkRooms = dashboard?.networkRooms || [];
+  const actionableTodayWorks = selectActionableTodayWorks(dashboard?.openWorks || [], todayKey);
+  const actionableTodayCount = actionableTodayWorks.length;
+  const todayTodoSummary = reminderSummary("今日待辦", actionableTodayWorks);
+  const contractReminders = dashboard?.contractReminders || [];
+  const contractRemindersByDate = contractReminders.reduce((rowsByDate, reminder) => {
+    const reminderDate = dateKey(reminder.end_date);
+    if (reminderDate) rowsByDate[reminderDate] = [...(rowsByDate[reminderDate] || []), reminder];
+    return rowsByDate;
+  }, {});
   const [visibleMonth, setVisibleMonth] = useState(() => new Date());
   const year = visibleMonth.getFullYear();
   const month = visibleMonth.getMonth();
@@ -71,10 +88,17 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   const [calendarSetupMessage, setCalendarSetupMessage] = useState("");
   const [calendarSaving, setCalendarSaving] = useState(false);
   const [deletingEventIds, setDeletingEventIds] = useState(() => new Set());
+  const [reminderTooltip, setReminderTooltip] = useState(null);
   const cells = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let day = 1; day <= daysInMonth; day++) cells.push(day);
   while (cells.length % 7 !== 0) cells.push(null);
+
+  function showReminderTooltip(event, text) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const left = Math.max(120, Math.min(window.innerWidth - 120, rect.left + rect.width / 2));
+    setReminderTooltip({ text, left, top: rect.bottom + 7 });
+  }
 
   function groupCalendarEvents(rows) {
     return (Array.isArray(rows) ? rows : []).reduce((eventsByDate, event) => {
@@ -321,6 +345,10 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
           <h2>行事曆 <b>{getMonthLabel(visibleMonth)}</b></h2>
         </div>
         <div className="calendar-actions">
+          <div className="calendar-reminder-legend" aria-label="行事曆提醒圖例">
+            <span><i className="tone-todo" aria-hidden="true" />今日待辦</span>
+            <span><i className="tone-contract" aria-hidden="true" />50 天內到期</span>
+          </div>
           <button
             type="button"
             className="sports-calendar-easter-egg"
@@ -346,6 +374,9 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
         {cells.map((day, index) => {
           const cellDate = day ? getLocalDateKey(year, month, day) : "";
           const dayEvents = cellDate ? calendarEvents[cellDate] || [] : [];
+          const dayContractReminders = cellDate ? contractRemindersByDate[cellDate] || [] : [];
+          const hasTodayTodoReminder = cellDate === todayKey && actionableTodayCount > 0;
+          const contractReminderSummary = reminderSummary("合約到期", dayContractReminders);
           const visibleDayEvents = dayEvents.slice(0, 2);
           const hiddenEventCount = Math.max(0, dayEvents.length - visibleDayEvents.length);
           return (
@@ -369,7 +400,45 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
                 >
                   +
                 </button>
-                <span className={isCurrentMonth && day === today ? "today-dot" : ""}>{String(day).padStart(2, "0")}</span>
+                <div className="calendar-cell-date-row">
+                  <span className="calendar-date-badge">
+                    <span className={`calendar-day-number ${isCurrentMonth && day === today ? "today-dot" : ""}`}>{String(day).padStart(2, "0")}</span>
+                    {hasTodayTodoReminder || dayContractReminders.length ? (
+                      <span className="calendar-reminder-dots">
+                        {hasTodayTodoReminder ? (
+                          <button
+                            className="calendar-reminder-trigger"
+                            type="button"
+                            aria-label={todayTodoSummary}
+                            onMouseEnter={(event) => showReminderTooltip(event, todayTodoSummary)}
+                            onMouseLeave={() => setReminderTooltip(null)}
+                            onFocus={(event) => showReminderTooltip(event, todayTodoSummary)}
+                            onBlur={() => setReminderTooltip(null)}
+                            onClick={(event) => event.stopPropagation()}
+                            onDoubleClick={(event) => event.stopPropagation()}
+                          >
+                            <i className="calendar-reminder-dot tone-todo" aria-hidden="true" />
+                          </button>
+                        ) : null}
+                        {dayContractReminders.length ? (
+                          <button
+                            className="calendar-reminder-trigger"
+                            type="button"
+                            aria-label={contractReminderSummary}
+                            onMouseEnter={(event) => showReminderTooltip(event, contractReminderSummary)}
+                            onMouseLeave={() => setReminderTooltip(null)}
+                            onFocus={(event) => showReminderTooltip(event, contractReminderSummary)}
+                            onBlur={() => setReminderTooltip(null)}
+                            onClick={(event) => event.stopPropagation()}
+                            onDoubleClick={(event) => event.stopPropagation()}
+                          >
+                            <i className="calendar-reminder-dot tone-contract" aria-hidden="true" />
+                          </button>
+                        ) : null}
+                      </span>
+                    ) : null}
+                  </span>
+                </div>
                 {dayEvents.length ? (
                   <span className="calendar-mobile-event-marker" aria-label={`${dayEvents.length} 個行程`}>
                     <i aria-hidden="true" />
@@ -402,6 +471,16 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
           );
         })}
       </div>
+      {reminderTooltip ? (
+        <div
+          id="calendar-reminder-tooltip"
+          className="calendar-reminder-tooltip"
+          role="tooltip"
+          style={{ left: reminderTooltip.left, top: reminderTooltip.top }}
+        >
+          {reminderTooltip.text}
+        </div>
+      ) : null}
       {isDayDetailOpen ? (
         <div className="mobile-calendar-detail-backdrop" role="presentation" onMouseDown={() => setIsDayDetailOpen(false)}>
           <section className="mobile-calendar-detail" role="dialog" aria-modal="true" aria-labelledby="mobile-calendar-detail-title" onMouseDown={(event) => event.stopPropagation()}>

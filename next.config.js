@@ -2,6 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   devIndicators: false,
+  outputFileTracingIncludes: {
+    "/api/reports/export": [
+      "./node_modules/@expo-google-fonts/noto-sans-tc/400Regular/NotoSansTC_400Regular.ttf"
+    ]
+  },
   images: {
     remotePatterns: [
       {

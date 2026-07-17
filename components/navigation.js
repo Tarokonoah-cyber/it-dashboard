@@ -10,7 +10,8 @@ export const APP_SECTIONS = [
     href: "/work",
     children: [
       { key: "work", label: "工作紀錄", href: "/work" },
-      { key: "follow-ups", label: "待追蹤", href: "/follow-ups" }
+      { key: "follow-ups", label: "待追蹤", href: "/follow-ups" },
+      { key: "recurring_tasks", label: "週期任務", href: "/work/recurring" }
     ]
   },
   { key: "daily_inspections", icon: "☑", label: "每日巡檢", href: "/inspections" },
@@ -41,6 +42,7 @@ export const APP_SECTIONS = [
     ]
   },
   { key: "passwords", icon: "◈", label: "密碼管理", href: "/passwords" },
+  { key: "reports", icon: "▧", label: "報表中心", href: "/reports" },
   { key: "anydesk", icon: "⌘", label: "AnyDesk List", href: "/anydesk" },
   {
     key: "sop",

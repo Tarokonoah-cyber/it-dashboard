@@ -97,6 +97,7 @@ export async function POST(request) {
     const staff = validateText(body.staff || DEFAULT_WORK_STAFF, "Staff", 120);
     const title = validateWorkTitle(body.title);
     const category = validateText(body.category || "工作", "Category", 120);
+    const impact = validateText(body.impact || "一般", "Impact", 120);
     const status = validateText(body.status || "未完成", "Status", 120);
     const description = validateText(body.description || "", "Description");
     const note = validateText(body.note || "", "Note");
@@ -107,6 +108,7 @@ export async function POST(request) {
       staff,
       title,
       category,
+      impact,
       status,
       description,
       note,
@@ -197,12 +199,26 @@ export async function DELETE(request) {
     const id = cleanText(searchParams.get("id"));
     if (!id) return fail(new Error("Work log id is required"), 400);
 
-    const rows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(id)}&select=id`, {
+    const rows = await supabaseRequest("work_logs", `id=eq.${encodeURIComponent(id)}&select=id,source,source_id`, {
       method: "DELETE"
     });
 
     if (!rows.length) return fail(new Error("Work log not found"), 404);
-    return ok({ id });
+    const deleted = rows[0];
+    let sourceDeleted = false;
+    if (deleted.source === "todo_logs" && deleted.source_id) {
+      try {
+        const sourceRows = await supabaseRequest(
+          "todo_logs",
+          `id=eq.${encodeURIComponent(deleted.source_id)}&select=id`,
+          { method: "DELETE" }
+        );
+        sourceDeleted = sourceRows.length > 0;
+      } catch (sourceError) {
+        console.error("Failed to delete the todo linked to a work log", sourceError);
+      }
+    }
+    return ok({ id, sourceTodoId: deleted.source_id || null, sourceDeleted });
   } catch (error) {
     return fail(error);
   }

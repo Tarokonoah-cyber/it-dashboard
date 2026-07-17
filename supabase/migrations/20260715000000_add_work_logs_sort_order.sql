@@ -23,3 +23,5 @@ where status in ('已完成', '完成', 'Done', 'done');
 create index if not exists work_logs_open_sort_order_idx
   on public.work_logs(sort_order, updated_at desc)
   where status is null or status not in ('已完成', '完成', 'Done', 'done');
+
+notify pgrst, 'reload schema';

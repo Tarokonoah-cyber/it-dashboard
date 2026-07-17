@@ -41,6 +41,7 @@ export default function AiCommandAssistant() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState(initialMessages);
   const [action, setAction] = useState(null);
+  const [sources, setSources] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [quickActionsOpen, setQuickActionsOpen] = useState(true);
@@ -59,6 +60,7 @@ export default function AiCommandAssistant() {
     setLoading(true);
     setError("");
     setAction(null);
+    setSources([]);
     setQuickActionsOpen(false);
     setMessages((current) => [...current, { role: "user", text: value }]);
     try {
@@ -71,6 +73,7 @@ export default function AiCommandAssistant() {
       if (!response.ok || !data.success) throw new Error(data.message || TEXT.failed);
       setMessages((current) => [...current, { role: "assistant", text: data.reply || "" }]);
       setAction(data.action || null);
+      setSources(Array.isArray(data.sources) ? data.sources : []);
       if (data.action?.type === "create_todo" && data.action.status === "created") {
         window.dispatchEvent(new CustomEvent("dashboard-data-changed", {
           detail: {
@@ -112,6 +115,30 @@ export default function AiCommandAssistant() {
     router.push(action.href);
   }
 
+  async function confirmAction() {
+    if (!action?.token || loading) return;
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/ai-assistant/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: action.token })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.success) throw new Error(data.message || TEXT.failed);
+      setMessages((current) => [...current, { role: "assistant", text: data.reply || "動作已完成。" }]);
+      setAction(data.action || null);
+      if (["create_todo", "create_follow_up", "create_calendar_event", "complete_work_item"].includes(data.action?.type)) {
+        window.dispatchEvent(new CustomEvent("dashboard-data-changed", { detail: { type: data.action.type, action: data.action } }));
+      }
+    } catch (err) {
+      setError(err.message || TEXT.failed);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function renderActionDetails() {
     if (!action) return null;
 
@@ -125,11 +152,33 @@ export default function AiCommandAssistant() {
       );
     }
 
+    if (action.status === "needs_confirmation" && action.token) {
+      return (
+        <div className="ai-chat-action-card confirm">
+          <b>確認後才會執行</b>
+          <span>{action.summary || action.title || "確認動作"}</span>
+          <div className="ai-chat-confirm-actions">
+            <button type="button" onClick={confirmAction} disabled={loading}>{loading ? "執行中" : "確認執行"}</button>
+            <button type="button" onClick={() => setAction(null)} disabled={loading}>取消</button>
+          </div>
+        </div>
+      );
+    }
+
     if (action.type === "create_todo") {
       return action.status === "created" ? (
         <div className="ai-chat-action-card success">
           <b>\u5df2\u65b0\u589e\u5f85\u8fa6</b>
           <span>{action.title || "\u672a\u53d6\u5f97\u6a19\u984c"}</span>
+        </div>
+      ) : null;
+    }
+
+    if (action.type === "create_follow_up" || action.type === "create_calendar_event") {
+      return action.status === "created" ? (
+        <div className="ai-chat-action-card success">
+          <b>{action.type === "create_follow_up" ? "已新增待追蹤" : "已新增行程"}</b>
+          <span>{action.title || "未取得標題"}</span>
         </div>
       ) : null;
     }
@@ -230,6 +279,18 @@ export default function AiCommandAssistant() {
       {error ? <div className="ai-chat-error">{error}</div> : null}
 
       {renderActionDetails()}
+
+      {sources.length ? (
+        <div className="ai-chat-sources">
+          <b>資料來源</b>
+          {sources.slice(0, 5).map((source) => (
+            <button key={`${source.source}-${source.id}`} type="button" onClick={() => router.push(source.href)}>
+              <span>{source.category}</span>
+              <strong>{source.title}</strong>
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <form className="ai-chat-form" onSubmit={submit}>
         <textarea

@@ -42,6 +42,13 @@
   font-weight: 750;
 }
 
+.dashboard-block-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
 .dashboard-add-work-button,
 .dashboard-block-text-button {
   min-height: 36px;
@@ -119,7 +126,7 @@
   display: grid;
   min-width: 0;
   min-height: 57px;
-  grid-template-columns: 18px 22px minmax(0, 1fr) auto;
+  grid-template-columns: 18px 22px minmax(0, 1fr);
   gap: 8px;
   align-items: center;
   border: 1px solid #dde6f0;
@@ -150,6 +157,15 @@
 
 .dashboard-work-row.tone-urgent::before {
   background: #d73939;
+}
+
+.dashboard-work-row.tone-important {
+  border-color: #efd7ad;
+  background: #fffdf8;
+}
+
+.dashboard-work-row.tone-important::before {
+  background: #d58618;
 }
 
 .dashboard-work-row:hover {
@@ -237,34 +253,122 @@
   white-space: nowrap;
 }
 
-.work-status-chip {
-  display: inline-flex;
-  min-height: 23px;
+.work-row-actions {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: flex;
   align-items: center;
-  border: 1px solid #d7e2ed;
-  border-radius: 999px;
-  background: #f6f9fc;
-  color: #536a83;
+  gap: 5px;
+  padding: 3px 0 3px 18px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff 16px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(4px);
+  transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s ease;
+  z-index: 2;
+}
+
+.dashboard-work-row:hover .work-row-actions,
+.dashboard-work-row:focus-within .work-row-actions {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+
+.work-row-actions button {
+  min-height: 27px;
+  border: 1px solid #cfddea;
+  border-radius: 7px;
+  background: #f7faff;
+  color: #315f8f;
   padding: 3px 8px;
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 800;
   white-space: nowrap;
 }
 
-.work-status-chip.tone-active {
-  border-color: #ecd49f;
-  background: #fff8e9;
-  color: #8d5a0e;
+.work-row-actions button:hover:not(:disabled) {
+  border-color: #9eb9d5;
+  background: #edf5ff;
 }
 
-.work-status-chip.tone-urgent {
-  border-color: #efc4c4;
-  background: #fff5f5;
+.work-row-actions button.danger {
+  border-color: #efcece;
+  background: #fff7f7;
   color: #b52d2d;
 }
 
-.work-order-actions {
-  display: none;
+.work-row-actions button.danger:hover:not(:disabled) {
+  border-color: #dfaaaa;
+  background: #ffeded;
+}
+
+.work-row-actions button:disabled {
+  cursor: wait;
+  opacity: 0.45;
+}
+
+.dashboard-work-row.is-editing {
+  min-height: 100px;
+  align-items: start;
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+
+.dashboard-work-row.is-editing .work-drag-handle {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.work-inline-edit {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.work-inline-edit input,
+.work-inline-edit select {
+  min-width: 0;
+  min-height: 32px;
+  border: 1px solid #b9cce0;
+  border-radius: 7px;
+  background: #fff;
+  color: #1b334f;
+  padding: 5px 8px;
+  font: inherit;
+}
+
+.work-inline-edit input:focus,
+.work-inline-edit select:focus {
+  border-color: #4b82bb;
+  outline: 3px solid rgba(47, 111, 172, 0.12);
+}
+
+.work-inline-edit-footer {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 7px;
+}
+
+.work-inline-edit-footer select {
+  width: 92px;
+}
+
+.work-inline-edit-footer > span {
+  display: flex;
+  gap: 5px;
+}
+
+.work-inline-edit-footer button {
+  min-height: 30px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .dashboard-block-link {
@@ -321,7 +425,6 @@
   min-width: 0;
   min-height: 48px;
   grid-template-columns: 5px minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
   column-gap: 9px;
   align-items: center;
   border: 1px solid #e0e7ef;
@@ -337,26 +440,30 @@
   background: #fbfdff;
 }
 
-.dashboard-follow-row > span {
-  grid-row: 1 / 3;
+.dashboard-follow-rail {
   width: 4px;
   height: 28px;
   border-radius: 999px;
   background: #8065b3;
 }
 
-.dashboard-follow-row.date-overdue > span {
+.dashboard-follow-row.date-overdue .dashboard-follow-rail {
   background: #d13b3b;
 }
 
-.dashboard-follow-row.date-today > span {
+.dashboard-follow-row.date-today .dashboard-follow-rail {
   background: #cc7d11;
+}
+
+.dashboard-follow-content {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
 }
 
 .dashboard-follow-row strong {
   min-width: 0;
   overflow: hidden;
-  align-self: end;
   color: #243b57;
   font-size: 13px;
   font-weight: 850;
@@ -365,7 +472,6 @@
 }
 
 .dashboard-follow-row small {
-  align-self: start;
   color: #7a899b;
   font-size: 10px;
   font-weight: 750;
@@ -373,7 +479,7 @@
 
 .dashboard-follow-row time {
   grid-column: 3;
-  grid-row: 1 / 3;
+  align-self: center;
   color: #697b90;
   font-size: 11px;
   font-weight: 850;
@@ -474,6 +580,274 @@
   }
 }
 
+/* Desktop dashboard: keep the operating view inside one viewport. */
+@media (min-width: 960px) {
+  .modern-dashboard-page {
+    height: calc(100dvh - 40px);
+    min-height: 700px;
+    overflow: hidden;
+  }
+
+  .modern-dashboard-page > .section-head {
+    flex: 0 0 auto;
+    min-height: 44px;
+    margin: 0;
+    padding: 8px 18px 5px;
+  }
+
+  .modern-dashboard-page > .section-head h1 {
+    font-size: 28px;
+    line-height: 1.05;
+  }
+
+  .modern-dashboard-page > .section-head p {
+    margin-top: 3px;
+    font-size: 12px;
+  }
+
+  .modern-dashboard-page > .dashboard-kpi-strip {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 18px 10px;
+  }
+
+  .modern-dashboard-page .dashboard-kpi-summary {
+    height: 104px;
+    grid-template-columns: repeat(3, minmax(145px, 1fr)) minmax(230px, 1.28fr);
+    grid-template-rows: 104px;
+    gap: 0;
+  }
+
+  .modern-dashboard-page .kpi-summary-item,
+  .modern-dashboard-page .kpi-summary-item.bad {
+    height: 104px;
+    min-height: 0;
+    gap: 6px;
+    padding: 12px 16px;
+  }
+
+  .modern-dashboard-page .kpi-summary-label {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .modern-dashboard-page .kpi-summary-main strong,
+  .modern-dashboard-page .kpi-summary-item.bad .kpi-summary-main strong {
+    font-size: 36px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .modern-dashboard-page .kpi-summary-main small,
+  .modern-dashboard-page .kpi-summary-meta {
+    font-size: 12px;
+  }
+
+  .modern-dashboard-page .kpi-delta {
+    min-height: 22px;
+    padding: 2px 8px;
+  }
+
+  .modern-dashboard-page .completion-summary-main {
+    gap: 13px;
+  }
+
+  .modern-dashboard-page .completion-rate-mobile {
+    display: none;
+  }
+
+  .modern-dashboard-page .completion-summary .kpi-donut {
+    width: 64px;
+    height: 64px;
+  }
+
+  .modern-dashboard-page .completion-summary .kpi-donut span {
+    font-size: 14px;
+  }
+
+  .modern-dashboard-page .completion-count-line {
+    font-size: 22px;
+  }
+
+  .modern-dashboard-page .completion-count-line small {
+    font-size: 12px;
+  }
+
+  .modern-dashboard-page .completion-caption {
+    font-size: 11px;
+  }
+
+  .modern-dashboard-page > .modern-dashboard-layout,
+  .modern-dashboard-page > .dashboard-layout.modern-dashboard-layout {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    grid-template-columns: minmax(286px, 0.78fr) minmax(500px, 1.72fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 12px;
+    margin: 0;
+    padding: 0 18px 12px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-column {
+    height: 100%;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1.42fr) minmax(0, 1fr);
+    align-self: stretch;
+    gap: 10px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-block,
+  .modern-dashboard-layout .dashboard-follow-block {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 12px;
+  }
+
+  .modern-dashboard-layout .dashboard-block-title {
+    min-height: 34px;
+    margin-bottom: 8px;
+  }
+
+  .modern-dashboard-layout .dashboard-block-title h2 {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .modern-dashboard-layout .dashboard-add-work-button {
+    min-height: 32px;
+    padding: 5px 9px;
+  }
+
+  .modern-dashboard-layout .dashboard-block-actions .dashboard-block-text-button {
+    min-height: 30px;
+    border-color: transparent;
+    background: transparent;
+    padding-inline: 5px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-list,
+  .modern-dashboard-layout .dashboard-follow-list-new {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    gap: 5px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-row {
+    min-height: 48px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-row.is-editing {
+    min-height: 94px;
+  }
+
+  .modern-dashboard-layout .dashboard-work-row-main strong {
+    font-size: 13px;
+  }
+
+  .modern-dashboard-layout .dashboard-follow-row {
+    min-height: 49px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .modern-dashboard-layout .dashboard-follow-row strong {
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .modern-dashboard-layout .dashboard-follow-row small,
+  .modern-dashboard-layout .dashboard-follow-row time {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel,
+  .dashboard-layout.modern-dashboard-layout .dashboard-calendar-panel {
+    grid-column: auto;
+    height: 100% !important;
+    min-height: 0;
+    max-height: none;
+    align-self: stretch;
+    padding: 12px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .panel-title {
+    min-height: 34px;
+    margin-bottom: 7px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .panel-title h2 {
+    font-size: 18px;
+  }
+
+  .modern-dashboard-layout .calendar-actions {
+    gap: 5px;
+  }
+
+  .modern-dashboard-layout .calendar-actions button {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 5px 9px;
+  }
+
+  .modern-dashboard-layout .calendar-today-test {
+    min-height: 34px;
+    margin-bottom: 7px;
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .dashboard-calendar-grid {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    grid-template-rows: 30px;
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-grid .weekday {
+    font-size: 12px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .dashboard-day-cell {
+    min-height: 0;
+    padding: 6px;
+    font-size: 13px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .calendar-day-number {
+    font-size: 13px;
+  }
+
+  .modern-dashboard-layout .calendar-cell-date-row {
+    min-height: 25px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .dashboard-day-cell .today-dot {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .modern-dashboard-layout .dashboard-calendar-panel .dashboard-day-cell em {
+    min-height: 20px;
+    padding: 2px 5px;
+    font-size: 11px;
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1199px) {
+  .modern-dashboard-layout .dashboard-work-block .dashboard-block-title span {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   .dashboard-work-column {
     order: 2;
@@ -520,7 +894,7 @@
 
   .dashboard-work-row {
     min-height: 66px;
-    grid-template-columns: 22px minmax(0, 1fr) auto;
+    grid-template-columns: 22px minmax(0, 1fr);
     gap: 9px;
     padding: 8px 8px 8px 10px;
   }
@@ -535,30 +909,12 @@
     height: 22px;
   }
 
-  .work-status-chip {
-    align-self: start;
+  .work-row-actions {
+    display: none;
   }
 
-  .work-order-actions {
-    display: flex;
-    grid-column: 2 / -1;
-    justify-content: flex-end;
-    gap: 6px;
-  }
-
-  .work-order-actions button {
-    width: 38px;
-    min-width: 38px;
-    min-height: 34px;
-    border: 1px solid #d2deea;
-    border-radius: 8px;
-    background: #f7f9fc;
-    color: #536a82;
-    padding: 0;
-  }
-
-  .work-order-actions button:disabled {
-    opacity: 0.3;
+  .dashboard-work-row.is-editing {
+    min-height: 108px;
   }
 
   .dashboard-follow-list-new {

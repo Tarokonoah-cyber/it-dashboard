@@ -1,6 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import WorkCompletionDialog from "./WorkCompletionDialog";
+import { loadRelatedFollowUps, settleWorkFollowUps } from "../lib/work-completion-client";
+import { getTomorrowDate } from "../lib/work-follow-up";
 
 const WORK_CATEGORIES = ["一般", "設備維護", "系統更新", "網路", "SOP", "設備", "合約", "系統", "其他"];
 const WORK_STATUSES = ["待處理", "進行中", "已完成", "暫緩", "異常"];
@@ -69,6 +72,10 @@ export default function WorkCenterPage() {
   const [error, setError] = useState("");
   const [showNote, setShowNote] = useState(false);
   const [editingId, setEditingId] = useState("");
+  const [completionContext, setCompletionContext] = useState(null);
+  const [completionRelated, setCompletionRelated] = useState([]);
+  const [completionLoading, setCompletionLoading] = useState(false);
+  const [completionSaving, setCompletionSaving] = useState(false);
   const [filters, setFilters] = useState(() => ({
     date: "",
     status: "",
@@ -131,24 +138,70 @@ export default function WorkCenterPage() {
       setError("工作內容不可只輸入數字，請補上可辨識的工作說明");
       return;
     }
+    const payload = { ...form, title };
+    const editingWork = isEditing ? works.find((work) => work.id === editingId) : null;
+    if (editingWork && !isDoneStatus(editingWork.status) && isDoneStatus(payload.status)) {
+      const work = { ...editingWork, ...payload };
+      setCompletionContext({ work, payload });
+      setCompletionRelated([]);
+      setCompletionLoading(true);
+      setError("");
+      try {
+        setCompletionRelated(await loadRelatedFollowUps(work));
+      } catch (err) {
+        setError(`無法檢查相關待追蹤：${err.message}`);
+      } finally {
+        setCompletionLoading(false);
+      }
+      return;
+    }
+
     setSaving(true);
     setError("");
     try {
-      const payload = {
-        ...form,
-        title
-      };
       const saved = await api("/api/work-logs", {
         method: isEditing ? "PATCH" : "POST",
         body: JSON.stringify(isEditing ? { id: editingId, ...payload } : payload)
       });
-      resetForm();
-      setFilters({ date: "", status: "", category: "" });
-      setSearchText("");
-      setWorks((current) => [saved, ...current.filter((work) => work.id !== saved.id)]);
+      finishSavedWork(saved);
     } catch (err) {
       setError(err.message);
     } finally {
+      setSaving(false);
+    }
+  }
+
+  function finishSavedWork(saved) {
+    resetForm();
+    setFilters({ date: "", status: "", category: "" });
+    setSearchText("");
+    setWorks((current) => [saved, ...current.filter((work) => work.id !== saved.id)]);
+    window.dispatchEvent(new CustomEvent("dashboard-data-changed", { detail: { type: "work-updated", id: saved.id } }));
+  }
+
+  async function confirmCompletion(choice) {
+    if (!completionContext?.work?.id || completionSaving) return;
+    setCompletionSaving(true);
+    setSaving(true);
+    setError("");
+    let saved = null;
+    try {
+      saved = await api("/api/work-logs", {
+        method: "PATCH",
+        body: JSON.stringify({ id: completionContext.work.id, ...completionContext.payload, status: "已完成" })
+      });
+      finishSavedWork(saved);
+      await settleWorkFollowUps({
+        work: saved,
+        related: completionRelated,
+        ...choice
+      });
+    } catch (err) {
+      setError(saved ? `工作已完成，但待追蹤處理失敗：${err.message}` : err.message);
+    } finally {
+      setCompletionContext(null);
+      setCompletionRelated([]);
+      setCompletionSaving(false);
       setSaving(false);
     }
   }
@@ -343,6 +396,16 @@ export default function WorkCenterPage() {
           )}
         </div>
       </section>
+
+      <WorkCompletionDialog
+        work={completionContext?.work}
+        related={completionRelated}
+        defaultDate={getTomorrowDate(today)}
+        loading={completionLoading}
+        saving={completionSaving}
+        onCancel={() => { if (!completionSaving) setCompletionContext(null); }}
+        onConfirm={confirmCompletion}
+      />
     </section>
   );
 }

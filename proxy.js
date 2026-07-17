@@ -6,6 +6,7 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/logout",
   "/api/cron/sports",
+  "/api/cron/operations-reminders",
   "/api/line/webhook",
   "/favicon.ico",
   "/robots.txt"

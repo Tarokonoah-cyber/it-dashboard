@@ -1,5 +1,7 @@
 import { requireDashboardAuth } from "../../../lib/auth";
 import { supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
+import { prepareAssistantAction } from "../../../lib/assistant-actions";
+import { searchDashboard } from "../../../lib/global-search";
 import { createTodoWithWorkLog } from "../../../lib/dailyOpsSync";
 import {
   createFallbackReply,
@@ -42,13 +44,13 @@ function normalizeWork(row) {
   };
 }
 
-function buildPrompt(message) {
+function buildPrompt(message, context = []) {
   return [
     "\u4f60\u662f IT dashboard \u7684 AI \u52a9\u7406\uff0c\u53ea\u80fd\u4f7f\u7528\u7cfb\u7d71\u5141\u8a31\u7684 action\u3002",
-    "\u5141\u8a31 action.type\uff1anavigate, create_todo, calendar_unavailable, complete_work_item, analysis\u3002",
+    "\u5141\u8a31 action.type\uff1anavigate, create_todo, create_follow_up, create_calendar_event, complete_work_item, analysis\u3002",
     "navigate.href \u53ea\u80fd\u662f\u7ad9\u5167 allowlist \u8def\u5f91\uff1b\u4e0d\u53ef\u56de\u50b3\u5916\u90e8 URL\u3002",
     "create_todo \u53ea\u80fd\u7528\u65bc\u5efa\u7acb\u5f85\u8fa6\uff0c\u8f38\u51fa title \u8207\u9078\u586b note\uff0c\u4e0d\u8981\u8072\u7a31\u5df2\u6210\u529f\uff0cserver \u6703\u771f\u6b63\u57f7\u884c\u5f8c\u8986\u5beb\u56de\u8986\u3002",
-    "calendar_unavailable \u7528\u65bc dashboard \u5167\u5efa\u884c\u4e8b\u66c6\u8acb\u6c42\uff0c\u56e0\u76ee\u524d\u6c92\u6709\u5b89\u5168\u65b0\u589e API\uff0c\u4e0d\u80fd\u8072\u7a31\u5df2\u52a0\u5165\u65e5\u66c6\u3002",
+    "create_follow_up \u7528\u65bc\u5efa\u7acb\u5f85\u8ffd\u8e64\u4e8b\u9805\uff1bcreate_calendar_event \u7528\u65bc\u5efa\u7acb\u884c\u4e8b\u66c6\u4e8b\u4ef6\u3002\u5beb\u5165\u524d\u90fd\u6703\u7531 server \u8981\u6c42\u4f7f\u7528\u8005\u78ba\u8a8d\u3002",
     "complete_work_item \u7528\u65bc\u5b8c\u6210\u5de5\u4f5c\u9805\u76ee\u8acb\u6c42\uff0c\u53ea\u80fd\u8f38\u51fa\u8981\u5339\u914d\u7684 title\uff0cserver \u6703\u78ba\u8a8d\u552f\u4e00\u5339\u914d\u5f8c\u624d\u66f4\u65b0\u3002",
     "analysis \u53ea\u80fd\u8acb server \u7528\u73fe\u6709 dashboard/work/todo \u8cc7\u6599\u7522\u751f\u6458\u8981\uff0c\u4e0d\u8981\u7de8\u9020\u6578\u5b57\u3002",
     "\u522a\u9664\u3001\u4fee\u6539\u3001\u66f4\u65b0\u3001\u6e05\u7a7a\u8cc7\u6599\u7b49 destructive intent \u4e00\u5f8b\u62d2\u7d55\u3002",
@@ -56,6 +58,8 @@ function buildPrompt(message) {
     "\u4e0d\u8981\u8f38\u51fa SQL\u3001Apps Script \u6216\u5916\u90e8 URL action\u3002",
     "\u8acb\u53ea\u8f38\u51fa JSON\uff0c\u4e0d\u8981 markdown\u3002",
     'JSON \u683c\u5f0f\uff1a{"reply":"\u6587\u5b57","action":{"type":"analysis","scope":"dashboard","label":"\u4e3b\u7ba1\u6458\u8981"} \u6216 null}',
+    "\u5982\u679c\u56de\u7b54\u67e5\u8a62\uff0c\u53ea\u80fd\u4f7f\u7528\u4e0b\u5217\u7cfb\u7d71\u641c\u5c0b\u6458\u8981\uff1b\u8cc7\u6599\u4e0d\u8db3\u5c31\u76f4\u63a5\u8aaa\u660e\u3002",
+    JSON.stringify(context),
     `\u4f7f\u7528\u8005\u8a0a\u606f\uff1a${message}`
   ].join("\n");
 }
@@ -67,7 +71,7 @@ function parseGeminiJson(text) {
   return JSON.parse(jsonText);
 }
 
-async function askGemini(message, apiKey) {
+async function askGemini(message, apiKey, context = []) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8000);
   try {
@@ -78,7 +82,7 @@ async function askGemini(message, apiKey) {
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: buildPrompt(message) }] }],
+          contents: [{ role: "user", parts: [{ text: buildPrompt(message, context) }] }],
           generationConfig: {
             temperature: 0.2,
             maxOutputTokens: 400,
@@ -338,6 +342,11 @@ async function completeWorkItem(action) {
   }
 }
 
+// Legacy executors stay private for compatibility; all supported writes now use signed confirmation tokens.
+void createTodo;
+void createCalendarUnavailable;
+void completeWorkItem;
+
 async function executeAction(result) {
   const action = sanitizeAssistantAction(result?.action);
   if (!action) {
@@ -347,9 +356,22 @@ async function executeAction(result) {
     };
   }
 
-  if (action.type === "create_todo") return createTodo(action);
-  if (action.type === "calendar_unavailable") return createCalendarUnavailable(action);
-  if (action.type === "complete_work_item") return completeWorkItem(action);
+  if (["create_todo", "create_follow_up", "create_calendar_event", "complete_work_item"].includes(action.type)) {
+    try {
+      const pendingAction = await prepareAssistantAction(action);
+      return { reply: "請確認以下動作，確認後系統才會寫入資料。", action: pendingAction };
+    } catch (error) {
+      return {
+        reply: error.message || "目前無法準備此動作。",
+        action: {
+          type: action.type,
+          status: error.code === "AMBIGUOUS_WORK" ? "ambiguous" : "failed",
+          title: action.title || "",
+          candidates: error.candidates || []
+        }
+      };
+    }
+  }
   if (action.type === "analysis") return createAnalysis(action);
 
   return {
@@ -384,13 +406,21 @@ export async function POST(request) {
     return json({ success: true, reply: executed.reply, action: executed.action });
   }
 
+  const search = await searchDashboard(message, { includePasswords: false, totalLimit: 12, categoryLimit: 4 })
+    .catch(() => ({ results: [], warnings: [] }));
+  const context = search.results.map((item) => ({ source: item.category, title: item.title, subtitle: item.subtitle, href: item.href }));
   const apiKey = process.env.GEMINI_API_KEY;
-  const aiResult = apiKey ? await askGemini(message, apiKey) : null;
-  const result = aiResult?.reply || aiResult?.action ? aiResult : createFallbackReply(message);
+  const aiResult = apiKey ? await askGemini(message, apiKey, context) : null;
+  const result = aiResult?.reply || aiResult?.action
+    ? aiResult
+    : context.length
+      ? { reply: `找到 ${context.length} 筆相關資料：${context.slice(0, 5).map((item) => item.title).join("、")}。`, action: null }
+      : createFallbackReply(message);
   const executed = await executeAction(result);
   return json({
     success: true,
     reply: executed.reply,
-    action: executed.action
+    action: executed.action,
+    sources: search.results.slice(0, 8)
   });
 }

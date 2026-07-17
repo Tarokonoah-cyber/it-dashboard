@@ -10,6 +10,7 @@ import {
   getParentSectionKey,
   getSectionHref
 } from "./navigation";
+import GlobalSearch from "./GlobalSearch";
 
 const MOBILE_DASHBOARD_EVENT = "dashboard-mobile-action";
 const MOBILE_SECTION_GROUPS = new Map([
@@ -240,6 +241,7 @@ export default function AppShell({
         >
           ☰
         </button>
+        <GlobalSearch />
         {children}
       </section>
       <nav className="mobile-bottom-nav" aria-label="手機快捷導覽">

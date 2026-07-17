@@ -18,10 +18,14 @@
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/data-edit-mode.test.mjs scripts/room-number.test.mjs"
+    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
   },
   "dependencies": {
+    "@expo-google-fonts/noto-sans-tc": "^0.4.3",
+    "@pdf-lib/fontkit": "^1.1.1",
+    "exceljs": "^4.4.0",
     "next": "16.2.9",
+    "pdf-lib": "^1.17.1",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },

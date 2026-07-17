@@ -3,9 +3,9 @@ import {
   createDashboardSessionToken,
   DASHBOARD_SESSION_COOKIE,
   DASHBOARD_SESSION_TTL_SECONDS,
-  dashboardAuthConfigured,
-  verifyDashboardCredentials
+  dashboardAuthConfigured
 } from "../../../lib/auth";
+import { verifyDashboardLoginCredentials } from "../../../lib/dashboard-credentials";
 
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
@@ -19,10 +19,18 @@ export async function POST(request) {
     );
   }
 
-  if (!verifyDashboardCredentials(user, password)) {
+  try {
+    if (!await verifyDashboardLoginCredentials(user, password)) {
+      return NextResponse.json(
+        { success: false, message: "帳號或密碼錯誤" },
+        { status: 401 }
+      );
+    }
+  } catch (error) {
+    console.error("[login credential error]", error);
     return NextResponse.json(
-      { success: false, message: "帳號或密碼錯誤" },
-      { status: 401 }
+      { success: false, message: "登入服務暫時無法連線，請稍後再試" },
+      { status: 503 }
     );
   }
 

@@ -14,6 +14,7 @@ import {
   formatDate,
   formatRelativeDate
 } from "../lib/dashboard-formatters";
+import { getWorkPriorityLabel } from "../lib/dashboard-metrics";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 function isDoneStatus(status) {
@@ -110,23 +111,22 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
   const works = dashboard?.openWorks || [];
   const followUps = dashboard?.followUps || [];
   const pendingCount = dashboard?.pendingCount ?? 0;
-  const completedCount = dashboard?.completedCount ?? Math.max(0, (dashboard?.monthWorkCount || 0) - (dashboard?.pendingCount || 0));
-  const completionTotal = completedCount + pendingCount;
-  const completionRate = completionTotal ? Math.round((completedCount / completionTotal) * 100) : (dashboard?.completionRate ?? 0);
-  const urgentWorkCount = works.filter((work) => /異常|逾期|緊急|urgent|critical/i.test(`${work.status || ""} ${work.impact || ""}`)).length;
+  const monthCompletedCount = dashboard?.monthCompletedCount ?? 0;
+  const monthCompletionTotal = dashboard?.monthCompletionTotal ?? dashboard?.monthWorkCount ?? 0;
+  const monthCompletionRate = dashboard?.monthCompletionRate ?? (monthCompletionTotal ? Math.round((monthCompletedCount / monthCompletionTotal) * 100) : 0);
+  const importantWorkCount = dashboard?.importantCount ?? works.filter((work) => getWorkPriorityLabel(work) === "重要").length;
 
   return (
     <div className="modern-dashboard-page">
       <header className="section-head">
         <div>
           <h1>儀表板</h1>
-          <p className="mobile-dashboard-date">今天先處理最重要的工作</p>
         </div>
       </header>
       <section className="dashboard-kpi-strip">
         <section className="dashboard-kpi-summary" aria-label="今日營運指標">
           <KpiSummaryItem
-            label="今日待處理"
+            label="未完成工作"
             value={pendingCount}
             unit="件"
             tone={pendingCount > 0 ? "warn" : "good"}
@@ -137,21 +137,21 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
             unit="件"
             delta={dashboard?.deltas?.monthWork || "+0"}
             deltaLabel="較上月"
-            detail="本月累計"
             tone="neutral"
             deltaImpact="neutral"
           />
           <KpiSummaryItem
-            label="緊急任務"
-            value={urgentWorkCount}
+            label="重要任務"
+            value={importantWorkCount}
             unit="件"
-            detail=""
-            tone={urgentWorkCount > 0 ? "bad" : "good"}
+            detail="優先處理"
+            tone={importantWorkCount > 0 ? "warn" : "good"}
           />
           <CompletionSummaryItem
-            rate={completionRate}
-            completed={completedCount}
-            total={completionTotal}
+            label="本月完成率"
+            rate={monthCompletionRate}
+            completed={monthCompletedCount}
+            total={monthCompletionTotal}
           />
         </section>
         <details className="mobile-month-kpi">
