@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   countActionableToday,
-  selectTodayFollowUps,
+  selectTodayFollowUpReminders,
   selectUpcomingContractReminders
 } from "../lib/calendarReminders.js";
 
@@ -28,13 +28,17 @@ test("countActionableToday includes only work scheduled for today", () => {
   ], "2026-07-17"), 1);
 });
 
-test("selectTodayFollowUps includes only follow-ups scheduled for today", () => {
-  const result = selectTodayFollowUps([
+test("selectTodayFollowUpReminders includes only follow-up work actionable today", () => {
+  const result = selectTodayFollowUpReminders([
     { id: "past", next_follow_date: "2026-07-16", title: "昨天追蹤" },
     { id: "today", next_follow_date: "2026-07-17T09:00:00+08:00", title: "今天追蹤" },
     { id: "future", next_follow_date: "2026-07-18", title: "明天追蹤" },
-    { id: "work", date: "2026-07-17", title: "一般工作，不算追蹤" }
+  ], [
+    { id: "duplicate", source: "follow_ups", source_id: "today", date: "2026-07-17", title: "今天追蹤" },
+    { id: "promoted", source: "follow_ups", source_id: "overdue", date: "2026-07-17", title: "逾期後今日處理" },
+    { id: "work", date: "2026-07-17", title: "一般工作，不算追蹤" },
+    { id: "future-work", source: "follow_ups", date: "2026-07-18", title: "明天追蹤" }
   ], "2026-07-17");
 
-  assert.deepEqual(result.map((item) => item.id), ["today"]);
+  assert.deepEqual(result.map((item) => item.id), ["today", "promoted"]);
 });

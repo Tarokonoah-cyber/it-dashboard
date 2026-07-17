@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "../../lib/dashboard-api";
 import { dateKey, getLocalDateKey, getTodayKey } from "../../lib/dashboard-formatters";
 import { isThreeDigitRoomNumber } from "../../lib/room-number";
-import { selectTodayFollowUps } from "../../lib/calendarReminders";
+import { selectTodayFollowUpReminders } from "../../lib/calendarReminders";
 
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -58,7 +58,11 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   const router = useRouter();
   const todayKey = getTodayKey();
   const networkRooms = dashboard?.networkRooms || [];
-  const todayFollowUps = selectTodayFollowUps(dashboard?.followUps || [], todayKey);
+  const todayFollowUps = selectTodayFollowUpReminders(
+    dashboard?.followUps || [],
+    dashboard?.openWorks || [],
+    todayKey
+  );
   const todayFollowUpCount = todayFollowUps.length;
   const todayFollowUpSummary = reminderSummary("今日待追蹤", todayFollowUps);
   const contractReminders = dashboard?.contractReminders || [];
