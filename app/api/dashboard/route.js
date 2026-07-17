@@ -105,21 +105,15 @@ export async function GET(request) {
 
   try {
     const today = todayTaipei();
-    let workRows;
-    try {
-      workRows = await loadWorkRows();
-    } catch (error) {
-      console.error("[dashboard critical query error]", error);
-      return fail(new Error("Dashboard data failed to load"));
-    }
-
     const warnings = [];
+    let workRows = [];
     let networkRooms = [];
     let followUpRows = [];
     let contractRows = [];
     let mobileContractRows = [];
     const contractReminderEndDate = addDateDays(today, 50);
-    const [networkResult, followUpResult, contractResult, mobileContractResult] = await Promise.allSettled([
+    const [workResult, networkResult, followUpResult, contractResult, mobileContractResult] = await Promise.allSettled([
+      loadWorkRows(),
       supabaseRequest(
         "network_test_rooms",
         `select=*&date=eq.${encodeURIComponent(today)}&order=room_no.asc`
@@ -134,6 +128,13 @@ export async function GET(request) {
         `select=id,phone_no,user_name,end_date,status&end_date=gte.${encodeURIComponent(today)}&end_date=lte.${encodeURIComponent(contractReminderEndDate)}&order=end_date.asc&limit=1000`
       )
     ]);
+
+    if (workResult.status === "fulfilled") {
+      workRows = workResult.value;
+    } else {
+      console.error("[dashboard critical query error]", workResult.reason);
+      return fail(new Error("Dashboard data failed to load"));
+    }
 
     if (networkResult.status === "fulfilled") {
       networkRooms = networkResult.value;

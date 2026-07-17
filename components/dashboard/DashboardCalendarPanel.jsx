@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { api } from "../../lib/dashboard-api";
 import { dateKey, getLocalDateKey, getTodayKey } from "../../lib/dashboard-formatters";
 import { isThreeDigitRoomNumber } from "../../lib/room-number";
-import { selectActionableTodayWorks } from "../../lib/calendarReminders";
+import { selectTodayFollowUps } from "../../lib/calendarReminders";
 
 const CALENDAR_EVENT_TYPES = ["任務", "巡檢", "維護", "會議", "其他"];
 
@@ -58,9 +58,9 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
   const router = useRouter();
   const todayKey = getTodayKey();
   const networkRooms = dashboard?.networkRooms || [];
-  const actionableTodayWorks = selectActionableTodayWorks(dashboard?.openWorks || [], todayKey);
-  const actionableTodayCount = actionableTodayWorks.length;
-  const todayTodoSummary = reminderSummary("今日待辦", actionableTodayWorks);
+  const todayFollowUps = selectTodayFollowUps(dashboard?.followUps || [], todayKey);
+  const todayFollowUpCount = todayFollowUps.length;
+  const todayFollowUpSummary = reminderSummary("今日待追蹤", todayFollowUps);
   const contractReminders = dashboard?.contractReminders || [];
   const contractRemindersByDate = contractReminders.reduce((rowsByDate, reminder) => {
     const reminderDate = dateKey(reminder.end_date);
@@ -346,7 +346,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
         </div>
         <div className="calendar-actions">
           <div className="calendar-reminder-legend" aria-label="行事曆提醒圖例">
-            <span><i className="tone-todo" aria-hidden="true" />今日待辦</span>
+            <span><i className="tone-todo" aria-hidden="true" />今日待追蹤</span>
             <span><i className="tone-contract" aria-hidden="true" />50 天內到期</span>
           </div>
           <button
@@ -375,7 +375,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
           const cellDate = day ? getLocalDateKey(year, month, day) : "";
           const dayEvents = cellDate ? calendarEvents[cellDate] || [] : [];
           const dayContractReminders = cellDate ? contractRemindersByDate[cellDate] || [] : [];
-          const hasTodayTodoReminder = cellDate === todayKey && actionableTodayCount > 0;
+          const hasTodayFollowUpReminder = cellDate === todayKey && todayFollowUpCount > 0;
           const contractReminderSummary = reminderSummary("合約到期", dayContractReminders);
           const visibleDayEvents = dayEvents.slice(0, 2);
           const hiddenEventCount = Math.max(0, dayEvents.length - visibleDayEvents.length);
@@ -403,16 +403,16 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
                 <div className="calendar-cell-date-row">
                   <span className="calendar-date-badge">
                     <span className={`calendar-day-number ${isCurrentMonth && day === today ? "today-dot" : ""}`}>{String(day).padStart(2, "0")}</span>
-                    {hasTodayTodoReminder || dayContractReminders.length ? (
+                    {hasTodayFollowUpReminder || dayContractReminders.length ? (
                       <span className="calendar-reminder-dots">
-                        {hasTodayTodoReminder ? (
+                        {hasTodayFollowUpReminder ? (
                           <button
                             className="calendar-reminder-trigger"
                             type="button"
-                            aria-label={todayTodoSummary}
-                            onMouseEnter={(event) => showReminderTooltip(event, todayTodoSummary)}
+                            aria-label={todayFollowUpSummary}
+                            onMouseEnter={(event) => showReminderTooltip(event, todayFollowUpSummary)}
                             onMouseLeave={() => setReminderTooltip(null)}
-                            onFocus={(event) => showReminderTooltip(event, todayTodoSummary)}
+                            onFocus={(event) => showReminderTooltip(event, todayFollowUpSummary)}
                             onBlur={() => setReminderTooltip(null)}
                             onClick={(event) => event.stopPropagation()}
                             onDoubleClick={(event) => event.stopPropagation()}

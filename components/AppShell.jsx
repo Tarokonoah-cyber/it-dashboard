@@ -37,6 +37,11 @@ function navigateTo(item, onNavigate, router) {
   router.push(item.href || getSectionHref(item.key));
 }
 
+function prefetchRoute(item, router) {
+  const href = item?.href || getSectionHref(item?.key);
+  if (href?.startsWith("/")) router.prefetch(href);
+}
+
 function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, mobileOpen, onCloseMobile }) {
   const [openGroups, setOpenGroups] = useState(() => getInitialOpenGroups(activeSection));
 
@@ -78,6 +83,14 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
     onCloseMobile?.();
   }
 
+  function prefetchItem(item) {
+    if (item?.children?.length) {
+      item.children.forEach((child) => prefetchRoute(child, router));
+      return;
+    }
+    prefetchRoute(item, router);
+  }
+
   return (
     <>
       <button
@@ -112,6 +125,9 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
                   type="button"
                   className={`nav-item ${groupActive ? "active" : ""} ${hasChildren ? "has-children" : ""}`}
                   onClick={() => (hasChildren ? handleParentClick(item) : handleNavigate(item))}
+                  onMouseEnter={() => prefetchItem(item)}
+                  onFocus={() => prefetchItem(item)}
+                  onTouchStart={() => prefetchItem(item)}
                   title={item.label}
                   aria-expanded={hasChildren && !collapsed ? expanded : undefined}
                 >
@@ -127,6 +143,9 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
                         type="button"
                         className={`nav-child ${activeSection === child.key ? "active" : ""}`}
                         onClick={() => handleNavigate(child)}
+                        onMouseEnter={() => prefetchRoute(child, router)}
+                        onFocus={() => prefetchRoute(child, router)}
+                        onTouchStart={() => prefetchRoute(child, router)}
                       >
                         {child.label}
                       </button>

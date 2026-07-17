@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -25,7 +27,7 @@ export default function LoginPage() {
       }
 
       const next = new URLSearchParams(window.location.search).get("next") || "/";
-      window.location.assign(next.startsWith("/") ? next : "/");
+      router.replace(next.startsWith("/") ? next : "/");
     } catch (err) {
       setError(err.message || "登入失敗");
     } finally {
