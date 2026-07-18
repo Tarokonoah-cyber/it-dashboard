@@ -20,6 +20,7 @@ export function cloneRows(rows) {
 }
 
 export function isEditableColumn(column) {
+  if (column?.editable === false) return false;
   if (SYSTEM_LABELS.has(column?.label)) return false;
   return !(column?.keys || []).some((key) => SYSTEM_KEYWORDS.includes(String(key).toLowerCase()));
 }

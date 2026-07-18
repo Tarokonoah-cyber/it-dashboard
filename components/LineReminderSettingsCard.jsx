@@ -78,7 +78,7 @@ export default function LineReminderSettingsCard() {
       <div className="settings-line-status">
         <div className="line-status-row">
           <span className={`line-status-dot ${status?.configured ? "connected" : ""}`} aria-hidden="true" />
-          <div><strong>{loading ? "檢查中…" : status?.configured ? "LINE 已連線" : "LINE 尚未完成設定"}</strong><small>只推送到目前允許的 LINE 群組</small></div>
+          <div><strong>{loading ? "檢查中…" : status?.configured ? "LINE 已連線" : "LINE 尚未完成設定"}</strong><small>只私訊到設定的個人 LINE 帳號</small></div>
         </div>
         <dl>
           <div><dt>推播時間</dt><dd>週一至週五 08:30</dd></div>

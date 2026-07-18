@@ -2,6 +2,7 @@ export const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "⌂", label: "儀表板", href: "/" },
+  { key: "notifications", icon: "◉", label: "通知中心", href: "/notifications" },
   { key: "quick-notes", icon: "✎", label: "快速備忘錄", href: "/quick-notes" },
   {
     key: "work-center",

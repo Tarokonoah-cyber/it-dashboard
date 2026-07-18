@@ -3,6 +3,7 @@ import path from "path";
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 import { getContractLifecycleStatus } from "../../../lib/contractStatus";
+import { getWarrantyStatus, isAssetSourceKey } from "../../../lib/asset-lifecycle";
 import {
   buildRecordInsert,
   buildRecordUpdate,
@@ -193,6 +194,39 @@ function wrapNormalizedRows(source, rows, toData) {
   }));
 }
 
+async function attachAssetLifecycle(rows) {
+  const sourceRecordIds = rows.map((row) => String(row.id || "").trim()).filter(Boolean);
+  if (!sourceRecordIds.length) return rows;
+
+  const profiles = await supabaseRequest(
+    "assets",
+    `source_record_id=in.(${sourceRecordIds.map(encodeURIComponent).join(",")})&select=id,source_record_id,purchase_date,purchase_vendor,purchase_cost,serial_number,warranty_end_date,warranty_note&limit=1000`
+  );
+  const profileByRecordId = new Map(profiles.map((profile) => [profile.source_record_id, profile]));
+  const today = todayTaipei();
+
+  return rows.map((row) => {
+    const profile = profileByRecordId.get(row.id) || {};
+    const warrantyStatus = getWarrantyStatus(profile, today);
+    return {
+      ...row,
+      data: {
+        ...(row.data || {}),
+        asset_id: profile.id || "",
+        purchase_date: profile.purchase_date || "",
+        purchase_vendor: profile.purchase_vendor || "",
+        purchase_cost: profile.purchase_cost ?? "",
+        serial_number: profile.serial_number || "",
+        warranty_end_date: profile.warranty_end_date || "",
+        warranty_note: profile.warranty_note || "",
+        warranty_status: warrantyStatus.code,
+        warranty_status_label: warrantyStatus.label,
+        warranty_days_remaining: warrantyStatus.daysRemaining
+      }
+    };
+  });
+}
+
 async function readLocalContactsRows() {
   try {
     const filePath = path.join(process.cwd(), "data", "contacts.json");
@@ -381,7 +415,10 @@ export async function GET(request) {
           if (fallback) return fallback;
         }
         if (source === "documents") rows.sort(compareSubmittedDocuments);
-        const normalizedRows = wrapNormalizedRows(source, rows, normalized.toData);
+        let normalizedRows = wrapNormalizedRows(source, rows, normalized.toData);
+        if (source === "assets" || isAssetSourceKey(source)) {
+          normalizedRows = await attachAssetLifecycle(normalizedRows);
+        }
         return ok({
           source,
           normalized: true,

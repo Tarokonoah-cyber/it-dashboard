@@ -19,11 +19,17 @@ import {
   useUnsavedChangesWarning
 } from "./dataEditMode";
 import { getContractLifecycleStatus, isContractExpiringWithin } from "../lib/contractStatus";
+import AssetHistoryDialog from "./AssetHistoryDialog";
 
 const SOC_SOP_PUBLIC_URL =
   "https://oidfglrsqrtiimqjfriw.supabase.co/storage/v1/object/public/sop-files/soc/soc-mis-checklist-official.xlsx";
 const SOC_SOP_TITLE = "SOC MIS 標準作業檢查表";
 const SOC_SOP_DESCRIPTION = "SOC 日常標準作業檢查使用";
+const ASSET_LIFECYCLE_COLUMNS = [
+  { label: "採購日", keys: ["purchase_date"], editable: false },
+  { label: "保固狀態", keys: ["warranty_status_label"], editable: false },
+  { label: "設備履歷", keys: ["asset_history_action"], editable: false }
+];
 
 const DATA_SECTION_CONFIGS = {
   contacts: { title: "通訊錄", source: "contacts", hint: "分機、專線、手機與 Email 查詢" },
@@ -66,7 +72,8 @@ const ASSET_COLUMNS = [
   { label: "狀態", keys: ["狀態", "status", "???", "çæ\u0085"] },
   { label: "盤點狀態", keys: ["盤點狀態", "inventory_status", "?日????", "ç¤é»çæ\u0085"] },
   { label: "備註", keys: ["備註", "note", "?酉", "åè¨»", "ç¤é»åè¨»"] },
-  { label: "最後更新", keys: ["最後更新", "updated_at", "?敺??", "æå¾æ´æ°"] }
+  { label: "最後更新", keys: ["最後更新", "updated_at", "?敺??", "æå¾æ´æ°"] },
+  ...ASSET_LIFECYCLE_COLUMNS
 ];
 
 const PRINTER_COLUMNS = [
@@ -77,7 +84,8 @@ const PRINTER_COLUMNS = [
   { label: "硬體型號", keys: ["硬體型號", "主機型號", "model"] },
   { label: "碳粉/墨水", keys: ["碳粉/墨水型號 ", "碳粉/墨水型號", "耗材", "note"] },
   { label: "資產狀態", keys: ["資產狀態", "狀態", "status"] },
-  { label: "最後更新", keys: ["最後更新", "最後更新時間", "updated_at"] }
+  { label: "最後更新", keys: ["最後更新", "最後更新時間", "updated_at"] },
+  ...ASSET_LIFECYCLE_COLUMNS
 ];
 
 const NORTH_YA_COLUMNS = [
@@ -90,7 +98,8 @@ const NORTH_YA_COLUMNS = [
   { label: "螢幕尺寸", keys: ["螢幕尺寸", "螢幕型號", "monitor_model"] },
   { label: "AnyDesk ID", keys: ["Anydesk ID", "AnyDesk ID", "anydesk_id"] },
   { label: "更新時間", keys: ["資料更新時間", "最後更新", "updated_at"] },
-  { label: "備註", keys: ["備註", "note"] }
+  { label: "備註", keys: ["備註", "note"] },
+  ...ASSET_LIFECYCLE_COLUMNS
 ];
 
 const IPTV_COLUMNS = [
@@ -98,7 +107,8 @@ const IPTV_COLUMNS = [
   { label: "IP", keys: ["IP", "IP 位址", "ip_address"] },
   { label: "TS", keys: ["TS"] },
   { label: "MAC", keys: ["MAC", "mac_address"] },
-  { label: "原始網路欄位", keys: ["原始網路欄位"] }
+  { label: "原始網路欄位", keys: ["原始網路欄位"] },
+  ...ASSET_LIFECYCLE_COLUMNS
 ];
 
 const RECORD_COLUMN_CONFIGS = {
@@ -233,6 +243,11 @@ function StatusBadge({ value }) {
 
 function RecordValue({ value, column }) {
   if (["狀態", "盤點狀態", "資產狀態"].includes(column?.label)) return <StatusBadge value={value} />;
+  if (column?.label === "保固狀態") {
+    const label = String(value || "未設定");
+    const tone = label === "保固中" ? "active" : label === "即將到期" ? "expiring" : label === "已過保" ? "expired" : "unset";
+    return <span className={`asset-warranty-badge is-${tone}`}>{label}</span>;
+  }
   const text = formatDisplayValue(value);
   return text === "-" ? <span className="muted">-</span> : <span title={text}>{text}</span>;
 }
@@ -562,6 +577,7 @@ export default function DataSectionPage({ sectionKey }) {
   const [contractDetail, setContractDetail] = useState(null);
   const [contractDetailLoading, setContractDetailLoading] = useState(false);
   const [contractDetailError, setContractDetailError] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const hasUnsavedChanges = editMode && hasDraftChanges(rows, draftRows);
 
   useUnsavedChangesWarning(hasUnsavedChanges);
@@ -818,6 +834,18 @@ export default function DataSectionPage({ sectionKey }) {
                         </button>
                       );
                     }
+                    if (isAssetSection && column.label === "設備履歷") {
+                      return (
+                        <button
+                          className="asset-history-button"
+                          type="button"
+                          key={column.label}
+                          onClick={() => setSelectedAsset(row)}
+                        >
+                          查看履歷
+                        </button>
+                      );
+                    }
                     return <RecordValue key={column.label} column={column} value={getRecordField(row, column)} />;
                   })}
                 </div>
@@ -834,6 +862,9 @@ export default function DataSectionPage({ sectionKey }) {
           error={contractDetailError}
           onClose={closeContractDetail}
         />
+      ) : null}
+      {selectedAsset ? (
+        <AssetHistoryDialog record={selectedAsset} onClose={() => setSelectedAsset(null)} onSaved={load} />
       ) : null}
     </section>
   );

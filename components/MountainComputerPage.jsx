@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getField } from "./DataSectionPage";
+import AssetHistoryDialog from "./AssetHistoryDialog";
 import {
   blankDraftRow,
   changedRows,
@@ -36,7 +37,10 @@ const MOUNTAIN_PC_COLUMNS = [
   { label: "防毒狀態", keys: ["防毒", "antivirus_installed", "?臬鋆瘥?", "?脫?", "æ¯å¦è£é²æ¯"] },
   { label: "盤點狀態", keys: ["第 1 欄", "資產狀態", "盤點狀態", "狀態", "status", "?日????", "???", "ç¤é»çæ\u0085", "çæ\u0085"] },
   { label: "備註", keys: ["備註", "note", "?酉", "?日??酉", "åè¨»", "ç¤é»åè¨»"] },
-  { label: "最後更新", keys: ["最後更新時間", "最後更新", "updated_at", "?敺??", "?日???", "æå¾æ´æ°"] }
+  { label: "最後更新", keys: ["最後更新時間", "最後更新", "updated_at", "?敺??", "?日???", "æå¾æ´æ°"] },
+  { label: "採購日", keys: ["purchase_date"], editable: false },
+  { label: "保固狀態", keys: ["warranty_status_label"], editable: false },
+  { label: "設備履歷", keys: ["asset_history_action"], editable: false }
 ];
 
 async function api(path, options) {
@@ -124,6 +128,12 @@ function AssetCell({ column, value }) {
   if (column.label === "防毒狀態") return <AntivirusValue value={value} />;
   if (column.label === "盤點狀態") return <InventoryStatusBadge value={value} />;
   if (column.label === "最後更新") return <RecordValue value={formatDate(value)} />;
+  if (column.label === "採購日") return <RecordValue value={formatDate(value)} />;
+  if (column.label === "保固狀態") {
+    const label = String(value || "未設定");
+    const tone = label === "保固中" ? "active" : label === "即將到期" ? "expiring" : label === "已過保" ? "expired" : "unset";
+    return <span className={`asset-warranty-badge is-${tone}`}>{label}</span>;
+  }
   if (column.label === "資產類型") {
     return (
       <span className="asset-type-pill">
@@ -175,6 +185,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
   const [department, setDepartment] = useState("全部部門");
   const [windowsFilter, setWindowsFilter] = useState("全部");
   const [ipSort, setIpSort] = useState("asc");
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const hasUnsavedChanges = editMode && hasDraftChanges(rows, draftRows);
 
   useUnsavedChangesWarning(hasUnsavedChanges);
@@ -372,7 +383,9 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
                 <tr key={rowIdentity(row)}>
                   {MOUNTAIN_PC_COLUMNS.map((column) => (
                     <td key={column.label}>
-                      {editMode && isEditableColumn(column) ? (
+                      {column.label === "設備履歷" ? (
+                        <button className="asset-history-button" type="button" onClick={() => setSelectedAsset(row)}>查看履歷</button>
+                      ) : editMode && isEditableColumn(column) ? (
                         <EditableAssetCell
                           row={row}
                           column={column}
@@ -390,6 +403,9 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
           </tbody>
         </table>
       </div>
+      {selectedAsset ? (
+        <AssetHistoryDialog record={selectedAsset} onClose={() => setSelectedAsset(null)} onSaved={load} />
+      ) : null}
     </section>
   );
 }

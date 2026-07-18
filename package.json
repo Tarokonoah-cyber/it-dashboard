@@ -18,7 +18,7 @@
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
+    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans-tc": "^0.4.3",
