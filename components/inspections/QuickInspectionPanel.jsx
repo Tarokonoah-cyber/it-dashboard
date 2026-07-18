@@ -14,11 +14,18 @@ import {
 } from "./inspectionTemplates";
 
 async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: { "Content-Type": "application/json", ...(options?.headers || {}) },
-    cache: "no-store"
-  });
+  let response;
+  try {
+    response = await fetch(path, {
+      ...options,
+      headers: { "Content-Type": "application/json", ...(options?.headers || {}) },
+      cache: "no-store"
+    });
+  } catch {
+    const error = new Error("目前無法連線，巡檢內容已保留在這台裝置。");
+    error.code = "NETWORK_ERROR";
+    throw error;
+  }
   const data = await response.json().catch(() => ({}));
   if (!response.ok || !data.success) {
     const error = new Error(data.message || "資料處理失敗");
@@ -64,8 +71,55 @@ function payloadItems(items) {
   }));
 }
 
-function draftKey(recordId, date) {
+function legacyDraftKey(recordId, date) {
   return `daily-inspection-draft:${recordId || date || "today"}`;
+}
+
+function draftKey(recordId) {
+  return `daily-inspection-draft-v2:${recordId || "new"}`;
+}
+
+function readDraft(recordId, date) {
+  const keys = [draftKey(recordId), legacyDraftKey(recordId, date)];
+  for (const key of keys) {
+    const saved = window.localStorage.getItem(key);
+    if (!saved) continue;
+    try {
+      const draft = JSON.parse(saved);
+      if (draft?.items?.length) return draft;
+    } catch {
+      window.localStorage.removeItem(key);
+    }
+  }
+  return null;
+}
+
+function persistDraft(recordId, form, pendingSubmission = false) {
+  const savedAt = new Date().toISOString();
+  window.localStorage.setItem(draftKey(recordId), JSON.stringify({
+    ...form,
+    _draft: {
+      version: 2,
+      saved_at: savedAt,
+      pending_submission: pendingSubmission
+    }
+  }));
+  return savedAt;
+}
+
+function clearDraft(recordId, date) {
+  window.localStorage.removeItem(draftKey(recordId));
+  window.localStorage.removeItem(legacyDraftKey(recordId, date));
+  window.localStorage.removeItem(legacyDraftKey("", date));
+}
+
+function formatDraftTime(value) {
+  if (!value) return "";
+  return new Intl.DateTimeFormat("zh-TW", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  }).format(new Date(value));
 }
 
 export default function QuickInspectionPanel({
@@ -83,6 +137,10 @@ export default function QuickInspectionPanel({
   const [showAttentionOnly, setShowAttentionOnly] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [online, setOnline] = useState(true);
+  const [draftReady, setDraftReady] = useState(false);
+  const [draftStatus, setDraftStatus] = useState("");
+  const [dirty, setDirty] = useState(false);
   const [form, setForm] = useState({
     inspection_date: todayTaipei(),
     inspector_name: "Admin",
@@ -97,27 +155,47 @@ export default function QuickInspectionPanel({
     : activeItems;
 
   useEffect(() => {
+    setOnline(window.navigator.onLine);
+
+    function handleOnline() {
+      setOnline(true);
+      setMessage("網路已恢復，請確認內容後按「完成巡檢」送出。");
+    }
+
+    function handleOffline() {
+      setOnline(false);
+      setMessage("目前離線，巡檢內容會自動暫存在這台裝置。");
+    }
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
     let active = true;
 
     async function loadRecord() {
+      const savedDraft = readDraft(recordId, todayTaipei());
       if (!isEdit) {
-        const savedDraft = window.localStorage.getItem(draftKey("", todayTaipei()));
-        if (savedDraft) {
-          try {
-            const draft = JSON.parse(savedDraft);
-            if (active && draft?.items?.length) {
-              setForm({
-                inspection_date: draft.inspection_date || todayTaipei(),
-                inspector_name: draft.inspector_name || "Admin",
-                note: draft.note || "",
-                items: draft.items.map(normalizeFormItem)
-              });
-              setMessage("已載入尚未完成的本機草稿。");
-            }
-          } catch {
-            window.localStorage.removeItem(draftKey("", todayTaipei()));
+        if (active && savedDraft?.items?.length) {
+          setForm({
+            inspection_date: savedDraft.inspection_date || todayTaipei(),
+            inspector_name: savedDraft.inspector_name || "Admin",
+            note: savedDraft.note || "",
+            items: savedDraft.items.map(normalizeFormItem)
+          });
+          setMessage(savedDraft._draft?.pending_submission
+            ? "已載入離線暫存的巡檢，連線後請再次送出。"
+            : "已載入尚未完成的本機草稿。");
+          if (savedDraft._draft?.saved_at) {
+            setDraftStatus(`上次暫存 ${formatDraftTime(savedDraft._draft.saved_at)}`);
           }
         }
+        if (active) setDraftReady(true);
         return;
       }
 
@@ -127,16 +205,40 @@ export default function QuickInspectionPanel({
         const data = await api(`/api/inspections/${recordId}`);
         const record = data.record;
         if (!active) return;
-        setForm({
-          inspection_date: String(record.inspection_date || "").slice(0, 10),
-          inspector_name: record.inspector_name || "Admin",
-          note: record.note || "",
-          items: (record.items || []).map(normalizeFormItem)
-        });
+        if (savedDraft?.items?.length) {
+          setForm({
+            inspection_date: savedDraft.inspection_date || String(record.inspection_date || "").slice(0, 10),
+            inspector_name: savedDraft.inspector_name || record.inspector_name || "Admin",
+            note: savedDraft.note || "",
+            items: savedDraft.items.map(normalizeFormItem)
+          });
+          setMessage("已載入這筆巡檢尚未送出的本機草稿。");
+          if (savedDraft._draft?.saved_at) setDraftStatus(`上次暫存 ${formatDraftTime(savedDraft._draft.saved_at)}`);
+        } else {
+          setForm({
+            inspection_date: String(record.inspection_date || "").slice(0, 10),
+            inspector_name: record.inspector_name || "Admin",
+            note: record.note || "",
+            items: (record.items || []).map(normalizeFormItem)
+          });
+        }
       } catch (err) {
-        if (active) setError(err.message);
+        if (active && savedDraft?.items?.length) {
+          setForm({
+            inspection_date: savedDraft.inspection_date || todayTaipei(),
+            inspector_name: savedDraft.inspector_name || "Admin",
+            note: savedDraft.note || "",
+            items: savedDraft.items.map(normalizeFormItem)
+          });
+          setMessage("目前無法連線，已改為載入這台裝置上的巡檢草稿。");
+        } else if (active) {
+          setError(err.message);
+        }
       } finally {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+          setDraftReady(true);
+        }
       }
     }
 
@@ -146,7 +248,26 @@ export default function QuickInspectionPanel({
     };
   }, [isEdit, recordId]);
 
+  useEffect(() => {
+    if (!draftReady || !dirty) return undefined;
+    const timer = window.setTimeout(() => {
+      try {
+        const savedAt = persistDraft(recordId, form);
+        setDraftStatus(`已自動暫存 ${formatDraftTime(savedAt)}`);
+      } catch {
+        setDraftStatus("本機暫存空間不足，請先送出或清理瀏覽器空間");
+      }
+    }, 700);
+    return () => window.clearTimeout(timer);
+  }, [dirty, draftReady, form, recordId]);
+
+  function updateForm(patch) {
+    setDirty(true);
+    setForm((current) => ({ ...current, ...patch }));
+  }
+
   function updateItem(index, patch) {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       items: current.items.map((item, itemIndex) => {
@@ -163,6 +284,7 @@ export default function QuickInspectionPanel({
   }
 
   function markAllNormal() {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       items: current.items.map((item) =>
@@ -181,6 +303,7 @@ export default function QuickInspectionPanel({
   }
 
   function clearAll() {
+    setDirty(true);
     setForm((current) => ({
       ...current,
       items: current.items.map((item) =>
@@ -200,8 +323,13 @@ export default function QuickInspectionPanel({
   }
 
   function saveDraft() {
-    window.localStorage.setItem(draftKey(recordId, form.inspection_date), JSON.stringify(form));
-    setMessage("草稿已儲存在此瀏覽器。");
+    try {
+      const savedAt = persistDraft(recordId, form, !online);
+      setDraftStatus(`已手動暫存 ${formatDraftTime(savedAt)}`);
+      setMessage("草稿已儲存在這台裝置的瀏覽器。");
+    } catch {
+      setError("無法儲存本機草稿，請先清理瀏覽器儲存空間。");
+    }
   }
 
   async function submit(event) {
@@ -217,15 +345,28 @@ export default function QuickInspectionPanel({
         note: form.note,
         items: payloadItems(form.items)
       };
+      if (!window.navigator.onLine) {
+        const savedAt = persistDraft(recordId, form, true);
+        setOnline(false);
+        setDraftStatus(`離線暫存 ${formatDraftTime(savedAt)}`);
+        setMessage("目前離線，資料尚未送到伺服器；恢復網路後請再按一次「完成巡檢」。");
+        return;
+      }
       const data = await api(isEdit ? `/api/inspections/${recordId}` : "/api/inspections", {
         method: isEdit ? "PATCH" : "POST",
         body: JSON.stringify(body)
       });
-      window.localStorage.removeItem(draftKey(recordId, form.inspection_date));
-      window.localStorage.removeItem(draftKey("", form.inspection_date));
+      clearDraft(recordId, form.inspection_date);
       onSaved?.(data.record);
     } catch (err) {
-      setError(err.message);
+      if (err.code === "NETWORK_ERROR" || !window.navigator.onLine) {
+        const savedAt = persistDraft(recordId, form, true);
+        setOnline(false);
+        setDraftStatus(`連線中斷，已暫存 ${formatDraftTime(savedAt)}`);
+        setMessage("網路連線不穩，巡檢內容已暫存在這台裝置；恢復網路後請重新送出。");
+      } else {
+        setError(err.message);
+      }
     } finally {
       setSaving(false);
     }
@@ -252,6 +393,10 @@ export default function QuickInspectionPanel({
 
       {error ? <div className="error-box">{error}</div> : null}
       {message ? <div className="inspection-notice compact">{message}</div> : null}
+      <div className={`inspection-connectivity ${online ? "is-online" : "is-offline"}`} role="status">
+        <span><i aria-hidden="true" />{online ? "網路連線正常" : "離線模式"}</span>
+        <small>{draftStatus || "開始填寫後會自動暫存"}</small>
+      </div>
 
       <nav className="inspection-period-tabs compact" aria-label="巡檢分類">
         {Object.values(INSPECTION_PERIODS).map((period) => (
@@ -273,7 +418,7 @@ export default function QuickInspectionPanel({
           <input
             type="date"
             value={form.inspection_date}
-            onChange={(event) => setForm((current) => ({ ...current, inspection_date: event.target.value }))}
+            onChange={(event) => updateForm({ inspection_date: event.target.value })}
             required
           />
         </label>
@@ -281,7 +426,7 @@ export default function QuickInspectionPanel({
           巡檢人員
           <input
             value={form.inspector_name}
-            onChange={(event) => setForm((current) => ({ ...current, inspector_name: event.target.value }))}
+            onChange={(event) => updateForm({ inspector_name: event.target.value })}
             placeholder="Admin"
             required
           />
@@ -368,7 +513,7 @@ export default function QuickInspectionPanel({
         本日補充說明
         <textarea
           value={form.note}
-          onChange={(event) => setForm((current) => ({ ...current, note: event.target.value }))}
+          onChange={(event) => updateForm({ note: event.target.value })}
           placeholder="可選填今日巡檢補充事項"
         />
       </label>
@@ -376,7 +521,7 @@ export default function QuickInspectionPanel({
       <footer className="quick-footer-actions">
         <button type="button" onClick={saveDraft}>儲存草稿</button>
         <button className="primary-action" type="submit" disabled={saving}>
-          {saving ? "儲存中..." : "完成巡檢"}
+          {saving ? "儲存中..." : (online ? "完成巡檢" : "離線暫存巡檢")}
         </button>
       </footer>
     </form>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="太魯閣 IT">
+  <rect width="512" height="512" fill="#102a49"/>
+  <rect x="76" y="76" width="360" height="360" rx="94" fill="#173f6b"/>
+  <path d="M130 164h252v58H285v166h-58V222h-97z" fill="#ffffff"/>
+  <path d="M329 124h59v59h-59z" fill="#f5c84b"/>
+</svg>

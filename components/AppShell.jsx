@@ -303,6 +303,14 @@ export default function AppShell({
               <strong>新增任務</strong>
               <small>直接加入工作中心並顯示在首頁</small>
             </button>
+            <button type="button" onClick={() => {
+              setQuickAddOpen(false);
+              router.push("/work?voice=1");
+            }}>
+              <span aria-hidden="true">🎙️</span>
+              <strong>語音建立工作</strong>
+              <small>用手機說出內容，確認後建立工作</small>
+            </button>
             <button type="button" onClick={() => runDashboardAction("add-calendar")}>
               <span aria-hidden="true">▦</span>
               <strong>新增行程</strong>

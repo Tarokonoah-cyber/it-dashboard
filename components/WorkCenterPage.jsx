@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import WorkCompletionDialog from "./WorkCompletionDialog";
+import VoiceWorkInput from "./VoiceWorkInput";
 import { loadRelatedFollowUps, settleWorkFollowUps } from "../lib/work-completion-client";
 import { getTomorrowDate } from "../lib/work-follow-up";
 
@@ -82,6 +83,7 @@ export default function WorkCenterPage() {
     category: ""
   }));
   const [searchText, setSearchText] = useState(() => getInitialQueryParam("q"));
+  const [voiceRequested] = useState(() => getInitialQueryParam("voice") === "1");
   const [form, setForm] = useState({
     date: today,
     title: "",
@@ -291,10 +293,23 @@ export default function WorkCenterPage() {
             日期
             <input type="date" value={form.date} onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))} required />
           </label>
-          <label className="wide">
-            工作內容
-            <input value={form.title} onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))} placeholder="例如：客房樓層設備檢查" required />
-          </label>
+          <div className="wide work-title-field">
+            <label htmlFor="work-title">工作內容</label>
+            <div className="work-title-input-row">
+              <input
+                id="work-title"
+                value={form.title}
+                onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+                placeholder="例如：客房樓層設備檢查"
+                required
+              />
+              <VoiceWorkInput
+                value={form.title}
+                highlighted={voiceRequested}
+                onTranscript={(title) => setForm((current) => ({ ...current, title }))}
+              />
+            </div>
+          </div>
           <label>
             類型
             <select value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}>
