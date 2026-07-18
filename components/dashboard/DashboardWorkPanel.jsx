@@ -7,9 +7,12 @@ import { getWorkPriorityLabel } from "../../lib/dashboard-metrics";
 import { loadRelatedFollowUps, settleWorkFollowUps } from "../../lib/work-completion-client";
 import { getTomorrowDate } from "../../lib/work-follow-up";
 import WorkCompletionDialog from "../WorkCompletionDialog";
+import LineRepairDetailsDialog from "../LineRepairDetailsDialog";
+import { getLineRepairEventType, getLineRepairEventVersion, isLineRepairWork } from "../../lib/lineRepairTask";
 
 const MAX_WORK_TITLE_LENGTH = 200;
 const WORK_ORDER_STORAGE_KEY = "dashboard-work-order-v1";
+const WORK_EXTERNAL_EVENT_STORAGE_KEY = "dashboard-line-repair-events-v1";
 const WORK_PRIORITIES = ["一般", "重要"];
 
 function mergeWorkOrder(savedOrder, rows) {
@@ -58,6 +61,7 @@ function replaceOpenWorks(dashboard, nextOpenWorks, options = {}) {
 
 function workTone(work) {
   const text = String(work?.status || "").toLowerCase();
+  if (isLineRepairWork(work)) return getWorkPriorityLabel(work) === "重要" ? "important" : "normal";
   if (getWorkPriorityLabel(work) === "重要") return "important";
   if (/進行|doing|處理中/.test(text)) return "active";
   return "normal";
@@ -91,22 +95,81 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
   const [completionRelated, setCompletionRelated] = useState([]);
   const [completionLoading, setCompletionLoading] = useState(false);
   const [completionSaving, setCompletionSaving] = useState(false);
+  const [detailWork, setDetailWork] = useState(null);
+  const [displayWorkRows, setDisplayWorkRows] = useState(workRows);
+  const [exitingWorkIds, setExitingWorkIds] = useState(() => new Set());
   const inputRef = useRef(null);
   const optimisticIdRef = useRef(0);
+  const previousWorkRowsRef = useRef(workRows);
+  const exitTimerRef = useRef(null);
   const workIdsKey = workRows.map((work) => work.id).join("|");
-  const visibleWorks = orderWorks(workRows, localOrder);
+  const visibleWorks = orderWorks(displayWorkRows, localOrder);
+
+  useEffect(() => {
+    const previousRows = previousWorkRowsRef.current;
+    const nextIds = new Set(workRows.map((work) => String(work.id)));
+    const removedExternalRows = previousRows.filter((work) => isLineRepairWork(work) && !nextIds.has(String(work.id)));
+    if (exitTimerRef.current) window.clearTimeout(exitTimerRef.current);
+
+    if (removedExternalRows.length) {
+      const previousIds = new Set(previousRows.map((work) => String(work.id)));
+      const nextById = new Map(workRows.map((work) => [String(work.id), work]));
+      const newRows = workRows.filter((work) => !previousIds.has(String(work.id)));
+      const transitionRows = previousRows
+        .map((work) => nextById.get(String(work.id)) || work)
+        .filter((work) => nextIds.has(String(work.id)) || removedExternalRows.some((removed) => String(removed.id) === String(work.id)));
+      setDisplayWorkRows([...newRows, ...transitionRows]);
+      setExitingWorkIds(new Set(removedExternalRows.map((work) => String(work.id))));
+      exitTimerRef.current = window.setTimeout(() => {
+        setDisplayWorkRows(workRows);
+        setExitingWorkIds(new Set());
+      }, 240);
+    } else {
+      setDisplayWorkRows(workRows);
+      setExitingWorkIds(new Set());
+    }
+    previousWorkRowsRef.current = workRows;
+  }, [workRows]);
+
+  useEffect(() => () => {
+    if (exitTimerRef.current) window.clearTimeout(exitTimerRef.current);
+  }, []);
 
   useEffect(() => {
     let savedOrder = [];
+    let seenExternalEvents = {};
     try {
       savedOrder = JSON.parse(window.localStorage.getItem(WORK_ORDER_STORAGE_KEY) || "[]");
+      seenExternalEvents = JSON.parse(window.localStorage.getItem(WORK_EXTERNAL_EVENT_STORAGE_KEY) || "{}");
     } catch {
       savedOrder = [];
+      seenExternalEvents = {};
     }
+    const eventTrackingInitialized = seenExternalEvents?._initialized === true;
+    const promotedIds = [];
+    for (const work of workRows) {
+      if (!isLineRepairWork(work)) continue;
+      const id = String(work.id || "");
+      const version = getLineRepairEventVersion(work);
+      const eventType = getLineRepairEventType(work);
+      if (
+        eventTrackingInitialized
+        && id
+        && version
+        && seenExternalEvents[id] !== version
+        && ["repair.created", "repair.reopened"].includes(eventType)
+      ) {
+        promotedIds.push(id);
+      }
+      if (id && version) seenExternalEvents[id] = version;
+    }
+    seenExternalEvents._initialized = true;
     const merged = mergeWorkOrder(savedOrder, workRows);
-    setLocalOrder(merged);
+    const nextOrder = [...promotedIds, ...merged.filter((id) => !promotedIds.includes(id))];
+    setLocalOrder(nextOrder);
     try {
-      window.localStorage.setItem(WORK_ORDER_STORAGE_KEY, JSON.stringify(merged));
+      window.localStorage.setItem(WORK_ORDER_STORAGE_KEY, JSON.stringify(nextOrder));
+      window.localStorage.setItem(WORK_EXTERNAL_EVENT_STORAGE_KEY, JSON.stringify(seenExternalEvents));
     } catch {
       // Database order is still used when browser storage is unavailable.
     }
@@ -358,6 +421,10 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
   }
 
   function openWork(work) {
+    if (isLineRepairWork(work) && work?.external_data?.repair) {
+      setDetailWork(work);
+      return;
+    }
     const query = encodeURIComponent(work?.title || "");
     onNavigate?.("work", { href: query ? `/work?q=${query}` : "/work" });
   }
@@ -399,7 +466,7 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
             const editing = editingWorkId === work.id;
             return (
               <article
-                className={`dashboard-work-row tone-${tone} ${editing ? "is-editing" : ""} ${draggedId === work.id ? "is-dragging" : ""} ${dropTargetId === work.id && draggedId !== work.id ? "is-drop-target" : ""}`}
+                className={`dashboard-work-row tone-${tone} ${editing ? "is-editing" : ""} ${exitingWorkIds.has(String(work.id)) ? "is-exiting" : ""} ${draggedId === work.id ? "is-dragging" : ""} ${dropTargetId === work.id && draggedId !== work.id ? "is-drop-target" : ""}`}
                 key={work.id}
                 onDragEnter={() => draggedId && setDropTargetId(work.id)}
                 onDragOver={(event) => { if (draggedId && draggedId !== work.id) { event.preventDefault(); setDropTargetId(work.id); } }}
@@ -491,6 +558,7 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
         onCancel={() => { if (!completionSaving) { setCompletionWork(null); setCompletionRelated([]); } }}
         onConfirm={confirmWorkCompletion}
       />
+      <LineRepairDetailsDialog work={detailWork} onClose={() => setDetailWork(null)} />
     </div>
   );
 }

@@ -177,6 +177,18 @@
   opacity: 0.46;
 }
 
+.dashboard-work-row.is-exiting {
+  pointer-events: none;
+  animation: dashboard-work-fade-out 240ms ease forwards;
+}
+
+@keyframes dashboard-work-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
 .dashboard-work-row.is-drop-target {
   border-color: #7fa6d1;
   background: #f3f8ff;

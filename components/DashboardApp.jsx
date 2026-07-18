@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AppShell from "./AppShell";
 import CompletionSummaryItem from "./dashboard/CompletionSummaryItem";
@@ -15,6 +15,7 @@ import {
   formatRelativeDate
 } from "../lib/dashboard-formatters";
 import { getWorkPriorityLabel } from "../lib/dashboard-metrics";
+import { getLineRepairEventType, getLineRepairEventVersion, isLineRepairWork } from "../lib/lineRepairTask";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 function isDoneStatus(status) {
@@ -179,43 +180,101 @@ function ModernDashboardPage({ dashboard, onDashboardChange, error, onNavigate, 
   );
 }
 
+function findLineRepairAnnouncements(previousDashboard, nextDashboard) {
+  if (!previousDashboard) return [];
+  const previousRows = Array.isArray(previousDashboard.openWorks) ? previousDashboard.openWorks : [];
+  const nextRows = Array.isArray(nextDashboard?.openWorks) ? nextDashboard.openWorks : [];
+  const previousById = new Map(previousRows.map((work) => [String(work.id), work]));
+
+  return nextRows.filter((work) => {
+    if (!isLineRepairWork(work)) return false;
+    const eventType = getLineRepairEventType(work);
+    if (!["repair.created", "repair.reopened"].includes(eventType)) return false;
+    const previous = previousById.get(String(work.id));
+    return !previous || getLineRepairEventVersion(previous) !== getLineRepairEventVersion(work);
+  });
+}
+
 export default function Page() {
   const router = useRouter();
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
   const [toast, setToast] = useState(null);
   const toastTimerRef = useRef(null);
+  const dashboardRef = useRef(null);
+  const loadInFlightRef = useRef(false);
 
-  function notify(nextToast) {
+  const notify = useCallback(function notify(nextToast) {
     if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
     setToast({ id: Date.now(), tone: "success", ...nextToast });
-    toastTimerRef.current = window.setTimeout(() => setToast(null), 2600);
-  }
+    const duration = Math.max(1000, Number(nextToast?.duration) || 2600);
+    toastTimerRef.current = window.setTimeout(() => setToast(null), duration);
+  }, []);
 
   useEffect(() => () => {
     if (toastTimerRef.current) window.clearTimeout(toastTimerRef.current);
   }, []);
 
-  async function loadDashboard() {
+  const loadDashboard = useCallback(async function loadDashboard(options = {}) {
+    if (loadInFlightRef.current) return;
+    loadInFlightRef.current = true;
     setError("");
     try {
-      setDashboard(await api("/api/dashboard"));
+      const previous = dashboardRef.current;
+      const next = await api("/api/dashboard");
+      dashboardRef.current = next;
+      setDashboard(next);
+      if (options.announce !== false) {
+        const announcements = findLineRepairAnnouncements(previous, next);
+        if (announcements.length === 1) {
+          const work = announcements[0];
+          const reopened = getLineRepairEventType(work) === "repair.reopened";
+          notify({
+            tone: "success",
+            duration: 4000,
+            message: reopened
+              ? `報修任務已重新開啟：${work.title || "未命名工作"}`
+              : `收到新報修任務：${work.title || "未命名工作"}`
+          });
+        } else if (announcements.length > 1) {
+          notify({ tone: "success", duration: 4000, message: `收到 ${announcements.length} 筆報修任務更新` });
+        }
+      }
     } catch (err) {
       setError(err.message);
+    } finally {
+      loadInFlightRef.current = false;
     }
-  }
+  }, [notify]);
+
+  const updateDashboard = useCallback((updater) => {
+    setDashboard((current) => {
+      const next = typeof updater === "function" ? updater(current) : updater;
+      dashboardRef.current = next;
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
-    loadDashboard();
-  }, []);
+    loadDashboard({ announce: false });
+    const interval = window.setInterval(() => loadDashboard(), 10000);
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") loadDashboard();
+    }
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [loadDashboard]);
 
   useEffect(() => {
     function handleDashboardDataChanged() {
-      loadDashboard();
+      loadDashboard({ announce: false });
     }
     window.addEventListener("dashboard-data-changed", handleDashboardDataChanged);
     return () => window.removeEventListener("dashboard-data-changed", handleDashboardDataChanged);
-  }, []);
+  }, [loadDashboard]);
 
   useEffect(() => {
     const requestedSection = new URLSearchParams(window.location.search).get("section");
@@ -243,7 +302,7 @@ export default function Page() {
   return (
     <AppShell activeSection="dashboard" title="儀表板" onNavigate={handleNavigate}>
       <DashboardToast toast={toast} />
-      <ModernDashboardPage dashboard={dashboard} onDashboardChange={setDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
+      <ModernDashboardPage dashboard={dashboard} onDashboardChange={updateDashboard} error={error} onNavigate={handleNavigate} notify={notify} />
     </AppShell>
   );
 }

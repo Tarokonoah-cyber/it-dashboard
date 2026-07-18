@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   "/api/cron/sports",
   "/api/cron/operations-reminders",
   "/api/line/webhook",
+  "/api/integrations/line-repair",
   "/manifest.webmanifest",
   "/sw.js",
   "/pwa-icon.svg",

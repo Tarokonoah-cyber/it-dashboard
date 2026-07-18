@@ -1248,11 +1248,23 @@ input {
 .work-completion-dialog > footer .primary-action { border-color: #276ca6; background: #276ca6; color: #fff; }
 .work-completion-dialog button:disabled { cursor: not-allowed; opacity: .58; }
 
+.line-repair-detail-dialog { width: min(560px, 100%); }
+.line-repair-detail-body { display: grid; gap: 14px; padding: 18px; }
+.line-repair-detail-body dl { display: grid; gap: 0; margin: 0; border: 1px solid #dce6ef; border-radius: 11px; overflow: hidden; }
+.line-repair-detail-body dl > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 10px 12px; }
+.line-repair-detail-body dl > div + div { border-top: 1px solid #e7edf3; }
+.line-repair-detail-body dt { color: #708397; font-size: 12px; font-weight: 750; }
+.line-repair-detail-body dd { margin: 0; color: #213d58; font-size: 13px; font-weight: 750; overflow-wrap: anywhere; }
+.line-repair-detail-body section { border-radius: 11px; background: #f6f9fc; padding: 12px 13px; }
+.line-repair-detail-body h3 { margin: 0 0 6px; color: #61778d; font-size: 12px; }
+.line-repair-detail-body p { margin: 0; color: #203d59; font-size: 13px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+
 @media (max-width: 560px) {
   .work-completion-backdrop { align-items: end; padding: 10px; }
   .work-completion-dialog { border-radius: 15px; }
   .work-completion-dialog > footer { display: grid; grid-template-columns: 1fr 1fr; }
   .work-completion-dialog > footer button:first-child { grid-column: 1 / -1; order: 3; }
+  .line-repair-detail-body dl > div { grid-template-columns: 1fr; gap: 4px; }
 }
 
 /* Recurring work automation */

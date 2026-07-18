@@ -8,6 +8,7 @@ import { selectUpcomingContractReminders } from "../../../lib/calendarReminders"
 import { addDateDays } from "../../../lib/recurringTasks";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
+const CANCELLED_STATUSES = new Set(["已取消", "取消", "Cancelled", "cancelled", "Canceled", "canceled"]);
 
 function toDateKey(value) {
   return value ? String(value).slice(0, 10) : "";
@@ -15,6 +16,10 @@ function toDateKey(value) {
 
 function isWorkDone(row) {
   return DONE_STATUSES.has(String(row?.status || "").trim());
+}
+
+function isWorkCancelled(row) {
+  return CANCELLED_STATUSES.has(String(row?.status || "").trim());
 }
 
 function isUrgentWork(row) {
@@ -169,7 +174,7 @@ export async function GET(request) {
     }
 
     const works = workRows.map(normalizeWork);
-    const openWorks = works.filter((row) => !isWorkDone(row));
+    const openWorks = works.filter((row) => !isWorkDone(row) && !isWorkCancelled(row));
     const completedWorks = works.filter(isWorkDone);
     const followUps = sortFollowUps(followUpRows.map(normalizeFollowUp), today).filter((row) => !isFollowUpDone(row));
     const todayWorks = works.filter((row) => toDateKey(row.date || row.created_at) === today);
