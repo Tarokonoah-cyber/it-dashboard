@@ -44,6 +44,7 @@ export const APP_SECTIONS = [
   },
   { key: "passwords", icon: "◈", label: "密碼管理", href: "/passwords" },
   { key: "reports", icon: "▧", label: "報表中心", href: "/reports" },
+  { key: "cost_control", icon: "＄", label: "成本控制", href: "/cost-control" },
   { key: "anydesk", icon: "⌘", label: "AnyDesk List", href: "/anydesk" },
   {
     key: "sop",

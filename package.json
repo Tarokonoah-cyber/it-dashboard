@@ -20,7 +20,7 @@
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
     "validate:line": "node --experimental-vm-modules scripts/validate-line-messages.mjs",
-    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
+    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/cost-control.test.mjs scripts/data-edit-mode.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans-tc": "^0.4.3",
