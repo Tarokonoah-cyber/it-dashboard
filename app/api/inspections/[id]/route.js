@@ -1,6 +1,7 @@
 import { fail, ok, supabaseRequest } from "../../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../../lib/auth";
 import { calculateInspectionSummary } from "../../../../components/inspections/inspectionTemplates";
+import { notifyInspectionCriticalTransition } from "../../../../lib/lineSmartNotifications";
 
 function normalizeAttachments(value) {
   if (Array.isArray(value)) return value.filter(Boolean).map(String);
@@ -68,6 +69,8 @@ export async function PATCH(request, context) {
 
   try {
     const { id } = await context.params;
+    const previousRecord = await getRecord(id);
+    if (!previousRecord) return fail(new Error("找不到巡檢紀錄"), 404);
     const body = await request.json();
     const inspection_date = String(body.inspection_date || "").trim();
     const inspector_name = String(body.inspector_name || "").trim();
@@ -107,7 +110,8 @@ export async function PATCH(request, context) {
         overall_status: summary.overall_status,
         abnormal_count: summary.abnormal_count,
         observation_count: summary.observation_count,
-        note
+        note,
+        updated_at: new Date().toISOString()
       }
     });
     if (!updatedRows.length) return fail(new Error("找不到巡檢紀錄"), 404);
@@ -141,7 +145,8 @@ export async function PATCH(request, context) {
         handling_status: item.handling_status,
         handling_method: item.handling_method,
         attachments: item.attachments,
-        note: item.note
+        note: item.note,
+        updated_at: new Date().toISOString()
       };
       if (item.id) {
         await supabaseRequest("inspection_record_items", `id=eq.${encodeURIComponent(item.id)}&select=*`, {
@@ -157,6 +162,9 @@ export async function PATCH(request, context) {
     }
 
     const record = await getRecord(id);
+    await notifyInspectionCriticalTransition(previousRecord, record).catch((lineError) => {
+      console.error("[inspection critical LINE push failed]", lineError);
+    });
     return ok({ record });
   } catch (error) {
     return fail(error);

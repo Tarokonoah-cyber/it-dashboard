@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node --experimental-vm-modules scripts/validate-line-messages.mjs",
     "build": "next build",
     "start": "next start",
     "upload:soc-sop": "node scripts/upload-soc-sop.ts",
@@ -18,7 +19,8 @@
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/line-repair-webhook.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
+    "validate:line": "node --experimental-vm-modules scripts/validate-line-messages.mjs",
+    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/data-edit-mode.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans-tc": "^0.4.3",

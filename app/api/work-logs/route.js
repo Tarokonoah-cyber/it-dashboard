@@ -1,6 +1,7 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 import { normalizeWork } from "../../../lib/dailyOpsSync";
+import { notifyWorkCriticalTransition } from "../../../lib/lineSmartNotifications";
 
 const MAX_WORK_TEXT_LENGTH = 1000;
 const MAX_WORK_TITLE_LENGTH = 200;
@@ -128,6 +129,9 @@ export async function POST(request) {
       rows = await supabaseRequest("work_logs", "select=*", { method: "POST", body: payload });
     }
 
+    await notifyWorkCriticalTransition(null, rows[0]).catch((lineError) => {
+      console.error("[work critical LINE push failed]", lineError);
+    });
     return ok(normalizeWork(rows[0]));
   } catch (error) {
     return fail(error, error.name === "ValidationError" ? 400 : 500);
@@ -166,6 +170,12 @@ export async function PATCH(request) {
 
     if (!Object.keys(payload).length) return fail(new Error("No work log fields to update"), 400);
 
+    const previousRows = await supabaseRequest(
+      "work_logs",
+      `id=eq.${encodeURIComponent(id)}&select=id,date,staff,title,category,status,updated_at&limit=1`
+    );
+    if (!previousRows.length) return fail(new Error("Work log not found"), 404);
+
     const mutation = { ...payload, updated_at: new Date().toISOString() };
     if (payload.status !== undefined) mutation.sort_order = isDoneStatus(payload.status) ? null : 0;
     let rows;
@@ -184,6 +194,9 @@ export async function PATCH(request) {
     }
 
     if (!rows.length) return fail(new Error("Work log not found"), 404);
+    await notifyWorkCriticalTransition(previousRows[0], rows[0]).catch((lineError) => {
+      console.error("[work critical LINE push failed]", lineError);
+    });
     return ok(normalizeWork(rows[0]));
   } catch (error) {
     return fail(error, error.name === "ValidationError" ? 400 : 500);

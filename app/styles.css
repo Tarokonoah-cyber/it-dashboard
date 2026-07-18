@@ -25,7 +25,15 @@ body {
     radial-gradient(circle at 58% 0%, rgba(34, 211, 238, 0.09), transparent 30%),
     linear-gradient(180deg, #08172a 0%, #060c18 100%);
   color: var(--text);
-  font-family: Inter, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-admin-sans), "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,
@@ -5874,7 +5882,7 @@ body {
 body {
   background: var(--hotel-bg);
   color: var(--hotel-text);
-  font-family: "Segoe UI", "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-admin-sans), "Microsoft JhengHei UI", "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
 }
 
 button,

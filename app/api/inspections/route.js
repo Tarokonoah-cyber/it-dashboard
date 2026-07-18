@@ -1,6 +1,7 @@
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 import { calculateInspectionSummary, createTemplateItems } from "../../../components/inspections/inspectionTemplates";
+import { notifyInspectionCriticalTransition } from "../../../lib/lineSmartNotifications";
 
 function normalizeAttachments(value) {
   if (Array.isArray(value)) return value.filter(Boolean).map(String);
@@ -155,7 +156,11 @@ export async function POST(request) {
     }
 
     const items = await getItemsForRecord(record.id);
-    return ok({ record: { ...record, items, item_count: items.length, normal_count: payload.summary.normal_count } });
+    const createdRecord = { ...record, items, item_count: items.length, normal_count: payload.summary.normal_count };
+    await notifyInspectionCriticalTransition(null, createdRecord).catch((lineError) => {
+      console.error("[inspection critical LINE push failed]", lineError);
+    });
+    return ok({ record: createdRecord });
   } catch (error) {
     return fail(error, String(error.message || "").includes("不可") || String(error.message || "").includes("請") ? 400 : 500);
   }

@@ -77,11 +77,45 @@ test("read and snoozed state produces the correct summary", async () => {
 });
 
 test("snooze validation rejects past dates and LINE output includes the center link", async () => {
-  const { buildNotificationLineMessage, validateSnoozeUntil } = await namespace("../lib/notifications.js");
+  const { buildNotificationLineFlexMessage, buildNotificationLineMessage, validateSnoozeUntil } = await namespace("../lib/notifications.js");
   assert.throws(() => validateSnoozeUntil("2026-07-16T00:00:00.000Z", new Date("2026-07-17T00:00:00.000Z").getTime()), /一年內/);
-  const message = buildNotificationLineMessage([
-    { category_label: "逾期工作", title: "修復交換器", due_date: "2026-07-16" }
-  ], "2026-07-17", "https://example.test/");
+  const items = [{
+    source_type: "overdue_work",
+    category_label: "逾期工作",
+    severity: "critical",
+    title: "修復交換器",
+    description: "MIS · 網路設備",
+    due_date: "2026-07-10",
+    href: "/work?q=test"
+  }];
+  const message = buildNotificationLineMessage(items, "2026-07-17", "https://example.test/");
   assert.match(message, /修復交換器/);
+  assert.match(message, /逾期 7 天/);
   assert.match(message, /https:\/\/example\.test\/notifications/);
+
+  const flex = buildNotificationLineFlexMessage(items, "2026-07-17", "https://example.test/");
+  assert.equal(flex.type, "flex");
+  assert.ok(flex.altText.length <= 400);
+  assert.match(flex.contents.header.contents[1].text, /1 件需要立即處理/);
+  assert.equal(flex.contents.body.contents[0].contents[0].contents[0].text, "1");
+  assert.deepEqual(flex.contents.footer.contents.map((item) => item.action.label), ["查看這筆事項", "開啟通知中心（1）"]);
+  assert.equal(flex.contents.footer.contents[0].action.uri, "https://example.test/work?q=test");
+});
+
+test("LINE Flex digest shows only the five highest-priority rows", async () => {
+  const { buildNotificationLineFlexMessage } = await namespace("../lib/notifications.js");
+  const items = Array.from({ length: 7 }, (_, index) => ({
+    source_type: "overdue_work",
+    category_label: "逾期工作",
+    severity: index < 2 ? "critical" : "high",
+    title: `工作 ${index + 1}`,
+    due_date: `2026-07-${String(10 + index).padStart(2, "0")}`,
+    href: "/work"
+  }));
+  const flex = buildNotificationLineFlexMessage(items, "2026-07-18", "https://example.test");
+  const bodyText = JSON.stringify(flex.contents.body);
+  assert.match(bodyText, /工作 1/);
+  assert.match(bodyText, /工作 5/);
+  assert.doesNotMatch(bodyText, /工作 6/);
+  assert.match(bodyText, /另有 2 件未顯示/);
 });

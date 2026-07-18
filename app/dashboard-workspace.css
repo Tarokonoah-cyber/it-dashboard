@@ -934,3 +934,164 @@
     padding-right: 0;
   }
 }
+
+/* IT admin typography: one restrained scale for the home dashboard. */
+:root {
+  --dashboard-type-caption: 0.75rem;
+  --dashboard-type-meta: 0.8125rem;
+  --dashboard-type-body: 0.875rem;
+  --dashboard-type-panel: 1.0625rem;
+  --dashboard-type-page: 1.625rem;
+  --dashboard-type-metric: 2.125rem;
+}
+
+.brand-copy h1,
+.nav-item,
+.nav-child,
+.modern-dashboard-page,
+.modern-dashboard-page button,
+.modern-dashboard-page input,
+.modern-dashboard-page select,
+.modern-dashboard-page textarea {
+  font-family: inherit;
+}
+
+.brand-copy h1 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav-item,
+.nav-child {
+  font-weight: 600;
+}
+
+.modern-dashboard-page > .section-head h1 {
+  font-size: var(--dashboard-type-page);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.modern-dashboard-page .kpi-summary-label {
+  font-size: var(--dashboard-type-caption);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.015em;
+}
+
+.modern-dashboard-page .kpi-summary-main strong,
+.modern-dashboard-page .kpi-summary-item.bad .kpi-summary-main strong {
+  font-size: var(--dashboard-type-metric);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.modern-dashboard-page .kpi-summary-main small,
+.modern-dashboard-page .kpi-summary-meta,
+.modern-dashboard-page .kpi-delta,
+.modern-dashboard-page .completion-caption,
+.modern-dashboard-page .completion-count-line small {
+  font-size: var(--dashboard-type-caption);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.modern-dashboard-page .kpi-delta {
+  font-weight: 600;
+}
+
+.modern-dashboard-page .completion-count-line {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.modern-dashboard-page .completion-summary .kpi-donut span {
+  font-size: var(--dashboard-type-meta);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.modern-dashboard-page .dashboard-block-title h2,
+.modern-dashboard-page .dashboard-calendar-panel .panel-title h2 {
+  font-size: var(--dashboard-type-panel);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.modern-dashboard-page .dashboard-block-title span,
+.modern-dashboard-page .calendar-reminder-legend,
+.modern-dashboard-page .calendar-today-test {
+  font-size: var(--dashboard-type-caption);
+  font-weight: 500;
+}
+
+.modern-dashboard-page .dashboard-add-work-button,
+.modern-dashboard-page .dashboard-block-text-button,
+.modern-dashboard-page .calendar-actions button {
+  font-size: var(--dashboard-type-caption);
+  font-weight: 600;
+}
+
+.modern-dashboard-page .dashboard-work-row-main strong,
+.modern-dashboard-page .dashboard-follow-row strong {
+  font-size: var(--dashboard-type-body);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.modern-dashboard-page .dashboard-work-row-main small,
+.modern-dashboard-page .dashboard-follow-row small,
+.modern-dashboard-page .dashboard-follow-row time {
+  font-size: 0.71875rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.modern-dashboard-page .dashboard-follow-row time {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.modern-dashboard-page .work-row-actions button,
+.modern-dashboard-page .work-inline-edit-footer button,
+.modern-dashboard-page .dashboard-block-link {
+  font-size: 0.71875rem;
+  font-weight: 600;
+}
+
+.modern-dashboard-page .dashboard-calendar-grid .weekday {
+  font-size: var(--dashboard-type-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.modern-dashboard-page .dashboard-calendar-panel .calendar-day-number {
+  font-size: var(--dashboard-type-meta);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.modern-dashboard-page .dashboard-calendar-panel .dashboard-day-cell em {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+@media (max-width: 959px) {
+  :root {
+    --dashboard-type-page: 1.5rem;
+    --dashboard-type-metric: 2rem;
+  }
+
+  .modern-dashboard-page .dashboard-work-row-main strong,
+  .modern-dashboard-page .dashboard-follow-row strong {
+    font-size: 0.875rem;
+  }
+}

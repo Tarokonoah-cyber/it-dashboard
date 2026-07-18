@@ -1,7 +1,16 @@
 import "./styles.css";
 import "./mobile-dashboard.css";
 import "./dashboard-workspace.css";
+import { Noto_Sans_TC } from "next/font/google";
 import PwaManager from "../components/PwaManager";
+
+const adminSans = Noto_Sans_TC({
+  variable: "--font-admin-sans",
+  weight: "variable",
+  display: "swap",
+  preload: false,
+  fallback: ["Microsoft JhengHei", "PingFang TC", "Segoe UI", "sans-serif"]
+});
 
 export const metadata = {
   title: "資訊管理平台",
@@ -31,7 +40,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="zh-Hant">
+    <html lang="zh-Hant" className={adminSans.variable}>
       <body>
         {children}
         <PwaManager />

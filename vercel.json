@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/operations-reminders",
       "schedule": "30 0 * * *"
+    },
+    {
+      "path": "/api/cron/line-critical-follow-up",
+      "schedule": "0 7 * * *"
     }
   ]
 }

@@ -10,6 +10,7 @@ import {
   isEditableRecordSource,
   recordTableForSource
 } from "../../../lib/data-record-mutators";
+import { notifyContractCriticalTransition } from "../../../lib/lineSmartNotifications";
 
 const SOURCE_ALIASES = {
   documents: ["documents"],
@@ -36,6 +37,10 @@ const SOC_SOP_TITLE = "SOC MIS 標準作業檢查表";
 const SOC_SOP_DESCRIPTION = "SOC 日常標準作業檢查使用";
 const SOC_SOP_PUBLIC_URL =
   "https://oidfglrsqrtiimqjfriw.supabase.co/storage/v1/object/public/sop-files/soc/soc-mis-checklist-official.xlsx";
+
+function isContractSource(source) {
+  return source === "contracts_software" || source === "contracts_mobile";
+}
 
 function getPublicStorageUrl(bucket, path) {
   const supabaseUrl = process.env.SUPABASE_URL?.replace(/\/+$/, "");
@@ -486,8 +491,13 @@ export async function POST(request) {
       const mutation = buildRecordInsert(source, body.data || {});
       const rows = await supabaseRequest(recordTableForSource(source), mutation.query, {
         method: "POST",
-        body: mutation.body
+        body: isContractSource(source) ? { ...mutation.body, updated_at: new Date().toISOString() } : mutation.body
       });
+      if (isContractSource(source) && rows[0]) {
+        await notifyContractCriticalTransition(source, null, rows[0]).catch((lineError) => {
+          console.error("[contract critical LINE push failed]", lineError);
+        });
+      }
       return ok({ row: rows[0] || null });
     }
     if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄新增"), 400);
@@ -561,12 +571,21 @@ export async function PATCH(request) {
     const source = String(body.source || "").trim();
     const id = String(body.id || "").trim();
     if (isEditableRecordSource(source)) {
+      const table = recordTableForSource(source);
+      const previousRows = isContractSource(source)
+        ? await supabaseRequest(table, `id=eq.${encodeURIComponent(id)}&select=*&limit=1`)
+        : [];
       const mutation = buildRecordUpdate(source, id, body.data || {});
-      const rows = await supabaseRequest(recordTableForSource(source), mutation.query, {
+      const rows = await supabaseRequest(table, mutation.query, {
         method: "PATCH",
-        body: mutation.body
+        body: isContractSource(source) ? { ...mutation.body, updated_at: new Date().toISOString() } : mutation.body
       });
       if (!rows.length) return fail(new Error("找不到要更新的資料"), 404);
+      if (isContractSource(source)) {
+        await notifyContractCriticalTransition(source, previousRows[0] || null, rows[0]).catch((lineError) => {
+          console.error("[contract critical LINE push failed]", lineError);
+        });
+      }
       return ok({ row: rows[0] });
     }
     if (source !== "documents") return fail(new Error("目前只支援送交單據紀錄更新"), 400);
