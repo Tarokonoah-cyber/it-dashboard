@@ -16250,6 +16250,12 @@ body.calendar-overlay-open {
     letter-spacing: 0.09em;
   }
 
+  /* Mobile drawer regression guard: override the legacy four-column tablet nav. */
+  .sidebar.mobile-open .side-nav,
+  .sidebar.collapsed.mobile-open .side-nav {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .sidebar.mobile-open .nav-item,
   .sidebar.mobile-open .nav-child,
   .sidebar.mobile-open .collapse-btn {
