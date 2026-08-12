@@ -18189,10 +18189,8 @@ body.asset-history-open {
 }
 
 .sidebar-session {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: block;
   align-items: center;
-  gap: 8px;
   padding: 10px 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
@@ -18214,29 +18212,6 @@ body.asset-history-open {
 .sidebar-session-copy span {
   color: rgba(255, 255, 255, 0.62);
   font-size: 10px;
-}
-
-.sidebar-logout-button {
-  min-width: 54px;
-  min-height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  padding: 0 9px;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.sidebar-logout-button:hover {
-  border-color: rgba(255, 255, 255, 0.42);
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.sidebar-logout-button:disabled {
-  cursor: wait;
-  opacity: 0.62;
 }
 
 /* Current dashboard work cards. */
@@ -18613,21 +18588,7 @@ body.asset-history-open {
   }
 }
 
-/* Resilient shell and route-level status states. */
-.shell-auth-error {
-  align-items: center;
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  border-radius: 12px;
-  color: #9a3412;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  margin: 0 0 16px;
-  padding: 10px 14px;
-}
-
-.shell-auth-error button,
+/* Resilient route-level status states. */
 .dashboard-state-panel button,
 .offline-page-action {
   background: #173f6b;
@@ -18681,11 +18642,6 @@ body.asset-history-open {
 }
 
 @media (max-width: 620px) {
-  .shell-auth-error {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
   .dashboard-state-panel {
     grid-template-columns: auto 1fr;
   }

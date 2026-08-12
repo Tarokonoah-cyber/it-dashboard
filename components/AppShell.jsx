@@ -42,7 +42,7 @@ function prefetchRoute(item, router) {
   if (href?.startsWith("/")) router.prefetch(href);
 }
 
-function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, mobileOpen, onCloseMobile, onLogout, loggingOut }) {
+function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, mobileOpen, onCloseMobile }) {
   const [openGroups, setOpenGroups] = useState(() => getInitialOpenGroups(activeSection));
 
   useEffect(() => {
@@ -164,15 +164,6 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
                 <strong>taroko</strong>
                 <span>單一帳號</span>
               </div>
-              <button
-                className="sidebar-logout-button"
-                type="button"
-                onClick={onLogout}
-                disabled={loggingOut}
-                title="登出"
-              >
-                {loggingOut ? "登出中…" : "登出"}
-              </button>
             </div>
           ) : null}
           <button className="collapse-btn" type="button" aria-label={collapsed ? "展開側邊欄" : "收合側邊欄"} onClick={onToggle}>
@@ -196,8 +187,6 @@ export default function AppShell({
   const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
-  const [logoutError, setLogoutError] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -256,20 +245,6 @@ export default function AppShell({
     router.push(`/?mobileAction=${encodeURIComponent(action)}`);
   }
 
-  async function logout() {
-    if (loggingOut) return;
-    setLoggingOut(true);
-    setLogoutError("");
-    try {
-      const response = await fetch("/api/logout", { method: "POST" });
-      if (!response.ok) throw new Error("logout failed");
-      window.location.replace("/login");
-    } catch {
-      setLoggingOut(false);
-      setLogoutError("登出失敗，請確認網路連線後再試一次。");
-    }
-  }
-
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
       <ShellSidebar
@@ -280,8 +255,6 @@ export default function AppShell({
         router={router}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
-        onLogout={logout}
-        loggingOut={loggingOut}
       />
       <section className="main-area">
         <button
@@ -296,12 +269,6 @@ export default function AppShell({
           ☰
         </button>
         <GlobalSearch />
-        {logoutError ? (
-          <div className="shell-auth-error" role="alert">
-            <span>{logoutError}</span>
-            <button type="button" onClick={logout}>重試登出</button>
-          </div>
-        ) : null}
         {children}
       </section>
       <nav className="mobile-bottom-nav" aria-label="手機快捷導覽">

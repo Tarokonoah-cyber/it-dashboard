@@ -1,7 +1,95 @@
 @media (max-width: 620px) {
+  .modern-dashboard-page,
+  .modern-dashboard-page > *,
+  .dashboard-calendar-panel,
+  .dashboard-calendar-panel .panel-title,
+  .dashboard-calendar-panel .calendar-actions {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .modern-dashboard-page .dashboard-kpi-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modern-dashboard-page .dashboard-kpi-summary > .kpi-summary-item,
+  .modern-dashboard-page .dashboard-kpi-summary > .kpi-summary-item:nth-child(2n) {
+    min-width: 0;
+    border-right: 0;
+  }
+
+  .modern-dashboard-page .dashboard-kpi-summary > .kpi-summary-item:nth-child(odd):not(:last-child) {
+    border-right: 1px solid var(--hotel-line);
+  }
+
+  .modern-dashboard-page .dashboard-kpi-summary > .completion-summary {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    border-top: 1px solid var(--hotel-line);
+  }
+
+  .modern-dashboard-page .kpi-summary-label,
+  .modern-dashboard-page .kpi-summary-main strong,
+  .modern-dashboard-page .completion-rate-mobile,
+  .mobile-month-kpi summary,
+  .mobile-month-kpi > div > span,
+  .mobile-month-kpi em {
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+
+  .modern-dashboard-page .completion-summary-main {
+    justify-self: end;
+  }
+
+  .dashboard-calendar-panel .panel-title.calendar-title {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    justify-items: stretch;
+  }
+
+  .dashboard-calendar-panel .panel-title.calendar-title > div:first-child {
+    text-align: center;
+  }
+
+  .dashboard-calendar-panel .calendar-actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 44px 64px 44px;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .dashboard-calendar-panel .calendar-reminder-legend {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: 14px;
+    font-size: 11px;
+  }
+
+  .dashboard-calendar-panel .calendar-reminder-legend span,
+  .dashboard-calendar-panel .calendar-actions button,
+  .calendar-today-test b {
+    white-space: nowrap;
+    word-break: keep-all;
+  }
+
   .dashboard-calendar-panel .dashboard-calendar-grid {
     width: 100%;
     min-width: 0 !important;
     grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .sidebar.mobile-open .nav-text,
+  .sidebar.mobile-open .mobile-nav-group-label,
+  .sidebar.mobile-open .sidebar-session-copy,
+  .sidebar.mobile-open .collapse-btn span {
+    white-space: nowrap;
+    word-break: keep-all;
   }
 }
