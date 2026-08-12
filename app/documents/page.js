@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import AppShell from "../../components/AppShell";
 import { getField } from "../../components/DataSectionPage";
+import { api } from "../../lib/dashboard-api";
 
 const EMPTY = "未提供";
 const DOCUMENT_TYPES = ["零用金支付憑證", "用印申請書", "採購單", "支票請求單"];
@@ -126,20 +127,6 @@ function normalizeDocument(row) {
     updatedAt,
     source: row
   };
-}
-
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json();
-  if (!response.ok || data.success === false) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
 }
 
 function uniqueOptions(defaults, values, sortDesc = false) {

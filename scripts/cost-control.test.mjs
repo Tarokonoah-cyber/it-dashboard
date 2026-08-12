@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 import ExcelJS from "exceljs";
-import { budgetExecutionStatus, parseExcelDate, parseMoney, summarizeBudget } from "../lib/cost-control-core.js";
+import { budgetExecutionStatus, normalizeManualBudgetPayload, parseExcelDate, parseMoney, summarizeBudget } from "../lib/cost-control-core.js";
 import { parseCostControlWorkbook } from "../lib/cost-control-excel.js";
 import { hasXlsxZipSignature, validateCostControlUpload } from "../lib/cost-control-upload.js";
 
@@ -106,6 +106,31 @@ test("系統重算執行率、月別合計與負數餘額", () => {
   assert.deepEqual(summary, { budget: 1000, actual: 200, committed: 100 });
 });
 
+test("手動預算輸入支援跨年度動支並合併重複月份", () => {
+  const payload = normalizeManualBudgetPayload({
+    budgetYear: "2025",
+    budgetCode: " A25-MIS001 ",
+    itemName: "設備更新",
+    department: "資訊室",
+    quantity: "1式",
+    budgetAmount: "420,000",
+    committedAmount: "",
+    monthlyAmounts: [
+      { actualYear: "2025", actualMonth: "4", amount: "24,762" },
+      { actualYear: 2026, actualMonth: 1, amount: 38680 },
+      { actualYear: 2026, actualMonth: 1, amount: -680 }
+    ]
+  });
+  assert.equal(payload.budgetYear, 2025);
+  assert.equal(payload.budgetAmount, 420000);
+  assert.equal(payload.committedAmount, 0);
+  assert.deepEqual(payload.monthlyAmounts, [
+    { actualYear: 2025, actualMonth: 4, amount: 24762 },
+    { actualYear: 2026, actualMonth: 1, amount: 38000 }
+  ]);
+  assert.throws(() => normalizeManualBudgetPayload({ budgetYear: 2026 }), /預算編號/);
+});
+
 test("上傳驗證拒絕非 xlsx、錯誤 MIME、超大檔案與假 ZIP", () => {
   const fake = (name, type, size = 10) => ({ name, type, size, arrayBuffer: async () => new ArrayBuffer(size) });
   assert.match(validateCostControlUpload(fake("data.csv", "text/csv")), /xlsx/);
@@ -116,27 +141,54 @@ test("上傳驗證拒絕非 xlsx、錯誤 MIME、超大檔案與假 ZIP", () => 
   assert.equal(hasXlsxZipSignature(new Uint8Array([1, 2, 3, 4]).buffer), false);
 });
 
-test("migration 以 transaction RPC 處理重複期間與覆蓋，且不開放匿名呼叫", async () => {
-  const sql = await readFile(new URL("../supabase/migrations/20260718064338_cost_control.sql", import.meta.url), "utf8");
+test("必要 migrations 以 transaction RPC 處理匯入與手動預算，且不開放匿名呼叫", async () => {
+  const [sql, manualSchemaSql, manualRpcSql, serviceSource] = await Promise.all([
+    readFile(new URL("../supabase/migrations/20260718064338_cost_control.sql", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260728114100_manual_budget_editor.sql", import.meta.url), "utf8"),
+    readFile(new URL("../supabase/migrations/20260728115131_manual_budget_upsert_rpc.sql", import.meta.url), "utf8"),
+    readFile(new URL("../lib/cost-control-service.js", import.meta.url), "utf8")
+  ]);
   assert.match(sql, /create or replace function public\.confirm_budget_import/i);
   assert.match(sql, /for update/i);
   assert.match(sql, /已存在 %s 年 %s 月資料/);
   assert.match(sql, /import_status = 'superseded'/);
   assert.match(sql, /security invoker/i);
   assert.match(sql, /revoke all on function public\.confirm_budget_import\(uuid, text, text\) from public, anon, authenticated/i);
+  assert.match(manualSchemaSql, /source_type text not null default 'excel'/i);
+  assert.match(manualSchemaSql, /source_type in \('excel', 'manual'\)/i);
+  assert.match(manualRpcSql, /create or replace function public\.upsert_manual_budget_item/i);
+  assert.match(manualRpcSql, /p_item_id uuid[\s\S]*p_payload jsonb[\s\S]*p_updated_by text/i);
+  assert.match(manualRpcSql, /security invoker/i);
+  assert.match(manualRpcSql, /revoke all on function public\.upsert_manual_budget_item\(uuid, jsonb, text\)/i);
+  assert.match(manualRpcSql, /grant execute on function public\.upsert_manual_budget_item\(uuid, jsonb, text\)[\s\S]*to service_role/i);
+  assert.match(serviceSource, /supabaseRpc\("upsert_manual_budget_item",\s*\{[\s\S]*p_item_id:[\s\S]*p_payload:[\s\S]*p_updated_by:/i);
 });
 
-test("匯入 API 經過現有登入與專用權限邊界，手機版提供卡片流程", async () => {
-  const [previewRoute, permissions, css, component] = await Promise.all([
+test("資本預算 seed 保留為人工腳本，不會被 migration runner 自動執行", async () => {
+  const [migrationNames, seedSql] = await Promise.all([
+    readdir(new URL("../supabase/migrations/", import.meta.url)),
+    readFile(new URL("../supabase/manual-seeds/20260728115134_seed_2025_2026_capital_budgets.sql", import.meta.url), "utf8")
+  ]);
+  assert.equal(migrationNames.some((name) => name.includes("seed_2025_2026_capital_budgets")), false);
+  assert.match(seedSql, /A25-MIS001/);
+  assert.match(seedSql, /A25-MIS002/);
+  assert.match(seedSql, /A26-SEC001/);
+  assert.match(seedSql, /A26-MIS001/);
+});
+
+test("匯入與手動編輯 API 經過單一帳號登入驗證，手機版提供維護流程", async () => {
+  const [previewRoute, itemRoute, css, component] = await Promise.all([
     readFile(new URL("../app/api/cost-control/import/preview/route.js", import.meta.url), "utf8"),
-    readFile(new URL("../lib/cost-control-permissions.js", import.meta.url), "utf8"),
+    readFile(new URL("../app/api/cost-control/items/route.js", import.meta.url), "utf8"),
     readFile(new URL("../app/cost-control/cost-control.css", import.meta.url), "utf8"),
     readFile(new URL("../components/CostControlPage.jsx", import.meta.url), "utf8")
   ]);
-  assert.ok(previewRoute.indexOf("requireCostControlImportAuth(request)") < previewRoute.indexOf("request.formData()"));
-  assert.match(permissions, /return requireDashboardAuth\(request\)/);
+  assert.ok(previewRoute.indexOf("requireDashboardAuth(request)") < previewRoute.indexOf("request.formData()"));
+  assert.ok(itemRoute.indexOf("requireDashboardAuth(request)") < itemRoute.indexOf("request.json()"));
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.cc-table-wrap \{ display: none; \}/);
   assert.match(css, /\.cc-mobile-list \{ display: grid;/);
+  assert.match(css, /\.cc-budget-editor/);
   assert.match(component, /role="tablist"/);
   assert.match(component, /ItemDrawer/);
+  assert.match(component, /BudgetItemEditor/);
 });

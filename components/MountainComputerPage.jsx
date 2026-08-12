@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { api } from "../lib/dashboard-api";
 import { getField } from "./DataSectionPage";
 import AssetHistoryDialog from "./AssetHistoryDialog";
 import {
@@ -42,20 +43,6 @@ const MOUNTAIN_PC_COLUMNS = [
   { label: "保固狀態", keys: ["warranty_status_label"], editable: false },
   { label: "設備履歷", keys: ["asset_history_action"], editable: false }
 ];
-
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
 
 function dateKey(value) {
   return value ? String(value).slice(0, 10) : "";
@@ -190,23 +177,22 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
 
   useUnsavedChangesWarning(hasUnsavedChanges);
 
-  async function load() {
+  const load = useCallback(async function load() {
     setLoading(true);
     setError("");
     try {
       const data = await api(`/api/records?source=${encodeURIComponent(config.source)}`);
       setRows(data.rows || []);
-      if (editMode) setDraftRows(cloneRows(data.rows || []));
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [config.source]);
 
   useEffect(() => {
     load();
-  }, [config.source]);
+  }, [load]);
 
   const activeRows = editMode ? draftRows : rows;
 

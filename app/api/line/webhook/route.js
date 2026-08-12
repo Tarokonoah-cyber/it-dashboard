@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
 import { fail, ok, supabaseRequest, todayTaipei } from "../../../../lib/supabase-rest";
+import { PayloadTooLargeError, readLimitedText } from "../../../../lib/request-body";
 
 const STATUS_PENDING = "\u5f85\u6e2c\u8a66";
+const MAX_LINE_WEBHOOK_BYTES = 128 * 1024;
 
 function textOf(value) {
   return String(value || "").trim();
@@ -93,21 +95,28 @@ export async function POST(request) {
   const date = todayTaipei();
 
   try {
-    rawBody = await request.text();
+    try {
+      rawBody = await readLimitedText(request, MAX_LINE_WEBHOOK_BYTES);
+    } catch (error) {
+      if (error instanceof PayloadTooLargeError) {
+        return Response.json(
+          { success: false, message: "Payload too large" },
+          { status: 413, headers: { "Cache-Control": "no-store" } }
+        );
+      }
+      return Response.json(
+        { success: false, message: "Invalid request body" },
+        { status: 400, headers: { "Cache-Control": "no-store" } }
+      );
+    }
     const signature = request.headers.get("x-line-signature") || "";
     const signatureCheck = verifyLineSignature(rawBody, signature);
 
     if (!signatureCheck.success) {
-      await safeAppendLineLog({
-        eventType: "signature_rejected",
-        sourceType: "line",
-        sourceId: "",
-        rawMessage: rawBody.slice(0, 2000),
-        rooms: [],
-        result: "rejected",
-        note: signatureCheck.message
-      });
-      return fail(new Error("LINE signature verification failed"), 401);
+      return Response.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401, headers: { "Cache-Control": "no-store" } }
+      );
     }
 
     const payload = JSON.parse(rawBody || "{}");

@@ -3,7 +3,6 @@ import { requireDashboardAuth } from "../../../lib/auth";
 import { normalizeWork } from "../../../lib/dailyOpsSync";
 import { getMonthCompletionMetrics, getWorkPriorityLabel } from "../../../lib/dashboard-metrics";
 import { isFollowUpDone, normalizeFollowUp, sortFollowUps } from "../../../lib/followUps";
-import { isDueFollowUp } from "../../../lib/work-follow-up";
 import { selectUpcomingContractReminders } from "../../../lib/calendarReminders";
 import { addDateDays } from "../../../lib/recurringTasks";
 
@@ -42,66 +41,6 @@ async function loadWorkRows() {
     if (!isMissingSortOrderColumn(error)) throw error;
     return supabaseRequest("work_logs", "select=*&order=date.desc,updated_at.desc,created_at.desc&limit=1000");
   }
-}
-
-async function promoteDueFollowUps(workRows, followUpRows, today) {
-  const nextWorkRows = [...workRows];
-  const nextFollowUpRows = [...followUpRows];
-  const warnings = [];
-  const promotedIds = new Set(nextWorkRows
-    .filter((row) => String(row?.source || "").trim() === "follow_ups")
-    .map((row) => String(row?.source_id || "").trim())
-    .filter(Boolean));
-
-  for (const followUp of nextFollowUpRows.filter((row) => isDueFollowUp(row, today))) {
-    const followUpId = String(followUp?.id || "").trim();
-    if (!followUpId) continue;
-
-    try {
-      if (!promotedIds.has(followUpId)) {
-        const now = new Date().toISOString();
-        const payload = {
-          date: today,
-          staff: String(followUp.assignee || "Admin").trim() || "Admin",
-          title: String(followUp.title || "待追蹤事項").trim() || "待追蹤事項",
-          category: "追蹤提醒",
-          impact: "重要",
-          status: "未完成",
-          description: `待追蹤日期已到：${String(followUp.next_follow_date || today).slice(0, 10)}`,
-          note: String(followUp.note || "").trim(),
-          source: "follow_ups",
-          source_id: followUpId,
-          created_at: now,
-          updated_at: now
-        };
-        let createdRows;
-        try {
-          createdRows = await supabaseRequest("work_logs", "select=*", {
-            method: "POST",
-            body: { ...payload, sort_order: 0 }
-          });
-        } catch (error) {
-          if (!isMissingSortOrderColumn(error)) throw error;
-          createdRows = await supabaseRequest("work_logs", "select=*", { method: "POST", body: payload });
-        }
-        nextWorkRows.unshift(createdRows[0] || payload);
-        promotedIds.add(followUpId);
-      }
-
-      const completedAt = new Date().toISOString();
-      await supabaseRequest("follow_ups", `id=eq.${encodeURIComponent(followUpId)}&select=*`, {
-        method: "PATCH",
-        body: { current_status: "已完成", completed_at: completedAt, updated_at: completedAt }
-      });
-      const index = nextFollowUpRows.findIndex((row) => String(row?.id || "") === followUpId);
-      if (index >= 0) nextFollowUpRows[index] = { ...nextFollowUpRows[index], current_status: "已完成", completed_at: completedAt, updated_at: completedAt };
-    } catch (error) {
-      console.error("[dashboard follow-up promotion error]", { followUpId, error });
-      warnings.push({ source: "follow_up_promotion", message: `Follow-up ${followUpId} could not be promoted` });
-    }
-  }
-
-  return { workRows: nextWorkRows, followUpRows: nextFollowUpRows, warnings };
 }
 
 export async function GET(request) {
@@ -150,10 +89,6 @@ export async function GET(request) {
 
     if (followUpResult.status === "fulfilled") {
       followUpRows = followUpResult.value;
-      const promotion = await promoteDueFollowUps(workRows, followUpRows, today);
-      workRows = promotion.workRows;
-      followUpRows = promotion.followUpRows;
-      warnings.push(...promotion.warnings);
     } else {
       console.error("[dashboard optional query error]", { source: "follow_ups", error: followUpResult.reason });
       warnings.push({ source: "follow_ups", message: "Follow-up data failed to load" });

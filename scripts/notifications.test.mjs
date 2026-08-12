@@ -96,13 +96,32 @@ test("snooze validation rejects past dates and LINE output includes the center l
   const flex = buildNotificationLineFlexMessage(items, "2026-07-17", "https://example.test/");
   assert.equal(flex.type, "flex");
   assert.ok(flex.altText.length <= 400);
-  assert.match(flex.contents.header.contents[1].text, /1 件需要立即處理/);
-  assert.equal(flex.contents.body.contents[0].contents[0].contents[0].text, "1");
-  assert.deepEqual(flex.contents.footer.contents.map((item) => item.action.label), ["查看這筆事項", "開啟通知中心（1）"]);
-  assert.equal(flex.contents.footer.contents[0].action.uri, "https://example.test/work?q=test");
+  assert.ok(Buffer.byteLength(JSON.stringify(flex.contents), "utf8") < 30 * 1024);
+  assert.equal(flex.contents.header.backgroundColor, "#F8FAFC");
+  assert.equal(flex.contents.header.contents[0].width, "4px");
+  assert.equal(flex.contents.header.contents[1].contents[0].contents[0].text, "TAROKO · MIS");
+  assert.equal(flex.contents.header.contents[1].contents[0].contents[1].text, "2026/07/17");
+  assert.match(flex.contents.header.contents[1].contents[1].text, /1 件需要立即處理/);
+  assert.equal(flex.contents.body.contents[0].contents[0].contents[0].text, "立即 1");
+
+  const itemCard = flex.contents.body.contents[2];
+  assert.equal(itemCard.backgroundColor, "#F8FAFC");
+  assert.equal(itemCard.borderWidth, undefined);
+  assert.equal(itemCard.contents.length, 4);
+  assert.equal(itemCard.contents[0].contents[0].contents[0].text, "立即");
+  assert.equal(itemCard.contents[0].contents[1].text, "逾期 7 天");
+  assert.equal(itemCard.contents[1].maxLines, 2);
+  assert.equal(itemCard.contents[2].text, "逾期工作");
+  assert.equal(itemCard.contents[3].text, "MIS · 原定 07/10");
+  assert.equal(itemCard.action.uri, "https://example.test/work?q=test");
+
+  const buttons = flex.contents.footer.contents.filter((item) => item.type === "button");
+  assert.deepEqual(buttons.map((item) => item.action.label), ["開啟通知中心"]);
+  assert.equal(buttons[0].action.uri, "https://example.test/notifications");
+  assert.doesNotMatch(JSON.stringify(flex.contents), /查看這筆事項/);
 });
 
-test("LINE Flex digest shows only the five highest-priority rows", async () => {
+test("LINE Flex digest shows only the three highest-priority rows", async () => {
   const { buildNotificationLineFlexMessage } = await namespace("../lib/notifications.js");
   const items = Array.from({ length: 7 }, (_, index) => ({
     source_type: "overdue_work",
@@ -115,7 +134,30 @@ test("LINE Flex digest shows only the five highest-priority rows", async () => {
   const flex = buildNotificationLineFlexMessage(items, "2026-07-18", "https://example.test");
   const bodyText = JSON.stringify(flex.contents.body);
   assert.match(bodyText, /工作 1/);
-  assert.match(bodyText, /工作 5/);
-  assert.doesNotMatch(bodyText, /工作 6/);
-  assert.match(bodyText, /另有 2 件未顯示/);
+  assert.match(bodyText, /工作 3/);
+  assert.doesNotMatch(bodyText, /工作 4/);
+  assert.match(bodyText, /另有 4 件事項未顯示/);
+  assert.equal(flex.contents.body.contents.filter((item) => item.action?.type === "uri").length, 3);
+});
+
+test("LINE Flex header summarizes long-overdue critical work without adding duplicate red labels", async () => {
+  const { buildNotificationLineFlexMessage } = await namespace("../lib/notifications.js");
+  const items = [{
+    source_type: "overdue_work",
+    category_label: "逾期工作",
+    severity: "critical",
+    title: "調查機房網路異常",
+    description: "原定 2026-06-17 · Noah · 網路設備",
+    due_date: "2026-06-17",
+    href: "/work?q=network"
+  }];
+  const flex = buildNotificationLineFlexMessage(items, "2026-07-18", "https://example.test", { mode: "daily_digest" });
+  const header = flex.contents.header.contents[1].contents;
+  const itemCard = flex.contents.body.contents[2];
+  assert.equal(header[2].text, "其中 1 件已逾期超過 14 天");
+  assert.equal(itemCard.contents[0].contents[0].contents[0].text, "立即");
+  assert.equal(itemCard.contents[0].contents[1].text, "逾期 31 天");
+  assert.equal(itemCard.contents[2].color, "#667085");
+  assert.equal(itemCard.contents[3].text, "Noah · 原定 06/17");
+  assert.equal(JSON.stringify(itemCard).includes("立即處理"), false);
 });

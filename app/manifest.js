@@ -37,12 +37,6 @@ export default function manifest() {
         short_name: "巡檢",
         url: "/inspections/new",
         icons: [{ src: "/pwa-icon.svg", sizes: "any", type: "image/svg+xml" }]
-      },
-      {
-        name: "通知中心",
-        short_name: "通知",
-        url: "/notifications",
-        icons: [{ src: "/pwa-icon.svg", sizes: "any", type: "image/svg+xml" }]
       }
     ]
   };

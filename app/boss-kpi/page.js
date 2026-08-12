@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import AppShell from "../../components/AppShell";
+import { api } from "../../lib/dashboard-api";
 
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
 const OPEN_STATUSES = new Set(["未開始", "處理中", "延後", "未完成", "待處理"]);
@@ -73,20 +75,6 @@ function normalizeWork(row) {
     note: clean(row.note || row.remark || row.action || ""),
     raw: row
   };
-}
-
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json();
-  if (!response.ok || data.success === false) throw new Error(data.message || "讀取失敗");
-  return data.data;
 }
 
 function isDone(record) {
@@ -298,6 +286,7 @@ function RecordsTable({ rows }) {
 }
 
 export default function BossKpiPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState(defaultRange);
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -342,7 +331,7 @@ export default function BossKpiPage() {
       <div className="boss-kpi-page kpi-page">
       <header className="boss-kpi-hero kpi-hero">
         <div>
-          <button className="boss-back no-print" onClick={() => { window.location.href = "/"; }}>返回工作中心</button>
+          <button className="boss-back no-print" onClick={() => router.push("/")}>返回工作中心</button>
           <h1>工作 KPI</h1>
         </div>
         <div className="boss-kpi-actions">

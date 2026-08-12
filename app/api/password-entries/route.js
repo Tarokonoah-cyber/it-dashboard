@@ -2,6 +2,14 @@ import { fail, ok, supabaseRequest } from "../../../lib/supabase-rest";
 import { requireDashboardAuth } from "../../../lib/auth";
 import { buildPasswordEntryPayload } from "../../../lib/password-entry-mutators";
 
+const PASSWORD_ENTRY_SELECT = "id,category,system_name,login_url,username,password_item,notes,bitwarden_item_name,bitwarden_item_id,created_at,updated_at";
+
+function isMissingPasswordEntriesTable(error) {
+  const message = String(error?.message || "");
+  return /password_entries/i.test(message)
+    && /(does not exist|schema cache|could not find|PGRST205)/i.test(message);
+}
+
 export async function GET(request) {
   const authError = requireDashboardAuth(request);
   if (authError) return authError;
@@ -9,18 +17,11 @@ export async function GET(request) {
   try {
     const rows = await supabaseRequest(
       "password_entries",
-      "select=id,category,system_name,login_url,username,password_item,notes,bitwarden_item_name,bitwarden_item_id,created_at,updated_at&order=category.asc,system_name.asc,id.asc&limit=1000"
+      `select=${PASSWORD_ENTRY_SELECT}&order=category.asc,system_name.asc,id.asc&limit=1000`
     );
     return ok(rows);
   } catch (error) {
-    const message = String(error?.message || "");
-    if (
-      message.includes("Supabase") ||
-      message.includes("Could not find the table") ||
-      message.includes("password_entries")
-    ) {
-      return ok([]);
-    }
+    if (isMissingPasswordEntriesTable(error)) return ok([]);
     return fail(error);
   }
 }
@@ -31,7 +32,7 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
-    const rows = await supabaseRequest("password_entries", "select=*", {
+    const rows = await supabaseRequest("password_entries", `select=${PASSWORD_ENTRY_SELECT}`, {
       method: "POST",
       body: buildPasswordEntryPayload(body.data || body)
     });
@@ -49,7 +50,7 @@ export async function PATCH(request) {
     const body = await request.json();
     const id = String(body.id || "").trim();
     if (!id) return fail(new Error("缺少資料 ID"), 400);
-    const rows = await supabaseRequest("password_entries", `id=eq.${encodeURIComponent(id)}&select=*`, {
+    const rows = await supabaseRequest("password_entries", `id=eq.${encodeURIComponent(id)}&select=${PASSWORD_ENTRY_SELECT}`, {
       method: "PATCH",
       body: buildPasswordEntryPayload(body.data || body)
     });

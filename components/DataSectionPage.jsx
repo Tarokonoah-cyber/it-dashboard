@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   blankDraftRow,
   changedRows,
@@ -19,6 +19,7 @@ import {
   useUnsavedChangesWarning
 } from "./dataEditMode";
 import { getContractLifecycleStatus, isContractExpiringWithin } from "../lib/contractStatus";
+import { api } from "../lib/dashboard-api";
 import AssetHistoryDialog from "./AssetHistoryDialog";
 
 const SOC_SOP_PUBLIC_URL =
@@ -180,20 +181,6 @@ const EDITABLE_DATA_SOURCES = new Set([
   "contracts_software",
   "contracts_mobile"
 ]);
-
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
 
 export function getField(record, keys = [], fallback = "") {
   const data = record?.data || record || {};
@@ -563,7 +550,7 @@ export default function DataSectionPage({ sectionKey }) {
   const isSocDocs = sectionKey === "soc_docs";
   const isContacts = config?.source === "contacts";
   const isAssetSection = config?.source === "assets" || config?.source?.startsWith("assets_");
-  const canEdit = EDITABLE_DATA_SOURCES.has(config?.source);
+  const supportsEditing = EDITABLE_DATA_SOURCES.has(config?.source);
   const [rows, setRows] = useState([]);
   const [draftRows, setDraftRows] = useState([]);
   const [editMode, setEditMode] = useState(false);
@@ -582,7 +569,7 @@ export default function DataSectionPage({ sectionKey }) {
 
   useUnsavedChangesWarning(hasUnsavedChanges);
 
-  async function load() {
+  const load = useCallback(async function load() {
     if (!config) return;
     setLoading(true);
     setError("");
@@ -590,19 +577,18 @@ export default function DataSectionPage({ sectionKey }) {
       const source = isSocDocs ? "soc_docs" : config.source;
       const data = await api(`/api/records?source=${encodeURIComponent(source)}`);
       setRows(data.rows || []);
-      if (editMode) setDraftRows(cloneRows(data.rows || []));
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [config, isSocDocs]);
 
   useEffect(() => {
     setQuery(config?.presetKeyword || "");
     setDepartment("全部");
     load();
-  }, [config?.source, config?.presetKeyword, isSocDocs]);
+  }, [config?.presetKeyword, load]);
 
   useEffect(() => {
     if (!selectedContract) return undefined;
@@ -738,7 +724,7 @@ export default function DataSectionPage({ sectionKey }) {
         <div>
           <h1>{config.title}</h1>
         </div>
-        {!canEdit && !isAssetSection ? (
+        {!supportsEditing && !isAssetSection ? (
           <div className="section-actions">
             <button onClick={load}>重新整理</button>
           </div>
@@ -757,7 +743,7 @@ export default function DataSectionPage({ sectionKey }) {
             <>
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="搜尋關鍵字..." />
               <span className="records-summary">{loading ? "讀取中..." : `${filteredRows.length.toLocaleString("en-US")} 筆`}</span>
-              {canEdit ? (
+              {supportsEditing ? (
                 <div className="data-edit-toolbar-actions">
                   {editMode ? (
                     <>

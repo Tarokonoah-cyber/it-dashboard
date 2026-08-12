@@ -12,7 +12,7 @@ import {
 } from "../../../lib/aiAssistantIntents";
 
 const MAX_MESSAGE_LENGTH = 500;
-const GEMINI_MODEL = "gemini-1.5-flash";
+const GEMINI_MODEL = "gemini-3.6-flash";
 const DONE_STATUSES = new Set(["\u5df2\u5b8c\u6210", "\u5b8c\u6210", "Done", "done"]);
 
 function json(data, status = 200) {

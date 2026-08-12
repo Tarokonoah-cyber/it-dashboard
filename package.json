@@ -20,19 +20,36 @@
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
     "validate:line": "node --experimental-vm-modules scripts/validate-line-messages.mjs",
-    "test": "node --experimental-vm-modules --test scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/cost-control.test.mjs scripts/data-edit-mode.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs"
+    "test": "node --experimental-vm-modules --test scripts/ai-assistant.test.mjs scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/cost-control.test.mjs scripts/dashboard-api.test.mjs scripts/data-edit-mode.test.mjs scripts/knowledge-security.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs scripts/supabase-rest.test.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/noto-sans-tc": "^0.4.3",
     "@pdf-lib/fontkit": "^1.1.1",
     "exceljs": "^4.4.0",
-    "next": "16.2.9",
+    "next": "16.3.0",
     "pdf-lib": "^1.17.1",
-    "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    },
+    "minimatch@3.1.5": {
+      "brace-expansion": "1.1.18"
+    },
+    "minimatch@5.1.9": {
+      "brace-expansion": "2.1.4"
+    },
+    "minimatch@10.2.5": {
+      "brace-expansion": "5.0.9"
+    },
+    "@eslint/eslintrc": {
+      "js-yaml": "4.3.1"
+    }
   },
   "devDependencies": {
     "eslint": "9.39.4",
-    "eslint-config-next": "16.2.9"
+    "eslint-config-next": "16.3.0"
   }
 }

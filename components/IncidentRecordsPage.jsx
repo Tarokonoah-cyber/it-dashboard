@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const EMPTY_ARTICLE = {
   title: "",
@@ -26,6 +27,10 @@ const TYPE_LABELS = {
   troubleshooting: "故障排除",
   guide: "教學手冊"
 };
+
+function signedImageLoader({ src }) {
+  return src;
+}
 
 function createBlankStep() {
   return { id: "", step_order: 1, title: "", body: "", assets: [] };
@@ -137,7 +142,7 @@ function KnowledgeLightbox({ asset, onClose }) {
     }}>
       <div className="knowledge-lightbox-content">
         <button type="button" className="knowledge-lightbox-close" onClick={onClose} aria-label="關閉圖片預覽">×</button>
-        <img src={asset.signed_url} alt={alt} />
+        <Image loader={signedImageLoader} unoptimized src={asset.signed_url} alt={alt} width={1600} height={1000} sizes="90vw" />
         {hasMeaningfulContent(asset.alt_text) ? <p>{asset.alt_text}</p> : null}
       </div>
     </div>
@@ -166,7 +171,7 @@ function KnowledgeImage({ asset, fallbackAlt, onOpen }) {
 
   return (
     <button className="knowledge-image-button" type="button" onClick={() => onOpen(asset)} aria-label={`放大圖片：${alt}`}>
-      <img key={retryCount} loading="lazy" src={asset.signed_url} alt={alt} onError={() => setFailed(true)} />
+      <Image key={retryCount} loader={signedImageLoader} unoptimized loading="lazy" src={asset.signed_url} alt={alt} width={1200} height={800} sizes="(max-width: 760px) 100vw, 60vw" onError={() => setFailed(true)} />
     </button>
   );
 }
@@ -255,7 +260,7 @@ function ArticleList({ rows, selectedId, onSelect, listRef }) {
   );
 }
 
-function ArticleViewer({ article, adminMode, onBack, onEdit, onDelete, onStatus, onOpenImage }) {
+function ArticleViewer({ article, manageMode, onBack, onEdit, onDelete, onStatus, onOpenImage }) {
   if (!article) return <div className="knowledge-reader knowledge-empty">請從左側選擇一篇教學。</div>;
 
   const hasSymptom = hasMeaningfulContent(article.symptom);
@@ -280,7 +285,7 @@ function ArticleViewer({ article, adminMode, onBack, onEdit, onDelete, onStatus,
             <span>最後更新 {formatDateTime(article.updated_at)}</span>
           </div>
         </div>
-        {adminMode ? (
+        {manageMode ? (
           <div className="knowledge-actions">
             <button type="button" onClick={onEdit}>編輯</button>
             {article.status !== "published" ? <button className="primary" type="button" onClick={() => onStatus("published")}>發布</button> : null}
@@ -459,7 +464,7 @@ function ArticleEditor({ draft, setDraft, saving, uploadingId, onClose, onSave, 
                 <div className="knowledge-asset-editor-grid">
                   {step.assets.map((asset) => (
                     <figure key={asset.id}>
-                      <img loading="lazy" src={asset.signed_url} alt={asset.alt_text || asset.original_filename || "教學圖片"} />
+                      <Image loader={signedImageLoader} unoptimized loading="lazy" src={asset.signed_url} alt={asset.alt_text || asset.original_filename || "教學圖片"} width={640} height={360} sizes="(max-width: 760px) 100vw, 320px" />
                       <input
                         value={asset.alt_text || ""}
                         onChange={(event) => {
@@ -491,7 +496,7 @@ export default function IncidentRecordsPage() {
   const [selectedId, setSelectedId] = useState("");
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [filters, setFilters] = useState({ query: "", category: "", system: "", status: "published" });
-  const [adminMode, setAdminMode] = useState(false);
+  const [manageMode, setManageMode] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [draft, setDraft] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -514,48 +519,48 @@ export default function IncidentRecordsPage() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  async function loadArticles(nextAdmin = adminMode) {
+  const loadArticles = useCallback(async function loadArticles(nextManageMode = manageMode) {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (nextAdmin) params.set("includeDrafts", "1");
+      if (nextManageMode) params.set("includeDrafts", "1");
       if (filters.query) params.set("q", filters.query);
       if (filters.category) params.set("category", filters.category);
       if (filters.system) params.set("system", filters.system);
-      if (nextAdmin && filters.status) params.set("status", filters.status);
+      if (nextManageMode && filters.status) params.set("status", filters.status);
       const rows = await readApi(await fetch(`/api/knowledge?${params.toString()}`, { cache: "no-store" }));
       setArticles(rows);
-      if (!rows.some((row) => row.id === selectedId)) setSelectedId(rows[0]?.id || "");
+      setSelectedId((current) => rows.some((row) => row.id === current) ? current : (rows[0]?.id || ""));
     } catch (error) {
-      if (nextAdmin) setAdminMode(false);
+      if (nextManageMode) setManageMode(false);
       setToast({ type: "error", text: safeErrorMessage(error, "教學列表讀取失敗") });
       setArticles([]);
     } finally {
       setLoading(false);
     }
-  }
+  }, [filters.category, filters.query, filters.status, filters.system, manageMode]);
 
-  async function loadDetail(id = selectedId, nextAdmin = adminMode) {
+  const loadDetail = useCallback(async function loadDetail(id = selectedId, nextManageMode = manageMode) {
     if (!id) {
       setSelectedArticle(null);
       return;
     }
     try {
-      const params = nextAdmin ? "?includeDrafts=1" : "";
+      const params = nextManageMode ? "?includeDrafts=1" : "";
       setSelectedArticle(await readApi(await fetch(`/api/knowledge/${id}${params}`, { cache: "no-store" })));
     } catch (error) {
       setToast({ type: "error", text: safeErrorMessage(error, "教學內容讀取失敗") });
       setSelectedArticle(null);
     }
-  }
+  }, [manageMode, selectedId]);
 
   useEffect(() => {
-    loadArticles(adminMode);
-  }, [filters.query, filters.category, filters.system, filters.status, adminMode]);
+    loadArticles(manageMode);
+  }, [loadArticles, manageMode]);
 
   useEffect(() => {
-    loadDetail(selectedId, adminMode);
-  }, [selectedId, adminMode]);
+    loadDetail();
+  }, [loadDetail]);
 
   function updateFilter(key, value) {
     setFilters((current) => ({ ...current, [key]: value }));
@@ -610,7 +615,7 @@ export default function IncidentRecordsPage() {
       setDraft(JSON.parse(JSON.stringify(saved)));
       setSelectedId(saved.id);
       setSelectedArticle(saved);
-      setAdminMode(true);
+      setManageMode(true);
       setToast({ type: "success", text: "教學已儲存" });
       await loadArticles(true);
     } catch (error) {
@@ -700,14 +705,14 @@ export default function IncidentRecordsPage() {
           <p>集中管理故障排除與內部系統教學，圖片以短效 signed URL 顯示。</p>
         </div>
         <div className="knowledge-actions">
-          <button type="button" onClick={() => setAdminMode((value) => !value)}>
-            {adminMode ? "一般閱讀" : "管理模式"}
+          <button type="button" onClick={() => setManageMode((value) => !value)}>
+            {manageMode ? "一般閱讀" : "管理模式"}
           </button>
-          {adminMode ? <button className="primary-action" type="button" onClick={openCreate}>新增教學</button> : null}
+          {manageMode ? <button className="primary-action" type="button" onClick={openCreate}>新增教學</button> : null}
         </div>
       </header>
 
-      <div className={`incident-filter-panel knowledge-filter-panel ${adminMode ? "has-status" : "without-status"}`}>
+      <div className={`incident-filter-panel knowledge-filter-panel ${manageMode ? "has-status" : "without-status"}`}>
         <input value={filters.query} onChange={(event) => updateFilter("query", event.target.value)} placeholder="搜尋標題、現象、原因、摘要或關鍵字" />
         <select value={filters.category} onChange={(event) => updateFilter("category", event.target.value)}>
           <option value="">全部分類</option>
@@ -717,7 +722,7 @@ export default function IncidentRecordsPage() {
           <option value="">全部系統</option>
           {systems.map((system) => <option key={system} value={system}>{system}</option>)}
         </select>
-        {adminMode ? (
+        {manageMode ? (
           <select value={filters.status} onChange={(event) => updateFilter("status", event.target.value)}>
             <option value="">全部狀態</option>
             <option value="draft">草稿</option>
@@ -732,7 +737,7 @@ export default function IncidentRecordsPage() {
         <ArticleList rows={articles} selectedId={selectedId} onSelect={selectArticle} listRef={listRef} />
         <ArticleViewer
           article={selectedArticle}
-          adminMode={adminMode}
+          manageMode={manageMode}
           onBack={returnToList}
           onEdit={openEdit}
           onDelete={() => setDeleteTarget(selectedArticle)}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { safeInternalPath } from "../../lib/safe-navigation";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,8 +27,8 @@ export default function LoginPage() {
         throw new Error(data.message || "登入失敗");
       }
 
-      const next = new URLSearchParams(window.location.search).get("next") || "/";
-      router.replace(next.startsWith("/") ? next : "/");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.replace(safeInternalPath(next));
     } catch (err) {
       setError(err.message || "登入失敗");
     } finally {

@@ -125,7 +125,7 @@ test("daily Flex supports all-clear and recent-push suppression cards", async ()
     recentCount: 1
   });
   assert.match(JSON.stringify(suppressed.contents), /最近 4 小時通知/);
-  assert.equal(suppressed.contents.body.contents[0].contents[2].contents[0].text, "1");
+  assert.equal(suppressed.contents.body.contents[0].contents[2].contents[0].text, "全部 1");
 });
 
 test("LINE transport retries one 5xx with the same retry UUID", async () => {

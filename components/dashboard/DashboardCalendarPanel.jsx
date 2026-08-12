@@ -392,7 +392,7 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
             >
               {day ? (
               <>
-                <button
+                  <button
                   className="calendar-cell-add"
                   type="button"
                   disabled={Boolean(calendarSetupMessage)}
@@ -401,9 +401,9 @@ export default function DashboardCalendarPanel({ dashboard, notify }) {
                     event.stopPropagation();
                     openEventModal(cellDate);
                   }}
-                >
-                  +
-                </button>
+                  >
+                    +
+                  </button>
                 <div className="calendar-cell-date-row">
                   <span className="calendar-date-badge">
                     <span className={`calendar-day-number ${isCurrentMonth && day === today ? "today-dot" : ""}`}>{String(day).padStart(2, "0")}</span>

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { requireCostControlImportAuth } from "../../../../../lib/cost-control-permissions";
+import { requireDashboardAuth } from "../../../../../lib/auth";
 import { parseCostControlWorkbook } from "../../../../../lib/cost-control-excel.js";
 import { createCostControlPreview, isMissingCostControlSchema, recordCostControlImportFailure } from "../../../../../lib/cost-control-service";
 import { hasXlsxZipSignature, safeUploadFilename, validateCostControlUpload } from "../../../../../lib/cost-control-upload.js";
@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request) {
-  const authError = requireCostControlImportAuth(request);
+  const authError = requireDashboardAuth(request);
   if (authError) return authError;
   if (!String(request.headers.get("content-type") || "").toLowerCase().startsWith("multipart/form-data")) {
     return fail(new Error("請使用 multipart/form-data 上傳 .xlsx 檔案"), 415);

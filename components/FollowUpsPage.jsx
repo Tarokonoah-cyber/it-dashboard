@@ -1,23 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { api } from "../lib/dashboard-api";
 
 const FOLLOW_UP_STATUSES = ["等待回覆", "處理中", "待確認", "已完成"];
 const DONE_STATUS = "已完成";
-
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
 
 function todayKey() {
   return new Intl.DateTimeFormat("en-CA", {

@@ -2,7 +2,6 @@ export const SIDEBAR_STORAGE_KEY = "it-dashboard-sidebar-state";
 
 export const APP_SECTIONS = [
   { key: "dashboard", icon: "⌂", label: "儀表板", href: "/" },
-  { key: "notifications", icon: "◉", label: "通知中心", href: "/notifications" },
   { key: "quick-notes", icon: "✎", label: "快速備忘錄", href: "/quick-notes" },
   {
     key: "work-center",
@@ -56,7 +55,16 @@ export const APP_SECTIONS = [
       { key: "soc_docs", label: "SOC", href: "/sop/soc" }
     ]
   },
-  { key: "settings", icon: "⚙", label: "設定", href: "/settings" }
+  {
+    key: "system-settings",
+    icon: "⚙",
+    label: "設定",
+    href: "/settings",
+    children: [
+      { key: "settings", label: "一般設定", href: "/settings" },
+      { key: "notifications", label: "通知中心", href: "/notifications" }
+    ]
+  }
 ];
 
 export const FLAT_APP_SECTIONS = APP_SECTIONS.flatMap((item) => [item, ...(item.children || [])]);

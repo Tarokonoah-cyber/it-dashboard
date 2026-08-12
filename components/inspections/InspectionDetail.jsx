@@ -4,13 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InspectionStatusBadge from "./InspectionStatusBadge";
 import { INSPECTION_PERIODS, calculateInspectionSummary, filterInspectionItems, needsIssueFields } from "./inspectionTemplates";
-
-async function api(path) {
-  const response = await fetch(path, { cache: "no-store" });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
+import { api } from "../../lib/dashboard-api";
 
 function formatDate(value) {
   return value ? String(value).slice(0, 10) : "-";

@@ -17,6 +17,9 @@ async function loadModule(relativePath, parentUrl = import.meta.url) {
     const code = await readFile(url, "utf8");
     const sourceModule = new vm.SourceTextModule(code, { identifier: url.href });
     await sourceModule.link(async (specifier, referencingModule) => {
+      if (specifier === "server-only") {
+        return new vm.SyntheticModule([], () => {}, { identifier: "server-only" });
+      }
       if (specifier === "node:crypto") {
         return new vm.SyntheticModule(["createHmac", "timingSafeEqual"], function setExports() {
           this.setExport("createHmac", createHmac);
@@ -176,6 +179,15 @@ test("timestamp older than five minutes returns 401", async () => {
   const signature = `sha256=${createHmac("sha256", TEST_SECRET).update(`${staleTimestamp}.${rawBody}`).digest("hex")}`;
   const { response } = await post(event, async () => { calls += 1; }, { timestamp: staleTimestamp, signature, rawBody });
   assert.equal(response.status, 401);
+  assert.equal(calls, 0);
+});
+
+test("oversized webhook payload is rejected before processing", async () => {
+  let calls = 0;
+  const event = makeEvent();
+  const rawBody = "x".repeat(128 * 1024 + 1);
+  const { response } = await post(event, async () => { calls += 1; }, { rawBody });
+  assert.equal(response.status, 413);
   assert.equal(calls, 0);
 });
 

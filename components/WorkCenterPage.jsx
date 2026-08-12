@@ -1,28 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import WorkCompletionDialog from "./WorkCompletionDialog";
 import VoiceWorkInput from "./VoiceWorkInput";
 import { loadRelatedFollowUps, settleWorkFollowUps } from "../lib/work-completion-client";
 import { getTomorrowDate } from "../lib/work-follow-up";
+import { api } from "../lib/dashboard-api";
 
 const WORK_CATEGORIES = ["一般", "設備維護", "系統更新", "網路", "SOP", "設備", "合約", "系統", "其他"];
 const WORK_STATUSES = ["待處理", "進行中", "已完成", "暫緩", "異常"];
 const DONE_STATUSES = new Set(["已完成", "完成", "Done", "done"]);
-
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
 
 function dateKey(value) {
   return value ? String(value).slice(0, 10) : "";
@@ -60,6 +48,7 @@ function getInitialQueryParam(key) {
 }
 
 export default function WorkCenterPage() {
+  const router = useRouter();
   const today = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     year: "numeric",
@@ -276,7 +265,7 @@ export default function WorkCenterPage() {
           <h1>工作中心</h1>
         </div>
         <div className="work-head-actions">
-          <button className="boss-kpi-entry" onClick={() => { window.location.href = "/boss-kpi"; }}>查看 KPI 報表</button>
+          <button className="boss-kpi-entry" onClick={() => router.push("/boss-kpi")}>查看 KPI 報表</button>
           <button onClick={load}>重新整理</button>
         </div>
       </header>

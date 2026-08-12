@@ -1,4 +1,4 @@
-const CACHE_NAME = "taroko-it-shell-v1";
+const CACHE_NAME = "taroko-it-shell-v2";
 const OFFLINE_URL = "/offline";
 const PRECACHE_URLS = [OFFLINE_URL, "/pwa-icon.svg", "/pwa-icon-maskable.svg"];
 

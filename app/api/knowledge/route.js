@@ -7,13 +7,12 @@ import {
 } from "../../../lib/knowledge-service";
 
 export async function GET(request) {
+  const authError = requireDashboardAuth(request);
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const includeDrafts = searchParams.get("includeDrafts") === "1";
-    if (includeDrafts) {
-      const authError = requireDashboardAuth(request);
-      if (authError) return authError;
-    }
     const rows = await listKnowledgeArticles({
       includeDrafts,
       query: searchParams.get("q") || "",

@@ -1,4 +1,4 @@
-import { requireCostControlImportAuth } from "../../../../../lib/cost-control-permissions";
+import { requireDashboardAuth } from "../../../../../lib/auth";
 import { confirmCostControlPreview } from "../../../../../lib/cost-control-service";
 import { fail, ok } from "../../../../../lib/supabase-rest";
 
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export async function POST(request) {
-  const authError = requireCostControlImportAuth(request);
+  const authError = requireDashboardAuth(request);
   if (authError) return authError;
   try {
     const body = await request.json().catch(() => ({}));

@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const EMPTY_DATA = {
   setupRequired: false,
-  permissions: { canImport: true, fixedDepartment: null, roleSystem: false, basis: "dashboard-auth" },
   options: { years: [], departments: [], months: Array.from({ length: 12 }, (_, index) => index + 1) },
   items: [], vouchers: [], monthlyAmounts: [], trend: [], imports: [], sourceSheets: []
 };
@@ -70,6 +69,157 @@ function LoadingSkeleton() {
   );
 }
 
+function editorState(item, monthlyAmounts, selectedYear) {
+  const currentYear = new Date().getFullYear();
+  return {
+    budgetYear: String(item?.budgetYear || selectedYear || currentYear),
+    budgetCode: item?.budgetCode || "",
+    itemName: item?.itemName || "",
+    department: item?.department || "",
+    quantity: item?.quantity || "",
+    budgetAmount: item?.budgetAmount ?? "",
+    committedAmount: item?.committedAmount ?? 0,
+    monthlyAmounts: item
+      ? monthlyAmounts
+        .filter((entry) => entry.budget_item_id === item.id)
+        .map((entry) => ({
+          actualYear: String(entry.actual_year),
+          actualMonth: String(entry.actual_month),
+          amount: String(entry.amount)
+        }))
+        .sort((left, right) => Number(left.actualYear) - Number(right.actualYear) || Number(left.actualMonth) - Number(right.actualMonth))
+      : []
+  };
+}
+
+function BudgetItemEditor({ item, monthlyAmounts, selectedYear, departments, onClose, onSaved }) {
+  const dialogRef = useRef(null);
+  const [form, setForm] = useState(() => editorState(item, monthlyAmounts, selectedYear));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    dialogRef.current?.focus();
+    function keydown(event) {
+      if (event.key === "Escape" && !saving) onClose();
+    }
+    document.body.classList.add("cc-drawer-open");
+    window.addEventListener("keydown", keydown);
+    return () => {
+      document.body.classList.remove("cc-drawer-open");
+      window.removeEventListener("keydown", keydown);
+    };
+  }, [onClose, saving]);
+
+  function change(field, value) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  function addMonthlyAmount() {
+    const today = new Date();
+    setForm((current) => ({
+      ...current,
+      monthlyAmounts: [
+        ...current.monthlyAmounts,
+        {
+          actualYear: current.budgetYear || String(today.getFullYear()),
+          actualMonth: String(today.getMonth() + 1),
+          amount: ""
+        }
+      ]
+    }));
+  }
+
+  function changeMonthlyAmount(index, field, value) {
+    setForm((current) => ({
+      ...current,
+      monthlyAmounts: current.monthlyAmounts.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, [field]: value } : row
+      )
+    }));
+  }
+
+  function removeMonthlyAmount(index) {
+    setForm((current) => ({
+      ...current,
+      monthlyAmounts: current.monthlyAmounts.filter((_, rowIndex) => rowIndex !== index)
+    }));
+  }
+
+  async function save(event) {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      const result = await api("/api/cost-control/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: item?.id || null, ...form })
+      });
+      await onSaved(result);
+    } catch (err) {
+      setError(err.message);
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="cc-modal-backdrop" onMouseDown={() => !saving && onClose()}>
+      <form
+        className="cc-budget-editor"
+        onSubmit={save}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cc-budget-editor-title"
+        tabIndex={-1}
+        ref={dialogRef}
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <header>
+          <div><span>MANUAL BUDGET</span><h2 id="cc-budget-editor-title">{item ? "編輯預算項目" : "新增預算項目"}</h2></div>
+          <button type="button" aria-label="關閉預算編輯視窗" disabled={saving} onClick={onClose}>×</button>
+        </header>
+        <div className="cc-budget-editor-body">
+          <section className="cc-editor-grid">
+            <label><span>預算年度</span><input type="number" min="2000" max="2200" value={form.budgetYear} onChange={(event) => change("budgetYear", event.target.value)} required /></label>
+            <label><span>預算編號</span><input value={form.budgetCode} onChange={(event) => change("budgetCode", event.target.value)} placeholder="例如 A26-MIS001" maxLength={120} required /></label>
+            <label className="wide"><span>預算項目</span><input value={form.itemName} onChange={(event) => change("itemName", event.target.value)} maxLength={500} required /></label>
+            <label><span>部門</span><input list="cc-department-options" value={form.department} onChange={(event) => change("department", event.target.value)} maxLength={120} required /></label>
+            <datalist id="cc-department-options">{departments.map((department) => <option key={department} value={department} />)}</datalist>
+            <label><span>數量</span><input value={form.quantity} onChange={(event) => change("quantity", event.target.value)} placeholder="例如 1、1式" maxLength={100} /></label>
+            <label><span>預算金額（未稅）</span><input type="number" min="0" step="0.01" value={form.budgetAmount} onChange={(event) => change("budgetAmount", event.target.value)} required /></label>
+            <label><span>送簽中（未稅）</span><input type="number" min="0" step="0.01" value={form.committedAmount} onChange={(event) => change("committedAmount", event.target.value)} /></label>
+          </section>
+
+          <section className="cc-editor-months">
+            <header>
+              <div><h3>月份動支紀錄</h3><p>可加入跨年度月份，例如 2025 年預算於 2026 年才請款。</p></div>
+              <button type="button" onClick={addMonthlyAmount}>＋ 新增動支</button>
+            </header>
+            {form.monthlyAmounts.length ? (
+              <div className="cc-editor-month-list">
+                {form.monthlyAmounts.map((row, index) => (
+                  <div className="cc-editor-month-row" key={`${index}-${row.actualYear}-${row.actualMonth}`}>
+                    <label><span>年度</span><input type="number" min="2000" max="2200" value={row.actualYear} onChange={(event) => changeMonthlyAmount(index, "actualYear", event.target.value)} required /></label>
+                    <label><span>月份</span><select value={row.actualMonth} onChange={(event) => changeMonthlyAmount(index, "actualMonth", event.target.value)}>{Array.from({ length: 12 }, (_, month) => <option key={month + 1} value={month + 1}>{month + 1} 月</option>)}</select></label>
+                    <label><span>動支金額</span><input type="number" step="0.01" value={row.amount} onChange={(event) => changeMonthlyAmount(index, "amount", event.target.value)} required /></label>
+                    <button type="button" className="danger" aria-label={`移除第 ${index + 1} 筆動支`} onClick={() => removeMonthlyAmount(index)}>移除</button>
+                  </div>
+                ))}
+              </div>
+            ) : <div className="cc-editor-empty">目前沒有動支紀錄，可先儲存預算，之後再補。</div>}
+          </section>
+          {error ? <div className="cc-alert error" role="alert">{error}</div> : null}
+        </div>
+        <footer>
+          <button type="button" disabled={saving} onClick={onClose}>取消</button>
+          <button className="primary" type="submit" disabled={saving}>{saving ? "儲存中…" : "儲存預算"}</button>
+        </footer>
+      </form>
+    </div>
+  );
+}
+
 function TrendChart({ rows }) {
   const [metric, setMetric] = useState("monthly");
   const labels = { monthly: "每月請款", cumulative: "累計動支", available: "可用餘額變化" };
@@ -114,7 +264,7 @@ function TrendChart({ rows }) {
   );
 }
 
-function ItemDrawer({ item, monthlyAmounts, vouchers, onClose }) {
+function ItemDrawer({ item, monthlyAmounts, vouchers, onEdit, onClose }) {
   const dialogRef = useRef(null);
   useEffect(() => {
     dialogRef.current?.focus();
@@ -129,12 +279,15 @@ function ItemDrawer({ item, monthlyAmounts, vouchers, onClose }) {
     };
   }, [onClose]);
 
-  const months = Array.from({ length: 12 }, (_, index) => {
-    const month = index + 1;
-    const amount = monthlyAmounts.filter((entry) => entry.budget_item_id === item.id && Number(entry.actual_month) === month)
-      .reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
-    return { month, amount };
-  });
+  const months = monthlyAmounts
+    .filter((entry) => entry.budget_item_id === item.id)
+    .map((entry) => ({
+      id: entry.id,
+      year: Number(entry.actual_year),
+      month: Number(entry.actual_month),
+      amount: Number(entry.amount || 0)
+    }))
+    .sort((left, right) => left.year - right.year || left.month - right.month);
   const related = vouchers.filter((voucher) => voucher.relationshipStatus === "exact" && voucher.budgetCode === item.budgetCode);
 
   return (
@@ -142,7 +295,10 @@ function ItemDrawer({ item, monthlyAmounts, vouchers, onClose }) {
       <aside className="cc-drawer" role="dialog" aria-modal="true" aria-labelledby="cc-drawer-title" tabIndex={-1} ref={dialogRef} onMouseDown={(event) => event.stopPropagation()}>
         <header>
           <div><span>預算項目明細</span><h2 id="cc-drawer-title">{item.itemName}</h2></div>
-          <button type="button" onClick={onClose} aria-label="關閉預算項目明細">×</button>
+          <div className="cc-drawer-actions">
+            <button type="button" className="cc-edit-item-button" onClick={() => onEdit(item)}>編輯</button>
+            <button type="button" onClick={onClose} aria-label="關閉預算項目明細">×</button>
+          </div>
         </header>
         <div className="cc-drawer-body">
           <dl className="cc-detail-grid">
@@ -157,7 +313,7 @@ function ItemDrawer({ item, monthlyAmounts, vouchers, onClose }) {
           </dl>
           <section className="cc-drawer-section">
             <h3>各月份動支金額</h3>
-            <div className="cc-month-grid">{months.map((month) => <div key={month.month}><span>{month.month}月</span><strong>{currency(month.amount)}</strong></div>)}</div>
+            {months.length ? <div className="cc-month-grid">{months.map((month) => <div key={month.id || `${month.year}-${month.month}`}><span>{month.year} 年 {month.month} 月</span><strong>{currency(month.amount)}</strong></div>)}</div> : <div className="cc-data-note neutral">尚無動支紀錄。</div>}
           </section>
           <section className="cc-drawer-section">
             <h3>相關傳票</h3>
@@ -374,6 +530,7 @@ export default function CostControlPage() {
   const [tab, setTab] = useState("items");
   const [drawerItem, setDrawerItem] = useState(null);
   const [importOpen, setImportOpen] = useState(false);
+  const [editorTarget, setEditorTarget] = useState(null);
   const openerRef = useRef(null);
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
@@ -392,6 +549,19 @@ export default function CostControlPage() {
   useEffect(() => { load(); }, [load]);
   function closeDrawer() { setDrawerItem(null); window.setTimeout(() => openerRef.current?.focus?.(), 0); }
   function openDrawer(item) { openerRef.current = document.activeElement; setDrawerItem(item); }
+  function editItem(item) {
+    setDrawerItem(null);
+    setEditorTarget({ item });
+  }
+  async function handleManualSaved(result) {
+    setEditorTarget(null);
+    setDrawerItem(null);
+    if (String(filters.year || data.selection?.year || "") !== String(result?.budgetYear || "")) {
+      setFilters((current) => ({ ...current, year: String(result.budgetYear), month: "" }));
+      return;
+    }
+    await load();
+  }
   const summary = data.summary;
   const displayYear = filters.year || data.selection?.year || data.meta?.dataYear;
   const displayMonth = filters.month || data.selection?.throughMonth || data.meta?.dataMonth;
@@ -400,8 +570,11 @@ export default function CostControlPage() {
     <section className="cc-page">
       <header className="cc-hero">
         <div className="cc-title"><span>COST CONTROL</span><h1>成本控制</h1><p>{displayYear ? `${displayYear} 年截至 ${displayMonth || "-"} 月` : "尚無正式匯入資料"}</p></div>
-        <dl className="cc-import-info"><div><dt>最後匯入</dt><dd>{localTime(data.meta?.lastImportedAt)}</dd></div><div><dt>來源檔案</dt><dd title={data.meta?.filename}>{data.meta?.filename || "尚未提供"}</dd></div></dl>
-        {data.permissions?.canImport ? <button className="primary cc-import-button" type="button" onClick={() => setImportOpen(true)}>匯入 Excel</button> : <span className="cc-permission-note">目前帳號只有檢視權限</span>}
+        <dl className="cc-import-info"><div><dt>最後更新</dt><dd>{localTime(data.meta?.lastImportedAt)}</dd></div><div><dt>資料來源</dt><dd title={data.meta?.filename}>{data.meta?.sourceType === "manual" ? "手動維護" : data.meta?.filename || "尚未提供"}</dd></div></dl>
+        <div className="cc-hero-actions">
+          <button className="primary cc-add-budget-button" type="button" onClick={() => setEditorTarget({ item: null })}>＋ 新增預算</button>
+          <button className="cc-import-button" type="button" onClick={() => setImportOpen(true)}>匯入 Excel</button>
+        </div>
       </header>
 
       <section className="cc-top-filters" aria-label="成本控制篩選">
@@ -409,14 +582,13 @@ export default function CostControlPage() {
         <FilterField label="部門"><select value={filters.department} onChange={(event) => setFilters((current) => ({ ...current, department: event.target.value }))}><option value="">全部部門</option>{data.options.departments.map((item) => <option key={item}>{item}</option>)}</select></FilterField>
         <FilterField label="截至月份"><select value={filters.month || data.selection?.throughMonth || ""} onChange={(event) => setFilters((current) => ({ ...current, month: event.target.value }))}><option value="" disabled>選擇月份</option>{data.options.months.map((month) => <option key={month} value={month}>{month} 月</option>)}</select></FilterField>
         <FilterField label="顯示範圍"><select value={filters.scope} onChange={(event) => setFilters((current) => ({ ...current, scope: event.target.value }))}><option value="all">全部</option><option value="used">有動支</option><option value="near">即將超支</option><option value="over">已超支</option></select></FilterField>
-        <button type="button" onClick={() => setFilters({ year: "", department: data.permissions?.fixedDepartment || "", month: "", scope: "all" })}>清除條件</button>
+        <button type="button" onClick={() => setFilters({ year: "", department: "", month: "", scope: "all" })}>清除條件</button>
       </section>
 
       {error ? <div className="cc-alert error" role="alert">{error}<button type="button" onClick={load}>重試</button></div> : null}
       {data.setupRequired ? <div className="cc-alert warning" role="status"><strong>本機程式已就緒，資料表尚未建立</strong><span>{data.message}</span></div> : null}
-      {!data.permissions?.roleSystem ? <p className="cc-auth-note">目前專案沒有角色或帳號部門模型；部門預設保留「全部」，匯入 API 已集中在可替換的權限檢查介面。</p> : null}
       {loading ? <LoadingSkeleton /> : <>
-        {!summary ? <div className="cc-empty prominent"><strong>目前沒有成本控制資料</strong><span>請由具匯入權限的使用者上傳 Cost Control .xlsx，預覽確認後才會寫入正式資料。</span></div> : <>
+        {!summary ? <div className="cc-empty prominent"><strong>目前沒有成本控制資料</strong><span>可逐筆新增預算項目，或匯入 Cost Control .xlsx。</span><button className="primary" type="button" onClick={() => setEditorTarget({ item: null })}>新增第一筆預算</button></div> : <>
           <section className="cc-summary-grid" aria-label="成本控制總覽">
             <SummaryCard label="年度預算" value={currency(summary.budget)} hint={`${data.items.length} 個預算項目`} />
             <SummaryCard label="累計動支" value={currency(summary.actual)} />
@@ -440,7 +612,8 @@ export default function CostControlPage() {
           </section>
         </>}
       </>}
-      {drawerItem ? <ItemDrawer item={drawerItem} monthlyAmounts={data.monthlyAmounts} vouchers={data.vouchers} onClose={closeDrawer} /> : null}
+      {drawerItem ? <ItemDrawer item={drawerItem} monthlyAmounts={data.monthlyAmounts} vouchers={data.vouchers} onEdit={editItem} onClose={closeDrawer} /> : null}
+      {editorTarget ? <BudgetItemEditor item={editorTarget.item} monthlyAmounts={data.monthlyAmounts} selectedYear={displayYear} departments={data.options.departments} onClose={() => setEditorTarget(null)} onSaved={handleManualSaved} /> : null}
       {importOpen ? <ImportDialog onClose={() => setImportOpen(false)} onImported={load} /> : null}
     </section>
   );

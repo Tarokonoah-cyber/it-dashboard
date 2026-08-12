@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { api } from "../lib/dashboard-api";
 import { useUnsavedChangesWarning } from "./dataEditMode";
 
 const SEARCH_KEYS = [
@@ -38,20 +39,6 @@ const FALLBACK_PASSWORD_ENTRIES = [
   }
 ];
 
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    }
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
-
 function displayValue(value, fallback = "-") {
   const text = String(value || "").trim();
   return text || fallback;
@@ -62,10 +49,6 @@ function normalizeLoginUrl(value) {
   if (!text) return "";
   if (/^https?:\/\//i.test(text)) return text;
   return `https://${text}`;
-}
-
-function notifyBitwardenPending() {
-  window.alert("尚未串接 Bitwarden 讀取；此頁不保存或顯示實際密碼。");
 }
 
 export default function PasswordsPage() {
@@ -215,7 +198,7 @@ export default function PasswordsPage() {
       </header>
 
       <div className="security-notice">
-        此頁只保存系統入口、帳號索引與 Bitwarden 對應項目，不保存實際密碼。顯示密碼與複製密碼按鈕目前僅為預留介面。
+        此頁只保存系統入口、帳號索引與 Bitwarden 對應項目，不保存或顯示實際密碼。需要密碼時請直接開啟 Bitwarden。
       </div>
 
       {notice ? <div className="error-box">{notice}</div> : null}
@@ -260,7 +243,7 @@ export default function PasswordsPage() {
                 <th>分類</th>
                 <th>系統名稱</th>
                 <th>登入網址</th>
-                <th>帳號 / 密碼</th>
+                <th>帳號 / 保管庫索引</th>
                 <th>備註</th>
                 <th>操作</th>
               </tr>
@@ -316,22 +299,18 @@ export default function PasswordsPage() {
                           )}
                         </div>
                         <div>
-                          <span>密碼</span>
+                          <span>Bitwarden 索引</span>
                           {editMode ? (
                             <input
                               value={entry.password_item || ""}
                               onChange={(event) => updateDraftEntry(entryKey, "password_item", event.target.value)}
-                              aria-label="密碼索引"
-                              type="password"
+                              aria-label="Bitwarden 索引"
+                              type="text"
                               autoComplete="off"
                             />
                           ) : (
-                            <strong aria-label="密碼已隱藏">••••••••</strong>
+                            <strong>{displayValue(entry.password_item)}</strong>
                           )}
-                        </div>
-                        <div className="password-inline-actions">
-                          <button type="button" onClick={notifyBitwardenPending}>顯示密碼</button>
-                          <button type="button" onClick={notifyBitwardenPending}>複製密碼</button>
                         </div>
                       </div>
                     </td>

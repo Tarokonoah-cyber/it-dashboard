@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { api } from "../lib/dashboard-api";
 import { getTeamFallbackLabel, getTeamLogo, getTeamShortName } from "../lib/sportsTeams";
 
 const SPORT_OPTIONS = [
@@ -48,20 +49,6 @@ const DETAIL_STATUS_LABELS = {
   waiting_final: "賽後更新",
   post_game_synced: "賽後資料已同步"
 };
-
-async function api(path, options) {
-  const response = await fetch(path, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options?.headers || {})
-    },
-    cache: "no-store"
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) throw new Error(data.message || "資料讀取失敗");
-  return data.data;
-}
 
 function taipeiDate(value) {
   return new Intl.DateTimeFormat("en-CA", {
