@@ -14,6 +14,16 @@ for (const width of [393, 430]) {
       await page.setViewportSize({ width, height: width === 393 ? 852 : 932 });
       await page.goto(route.path, { waitUntil: "domcontentloaded" });
       await waitForStablePage(page);
+      if (slug === "dashboard" && width === 393) {
+        const tabs = page.locator(".dashboard-mobile-work-tabs");
+        await expect(tabs).toBeVisible();
+        await expect(page.locator("#dashboard-open-work-panel")).toBeVisible();
+        await expect(page.locator("#dashboard-follow-up-panel")).toBeHidden();
+        await tabs.getByRole("tab", { name: /待追蹤/ }).click();
+        await expect(page.locator("#dashboard-follow-up-panel")).toBeVisible();
+        await expect(page.locator("#dashboard-open-work-panel")).toBeHidden();
+        await tabs.getByRole("tab", { name: /未完成任務/ }).click();
+      }
       const measurements = await pageMeasurements(page);
       expect(measurements.horizontalOverflow).toBe(false);
       expect(measurements.outsideElements).toEqual([]);
@@ -41,19 +51,16 @@ test("mobile navigation open state", async ({ page }) => {
   await expect(page).toHaveScreenshot("dashboard-393-navigation-open.png", { fullPage: true });
 });
 
-test("mobile primary navigation uses distinct destinations", async ({ page }) => {
+test("mobile quick add opens from the primary navigation", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await waitForStablePage(page);
   const navigation = page.locator(".mobile-bottom-nav");
-  await expect(navigation.getByRole("button")).toHaveCount(5);
-  await expect(navigation).toHaveScreenshot("dashboard-393-quick-add.png");
-  await navigation.getByRole("button", { name: "巡檢" }).click();
-  await expect(page).toHaveURL(/\/inspections$/);
-  await expect(navigation.getByRole("button", { name: "巡檢" })).toHaveAttribute("aria-current", "page");
-  await navigation.getByRole("button", { name: "成本" }).click();
-  await expect(page).toHaveURL(/\/cost-control$/);
-  await expect(navigation.getByRole("button", { name: "成本" })).toHaveAttribute("aria-current", "page");
+  await expect(navigation.getByRole("button")).toHaveCount(4);
+  await expect(navigation.getByRole("button", { name: "通訊錄" })).toBeVisible();
+  await navigation.getByRole("button", { name: "開啟快速新增" }).click();
+  await expect(page.getByRole("dialog", { name: "新增工作項目" })).toBeVisible();
+  await expect(page).toHaveScreenshot("dashboard-393-quick-add.png", { fullPage: true });
 });
 
 test("dashboard calendar modal state", async ({ page }) => {

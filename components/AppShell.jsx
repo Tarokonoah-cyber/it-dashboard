@@ -12,7 +12,7 @@ import {
 } from "./navigation";
 import GlobalSearch from "./GlobalSearch";
 
-const MOBILE_WORK_SECTIONS = new Set(["work-center", "work", "follow-ups", "recurring_tasks"]);
+const MOBILE_DASHBOARD_EVENT = "dashboard-mobile-action";
 const MOBILE_SECTION_GROUPS = new Map([
   ["dashboard", "每日工作"],
   ["documents", "資產設備"],
@@ -178,8 +178,8 @@ export default function AppShell({
   const pageSidebarStorageKey = sidebarStorageScope ? `${SIDEBAR_STORAGE_KEY}:${sidebarStorageScope}` : "";
   const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
   const router = useRouter();
-  const mobileWorkActive = MOBILE_WORK_SECTIONS.has(activeSection);
 
   useEffect(() => {
     if (pageSidebarStorageKey) {
@@ -213,10 +213,11 @@ export default function AppShell({
   }
 
   useEffect(() => {
-    if (!mobileOpen) return undefined;
+    if (!mobileOpen && !quickAddOpen) return undefined;
     function handleEscape(event) {
       if (event.key !== "Escape") return;
       setMobileOpen(false);
+      setQuickAddOpen(false);
     }
     document.body.classList.add("mobile-overlay-open");
     window.addEventListener("keydown", handleEscape);
@@ -224,7 +225,17 @@ export default function AppShell({
       document.body.classList.remove("mobile-overlay-open");
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, quickAddOpen]);
+
+  function runDashboardAction(action) {
+    setQuickAddOpen(false);
+    setMobileOpen(false);
+    if (activeSection === "dashboard") {
+      window.dispatchEvent(new CustomEvent(MOBILE_DASHBOARD_EVENT, { detail: { action } }));
+      return;
+    }
+    router.push(`/?mobileAction=${encodeURIComponent(action)}`);
+  }
 
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
@@ -262,32 +273,18 @@ export default function AppShell({
           <span aria-hidden="true">⌂</span>
           <b>首頁</b>
         </button>
-        <button
-          type="button"
-          className={mobileWorkActive ? "active" : ""}
-          aria-current={mobileWorkActive ? "page" : undefined}
-          onClick={() => router.push("/work")}
-        >
-          <span aria-hidden="true">□</span>
-          <b>工作</b>
+        <button className="mobile-bottom-add" type="button" aria-label="開啟快速新增" onClick={() => setQuickAddOpen(true)}>
+          <span aria-hidden="true">＋</span>
+          <b>新增</b>
         </button>
         <button
           type="button"
-          className={activeSection === "daily_inspections" ? "active" : ""}
-          aria-current={activeSection === "daily_inspections" ? "page" : undefined}
-          onClick={() => router.push("/inspections")}
+          className={activeSection === "contacts" ? "active" : ""}
+          aria-current={activeSection === "contacts" ? "page" : undefined}
+          onClick={() => router.push("/contacts")}
         >
-          <span aria-hidden="true">✓</span>
-          <b>巡檢</b>
-        </button>
-        <button
-          type="button"
-          className={activeSection === "cost_control" ? "active" : ""}
-          aria-current={activeSection === "cost_control" ? "page" : undefined}
-          onClick={() => router.push("/cost-control")}
-        >
-          <span aria-hidden="true">＄</span>
-          <b>成本</b>
+          <span aria-hidden="true">☷</span>
+          <b>通訊錄</b>
         </button>
         <button type="button" aria-expanded={mobileOpen} onClick={() => {
           setCollapsed(false);
@@ -297,6 +294,45 @@ export default function AppShell({
           <b>更多</b>
         </button>
       </nav>
+      {quickAddOpen ? (
+        <div className="mobile-quick-add-backdrop" role="presentation" onMouseDown={() => setQuickAddOpen(false)}>
+          <section className="mobile-quick-add-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-quick-add-title" onMouseDown={(event) => event.stopPropagation()}>
+            <header>
+              <div>
+                <span>快速建立</span>
+                <h2 id="mobile-quick-add-title">新增工作項目</h2>
+              </div>
+              <button type="button" aria-label="關閉快速新增" onClick={() => setQuickAddOpen(false)}>×</button>
+            </header>
+            <button type="button" onClick={() => runDashboardAction("add-work")}>
+              <span aria-hidden="true">☑</span>
+              <strong>新增任務</strong>
+              <small>直接加入工作中心並顯示在首頁</small>
+            </button>
+            <button type="button" onClick={() => {
+              setQuickAddOpen(false);
+              router.push("/work?voice=1");
+            }}>
+              <span aria-hidden="true">🎙️</span>
+              <strong>語音建立工作</strong>
+              <small>用手機說出內容，確認後建立工作</small>
+            </button>
+            <button type="button" onClick={() => runDashboardAction("add-calendar")}>
+              <span aria-hidden="true">▦</span>
+              <strong>新增行程</strong>
+              <small>加入指定日期的行事曆</small>
+            </button>
+            <button type="button" onClick={() => {
+              setQuickAddOpen(false);
+              router.push("/follow-ups");
+            }}>
+              <span aria-hidden="true">↗</span>
+              <strong>待追蹤</strong>
+              <small>前往待追蹤工作頁面</small>
+            </button>
+          </section>
+        </div>
+      ) : null}
       <AiCommandAssistant />
     </main>
   );

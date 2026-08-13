@@ -6,6 +6,10 @@
   gap: 14px;
 }
 
+.dashboard-mobile-work-tabs {
+  display: none;
+}
+
 .dashboard-work-block,
 .dashboard-follow-block {
   min-width: 0;

@@ -877,6 +877,7 @@
   }
 
   .mobile-bottom-nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     min-height: var(--mobile-bottom-nav-height);
     gap: 3px;
     padding: 6px 7px calc(6px + env(safe-area-inset-bottom, 0px));
@@ -911,6 +912,93 @@
     background: #eaf2fb;
     color: #174a7c;
     box-shadow: inset 0 0 0 1px rgba(68, 111, 157, 0.08);
+  }
+
+  .mobile-bottom-nav .mobile-bottom-add {
+    min-height: 62px;
+    margin-top: -15px;
+    border: 5px solid #f5f8fc;
+    border-radius: 19px;
+    background: #204f82;
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(28, 72, 117, 0.28);
+  }
+
+  .mobile-bottom-nav .mobile-bottom-add > span {
+    font-size: 27px;
+    line-height: 0.85;
+  }
+
+  .mobile-bottom-nav .mobile-bottom-add > b {
+    color: #ffffff;
+  }
+
+  .modern-dashboard-page > .section-head {
+    display: none;
+  }
+
+  .modern-dashboard-page .dashboard-work-column {
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid #d3dfec;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(31, 57, 87, 0.07);
+  }
+
+  .dashboard-mobile-work-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 6px;
+    border-bottom: 1px solid #dce5ef;
+    background: #f4f7fb;
+  }
+
+  .dashboard-mobile-work-tabs button {
+    min-width: 0;
+    min-height: 44px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #60738a;
+    font-size: 14px;
+    font-weight: 850;
+  }
+
+  .dashboard-mobile-work-tabs button[aria-selected="true"] {
+    background: #ffffff;
+    color: #174f84;
+    box-shadow: 0 2px 8px rgba(30, 62, 96, 0.1), inset 0 -3px #2e6aa3;
+  }
+
+  .dashboard-mobile-work-tabs span {
+    margin-left: 3px;
+    color: #72869c;
+    font-size: 11px;
+  }
+
+  .modern-dashboard-page .dashboard-work-column > .dashboard-work-block,
+  .modern-dashboard-page .dashboard-work-column > .dashboard-follow-block {
+    display: none;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .modern-dashboard-page .dashboard-work-column > .mobile-panel-active {
+    display: block;
+  }
+
+  .modern-dashboard-page .dashboard-work-column .dashboard-block-title {
+    min-height: 36px;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+  }
+
+  .modern-dashboard-page .dashboard-work-column .dashboard-block-title > div:first-child {
+    display: none;
   }
 }
 

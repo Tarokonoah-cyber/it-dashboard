@@ -80,6 +80,7 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
   const workRows = useMemo(() => Array.isArray(works) ? works : [], [works]);
   const followUpRows = useMemo(() => Array.isArray(followUps) ? followUps : [], [followUps]);
   const [title, setTitle] = useState("");
+  const [mobilePanel, setMobilePanel] = useState("works");
   const [priority, setPriority] = useState(WORK_PRIORITIES[0]);
   const [isAdding, setIsAdding] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -431,7 +432,30 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
 
   return (
     <div id="dashboard-work-center" className="dashboard-work-column">
-      <section className="panel dashboard-work-block">
+      <div className="dashboard-mobile-work-tabs" role="tablist" aria-label="首頁工作清單">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobilePanel === "works"}
+          aria-controls="dashboard-open-work-panel"
+          onClick={() => setMobilePanel("works")}
+        >
+          未完成任務 <span>{workRows.length}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={mobilePanel === "follow-ups"}
+          aria-controls="dashboard-follow-up-panel"
+          onClick={() => setMobilePanel("follow-ups")}
+        >
+          待追蹤 <span>{followUpRows.length}</span>
+        </button>
+      </div>
+      <section
+        id="dashboard-open-work-panel"
+        className={`panel dashboard-work-block ${mobilePanel === "works" ? "mobile-panel-active" : ""}`}
+      >
         <header className="dashboard-block-title">
           <div>
             <h2>未完成任務</h2>
@@ -527,7 +551,10 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
 
       </section>
 
-      <section className="panel dashboard-follow-block">
+      <section
+        id="dashboard-follow-up-panel"
+        className={`panel dashboard-follow-block ${mobilePanel === "follow-ups" ? "mobile-panel-active" : ""}`}
+      >
         <header className="dashboard-block-title compact">
           <div><h2>待追蹤</h2><span>{followUpRows.length} 件</span></div>
           <button className="dashboard-block-text-button" type="button" onClick={() => onNavigate?.("follow-ups")}>查看全部</button>
