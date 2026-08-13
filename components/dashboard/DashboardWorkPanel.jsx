@@ -432,24 +432,34 @@ export default function DashboardWorkPanel({ works, followUps, onNavigate, notif
 
   return (
     <div id="dashboard-work-center" className="dashboard-work-column">
-      <div className="dashboard-mobile-work-tabs" role="tablist" aria-label="首頁工作清單">
+      <div className="dashboard-mobile-work-nav">
+        <div className="dashboard-mobile-work-tabs" role="tablist" aria-label="首頁工作清單">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mobilePanel === "works"}
+            aria-controls="dashboard-open-work-panel"
+            onClick={() => setMobilePanel("works")}
+          >
+            未完成任務 <span>{workRows.length}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mobilePanel === "follow-ups"}
+            aria-controls="dashboard-follow-up-panel"
+            onClick={() => setMobilePanel("follow-ups")}
+          >
+            待追蹤 <span>{followUpRows.length}</span>
+          </button>
+        </div>
         <button
+          className="dashboard-mobile-view-all"
           type="button"
-          role="tab"
-          aria-selected={mobilePanel === "works"}
-          aria-controls="dashboard-open-work-panel"
-          onClick={() => setMobilePanel("works")}
+          aria-label={mobilePanel === "works" ? "查看全部未完成任務" : "查看全部待追蹤"}
+          onClick={() => onNavigate?.(mobilePanel === "works" ? "work" : "follow-ups")}
         >
-          未完成任務 <span>{workRows.length}</span>
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mobilePanel === "follow-ups"}
-          aria-controls="dashboard-follow-up-panel"
-          onClick={() => setMobilePanel("follow-ups")}
-        >
-          待追蹤 <span>{followUpRows.length}</span>
+          全部 <span aria-hidden="true">›</span>
         </button>
       </div>
       <section

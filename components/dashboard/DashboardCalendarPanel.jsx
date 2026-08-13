@@ -51,7 +51,7 @@ function CalendarTodayTest({ networkRooms }) {
         錄音：{phoneTargets.length ? phoneTargets.join("、") : "-"}
       </span>
       <span className="calendar-today-test-mobile">
-        串流 {streamRooms.length} 間 · 錄音 {phoneTargets.length ? phoneTargets.join("、") : "-"}
+        串流：{streamRooms.length ? streamRooms.join("、") : "無"} · 錄音：{phoneTargets.length ? phoneTargets.join("、") : "-"}
       </span>
     </div>
   );

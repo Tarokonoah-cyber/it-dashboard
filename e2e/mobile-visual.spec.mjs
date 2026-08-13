@@ -17,6 +17,11 @@ for (const width of [393, 430]) {
       if (slug === "dashboard" && width === 393) {
         const tabs = page.locator(".dashboard-mobile-work-tabs");
         await expect(tabs).toBeVisible();
+        await expect(page.locator(".dashboard-kpi-summary > .kpi-summary-item:visible")).toHaveCount(1);
+        await expect(page.locator(".dashboard-kpi-summary > .completion-summary")).toBeVisible();
+        await expect(page.locator(".dashboard-mobile-view-all")).toBeVisible();
+        await expect(page.locator("#dashboard-open-work-panel .dashboard-add-work-button")).toBeHidden();
+        await expect(page.locator(".calendar-today-test-mobile")).toContainText("305、608");
         await expect(page.locator("#dashboard-open-work-panel")).toBeVisible();
         await expect(page.locator("#dashboard-follow-up-panel")).toBeHidden();
         await tabs.getByRole("tab", { name: /待追蹤/ }).click();
