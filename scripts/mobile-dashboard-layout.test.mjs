@@ -35,8 +35,12 @@ test("mobile shell keeps fixed controls clear of readable content", async () => 
 
 test("mobile contacts use labeled cards instead of a wide data grid", async () => {
   const shellStyles = await readFile(new URL("../app/mobile-shell.css", import.meta.url), "utf8");
+  const remediationStyles = await readFile(new URL("../app/mobile-remediation.css", import.meta.url), "utf8");
 
   assert.match(shellStyles, /contact-record-row\.record-head\s*\{[\s\S]*?display:\s*none/);
   assert.match(shellStyles, /contact-record-row:not\(\.record-head\)[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(shellStyles, /nth-child\(7\)::before\s*\{\s*content:\s*"Email"/);
+  assert.match(remediationStyles, /department-filters[\s\S]*?flex-wrap:\s*nowrap[\s\S]*?overflow-x:\s*auto/);
+  assert.match(remediationStyles, /contact-record-row:not\(\.record-head\)\s*>\s*span:has\(> \.muted\)[\s\S]*?display:\s*none/);
+  assert.match(remediationStyles, /content:\s*"尚無聯絡方式"/);
 });

@@ -1035,6 +1035,158 @@
   .modern-dashboard-page .dashboard-work-column .dashboard-block-title {
     display: none;
   }
+
+  .section-page:has(.contact-records-toolbar) .section-head {
+    margin-bottom: 8px;
+  }
+
+  .section-page:has(.contact-records-toolbar) .section-head h1 {
+    font-size: 27px;
+    line-height: 1.1;
+  }
+
+  .section-page:has(.contact-records-toolbar) .contact-records-toolbar {
+    min-height: 0;
+    margin: 0 0 8px;
+    border: 0;
+    background: transparent;
+    padding: 0 2px;
+    box-shadow: none;
+  }
+
+  .section-page:has(.contact-records-toolbar) .records-summary {
+    color: #6b7d91;
+    font-size: 12px;
+  }
+
+  .section-page:has(.contact-records-toolbar) .department-filters {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: nowrap;
+    gap: 7px;
+    margin: 0 -12px 12px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding: 2px 12px 7px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .section-page:has(.contact-records-toolbar) .department-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-page:has(.contact-records-toolbar) .department-filters button {
+    min-height: 36px;
+    flex: 0 0 auto;
+    border: 1px solid #d5e0eb;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #43576d;
+    padding: 7px 13px;
+    box-shadow: 0 2px 6px rgba(31, 57, 87, 0.05);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .section-page:has(.contact-records-toolbar) .department-filters button.active {
+    border-color: #77a4cf;
+    background: #eaf3fc;
+    color: #15558c;
+    box-shadow: none;
+  }
+
+  .records-table .contact-record-row:not(.record-head) {
+    display: grid;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 10px;
+    align-items: center;
+    padding: 12px 14px;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span {
+    display: block;
+    padding: 0;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:has(> .muted) {
+    display: none;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span::before {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(1) {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    border-radius: 999px;
+    background: #edf4fb;
+    color: #2c628f;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 850;
+    white-space: nowrap;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(1)::before,
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(2)::before,
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(3)::before {
+    display: none;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(2),
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(3) {
+    grid-column: 1;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(2) {
+    grid-row: 2;
+    color: #53677d;
+    font-size: 13px;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(3) {
+    grid-row: 1;
+    color: #173c63;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .records-table .contact-record-row:not(.record-head):not(:has(> span:nth-child(3):not(:has(> .muted)))) > span:nth-child(2) {
+    grid-row: 1;
+    color: #173c63;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(n + 4) {
+    grid-column: 1 / -1;
+    border-top: 1px solid #edf1f5;
+    padding-top: 8px;
+    color: #1e4f7e;
+    font-size: 13px;
+    font-weight: 750;
+  }
+
+  .records-table .contact-record-row:not(.record-head) > span:nth-child(n + 4)::before {
+    display: inline;
+    margin: 0 8px 0 0;
+    color: #77899c;
+    font-size: 10px;
+  }
+
+  .records-table .contact-record-row:not(.record-head):not(:has(> span:not(:has(> .muted)):nth-child(n + 4)))::after {
+    grid-column: 1 / -1;
+    content: "尚無聯絡方式";
+    border-top: 1px solid #edf1f5;
+    color: #8795a5;
+    padding-top: 8px;
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 620px) {
