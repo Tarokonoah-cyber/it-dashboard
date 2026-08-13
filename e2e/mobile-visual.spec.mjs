@@ -41,13 +41,19 @@ test("mobile navigation open state", async ({ page }) => {
   await expect(page).toHaveScreenshot("dashboard-393-navigation-open.png", { fullPage: true });
 });
 
-test("mobile quick-add dialog state", async ({ page }) => {
+test("mobile primary navigation uses distinct destinations", async ({ page }) => {
   await page.setViewportSize({ width: 393, height: 852 });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await waitForStablePage(page);
-  await page.locator(".mobile-bottom-add").click();
-  await expect(page.locator(".mobile-quick-add-sheet")).toBeVisible();
-  await expect(page).toHaveScreenshot("dashboard-393-quick-add.png", { fullPage: true });
+  const navigation = page.locator(".mobile-bottom-nav");
+  await expect(navigation.getByRole("button")).toHaveCount(5);
+  await expect(navigation).toHaveScreenshot("dashboard-393-quick-add.png");
+  await navigation.getByRole("button", { name: "巡檢" }).click();
+  await expect(page).toHaveURL(/\/inspections$/);
+  await expect(navigation.getByRole("button", { name: "巡檢" })).toHaveAttribute("aria-current", "page");
+  await navigation.getByRole("button", { name: "成本" }).click();
+  await expect(page).toHaveURL(/\/cost-control$/);
+  await expect(navigation.getByRole("button", { name: "成本" })).toHaveAttribute("aria-current", "page");
 });
 
 test("dashboard calendar modal state", async ({ page }) => {

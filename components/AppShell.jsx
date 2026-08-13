@@ -12,7 +12,6 @@ import {
 } from "./navigation";
 import GlobalSearch from "./GlobalSearch";
 
-const MOBILE_DASHBOARD_EVENT = "dashboard-mobile-action";
 const MOBILE_WORK_SECTIONS = new Set(["work-center", "work", "follow-ups", "recurring_tasks"]);
 const MOBILE_SECTION_GROUPS = new Map([
   ["dashboard", "每日工作"],
@@ -159,14 +158,6 @@ function ShellSidebar({ activeSection, onNavigate, collapsed, onToggle, router, 
         </nav>
 
         <div className="sidebar-control">
-          {!collapsed ? (
-            <div className="sidebar-session">
-              <div className="sidebar-session-copy">
-                <strong>taroko</strong>
-                <span>單一帳號</span>
-              </div>
-            </div>
-          ) : null}
           <button className="collapse-btn" type="button" aria-label={collapsed ? "展開側邊欄" : "收合側邊欄"} onClick={onToggle}>
             {collapsed ? "›" : "‹"}
             {!collapsed && <span>收合選單</span>}
@@ -187,7 +178,6 @@ export default function AppShell({
   const pageSidebarStorageKey = sidebarStorageScope ? `${SIDEBAR_STORAGE_KEY}:${sidebarStorageScope}` : "";
   const [collapsed, setCollapsed] = useState(defaultSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [quickAddOpen, setQuickAddOpen] = useState(false);
   const router = useRouter();
   const mobileWorkActive = MOBILE_WORK_SECTIONS.has(activeSection);
 
@@ -223,11 +213,10 @@ export default function AppShell({
   }
 
   useEffect(() => {
-    if (!mobileOpen && !quickAddOpen) return undefined;
+    if (!mobileOpen) return undefined;
     function handleEscape(event) {
       if (event.key !== "Escape") return;
       setMobileOpen(false);
-      setQuickAddOpen(false);
     }
     document.body.classList.add("mobile-overlay-open");
     window.addEventListener("keydown", handleEscape);
@@ -235,17 +224,7 @@ export default function AppShell({
       document.body.classList.remove("mobile-overlay-open");
       window.removeEventListener("keydown", handleEscape);
     };
-  }, [mobileOpen, quickAddOpen]);
-
-  function runDashboardAction(action) {
-    setQuickAddOpen(false);
-    setMobileOpen(false);
-    if (activeSection === "dashboard") {
-      window.dispatchEvent(new CustomEvent(MOBILE_DASHBOARD_EVENT, { detail: { action } }));
-      return;
-    }
-    router.push(`/?mobileAction=${encodeURIComponent(action)}`);
-  }
+  }, [mobileOpen]);
 
   return (
     <main className={`app-shell ${collapsed ? "sidebar-is-collapsed" : ""}`}>
@@ -278,10 +257,10 @@ export default function AppShell({
           type="button"
           className={activeSection === "dashboard" ? "active" : ""}
           aria-current={activeSection === "dashboard" ? "page" : undefined}
-          onClick={() => runDashboardAction("today")}
+          onClick={() => router.push("/")}
         >
-          <span aria-hidden="true">◎</span>
-          <b>今日</b>
+          <span aria-hidden="true">⌂</span>
+          <b>首頁</b>
         </button>
         <button
           type="button"
@@ -292,13 +271,23 @@ export default function AppShell({
           <span aria-hidden="true">□</span>
           <b>工作</b>
         </button>
-        <button className="mobile-bottom-add" type="button" aria-label="開啟快速新增" onClick={() => setQuickAddOpen(true)}>
-          <span aria-hidden="true">＋</span>
-          <b>新增</b>
+        <button
+          type="button"
+          className={activeSection === "daily_inspections" ? "active" : ""}
+          aria-current={activeSection === "daily_inspections" ? "page" : undefined}
+          onClick={() => router.push("/inspections")}
+        >
+          <span aria-hidden="true">✓</span>
+          <b>巡檢</b>
         </button>
-        <button type="button" onClick={() => runDashboardAction("calendar")}>
-          <span aria-hidden="true">▦</span>
-          <b>月曆</b>
+        <button
+          type="button"
+          className={activeSection === "cost_control" ? "active" : ""}
+          aria-current={activeSection === "cost_control" ? "page" : undefined}
+          onClick={() => router.push("/cost-control")}
+        >
+          <span aria-hidden="true">＄</span>
+          <b>成本</b>
         </button>
         <button type="button" aria-expanded={mobileOpen} onClick={() => {
           setCollapsed(false);
@@ -308,45 +297,6 @@ export default function AppShell({
           <b>更多</b>
         </button>
       </nav>
-      {quickAddOpen ? (
-        <div className="mobile-quick-add-backdrop" role="presentation" onMouseDown={() => setQuickAddOpen(false)}>
-          <section className="mobile-quick-add-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-quick-add-title" onMouseDown={(event) => event.stopPropagation()}>
-            <header>
-              <div>
-                <span>快速建立</span>
-                <h2 id="mobile-quick-add-title">新增工作項目</h2>
-              </div>
-              <button type="button" aria-label="關閉快速新增" onClick={() => setQuickAddOpen(false)}>×</button>
-            </header>
-            <button type="button" onClick={() => runDashboardAction("add-work")}>
-              <span aria-hidden="true">☑</span>
-              <strong>新增任務</strong>
-              <small>直接加入工作中心並顯示在首頁</small>
-            </button>
-            <button type="button" onClick={() => {
-              setQuickAddOpen(false);
-              router.push("/work?voice=1");
-            }}>
-              <span aria-hidden="true">🎙️</span>
-              <strong>語音建立工作</strong>
-              <small>用手機說出內容，確認後建立工作</small>
-            </button>
-            <button type="button" onClick={() => runDashboardAction("add-calendar")}>
-              <span aria-hidden="true">▦</span>
-              <strong>新增行程</strong>
-              <small>加入指定日期的行事曆</small>
-            </button>
-            <button type="button" onClick={() => {
-              setQuickAddOpen(false);
-              router.push("/follow-ups");
-            }}>
-              <span aria-hidden="true">↗</span>
-              <strong>待追蹤</strong>
-              <small>前往待追蹤工作頁面</small>
-            </button>
-          </section>
-        </div>
-      ) : null}
       <AiCommandAssistant />
     </main>
   );

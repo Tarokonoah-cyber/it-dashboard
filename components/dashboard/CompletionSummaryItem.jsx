@@ -18,6 +18,9 @@ export default function CompletionSummaryItem({ rate, completed, total, label = 
           <span className="completion-caption">本月已完成</span>
         </div>
       </div>
+      <div className="completion-progress-mobile" aria-hidden="true">
+        <span style={{ width: `${normalized}%` }} />
+      </div>
     </article>
   );
 }

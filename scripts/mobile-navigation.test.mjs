@@ -16,15 +16,19 @@ test("expanded mobile drawer overrides the legacy four-column navigation", async
   );
 });
 
-test("mobile bottom navigation has distinct Today and Work destinations", async () => {
+test("mobile bottom navigation exposes five distinct primary destinations", async () => {
   const shell = await readFile(new URL("../components/AppShell.jsx", import.meta.url), "utf8");
-  const styles = await readFile(new URL("../app/mobile-shell.css", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/mobile-remediation.css", import.meta.url), "utf8");
 
-  assert.doesNotMatch(shell, /<b>首頁<\/b>/);
-  assert.match(shell, /runDashboardAction\("today"\)[\s\S]*?<b>今日<\/b>/);
+  assert.match(shell, /router\.push\("\/"\)[\s\S]*?<b>首頁<\/b>/);
   assert.match(shell, /router\.push\("\/work"\)[\s\S]*?<b>工作<\/b>/);
+  assert.match(shell, /router\.push\("\/inspections"\)[\s\S]*?<b>巡檢<\/b>/);
+  assert.match(shell, /router\.push\("\/cost-control"\)[\s\S]*?<b>成本<\/b>/);
+  assert.match(shell, /aria-expanded=\{mobileOpen\}[\s\S]*?<b>更多<\/b>/);
+  assert.doesNotMatch(shell, /<b>(今日|月曆|新增)<\/b>/);
+  assert.doesNotMatch(shell, /sidebar-session|單一帳號/);
   assert.match(shell, /aria-current=\{activeSection === "dashboard" \? "page" : undefined\}/);
   assert.match(shell, /aria-current=\{mobileWorkActive \? "page" : undefined\}/);
-  assert.match(styles, /\.mobile-bottom-nav\s*\{[\s\S]*?gap:\s*4px/);
-  assert.match(styles, /--mobile-shell-clearance:[\s\S]*?58px/);
+  assert.match(styles, /--mobile-bottom-nav-height:\s*68px/);
+  assert.match(styles, /\.mobile-bottom-nav button\.active/);
 });

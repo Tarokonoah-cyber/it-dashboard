@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const MAX_MESSAGE_LENGTH = 500;
 
 const TEXT = {
-  title: "BOT",
+  title: "AI \u52a9\u7406",
   welcome: "\u6211\u53ef\u4ee5\u5354\u52a9\u4f60\u5efa\u7acb\u5f85\u8fa6\u3001\u6574\u7406\u672a\u5b8c\u6210\u6e05\u55ae\u3001\u5206\u6790\u5de5\u4f5c\u985e\u578b\u6216\u7522\u751f KPI \u5831\u544a\u8349\u7a3f\u3002",
   placeholder: "\u8f38\u5165\u4f60\u60f3\u8981\u8655\u7406\u7684\u4efb\u52d9...",
   pending: "\u6574\u7406\u4e2d...",
@@ -217,7 +217,8 @@ export default function AiCommandAssistant() {
   if (!open) {
     return (
       <button className="ai-bot-launcher" type="button" onClick={openAssistant} aria-label={TEXT.title}>
-        {TEXT.title}
+        <span className="ai-launcher-icon" aria-hidden="true">&#10022;</span>
+        <span className="ai-launcher-label">{TEXT.title}</span>
       </button>
     );
   }

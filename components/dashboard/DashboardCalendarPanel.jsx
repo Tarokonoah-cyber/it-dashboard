@@ -44,11 +44,14 @@ function CalendarTodayTest({ networkRooms }) {
   return (
     <div className="calendar-today-test" aria-label="今日測試">
       <b>今日測試</b>
-      <span>
+      <span className="calendar-today-test-detail">
         串流：{streamRooms.length ? streamRooms.join("、") : "今日尚未指派"}
       </span>
-      <span>
+      <span className="calendar-today-test-detail">
         錄音：{phoneTargets.length ? phoneTargets.join("、") : "-"}
+      </span>
+      <span className="calendar-today-test-mobile">
+        串流 {streamRooms.length} 間 · 錄音 {phoneTargets.length ? phoneTargets.join("、") : "-"}
       </span>
     </div>
   );
