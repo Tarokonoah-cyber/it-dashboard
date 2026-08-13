@@ -24,12 +24,22 @@ for (const width of [393, 430]) {
         await expect(page.locator(".calendar-today-test-mobile")).toContainText("305、608");
         await expect(page.locator("#dashboard-open-work-panel")).toBeVisible();
         await expect(page.locator("#dashboard-follow-up-panel")).toBeHidden();
+        await page.locator("#dashboard-open-work-panel .dashboard-work-list").evaluate((list) => {
+          const row = list.querySelector(".dashboard-work-row");
+          if (!row) return;
+          for (let index = 0; index < 10; index += 1) {
+            const clone = row.cloneNode(true);
+            clone.dataset.heightStressClone = "true";
+            list.append(clone);
+          }
+        });
         const workPanelHeight = await page.locator("#dashboard-open-work-panel").evaluate((element) => element.getBoundingClientRect().height);
         await tabs.getByRole("tab", { name: /待追蹤/ }).click();
         await expect(page.locator("#dashboard-follow-up-panel")).toBeVisible();
         await expect(page.locator("#dashboard-open-work-panel")).toBeHidden();
         const followPanelHeight = await page.locator("#dashboard-follow-up-panel").evaluate((element) => element.getBoundingClientRect().height);
         expect(followPanelHeight).toBe(workPanelHeight);
+        await page.locator('[data-height-stress-clone="true"]').evaluateAll((clones) => clones.forEach((clone) => clone.remove()));
         await tabs.getByRole("tab", { name: /未完成任務/ }).click();
       }
       const measurements = await pageMeasurements(page);

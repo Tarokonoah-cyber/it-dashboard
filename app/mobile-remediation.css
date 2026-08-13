@@ -1019,7 +1019,8 @@
   .modern-dashboard-page .dashboard-work-column > .mobile-panel-active {
     display: flex;
     height: clamp(320px, 42dvh, 420px);
-    min-height: 320px;
+    min-height: clamp(320px, 42dvh, 420px);
+    max-height: clamp(320px, 42dvh, 420px);
     flex-direction: column;
   }
 
