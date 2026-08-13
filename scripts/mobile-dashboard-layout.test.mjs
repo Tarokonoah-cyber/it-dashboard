@@ -21,3 +21,22 @@ test("AppShell no longer renders or requests logout", async () => {
   assert.doesNotMatch(shell, /loggingOut|logoutError|重試登出/);
   assert.doesNotMatch(shell, />\s*登出\s*</);
 });
+
+test("mobile shell keeps fixed controls clear of readable content", async () => {
+  const shellStyles = await readFile(new URL("../app/mobile-shell.css", import.meta.url), "utf8");
+  const layout = await readFile(new URL("../app/layout.js", import.meta.url), "utf8");
+
+  assert.match(layout, /import "\.\/mobile-shell\.css";/);
+  assert.match(shellStyles, /\.main-area\s*\{[\s\S]*?padding-bottom:\s*var\(--mobile-shell-clearance\)/);
+  assert.match(shellStyles, /\.ai-bot-launcher\s*\{[\s\S]*?top:\s*max\(7px,[\s\S]*?bottom:\s*auto/);
+  assert.match(shellStyles, /\.ai-chat-window\s*\{[\s\S]*?calc\(100% - 20px\)/);
+  assert.match(shellStyles, /\.modern-dashboard-page\s*\{[\s\S]*?padding-inline:\s*12px/);
+});
+
+test("mobile contacts use labeled cards instead of a wide data grid", async () => {
+  const shellStyles = await readFile(new URL("../app/mobile-shell.css", import.meta.url), "utf8");
+
+  assert.match(shellStyles, /contact-record-row\.record-head\s*\{[\s\S]*?display:\s*none/);
+  assert.match(shellStyles, /contact-record-row:not\(\.record-head\)[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(shellStyles, /nth-child\(7\)::before\s*\{\s*content:\s*"Email"/);
+});

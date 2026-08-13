@@ -15,3 +15,16 @@ test("expanded mobile drawer overrides the legacy four-column navigation", async
     "expanded mobile drawer must render one full-width navigation column"
   );
 });
+
+test("mobile bottom navigation has distinct Today and Work destinations", async () => {
+  const shell = await readFile(new URL("../components/AppShell.jsx", import.meta.url), "utf8");
+  const styles = await readFile(new URL("../app/mobile-shell.css", import.meta.url), "utf8");
+
+  assert.doesNotMatch(shell, /<b>首頁<\/b>/);
+  assert.match(shell, /runDashboardAction\("today"\)[\s\S]*?<b>今日<\/b>/);
+  assert.match(shell, /router\.push\("\/work"\)[\s\S]*?<b>工作<\/b>/);
+  assert.match(shell, /aria-current=\{activeSection === "dashboard" \? "page" : undefined\}/);
+  assert.match(shell, /aria-current=\{mobileWorkActive \? "page" : undefined\}/);
+  assert.match(styles, /\.mobile-bottom-nav\s*\{[\s\S]*?gap:\s*4px/);
+  assert.match(styles, /--mobile-shell-clearance:[\s\S]*?58px/);
+});

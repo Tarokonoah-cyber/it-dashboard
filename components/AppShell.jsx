@@ -13,6 +13,7 @@ import {
 import GlobalSearch from "./GlobalSearch";
 
 const MOBILE_DASHBOARD_EVENT = "dashboard-mobile-action";
+const MOBILE_WORK_SECTIONS = new Set(["work-center", "work", "follow-ups", "recurring_tasks"]);
 const MOBILE_SECTION_GROUPS = new Map([
   ["dashboard", "每日工作"],
   ["documents", "資產設備"],
@@ -188,6 +189,7 @@ export default function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const router = useRouter();
+  const mobileWorkActive = MOBILE_WORK_SECTIONS.has(activeSection);
 
   useEffect(() => {
     if (pageSidebarStorageKey) {
@@ -272,13 +274,23 @@ export default function AppShell({
         {children}
       </section>
       <nav className="mobile-bottom-nav" aria-label="手機快捷導覽">
-        <button type="button" className={activeSection === "dashboard" ? "active" : ""} onClick={() => router.push("/")}>
-          <span aria-hidden="true">⌂</span>
-          <b>首頁</b>
-        </button>
-        <button type="button" onClick={() => runDashboardAction("today")}>
+        <button
+          type="button"
+          className={activeSection === "dashboard" ? "active" : ""}
+          aria-current={activeSection === "dashboard" ? "page" : undefined}
+          onClick={() => runDashboardAction("today")}
+        >
           <span aria-hidden="true">◎</span>
           <b>今日</b>
+        </button>
+        <button
+          type="button"
+          className={mobileWorkActive ? "active" : ""}
+          aria-current={mobileWorkActive ? "page" : undefined}
+          onClick={() => router.push("/work")}
+        >
+          <span aria-hidden="true">□</span>
+          <b>工作</b>
         </button>
         <button className="mobile-bottom-add" type="button" aria-label="開啟快速新增" onClick={() => setQuickAddOpen(true)}>
           <span aria-hidden="true">＋</span>

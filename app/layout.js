@@ -1,6 +1,7 @@
 import "./styles.css";
 import "./mobile-dashboard.css";
 import "./dashboard-workspace.css";
+import "./mobile-shell.css";
 import { Noto_Sans_TC } from "next/font/google";
 import PwaManager from "../components/PwaManager";
 
