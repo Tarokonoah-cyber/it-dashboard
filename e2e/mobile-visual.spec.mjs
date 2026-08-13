@@ -24,9 +24,12 @@ for (const width of [393, 430]) {
         await expect(page.locator(".calendar-today-test-mobile")).toContainText("305、608");
         await expect(page.locator("#dashboard-open-work-panel")).toBeVisible();
         await expect(page.locator("#dashboard-follow-up-panel")).toBeHidden();
+        const workPanelHeight = await page.locator("#dashboard-open-work-panel").evaluate((element) => element.getBoundingClientRect().height);
         await tabs.getByRole("tab", { name: /待追蹤/ }).click();
         await expect(page.locator("#dashboard-follow-up-panel")).toBeVisible();
         await expect(page.locator("#dashboard-open-work-panel")).toBeHidden();
+        const followPanelHeight = await page.locator("#dashboard-follow-up-panel").evaluate((element) => element.getBoundingClientRect().height);
+        expect(followPanelHeight).toBe(workPanelHeight);
         await tabs.getByRole("tab", { name: /未完成任務/ }).click();
       }
       const measurements = await pageMeasurements(page);
@@ -61,8 +64,14 @@ test("mobile quick add opens from the primary navigation", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await waitForStablePage(page);
   const navigation = page.locator(".mobile-bottom-nav");
-  await expect(navigation.getByRole("button")).toHaveCount(4);
+  await expect(navigation.getByRole("button")).toHaveCount(5);
+  await expect(navigation.getByRole("button", { name: "備忘錄" })).toBeVisible();
   await expect(navigation.getByRole("button", { name: "通訊錄" })).toBeVisible();
+  await navigation.getByRole("button", { name: "備忘錄" }).click();
+  await expect(page).toHaveURL(/\/quick-notes$/);
+  await expect(navigation.getByRole("button", { name: "備忘錄" })).toHaveAttribute("aria-current", "page");
+  await navigation.getByRole("button", { name: "首頁" }).click();
+  await expect(page).toHaveURL(/\/$/);
   await navigation.getByRole("button", { name: "開啟快速新增" }).click();
   await expect(page.getByRole("dialog", { name: "新增工作項目" })).toBeVisible();
   await expect(page).toHaveScreenshot("dashboard-393-quick-add.png", { fullPage: true });

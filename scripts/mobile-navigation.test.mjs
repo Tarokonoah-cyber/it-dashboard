@@ -16,12 +16,13 @@ test("expanded mobile drawer overrides the legacy four-column navigation", async
   );
 });
 
-test("mobile bottom navigation prioritizes quick add and contacts", async () => {
+test("mobile bottom navigation centers quick add between notes and contacts", async () => {
   const shell = await readFile(new URL("../components/AppShell.jsx", import.meta.url), "utf8");
   const styles = await readFile(new URL("../app/mobile-remediation.css", import.meta.url), "utf8");
 
   assert.match(shell, /router\.push\("\/"\)[\s\S]*?<b>首頁<\/b>/);
   assert.match(shell, /className="mobile-bottom-add"[\s\S]*?<b>新增<\/b>/);
+  assert.match(shell, /router\.push\("\/quick-notes"\)[\s\S]*?<b>備忘錄<\/b>/);
   assert.match(shell, /router\.push\("\/contacts"\)[\s\S]*?<b>通訊錄<\/b>/);
   assert.match(shell, /aria-expanded=\{mobileOpen\}[\s\S]*?<b>更多<\/b>/);
   assert.doesNotMatch(shell, /<b>(工作|巡檢|成本)<\/b>/);
@@ -30,7 +31,7 @@ test("mobile bottom navigation prioritizes quick add and contacts", async () => 
   assert.match(shell, /aria-current=\{activeSection === "dashboard" \? "page" : undefined\}/);
   assert.match(shell, /aria-current=\{activeSection === "contacts" \? "page" : undefined\}/);
   assert.match(styles, /--mobile-bottom-nav-height:\s*68px/);
-  assert.match(styles, /grid-template-columns:\s*repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /grid-template-columns:\s*repeat\(5, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.mobile-bottom-nav \.mobile-bottom-add/);
   assert.match(styles, /\.mobile-bottom-nav button\.active/);
 });

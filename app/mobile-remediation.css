@@ -877,7 +877,7 @@
   }
 
   .mobile-bottom-nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     min-height: var(--mobile-bottom-nav-height);
     gap: 3px;
     padding: 6px 7px calc(6px + env(safe-area-inset-bottom, 0px));
@@ -1017,7 +1017,18 @@
   }
 
   .modern-dashboard-page .dashboard-work-column > .mobile-panel-active {
-    display: block;
+    display: flex;
+    height: clamp(320px, 42dvh, 420px);
+    min-height: 320px;
+    flex-direction: column;
+  }
+
+  .modern-dashboard-page .dashboard-work-column > .mobile-panel-active .dashboard-work-list,
+  .modern-dashboard-page .dashboard-work-column > .mobile-panel-active .dashboard-follow-list-new {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
   }
 
   .modern-dashboard-page .dashboard-work-column .dashboard-block-title {

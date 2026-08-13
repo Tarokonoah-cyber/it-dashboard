@@ -273,6 +273,15 @@ export default function AppShell({
           <span aria-hidden="true">⌂</span>
           <b>首頁</b>
         </button>
+        <button
+          type="button"
+          className={activeSection === "quick-notes" ? "active" : ""}
+          aria-current={activeSection === "quick-notes" ? "page" : undefined}
+          onClick={() => router.push("/quick-notes")}
+        >
+          <span aria-hidden="true">✎</span>
+          <b>備忘錄</b>
+        </button>
         <button className="mobile-bottom-add" type="button" aria-label="開啟快速新增" onClick={() => setQuickAddOpen(true)}>
           <span aria-hidden="true">＋</span>
           <b>新增</b>
