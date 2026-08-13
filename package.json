@@ -19,6 +19,10 @@
     "sync:sports:details": "node scripts/syncSportsDetails.js",
     "import:assets": "python scripts/import_assets_from_xlsx.py",
     "lint": "eslint .",
+    "test:e2e": "playwright test e2e/mobile-visual.spec.mjs e2e/pwa-mobile.spec.mjs",
+    "test:e2e:update": "playwright test e2e/mobile-visual.spec.mjs --update-snapshots",
+    "test:pwa": "playwright test e2e/pwa-mobile.spec.mjs",
+    "qa:mobile": "playwright test e2e/mobile-audit.spec.mjs",
     "validate:line": "node --experimental-vm-modules scripts/validate-line-messages.mjs",
     "test": "node --experimental-vm-modules --test scripts/ai-assistant.test.mjs scripts/auth.test.mjs scripts/asset-lifecycle.test.mjs scripts/calendar-reminders.test.mjs scripts/cost-control.test.mjs scripts/dashboard-api.test.mjs scripts/data-edit-mode.test.mjs scripts/knowledge-security.test.mjs scripts/line-repair-webhook.test.mjs scripts/line-smart-notifications.test.mjs scripts/mobile-dashboard-layout.test.mjs scripts/mobile-navigation.test.mjs scripts/notifications.test.mjs scripts/room-number.test.mjs scripts/search-report.test.mjs scripts/recurring-reminder.test.mjs scripts/supabase-rest.test.mjs"
   },
@@ -49,6 +53,7 @@
     }
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "eslint": "9.39.4",
     "eslint-config-next": "16.3.0"
   }

@@ -272,8 +272,8 @@ function RecordsTable({ rows }) {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.id}>
-                  {columns.map(([key]) => (
-                    <td key={key} className={key === "summary" || key === "note" ? "wrap" : ""}>{row[key]}</td>
+                  {columns.map(([key, label]) => (
+                    <td key={key} data-label={label} className={key === "summary" || key === "note" ? "wrap" : ""}>{row[key]}</td>
                   ))}
                 </tr>
               ))}

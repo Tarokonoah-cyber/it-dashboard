@@ -257,14 +257,14 @@ export default function PasswordsPage() {
 
                 return (
                   <tr key={entryKey}>
-                    <td>
+                    <td data-label="分類">
                       {editMode ? (
                         <input value={entry.category || ""} onChange={(event) => updateDraftEntry(entryKey, "category", event.target.value)} aria-label="分類" />
                       ) : (
                         displayValue(entry.category)
                       )}
                     </td>
-                    <td>
+                    <td data-label="系統名稱">
                       {editMode ? (
                         <>
                           <input value={entry.system_name || ""} onChange={(event) => updateDraftEntry(entryKey, "system_name", event.target.value)} aria-label="系統名稱" />
@@ -277,7 +277,7 @@ export default function PasswordsPage() {
                         </>
                       )}
                     </td>
-                    <td>
+                    <td data-label="登入網址">
                       {editMode ? (
                         <input value={entry.login_url || ""} onChange={(event) => updateDraftEntry(entryKey, "login_url", event.target.value)} aria-label="登入網址" />
                       ) : entry.login_url ? (
@@ -288,7 +288,7 @@ export default function PasswordsPage() {
                         <span className="muted">-</span>
                       )}
                     </td>
-                    <td>
+                    <td data-label="憑證索引">
                       <div className="password-credential-cell">
                         <div>
                           <span>帳號</span>
@@ -314,14 +314,14 @@ export default function PasswordsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="password-notes-cell">
+                    <td className="password-notes-cell" data-label="備註">
                       {editMode ? (
                         <textarea value={entry.notes || ""} onChange={(event) => updateDraftEntry(entryKey, "notes", event.target.value)} aria-label="備註" rows={2} />
                       ) : (
                         displayValue(entry.notes)
                       )}
                     </td>
-                    <td>
+                    <td data-label="操作">
                       <div className="password-actions">
                         <button type="button" onClick={() => copyUsername(entry)} disabled={!entry.username}>
                           複製帳號

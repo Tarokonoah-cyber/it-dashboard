@@ -229,14 +229,16 @@ function StatusBadge({ value }) {
 }
 
 function RecordValue({ value, column }) {
-  if (["狀態", "盤點狀態", "資產狀態"].includes(column?.label)) return <StatusBadge value={value} />;
+  if (["狀態", "盤點狀態", "資產狀態"].includes(column?.label)) {
+    return <span className="record-value-cell" data-label={column.label}><StatusBadge value={value} /></span>;
+  }
   if (column?.label === "保固狀態") {
     const label = String(value || "未設定");
     const tone = label === "保固中" ? "active" : label === "即將到期" ? "expiring" : label === "已過保" ? "expired" : "unset";
-    return <span className={`asset-warranty-badge is-${tone}`}>{label}</span>;
+    return <span className="record-value-cell" data-label={column.label}><span className={`asset-warranty-badge is-${tone}`}>{label}</span></span>;
   }
   const text = formatDisplayValue(value);
-  return text === "-" ? <span className="muted">-</span> : <span title={text}>{text}</span>;
+  return <span className="record-value-cell" data-label={column.label}>{text === "-" ? <span className="muted">-</span> : <span title={text}>{text}</span>}</span>;
 }
 
 function EditableRecordValue({ row, column, rows, onChange }) {
@@ -245,32 +247,41 @@ function EditableRecordValue({ row, column, rows, onChange }) {
   const options = optionsForColumn(rows, column);
   if (isTextareaColumn(column)) {
     return (
-      <textarea
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        aria-label={column.label}
-        rows={2}
-      />
+      <label className="editable-record-field">
+        <span>{column.label}</span>
+        <textarea
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          aria-label={column.label}
+          rows={2}
+        />
+      </label>
     );
   }
   if (isSelectColumn(column) && options.length) {
     return (
-      <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={column.label}>
-        <option value=""></option>
-        {options.map((option) => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
+      <label className="editable-record-field">
+        <span>{column.label}</span>
+        <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={column.label}>
+          <option value=""></option>
+          {options.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      </label>
     );
   }
   return (
-    <input
-      value={inputTypeForColumn(column) === "date" ? normalizeDateInput(value) : value}
-      onChange={(event) => onChange(event.target.value)}
-      type={inputTypeForColumn(column)}
-      inputMode={column.label === "金額" ? "decimal" : undefined}
-      aria-label={column.label || fieldKey}
-    />
+    <label className="editable-record-field">
+      <span>{column.label}</span>
+      <input
+        value={inputTypeForColumn(column) === "date" ? normalizeDateInput(value) : value}
+        onChange={(event) => onChange(event.target.value)}
+        type={inputTypeForColumn(column)}
+        inputMode={column.label === "金額" ? "decimal" : undefined}
+        aria-label={column.label || fieldKey}
+      />
+    </label>
   );
 }
 
@@ -813,6 +824,7 @@ export default function DataSectionPage({ sectionKey }) {
                           className="contract-name-button"
                           type="button"
                           key={column.label}
+                          data-label={column.label}
                           onClick={() => openContractDetail(row)}
                           title={`查看 ${name} 詳細資料與價格沿革`}
                         >
@@ -826,6 +838,7 @@ export default function DataSectionPage({ sectionKey }) {
                           className="asset-history-button"
                           type="button"
                           key={column.label}
+                          data-label={column.label}
                           onClick={() => setSelectedAsset(row)}
                         >
                           查看履歷

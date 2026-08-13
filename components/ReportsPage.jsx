@@ -62,7 +62,7 @@ function WorkPreview({ preview }) {
           <thead><tr><th>日期</th><th>工作摘要</th><th>類型</th><th>系統</th><th>部門</th><th>狀態</th></tr></thead>
           <tbody>
             {preview.rows.map((row) => (
-              <tr key={row.id}><td>{row.workDate}</td><td>{row.summary}</td><td>{row.workType}</td><td>{row.system}</td><td>{row.department}</td><td><span className="report-status">{row.status}</span></td></tr>
+              <tr key={row.id}><td data-label="日期">{row.workDate}</td><td data-label="工作摘要">{row.summary}</td><td data-label="類型">{row.workType}</td><td data-label="系統">{row.system}</td><td data-label="部門">{row.department}</td><td data-label="狀態"><span className="report-status">{row.status}</span></td></tr>
             ))}
           </tbody>
         </table>
@@ -87,7 +87,7 @@ function InspectionPreview({ preview }) {
           <thead><tr><th>日期</th><th>巡檢人員</th><th>分類</th><th>項目</th><th>狀態</th><th>異常說明</th></tr></thead>
           <tbody>
             {preview.rows.map((row) => (
-              <tr key={row.id || `${row.inspectionRecordId}-${row.itemName}`}><td>{row.date}</td><td>{row.inspector}</td><td>{row.category}</td><td>{row.itemName}</td><td><span className="report-status">{row.status}</span></td><td>{row.issue || "—"}</td></tr>
+              <tr key={row.id || `${row.inspectionRecordId}-${row.itemName}`}><td data-label="日期">{row.date}</td><td data-label="巡檢人員">{row.inspector}</td><td data-label="分類">{row.category}</td><td data-label="項目">{row.itemName}</td><td data-label="狀態"><span className="report-status">{row.status}</span></td><td data-label="異常說明">{row.issue || "—"}</td></tr>
             ))}
           </tbody>
         </table>

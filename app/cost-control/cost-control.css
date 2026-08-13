@@ -388,10 +388,10 @@ body.cc-drawer-open { overflow: hidden; }
 @media (max-width: 480px) {
   .cc-top-filters,
   .cc-table-tools,
-  .cc-table-tools.vouchers { grid-template-columns: 1fr; }
-  .cc-top-filters > button { grid-column: 1; }
-  .cc-summary-grid { grid-template-columns: 1fr; }
-  .cc-summary-card:last-child { grid-column: 1; }
+  .cc-table-tools.vouchers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cc-top-filters > button { grid-column: span 2; }
+  .cc-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cc-summary-card:last-child { grid-column: span 2; }
   .cc-segmented { display: grid; grid-template-columns: 1fr; }
   .cc-chart { height: 185px; }
   .cc-history-summary { grid-template-columns: 1fr; }
@@ -399,7 +399,7 @@ body.cc-drawer-open { overflow: hidden; }
   .cc-import-summary { grid-template-columns: 1fr 1fr; }
   .cc-import-dialog > footer button,
   .cc-budget-editor > footer button { min-width: 0; flex: 1; }
-  .cc-hero-actions { align-items: stretch; flex-direction: column; }
+  .cc-hero-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
   .cc-hero-actions button { width: 100%; }
 }
 

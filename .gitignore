@@ -6,3 +6,6 @@ node_modules
 .vercel
 *.log
 tmp/
+artifacts/mobile-qa/
+test-results/
+playwright-report/

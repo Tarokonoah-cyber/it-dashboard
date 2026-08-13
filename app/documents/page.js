@@ -194,10 +194,17 @@ function DocumentTypePill({ value }) {
 function DocumentModal({ mode, form, setForm, onClose, onSubmit, saving }) {
   return (
     <div className="documents-modal-backdrop" onMouseDown={onClose}>
-      <form className="documents-modal" onSubmit={onSubmit} onMouseDown={(event) => event.stopPropagation()}>
+      <form
+        className="documents-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="documents-modal-title"
+        onSubmit={onSubmit}
+        onMouseDown={(event) => event.stopPropagation()}
+      >
         <header>
           <div>
-            <h2>{mode === "edit" ? "編輯單據" : "新增單據"}</h2>
+            <h2 id="documents-modal-title">{mode === "edit" ? "編輯單據" : "新增單據"}</h2>
           </div>
           <button type="button" onClick={onClose} aria-label="關閉">×</button>
         </header>
@@ -433,14 +440,14 @@ export default function DocumentsPage() {
                 <tbody>
                   {filteredRows.map((row) => (
                     <tr key={row.id}>
-                      <td className="documents-month-cell">{row.month || EMPTY}</td>
-                      <td className="documents-date-cell">{row.date || EMPTY}</td>
-                      <td>{row.vendor || EMPTY}</td>
-                      <td><DepartmentBadges value={row.department} /></td>
-                      <td className="documents-description-cell">{row.description || EMPTY}</td>
-                      <td className="documents-amount-cell">{formatCurrency(row.amount)}</td>
-                      <td><DocumentTypePill value={row.format} /></td>
-                      <td className="documents-action-cell">
+                      <td className="documents-month-cell" data-label="年月">{row.month || EMPTY}</td>
+                      <td className="documents-date-cell" data-label="日期">{row.date || EMPTY}</td>
+                      <td data-label="廠商">{row.vendor || EMPTY}</td>
+                      <td data-label="成本中心"><DepartmentBadges value={row.department} /></td>
+                      <td className="documents-description-cell" data-label="項目說明">{row.description || EMPTY}</td>
+                      <td className="documents-amount-cell" data-label="總金額">{formatCurrency(row.amount)}</td>
+                      <td data-label="單據格式"><DocumentTypePill value={row.format} /></td>
+                      <td className="documents-action-cell" data-label="操作">
                         <button type="button" onClick={() => openEdit(row)}>編輯</button>
                       </td>
                     </tr>

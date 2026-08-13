@@ -368,7 +368,7 @@ export default function MountainComputerPage({ config = MOUNTAIN_PC_CONFIG }) {
               filteredRows.map((row) => (
                 <tr key={rowIdentity(row)}>
                   {MOUNTAIN_PC_COLUMNS.map((column) => (
-                    <td key={column.label}>
+                    <td key={column.label} data-label={column.label}>
                       {column.label === "設備履歷" ? (
                         <button className="asset-history-button" type="button" onClick={() => setSelectedAsset(row)}>查看履歷</button>
                       ) : editMode && isEditableColumn(column) ? (
